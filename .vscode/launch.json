@@ -125,7 +125,11 @@
 			"type": "extensionHost",
 			"request": "launch",
 			"runtimeExecutable": "${execPath}",
-			"args": ["--profile=Debugging (GitLens)", "--extensionDevelopmentPath=${workspaceFolder}"],
+			"args": [
+				"--profile=Debugging (GitLens)",
+				"--extensionDevelopmentPath=${workspaceFolder}",
+				"D:\\Workspace\\learn\\js\\zustand"
+			],
 			"debugWebviews": true,
 			"rendererDebugOptions": {
 				"outFiles": ["${workspaceFolder}/dist/webviews/**/*.js"],

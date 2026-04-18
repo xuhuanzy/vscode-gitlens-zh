@@ -1,5 +1,6 @@
 import type { PropertyValues } from 'lit';
 import { LitElement } from 'lit';
+import { localizeRoot } from '../i18n.js';
 
 export type CustomEventType<T extends keyof GlobalEventHandlersEventMap> =
 	GlobalEventHandlersEventMap[T] extends CustomEvent<infer D>
@@ -56,6 +57,19 @@ export function observe<T extends GlElement>(keys: keyof T | (keyof T)[], option
 // }
 
 export abstract class GlElement extends LitElement {
+	override connectedCallback(): void {
+		super.connectedCallback();
+
+		// Localize light/shadow DOM output at the component boundary to minimize call-site churn.
+		queueMicrotask(() => {
+			const root = this.renderRoot ?? this;
+			localizeRoot(root, { includeAttributes: true });
+			if (root !== this) {
+				localizeRoot(this, { includeAttributes: true });
+			}
+		});
+	}
+
 	emit<T extends EventTypesWithRequiredDetail>(
 		name: T,
 		detail: CustomEventDetailType<T>,

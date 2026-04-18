@@ -33,6 +33,7 @@ import { webviewContext } from './contexts/webview.js';
 import { DOM } from './dom.js';
 import type { Disposable } from './events.js';
 import { createFocusTracker } from './focus.js';
+import { getWebviewLocale, localizeRoot } from './i18n.js';
 import type { HostIpcApi } from './ipc.js';
 import { getHostIpcApi, HostIpc } from './ipc.js';
 import { telemetryEventName } from './telemetry.js';
@@ -114,6 +115,7 @@ export abstract class GlWebviewApp extends GlElement {
 
 		this._logger = new LoggerContext(this.name);
 		this._logger.debug('connected');
+		document.documentElement.lang = getWebviewLocale();
 
 		this._ipc = new HostIpc(this.name);
 
@@ -155,6 +157,7 @@ export abstract class GlWebviewApp extends GlElement {
 				a.removeAttribute('title');
 			}
 		});
+		localizeRoot(document.body, { includeAttributes: true });
 
 		// Remove preload class after delay to enable CSS transitions
 		if (document.body.classList.contains('preload')) {
@@ -231,6 +234,7 @@ export abstract class App<
 		(window as any).bootstrap = undefined;
 
 		this.placement = (document.body.getAttribute('data-placement') ?? 'editor') as 'editor' | 'view';
+		document.documentElement.lang = getWebviewLocale();
 
 		this._logger = new LoggerContext(appName);
 		this.log('opening...');
@@ -310,6 +314,7 @@ export abstract class App<
 				this.onInitialized?.();
 			} finally {
 				this.log('initialized');
+				localizeRoot(document.body, { includeAttributes: true });
 				if (document.body.classList.contains('preload')) {
 					setTimeout(() => {
 						document.body.classList.remove('preload');

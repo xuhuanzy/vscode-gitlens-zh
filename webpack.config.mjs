@@ -278,8 +278,8 @@ function getExtensionConfig(target, mode, env) {
 	} else {
 		plugins.push(
 			new GenerateContributionsPlugin(),
-			new ExtractContributionsPlugin(),
 			new GenerateCommandTypesPlugin(),
+			new GenerateCommitDisplayLocalizationAssetsPlugin(),
 		);
 	}
 
@@ -596,6 +596,8 @@ function getWebviewConfig(webviews, overrides, mode, env) {
 	if ('composer' in webviews) {
 		plugins.push(new CompileComposerTemplatesPlugin());
 	}
+
+	plugins.push(new GenerateWebviewLocalizationAssetsPlugin());
 
 	let name = '';
 	let filePrefix = '';
@@ -1056,7 +1058,7 @@ class GenerateContributionsPlugin extends FileGeneratorPlugin {
 			pluginName: 'contributions',
 			pathsToWatch: [path.join(__dirname, 'contributions.json')],
 			command: {
-				name: "'package.json' contributions",
+				name: "localized package manifest",
 				command: pkgMgr,
 				args: ['run', 'generate:contributions'],
 			},
@@ -1064,19 +1066,18 @@ class GenerateContributionsPlugin extends FileGeneratorPlugin {
 	}
 }
 
-class ExtractContributionsPlugin extends FileGeneratorPlugin {
+class GenerateCommitDisplayLocalizationAssetsPlugin extends FileGeneratorPlugin {
 	constructor() {
 		super({
-			pluginName: 'contributions',
-			pathsToWatch: [path.join(__dirname, 'package.json')],
+			pluginName: 'commitDisplayLocalization',
+			pathsToWatch: [
+				path.join(__dirname, 'i18n', 'commitDisplay', 'commitDisplayLocalization.mts'),
+				path.join(__dirname, 'commitDisplay.nls.zh-cn.json'),
+			],
 			command: {
-				name: "contributions from 'package.json'",
+				name: 'commit display localization assets',
 				command: pkgMgr,
-				args: ['run', 'extract:contributions'],
-			},
-			strings: {
-				starting: 'Extracting',
-				completed: 'Extracted',
+				args: ['run', 'generate:commit-display-localization-assets'],
 			},
 		});
 	}
@@ -1093,6 +1094,26 @@ class DocsPlugin extends FileGeneratorPlugin {
 				args: ['run', 'generate:docs:telemetry'],
 			},
 		});
+	}
+}
+
+class GenerateWebviewLocalizationAssetsPlugin {
+	static name = 'GenerateWebviewLocalizationAssetsPlugin';
+
+	/**
+	 * @param {import('webpack').Compiler} compiler
+	 */
+	apply(compiler) {
+		const run = async () => {
+			const logger = compiler.getInfrastructureLogger(GenerateWebviewLocalizationAssetsPlugin.name);
+			const { generateManagedWebviewLocalizationArtifacts } = await import('./i18n/webviews/webviewLocalization.mts');
+			const result = generateManagedWebviewLocalizationArtifacts({ rootDir: __dirname, writeEnglishCatalog: true });
+			if (result.changedFiles.length > 0) {
+				logger.log(`Generated webview localization assets (${result.changedFiles.length} file(s))`);
+			}
+		};
+
+		compiler.hooks.afterEmit.tapPromise(GenerateWebviewLocalizationAssetsPlugin.name, run);
 	}
 }
 

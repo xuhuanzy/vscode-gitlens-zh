@@ -5,13 +5,12 @@ import type { RemoteProvider } from '@gitlens/git/models/remoteProvider.js';
 import type { RemoteResource } from '@gitlens/git/models/remoteResource.js';
 import { RemoteResourceType } from '@gitlens/git/models/remoteResource.js';
 import { getBranchNameWithoutRemote, getRemoteNameFromBranchName } from '@gitlens/git/utils/branch.utils.js';
-import { getHighlanderProviders, getNameFromRemoteResource } from '@gitlens/git/utils/remote.utils.js';
+import { getHighlanderProviders } from '@gitlens/git/utils/remote.utils.js';
 import { getSettledValue } from '@gitlens/utils/promise.js';
 import type { OpenOnRemoteCommandArgs } from '../commands/openOnRemote.js';
 import { SetRemoteAsDefaultQuickInputButton } from '../commands/quick-wizard/quickButtons.js';
 import type { IntegrationIds } from '../constants.integrations.js';
 import type { Keys } from '../constants.js';
-import { GlyphChars } from '../constants.js';
 import type { Sources } from '../constants.telemetry.js';
 import { Container } from '../container.js';
 import { RequiresIntegrationError } from '../errors.js';
@@ -25,6 +24,11 @@ import {
 import { providersMetadata } from '../plus/integrations/providers/models.js';
 import { convertRemoteProviderIdToIntegrationId } from '../plus/integrations/utils/-webview/integration.utils.js';
 import { getQuickPickIgnoreFocusOut } from '../system/-webview/vscode.js';
+import {
+	getCommitQuickPickCopyRemoteResourceLabel,
+	getCommitQuickPickOpenRemoteResourceLabel,
+	getCommitQuickPickUrlCopiedNotification,
+} from './items/commitQuickPickText.js';
 import { CommandQuickPickItem, createQuickPickItemOfT } from './items/common.js';
 import { createDirectiveQuickPickItem, Directive } from './items/directive.js';
 
@@ -199,15 +203,17 @@ export class CopyRemoteResourceCommandQuickPickItem extends CommandQuickPickItem
 			remotes: remotes,
 			clipboard: true,
 		};
-		const label = `Copy Link to ${getNameFromRemoteResource(resource)} for ${
-			providers?.length ? providers[0].name : 'Remote'
-		}${providers?.length === 1 ? '' : GlyphChars.Ellipsis}`;
+		const label = getCommitQuickPickCopyRemoteResourceLabel(
+			resource,
+			providers?.length ? providers[0].name : 'Remote',
+			providers?.length !== 1,
+		);
 		super(label, new ThemeIcon('copy'), 'gitlens.openOnRemote', [commandArgs]);
 	}
 
 	override async onDidPressKey(key: Keys): Promise<void> {
 		await super.onDidPressKey(key);
-		void window.showInformationMessage('URL copied to the clipboard');
+		void window.showInformationMessage(getCommitQuickPickUrlCopiedNotification());
 	}
 }
 
@@ -220,11 +226,11 @@ export class OpenRemoteResourceCommandQuickPickItem extends CommandQuickPickItem
 			clipboard: false,
 		};
 		super(
-			`Open ${getNameFromRemoteResource(resource)} on ${
-				providers?.length === 1
-					? providers[0].name
-					: `${providers?.length ? providers[0].name : 'Remote'}${GlyphChars.Ellipsis}`
-			}`,
+			getCommitQuickPickOpenRemoteResourceLabel(
+				resource,
+				providers?.length ? providers[0].name : 'Remote',
+				providers?.length !== 1,
+			),
 			new ThemeIcon('link-external'),
 			'gitlens.openOnRemote',
 			[commandArgs],

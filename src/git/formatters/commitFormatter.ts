@@ -55,6 +55,19 @@ import {
 import { getIssueOrPullRequestMarkdownIcon } from '../utils/-webview/icons.js';
 import { getReferenceFromRevision } from '../utils/-webview/reference.utils.js';
 import { isRemoteMaybeIntegrationConnected, remoteSupportsIntegration } from '../utils/-webview/remote.utils.js';
+import {
+	escapeMarkdownLinkTitle,
+	getAuthorEmailTitle,
+	getCommitFormatterInspectCommitDetailsTitle,
+	getCommitFormatterMessageLabel,
+	getCommitFormatterOpenPullRequestTitle,
+	getCommitFormatterPullRequestPendingTitle,
+	getCommitFormatterPullRequestStateLabel,
+	getCommitFormatterSignatureTooltip,
+	getCommitFormatterStashLabel,
+	getCommitFormatterWorkingTreeLabel,
+	localizeCommitFormatterCommandMarkdown,
+} from './commitFormatterText.js';
 
 const quoteRegex = /"/g;
 const newlineRegex = /\r?\n/g;
@@ -297,20 +310,23 @@ export class CommitFormatter extends Formatter<GitCommit, CommitFormatOptions> {
 
 	private formatAuthor(name: string, email: string | undefined, tokenOptions: TokenOptions | undefined): string {
 		const author = this._padOrTruncate(name, tokenOptions);
+		const title = email != null ? getAuthorEmailTitle(name, email) : name;
 
 		switch (this._options.outputFormat) {
 			case 'markdown':
-				return `[${author}](${email ? `mailto:${email} "Email ${name} (${email})"` : `# "${name}"`})`;
-			case 'html':
+				return `[${author}](${email ? `mailto:${email} "${escapeMarkdownLinkTitle(title)}"` : `# "${escapeMarkdownLinkTitle(title)}"`})`;
+			case 'html': {
 				name = encodeHtmlWeak(name);
 				email = encodeHtmlWeak(email);
+				const encodedTitle = encodeHtmlWeak(title);
 				return /*html*/ `<a ${
-					email ? `href="mailto:${email}" title="Email ${name} (${email})"` : `href="#" title="${name}"`
+					email ? `href="mailto:${email}" title="${encodedTitle}"` : `href="#" title="${encodedTitle}"`
 				})${
 					this._options.htmlFormat?.classes?.author
 						? ` class="${this._options.htmlFormat.classes.author}"`
 						: ''
 				}>${author}</a>`;
+			}
 			default:
 				return author;
 		}
@@ -345,20 +361,23 @@ export class CommitFormatter extends Formatter<GitCommit, CommitFormatOptions> {
 		if (this._item.author.current) return this._padOrTruncate('', this._options.tokenOptions.authorNotYou);
 
 		const author = this._padOrTruncate(name, this._options.tokenOptions.authorNotYou);
+		const title = email != null ? getAuthorEmailTitle(name, email) : name;
 
 		switch (this._options.outputFormat) {
 			case 'markdown':
-				return `[${author}](${email ? `mailto:${email} "Email ${name} (${email})"` : `# "${name}"`})`;
-			case 'html':
+				return `[${author}](${email ? `mailto:${email} "${escapeMarkdownLinkTitle(title)}"` : `# "${escapeMarkdownLinkTitle(title)}"`})`;
+			case 'html': {
 				name = encodeHtmlWeak(name);
 				email = encodeHtmlWeak(email);
+				const encodedTitle = encodeHtmlWeak(title);
 				return /*html*/ `<a ${
-					email ? `href="mailto:${email}" title="Email ${name} (${email})"` : `href="#" title="${name}"`
+					email ? `href="mailto:${email}" title="${encodedTitle}"` : `href="#" title="${encodedTitle}"`
 				})${
 					this._options.htmlFormat?.classes?.author
 						? ` class="${this._options.htmlFormat.classes.author}"`
 						: ''
 				}>${author}</a>`;
+			}
 			default:
 				return author;
 		}
@@ -535,7 +554,7 @@ export class CommitFormatter extends Formatter<GitCommit, CommitFormatOptions> {
 				})} "Explain Changes")`;
 			}
 
-			return commands;
+			return localizeCommitFormatterCommandMarkdown(commands);
 		}
 
 		commands = `---\n\n[\`$(git-commit) ${this.id}\`](${InspectCommand.createMarkdownCommandLink(
@@ -671,7 +690,10 @@ export class CommitFormatter extends Formatter<GitCommit, CommitFormatOptions> {
 				: { commit: this._item, source: editorHoverSource },
 		)} "Show More Actions")`;
 
-		return this._padOrTruncate(commands, this._options.tokenOptions.commands);
+		return this._padOrTruncate(
+			localizeCommitFormatterCommandMarkdown(commands),
+			this._options.tokenOptions.commands,
+		);
 	}
 
 	get committerAgo(): string {
@@ -760,13 +782,13 @@ export class CommitFormatter extends Formatter<GitCommit, CommitFormatOptions> {
 		if (GitCommit.isStash(this._item)) {
 			icon = 'archive';
 			label = this._padOrTruncate(
-				`Stash${this._item.stashNumber ? ` #${this._item.stashNumber}` : ''}`,
+				getCommitFormatterStashLabel(this._item.stashNumber),
 				this._options.tokenOptions.link,
 			);
 		} else {
 			icon = this._item.sha != null && !this._item.isUncommitted ? 'git-commit' : '';
 			label = this._padOrTruncate(
-				shortenRevision(this._item.sha ?? '', { strings: { working: 'Working Tree' } }),
+				shortenRevision(this._item.sha ?? '', { strings: { working: getCommitFormatterWorkingTreeLabel() } }),
 				this._options.tokenOptions.id,
 			);
 		}
@@ -778,14 +800,14 @@ export class CommitFormatter extends Formatter<GitCommit, CommitFormatOptions> {
 				link = `[\`${icon}${label}\`](${InspectCommand.createMarkdownCommandLink({
 					ref: getReferenceFromRevision(this._item),
 					source: this._options.source,
-				})} "Inspect Commit Details")`;
+				})} "${escapeMarkdownLinkTitle(getCommitFormatterInspectCommitDetailsTitle())}")`;
 				break;
 			case 'html':
 				icon = icon ? `<span class="codicon codicon-${icon}"></span>` : '';
 				link = /*html*/ `<a href="${InspectCommand.createMarkdownCommandLink({
 					ref: getReferenceFromRevision(this._item),
 					source: this._options.source,
-				})}" title="Inspect Commit Details"${
+				})}" title="${encodeHtmlWeak(getCommitFormatterInspectCommitDetailsTitle())}"${
 					this._options.htmlFormat?.classes?.link ? ` class="${this._options.htmlFormat.classes.link}"` : ''
 				}>${icon}${label}</a>`;
 				break;
@@ -806,7 +828,7 @@ export class CommitFormatter extends Formatter<GitCommit, CommitFormatOptions> {
 				this._item.isUncommittedStaged ||
 				isUncommittedStaged(this._options.previousLineComparisonUris?.current?.sha);
 
-			let message = `${conflicted ? 'Merge' : staged ? 'Staged' : 'Uncommitted'} changes`;
+			let message = getCommitFormatterMessageLabel(conflicted, staged);
 			switch (outputFormat) {
 				case 'html':
 					message = /*html*/ `<span ${
@@ -879,6 +901,10 @@ export class CommitFormatter extends Formatter<GitCommit, CommitFormatOptions> {
 		let text;
 		if (PullRequest.is(pr)) {
 			if (this._options.outputFormat === 'markdown') {
+				const openPullRequestTitle = getCommitFormatterOpenPullRequestTitle(
+					pr.id,
+					Container.instance.actionRunners.count('openPullRequest') === 1 ? pr.provider.name : undefined,
+				);
 				text = `[**$(git-pull-request) PR #${
 					pr.id
 				}**](${createMarkdownActionCommandLink<OpenPullRequestActionContext>('openPullRequest', {
@@ -886,11 +912,9 @@ export class CommitFormatter extends Formatter<GitCommit, CommitFormatOptions> {
 					provider: { id: pr.provider.id, name: pr.provider.name, domain: pr.provider.domain },
 					pullRequest: { id: pr.id, url: pr.url },
 					source: this._options.source,
-				})} "Open Pull Request \\#${pr.id}${
-					Container.instance.actionRunners.count('openPullRequest') === 1 ? ` on ${pr.provider.name}` : '...'
-				}\n${GlyphChars.Dash.repeat(2)}\n${escapeMarkdown(pr.title).replace(quoteRegex, '\\"')}\n${
-					pr.state
-				}, ${PullRequest.formatDateFromNow(pr)}")`;
+				})} "${escapeMarkdownLinkTitle(openPullRequestTitle, { escapeHashes: true })}\n${GlyphChars.Dash.repeat(2)}\n${escapeMarkdown(pr.title).replace(quoteRegex, '\\"')}\n${getCommitFormatterPullRequestStateLabel(
+					pr.state,
+				)}, ${PullRequest.formatDateFromNow(pr)}")`;
 
 				if (this._options.footnotes != null) {
 					const prTitle = escapeMarkdown(pr.title).replace(quoteRegex, '\\"').trim();
@@ -907,18 +931,19 @@ export class CommitFormatter extends Formatter<GitCommit, CommitFormatOptions> {
 					);
 					this._options.footnotes.set(
 						index,
-						`${getIssueOrPullRequestMarkdownIcon(pr)} [**${prTitle}**](${prCommandLink} "Open Pull Request \\#${
-							pr.id
-						} on ${pr.provider.name}")\\\n${GlyphChars.Space.repeat(4)} #${pr.id} ${
-							pr.state
-						} ${PullRequest.formatDateFromNow(pr)}`,
+						`${getIssueOrPullRequestMarkdownIcon(pr)} [**${prTitle}**](${prCommandLink} "${escapeMarkdownLinkTitle(
+							getCommitFormatterOpenPullRequestTitle(pr.id, pr.provider.name),
+							{ escapeHashes: true },
+						)}")\\\n${GlyphChars.Space.repeat(4)} #${pr.id} ${getCommitFormatterPullRequestStateLabel(
+							pr.state,
+						)} ${PullRequest.formatDateFromNow(pr)}`,
 					);
 				}
 			} else if (this._options.footnotes != null) {
 				const index = this._options.footnotes.size + 1;
 				this._options.footnotes.set(
 					index,
-					`PR #${pr.id}: ${pr.title}  ${GlyphChars.Dot}  ${pr.state}, ${PullRequest.formatDateFromNow(pr)}`,
+					`PR #${pr.id}: ${pr.title}  ${GlyphChars.Dot}  ${getCommitFormatterPullRequestStateLabel(pr.state)}, ${PullRequest.formatDateFromNow(pr)}`,
 				);
 
 				text = `PR #${pr.id}${getSuperscript(index)}`;
@@ -928,7 +953,7 @@ export class CommitFormatter extends Formatter<GitCommit, CommitFormatOptions> {
 		} else if (isPromise(pr)) {
 			text =
 				this._options.outputFormat === 'markdown'
-					? `[PR $(loading~spin)](${createMarkdownCommandLink('gitlens.refreshHover', this._options.source)} "Searching for a Pull Request (if any) that introduced this commit...")`
+					? `[PR $(loading~spin)](${createMarkdownCommandLink('gitlens.refreshHover', this._options.source)} "${escapeMarkdownLinkTitle(getCommitFormatterPullRequestPendingTitle())}")`
 					: (this._options?.pullRequestPendingMessage ?? '');
 		} else {
 			return this._padOrTruncate('', this._options.tokenOptions.pullRequest);
@@ -952,7 +977,7 @@ export class CommitFormatter extends Formatter<GitCommit, CommitFormatOptions> {
 	get pullRequestState(): string {
 		const { pullRequest: pr } = this._options;
 		return this._padOrTruncate(
-			pr == null || !PullRequest.is(pr) ? '' : (pr.state ?? ''),
+			pr == null || !PullRequest.is(pr) ? '' : getCommitFormatterPullRequestStateLabel(pr.state),
 			this._options.tokenOptions.pullRequestState,
 		);
 	}
@@ -967,7 +992,7 @@ export class CommitFormatter extends Formatter<GitCommit, CommitFormatOptions> {
 			return this._padOrTruncate('', this._options.tokenOptions.signature);
 		}
 
-		const tooltip = 'Signed\nClick to verify signature in Commit Details';
+		const tooltip = getCommitFormatterSignatureTooltip();
 
 		return this._padOrTruncate(
 			this._options.outputFormat === 'markdown'
@@ -975,7 +1000,7 @@ export class CommitFormatter extends Formatter<GitCommit, CommitFormatOptions> {
 						this._item.sha,
 						this._item.repoPath,
 						this._options.source,
-					)} "${tooltip}")`
+					)} "${escapeMarkdownLinkTitle(tooltip)}")`
 				: '',
 			this._options.tokenOptions.signature,
 		);

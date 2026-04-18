@@ -64,6 +64,12 @@ import {
 import { isRpcMessage } from './rpc/constants.js';
 import { EventVisibilityBuffer, SubscriptionTracker } from './rpc/eventVisibilityBuffer.js';
 import { RpcHost } from './rpc/rpcHost.js';
+import {
+	getWebviewRuntimeLocalizationPayload,
+	injectWebviewRuntimeLocalization,
+	localizeWebviewHtmlTemplate,
+	shouldLocalizeWebviewHtml,
+} from './webviewHtmlLocalization.js';
 import type { WebviewCommandCallback, WebviewCommandRegistrar } from './webviewCommandRegistrar.js';
 import type { CustomEditorDescriptor, WebviewPanelDescriptor, WebviewViewDescriptor } from './webviewDescriptors.js';
 import type { WebviewHost, WebviewProvider, WebviewShowingArgs } from './webviewProvider.js';
@@ -741,8 +747,18 @@ export class WebviewController<
 		const serialized = this.serializeIpcData(bootstrap);
 		sw?.stop({ message: `\u2022 serialized bootstrap; length=${serialized.length}` });
 
+		let templateHtml = strFromU8(bytes);
+		if (shouldLocalizeWebviewHtml(this.descriptor.fileName)) {
+			templateHtml = await localizeWebviewHtmlTemplate(this.container, this.descriptor.fileName, templateHtml);
+		}
+		templateHtml = injectWebviewRuntimeLocalization(
+			templateHtml,
+			this._cspNonce,
+			await getWebviewRuntimeLocalizationPayload(this.container),
+		);
+
 		const html = replaceWebviewHtmlTokens(
-			strFromU8(bytes),
+			templateHtml,
 			this.id,
 			this.instanceId,
 			webview.cspSource,
