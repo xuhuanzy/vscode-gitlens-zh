@@ -22,22 +22,6 @@ Define branch-wide governance for how this i18n fork localizes GitLens while kee
 - **THEN** those changes MUST be limited to a few controlled integration points nearest the display boundary, translation boundary, or final returned value
 - **AND** they MUST NOT expand into unrelated formatting or data-shaping logic
 
-### Requirement: Branch-local i18n ownership SHALL live under `./i18n`
-
-系统 SHALL 将 branch-local i18n 的规则、脚本、catalog、生成与报告能力集中在 `./i18n` 下维护。
-
-#### Scenario: Adding a new localization workflow
-
-- **WHEN** the branch introduces extraction, catalog generation, sync, or reporting for a new localization surface
-- **THEN** the primary ownership for that workflow MUST be implemented under `./i18n`
-- **AND** build or watch automation SHOULD invoke `./i18n` tooling as the authoritative path for that branch-local localization behavior
-
-#### Scenario: Avoiding parallel ownership outside `./i18n`
-
-- **WHEN** a developer considers introducing a new branch-local localization pipeline, catalog root, or generator outside `./i18n`
-- **THEN** that approach MUST NOT become the default ownership model
-- **AND** any unavoidable out-of-tree integration code MUST remain a thin adapter to `./i18n`-owned logic
-
 ### Requirement: i18n implementation SHALL preserve upstream data and common formatting semantics
 
 系统 SHALL 仅本地化受控展示文案，不得借 i18n 之名改写动态用户数据或通用格式规则，除非某个 capability 明确要求。
@@ -63,3 +47,42 @@ Define branch-wide governance for how this i18n fork localizes GitLens while kee
 - **WHEN** 某个翻译差异只在单一 surface 的特定上下文中成立
 - **THEN** 实现 MUST 将该差异保留为该 surface 的 exact exception
 - **AND** 它 MUST 将该 exception 置于共享 proofreader 之后，而不是建立新的并行规则体系
+
+### Requirement: i18n tooling and runtime ownership SHALL remain separated
+
+系统 SHALL 将 i18n 工具链与运行时资产分离：`./i18n` 只承载抽取、生成、同步、报告、词库与翻译维护策略，`src/i18n` 只承载 extension/webview runtime 需要 import、bundle 或读取的 catalog、adapter 与 helper。
+
+#### Scenario: Adding tooling for a localization surface
+
+- **WHEN** 当前分支为某个 localization surface 新增 extraction、catalog generation、locale sync、pending report、glossary 或 merge-assist 能力
+- **THEN** 该 tooling MUST 放在 `./i18n` 下
+- **AND** 它 MUST NOT 作为 runtime import path 被 `src/` 代码消费
+
+#### Scenario: Adding runtime i18n code or runtime catalogs
+
+- **WHEN** 当前分支新增 extension host、webview host 或 webview client 在运行时需要执行或读取的 i18n code/catalog
+- **THEN** 这些资产 MUST 放在 `src/i18n` 下
+- **AND** 它 MUST NOT 分散到 unrelated `src/system`, `src/webviews`, formatter, quickpick 或 provider 目录中，除非该位置只是最小必要的 display-boundary 接入点
+
+#### Scenario: Enforcing dependency direction
+
+- **WHEN** runtime code 需要本地化数据或 helper
+- **THEN** runtime code MUST import from `src/i18n` or surface-local runtime adapters
+- **AND** runtime code MUST NOT import modules from `./i18n`
+- **AND** `./i18n` tooling MAY read or write `src/i18n` catalog/runtime assets as part of generation and reporting workflows
+
+### Requirement: Non-package runtime catalogs SHALL live with runtime i18n assets
+
+系统 SHALL 将不受 VS Code manifest NLS 目录约束的 runtime catalog 放在 `src/i18n/<surface>/` 下，并与对应运行时 adapter 保持相邻 ownership。
+
+#### Scenario: Organizing non-package catalogs
+
+- **WHEN** 某个 catalog 不属于 VS Code package manifest localization
+- **THEN** 它 MUST be organized under `src/i18n/<surface>/`
+- **AND** English source catalog and locale catalogs for that surface MUST live in the same runtime i18n surface directory
+
+#### Scenario: Keeping package manifest NLS at root
+
+- **WHEN** catalog is `package.nls.json` or `package.nls.<locale>.json`
+- **THEN** it MUST remain at the repository root next to `package.json`
+- **AND** this exception MUST NOT be generalized to non-package runtime catalogs
