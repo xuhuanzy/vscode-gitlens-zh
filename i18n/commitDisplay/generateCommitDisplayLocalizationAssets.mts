@@ -1,25 +1,24 @@
 import {
+	buildCommitDisplayZhCnCatalog,
 	buildCommitDisplayCatalog,
 	commitDisplayNlsPath,
 	commitDisplayNlsZhCnPath,
+	commitDisplayTranslationAuthorityPath,
 	diffCommitDisplayCatalog,
 	hasCommitDisplayCatalogChanges,
 	readCommitDisplayCatalog,
-	syncCommitDisplayZhCnCatalog,
+	readCommitDisplayTranslationAuthority,
 } from './commitDisplayLocalization.mts';
 import { writeStableJsonFile } from '../shared/files.mts';
-import { applyZhCnProofreader } from '../shared/zhCnPolicy.mts';
 
 const commitDisplayCatalog = buildCommitDisplayCatalog();
 const existingCommitDisplayCatalog = readCommitDisplayCatalog(commitDisplayNlsPath);
 const existingZhCn = readCommitDisplayCatalog(commitDisplayNlsZhCnPath);
+const authority = readCommitDisplayTranslationAuthority(commitDisplayTranslationAuthorityPath);
 const commitDisplayCatalogDiff = diffCommitDisplayCatalog(existingCommitDisplayCatalog, commitDisplayCatalog);
-const { catalog: syncedZhCn } = syncCommitDisplayZhCnCatalog(
-	commitDisplayCatalog,
-	existingZhCn,
-);
-const nextZhCn = applyZhCnProofreader(syncedZhCn, commitDisplayCatalog);
+const { catalog: nextZhCn, coverage } = buildCommitDisplayZhCnCatalog(commitDisplayCatalog, authority);
 const commitDisplayZhCnDiff = diffCommitDisplayCatalog(existingZhCn, nextZhCn);
+const staleAuthorityEntries = Object.values(coverage).filter(entry => entry.source === 'stale').length;
 
 if (writeStableJsonFile(commitDisplayNlsPath, commitDisplayCatalog)) {
 	console.log("已生成 'src/i18n/commitDisplay/commitDisplay.nls.json'。");
@@ -40,3 +39,4 @@ console.log(
 console.log(
 	`commitDisplay.nls.zh-cn.json 摘要：新增 ${commitDisplayZhCnDiff.added.length} 项，更新 ${commitDisplayZhCnDiff.updated.length} 项，移除 ${commitDisplayZhCnDiff.removed.length} 项，未变更 ${commitDisplayZhCnDiff.unchanged.length} 项。`,
 );
+console.log(`commitDisplay authority 摘要：过期 ${staleAuthorityEntries} 项。`);

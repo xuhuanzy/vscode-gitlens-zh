@@ -2,6 +2,21 @@ import { readJsonFileIfExists } from './files.mts';
 
 export type StringCatalog = Record<string, string>;
 
+export type TranslationAuthorityEntry = {
+	english: string;
+	localized: string;
+};
+
+export type TranslationAuthorityCatalog = Record<string, TranslationAuthorityEntry>;
+
+export type LocaleCoverageEntry = {
+	authorityEnglish?: string;
+	authorityLocalized?: string;
+	english: string;
+	localized?: string;
+	source: 'authority' | 'missing' | 'proofreader' | 'stale';
+};
+
 export type StringCatalogDiff = {
 	added: string[];
 	removed: string[];
@@ -21,6 +36,10 @@ export function readStringCatalog<T extends StringCatalog>(filePath: string): T 
 	return readJsonFileIfExists(filePath, () => Object.create(null) as T);
 }
 
+export function readTranslationAuthorityCatalog<T extends TranslationAuthorityCatalog>(filePath: string): T {
+	return readJsonFileIfExists(filePath, () => Object.create(null) as T);
+}
+
 export function syncLocaleCatalog<T extends StringCatalog>(
 	englishCatalog: T,
 	existingLocalizedCatalog: T,
@@ -32,6 +51,69 @@ export function syncLocaleCatalog<T extends StringCatalog>(
 	) as T;
 
 	return { diff: diffStringCatalog(existingLocalizedCatalog, catalog), catalog: catalog };
+}
+
+export function buildLocaleCatalogFromAuthority<T extends StringCatalog>(options: {
+	authorityCatalog: TranslationAuthorityCatalog;
+	englishCatalog: T;
+	resolveGeneratedLocalized?: (english: string, key: string) => string | undefined;
+}): { catalog: T; coverage: Record<string, LocaleCoverageEntry> } {
+	const catalog = Object.create(null) as StringCatalog;
+	const coverage = Object.create(null) as Record<string, LocaleCoverageEntry>;
+	const matchedAuthorityKeys = new Set<string>();
+
+	for (const [key, english] of Object.entries(options.englishCatalog).sort(([a], [b]) => a.localeCompare(b))) {
+		const authorityEntry = options.authorityCatalog[key];
+		if (authorityEntry != null) {
+			matchedAuthorityKeys.add(key);
+			if (authorityEntry.english === english) {
+				catalog[key] = authorityEntry.localized;
+				coverage[key] = {
+					english: english,
+					localized: authorityEntry.localized,
+					source: 'authority',
+				};
+				continue;
+			}
+
+			coverage[key] = {
+				authorityEnglish: authorityEntry.english,
+				authorityLocalized: authorityEntry.localized,
+				english: english,
+				source: 'stale',
+			};
+			continue;
+		}
+
+		const generatedLocalized = options.resolveGeneratedLocalized?.(english, key);
+		if (generatedLocalized != null) {
+			catalog[key] = generatedLocalized;
+			coverage[key] = {
+				english: english,
+				localized: generatedLocalized,
+				source: 'proofreader',
+			};
+			continue;
+		}
+
+		coverage[key] = {
+			english: english,
+			source: 'missing',
+		};
+	}
+
+	for (const [key, authorityEntry] of Object.entries(options.authorityCatalog).sort(([a], [b]) => a.localeCompare(b))) {
+		if (matchedAuthorityKeys.has(key)) continue;
+
+		coverage[key] = {
+			authorityEnglish: authorityEntry.english,
+			authorityLocalized: authorityEntry.localized,
+			english: authorityEntry.english,
+			source: 'stale',
+		};
+	}
+
+	return { catalog: catalog as T, coverage: coverage };
 }
 
 export function hasCatalogChanges(diff: Pick<StringCatalogDiff, 'added' | 'removed' | 'updated'>): boolean {

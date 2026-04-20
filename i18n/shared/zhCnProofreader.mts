@@ -1,4 +1,15 @@
 import { collectAcceptedEqualValues, type StringCatalog } from './catalog.mts';
+import {
+	sharedZhCnGlossaryOverrides,
+	sharedZhCnPassthroughValues,
+	sharedZhCnProtectedTerms,
+} from './zhCnAuthority.mts';
+
+export {
+	sharedZhCnGlossaryOverrides,
+	sharedZhCnPassthroughValues,
+	sharedZhCnProtectedTerms,
+} from './zhCnAuthority.mts';
 
 export type ZhCnProofreaderCatalogOptions = {
 	extraExceptions?: ReadonlyMap<string, string>;
@@ -36,118 +47,7 @@ type ZhCnTemplateHelpers = {
 };
 
 const maxRecursionDepth = 6;
-const placeholderOrPunctuationPattern =
-	/(?:(?:#?\{[^{}]+\}|<[^<>]+>|#?\d+)|[\s()[\]{}<>,.:;!?/&+="'`~|\\-]|\.{3}|…)+/g;
-
-export const sharedZhCnPassthroughValues = new Set([
-	'Git CodeLens',
-	'Git Supercharged',
-	'GitHub',
-	'GitKraken',
-	'GitKraken AI',
-	'GitKraken AI:',
-	'GitKraken DevEx platform',
-	'GitKraken MCP',
-	"GitKraken's DevEx platform",
-	'GitLens',
-	'GitLens Community',
-	'GitLens Pro',
-	'Jira',
-	'Launchpad',
-	'Live Share',
-	'Visual Studio Live Share',
-]);
-
-export const sharedZhCnProtectedTerms = new Set([
-	...sharedZhCnPassthroughValues,
-	'Blame',
-	'CodeLens',
-	'HEAD',
-	'PR',
-	'Pull Request',
-	'SHA',
-	'URL',
-	'Web',
-]);
-
-export const sharedZhCnGlossaryOverrides = new Map<string, string>([
-	['Actions', '操作'],
-	['All Changed Files', '所有已更改文件'],
-	['All Changes', '所有更改'],
-	['Autolinks', '自动链接'],
-	['Branch', '分支'],
-	['Branches', '分支'],
-	['Browse', '浏览'],
-	['CHANGELOG', '更新日志'],
-	['Changes', '更改'],
-	['Clipboard', '剪贴板'],
-	['Commit', '提交'],
-	['Commit Details', '提交详情'],
-	['Commit Graph', '提交图'],
-	['Commit Message', '提交消息'],
-	['Commit SHA', '提交 SHA'],
-	['Commits', '提交'],
-	['Comparison', '比较'],
-	['Contributors', '贡献者'],
-	['Copy', '复制'],
-	['Current Branch', '当前分支'],
-	['Dates & Times', '日期和时间'],
-	['Directory Compare', '目录比较'],
-	['File', '文件'],
-	['File Annotations', '文件注释'],
-	['File Blame', '文件追责'],
-	['File Changes', '文件变更'],
-	['File Heatmap', '文件热力图'],
-	['File History', '文件历史'],
-	['Files', '文件'],
-	['GitLens docs', 'GitLens 文档'],
-	['Hide', '隐藏'],
-	['Hovers', '悬停提示'],
-	['Inline Blame', '行内追责'],
-	['Inspect', '检查'],
-	['Interactive Rebase Editor', '交互式变基编辑器'],
-	['Keyboard Shortcuts', '键盘快捷键'],
-	['Learn more', '了解更多'],
-	['Line History', '行历史'],
-	['Menus & Toolbars', '菜单和工具栏'],
-	['Message', '消息'],
-	['Modes', '模式'],
-	['More Actions', '更多操作'],
-	['New Window', '新窗口'],
-	['No files changed', '没有文件更改'],
-	['Open', '打开'],
-	['Previous Commit', '上一提交'],
-	['Previous Revision', '上一修订版'],
-	['Release Notes', '发行说明'],
-	['Release notes', '发行说明'],
-	['Remote', '远程'],
-	['Remotes', '远程'],
-	['Repositories', '仓库'],
-	['Repository', '仓库'],
-	['Restore', '还原'],
-	['Revision', '修订版'],
-	['Run command', '运行命令'],
-	['Search & Compare', '搜索和比较'],
-	['Settings', '设置'],
-	['Settings UI', '设置界面'],
-	['Show', '显示'],
-	['Side Bar', '侧边栏'],
-	['Signed', '已签名'],
-	['Sorting', '排序'],
-	['Stash', '贮藏'],
-	['Stash Message', '贮藏消息'],
-	['Stashes', '贮藏'],
-	['Status Bar Blame', '状态栏追责'],
-	['Tag', '标签'],
-	['Tags', '标签'],
-	['Team Actions', '团队操作'],
-	['Terminal Links', '终端链接'],
-	['User Settings', '用户设置'],
-	['Version', '版本'],
-	['Working File', '工作文件'],
-	['Working Tree', '工作区'],
-	['Worktrees', '工作树'],
-]);
+const placeholderOrPunctuationPattern = /(?:(?:#?\{[^{}]+\}|<[^<>]+>|#?\d+)|[\s()[\]{}<>,.:;!?/&+="'`~|\\-]|\.{3}|…)+/g;
 
 const sharedZhCnTemplateRules: readonly ZhCnTemplateRule[] = [
 	createTemplateRule('jump-to-settings', 500, /^Jump to (.+) settings$/, (match, helpers) => {
@@ -181,11 +81,16 @@ const sharedZhCnTemplateRules: readonly ZhCnTemplateRule[] = [
 			return `连接到 ${helpers.translateLooseSegment(match[1])} 以显示引入此提交的 Pull Request（如果有）`;
 		},
 	),
-	createTemplateRule('rebase-source-onto-target', 450, /^Rebase (.+) onto (.+?)(?:([.]{3}|…))?$/, (match, helpers) => {
-		const source = helpers.translateLooseSegment(match[1]);
-		const target = helpers.translateStrictSegment(match[2]);
-		return target == null ? undefined : `将${source}变基到${target}${match[3] ?? ''}`;
-	}),
+	createTemplateRule(
+		'rebase-source-onto-target',
+		450,
+		/^Rebase (.+) onto (.+?)(?:([.]{3}|…))?$/,
+		(match, helpers) => {
+			const source = helpers.translateLooseSegment(match[1]);
+			const target = helpers.translateStrictSegment(match[2]);
+			return target == null ? undefined : `将${source}变基到${target}${match[3] ?? ''}`;
+		},
+	),
 	createTemplateRule('reset-source-to-target', 450, /^Reset (.+) to (.+?)(?:([.]{3}|…))?$/, (match, helpers) => {
 		const source = helpers.translateLooseSegment(match[1]);
 		const target = helpers.translateStrictSegment(match[2]);
@@ -312,12 +217,14 @@ export function applyZhCnProofreaderCatalog<T extends StringCatalog>(
 		if (nextCatalog[key] === english) {
 			const decision = proofreadZhCnValue(english, options);
 			if (decision.reason !== 'unresolved') {
+				// @ts-ignore
 				nextCatalog[key] = decision.localized;
 			}
 		}
 
 		const exception = options?.extraExceptions?.get(english);
 		if (exception != null) {
+			// @ts-ignore
 			nextCatalog[key] = exception;
 		}
 	}

@@ -4,7 +4,7 @@ import commitDisplayLocalizationZhCn from './commitDisplay.nls.zh-cn.json';
 
 type CommitDisplayLocalizationParams = Record<string, boolean | number | string | undefined>;
 
-export type CommitDisplayLocalizationKey = keyof typeof commitDisplayLocalizationEnglish;
+export type CommitDisplayLocalizationKey = keyof typeof commitDisplayLocalizationEnglish & string;
 
 const commitDisplayLocalizationCatalogs = {
 	'zh-cn': commitDisplayLocalizationZhCn,
@@ -16,9 +16,11 @@ let localeOverrideForTesting: string | undefined;
 export function localizeCommitDisplayString(
 	key: CommitDisplayLocalizationKey,
 	params?: CommitDisplayLocalizationParams,
-): string {
-	const english = commitDisplayLocalizationEnglish[key];
-	const localized = getLocalizedCommitDisplayCatalog()[key];
+): string;
+export function localizeCommitDisplayString(key: string, params?: CommitDisplayLocalizationParams): string;
+export function localizeCommitDisplayString(key: string, params?: CommitDisplayLocalizationParams): string {
+	const english = commitDisplayLocalizationEnglish[key as CommitDisplayLocalizationKey] ?? key;
+	const localized = getLocalizedCommitDisplayCatalog()[key as CommitDisplayLocalizationKey];
 
 	return applyCommitDisplayLocalizationParams(localized ?? english, params);
 }

@@ -4,6 +4,21 @@ import {
 	collectAcceptedZhCnProofreaderEqualValues,
 	proofreadZhCnValue,
 } from './zhCnProofreader.mts';
+import {
+	readZhCnAuthorityDictionary,
+	sharedZhCnAuthorityPath,
+	sharedZhCnPassthroughValues,
+	sharedZhCnProtectedTerms,
+} from './zhCnAuthority.mts';
+
+run('shared authority is loaded from JSON and derives shared views', () => {
+	const dictionary = readZhCnAuthorityDictionary(sharedZhCnAuthorityPath);
+
+	assert.equal(dictionary.Blame, 'Blame');
+	assert.equal(dictionary['Learn more'], '了解更多');
+	assert.equal(sharedZhCnPassthroughValues.has('Blame'), true);
+	assert.equal(sharedZhCnProtectedTerms.has('Blame'), true);
+});
 
 run('proofreadZhCnValue keeps shared passthrough values unchanged', () => {
 	assert.deepStrictEqual(proofreadZhCnValue('GitLens'), {
@@ -22,6 +37,10 @@ run('proofreadZhCnValue translates canonical glossary values', () => {
 run('proofreadZhCnValue preserves protected terms with neutral placeholders', () => {
 	assert.deepStrictEqual(proofreadZhCnValue('Pull Request #{id}'), {
 		localized: 'Pull Request #{id}',
+		reason: 'sharedProtectedTerm',
+	});
+	assert.deepStrictEqual(proofreadZhCnValue('Blame ({count})'), {
+		localized: 'Blame ({count})',
 		reason: 'sharedProtectedTerm',
 	});
 });

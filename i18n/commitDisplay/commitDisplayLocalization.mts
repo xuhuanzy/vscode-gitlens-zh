@@ -1,21 +1,32 @@
+import * as fs from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import * as ts from 'typescript';
 import {
+	buildLocaleCatalogFromAuthority,
 	diffStringCatalog,
-	findPendingTranslations,
 	hasCatalogChanges,
 	readStringCatalog,
-	syncLocaleCatalog,
-	type PendingTranslation,
+	type LocaleCoverageEntry,
 	type StringCatalog,
 	type StringCatalogDiff,
+	type TranslationAuthorityCatalog,
 } from '../shared/catalog.mts';
+import { readJsonFileIfExists } from '../shared/files.mts';
+import { proofreadZhCnValue } from '../shared/zhCnProofreader.mts';
 
 export type CommitDisplayCatalog = StringCatalog;
 export type CommitDisplayCatalogDiff = StringCatalogDiff;
-export type CommitDisplayPendingTranslation = PendingTranslation;
-
-type CommitDisplayLeafEntries = Record<string, string>;
+export type CommitDisplayTranslationAuthority = TranslationAuthorityCatalog;
+type CommitDisplayTranslationAuthoritySource = Record<string, string | { english?: string; localized: string }>;
+export type CommitDisplayPendingTranslation = {
+	authorityEnglish?: string;
+	chinese?: string;
+	english: string;
+	key: string;
+	previousEnglish?: string;
+	reason: 'added' | 'stale' | 'updated';
+};
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,25 +35,84 @@ export const rootDir = path.resolve(__dirname, '..', '..');
 export const commitDisplayCatalogDir = path.join(rootDir, 'src', 'i18n', 'commitDisplay');
 export const commitDisplayNlsPath = path.join(commitDisplayCatalogDir, 'commitDisplay.nls.json');
 export const commitDisplayNlsZhCnPath = path.join(commitDisplayCatalogDir, 'commitDisplay.nls.zh-cn.json');
+export const commitDisplayTranslationAuthorityPath = path.join(
+	rootDir,
+	'i18n',
+	'authority',
+	'zh-cn',
+	'branch',
+	'commit-display.translations.json',
+);
+
+const commitDisplaySourcePaths = [
+	path.join(rootDir, 'src', 'i18n', 'commitDisplay', 'commitFormatterText.ts'),
+	path.join(rootDir, 'src', 'i18n', 'commitDisplay', 'commitQuickPickText.ts'),
+	path.join(rootDir, 'src', 'quickpicks', 'items', 'commits.ts'),
+	path.join(rootDir, 'src', 'commands', 'quick-wizard', 'steps', 'commits.ts'),
+] as const;
+const commitFormatterSourcePath = path.join(rootDir, 'src', 'git', 'formatters', 'commitFormatter.ts');
+const commitDisplayKeyCallNames = new Set([
+	'getCommitQuickPickActionLabel',
+	'getCommitQuickPickBranchActionLabel',
+	'getCommitQuickPickSeparatorLabel',
+	'localizeCommitDisplayString',
+]);
 
 export function buildCommitDisplayCatalog(): CommitDisplayCatalog {
-	return sortCatalog(
-		mergeCatalogs(
-			createCommitFormatterCatalog(),
-			createCommitQuickPickCatalog(),
-		),
-	);
+	const keys = new Set<string>();
+
+	for (const filePath of commitDisplaySourcePaths) {
+		for (const key of collectCommitDisplayKeys(filePath)) {
+			keys.add(key);
+		}
+	}
+
+	validateCommitFormatterSourceCoverage(keys, collectCommitFormatterLiteralKeys(commitFormatterSourcePath));
+
+	return sortCatalog(Object.fromEntries([...keys].map(key => [key, key])) as CommitDisplayCatalog);
 }
 
 export function readCommitDisplayCatalog(filePath: string): CommitDisplayCatalog {
 	return readStringCatalog<CommitDisplayCatalog>(filePath);
 }
 
-export function syncCommitDisplayZhCnCatalog(
+export function readCommitDisplayTranslationAuthority(filePath: string): CommitDisplayTranslationAuthority {
+	const authorityCatalog = readJsonFileIfExists<CommitDisplayTranslationAuthoritySource>(
+		filePath,
+		() => Object.create(null) as CommitDisplayTranslationAuthoritySource,
+	);
+	return Object.fromEntries(
+		Object.entries(authorityCatalog).map(([key, entry]) => [
+			typeof entry === 'string'
+				? key
+				: entry.english == null || entry.english.length === 0
+					? key
+					: entry.english,
+			typeof entry === 'string'
+				? {
+						english: key,
+						localized: entry,
+					}
+				: {
+						english: entry.english == null || entry.english.length === 0 ? key : entry.english,
+						localized: entry.localized,
+					},
+		]),
+	) as CommitDisplayTranslationAuthority;
+}
+
+export function buildCommitDisplayZhCnCatalog(
 	commitDisplayCatalog: CommitDisplayCatalog,
-	existingZhCn: CommitDisplayCatalog,
-): { diff: CommitDisplayCatalogDiff; catalog: CommitDisplayCatalog } {
-	return syncLocaleCatalog(commitDisplayCatalog, existingZhCn);
+	authorityCatalog: CommitDisplayTranslationAuthority,
+): { catalog: CommitDisplayCatalog; coverage: Record<string, LocaleCoverageEntry> } {
+	return buildLocaleCatalogFromAuthority({
+		authorityCatalog: authorityCatalog,
+		englishCatalog: commitDisplayCatalog,
+		resolveGeneratedLocalized: (english: string) => {
+			const decision = proofreadZhCnValue(english);
+			return decision.reason === 'unresolved' ? undefined : decision.localized;
+		},
+	});
 }
 
 export function hasCommitDisplayCatalogChanges(
@@ -61,182 +131,150 @@ export function diffCommitDisplayCatalog(
 export function findPendingCommitDisplayZhCnTranslations(
 	baseCommitDisplayCatalog: CommitDisplayCatalog,
 	currentCommitDisplayCatalog: CommitDisplayCatalog,
-	currentZhCn: CommitDisplayCatalog,
-	options?: { acceptedEqualValues?: Iterable<string> },
+	coverage: Record<string, LocaleCoverageEntry>,
 ): CommitDisplayPendingTranslation[] {
-	return findPendingTranslations(baseCommitDisplayCatalog, currentCommitDisplayCatalog, currentZhCn, options);
+	const diff = diffStringCatalog(baseCommitDisplayCatalog, currentCommitDisplayCatalog);
+	const pending = new Map<string, CommitDisplayPendingTranslation>();
+
+	for (const key of diff.added) {
+		const entry = coverage[key];
+		if (entry == null || entry.source === 'authority' || entry.source === 'proofreader') continue;
+
+		pending.set(
+			key,
+			createPendingTranslation(
+				key,
+				currentCommitDisplayCatalog[key],
+				entry,
+				entry.source === 'stale' ? 'stale' : 'added',
+			),
+		);
+	}
+
+	for (const key of diff.updated) {
+		const entry = coverage[key];
+		if (entry == null || entry.source === 'authority' || entry.source === 'proofreader') continue;
+
+		pending.set(
+			key,
+			createPendingTranslation(
+				key,
+				currentCommitDisplayCatalog[key],
+				entry,
+				entry.source === 'stale' ? 'stale' : 'updated',
+				{
+					previousEnglish: baseCommitDisplayCatalog[key],
+				},
+			),
+		);
+	}
+
+	for (const [key, entry] of Object.entries(coverage)) {
+		if (entry.source !== 'stale' || pending.has(key)) continue;
+
+		pending.set(
+			key,
+			createPendingTranslation(key, currentCommitDisplayCatalog[key] ?? entry.english, entry, 'stale'),
+		);
+	}
+
+	return [...pending.values()].sort((a, b) => a.key.localeCompare(b.key));
 }
 
-function createCommitFormatterCatalog(): CommitDisplayCatalog {
-	return mergeCatalogs(
-		createEntries('commitFormatter.author', {
-			emailTitle: 'Email {name} ({email})',
-		}),
-		createEntries('commitFormatter.commands', {
-			connectToProviderEllipsis: 'Connect to {provider}…',
-			connectToProviderToEnablePullRequest:
-				'Connect to {provider} to enable the display of the Pull Request (if any) that introduced this commit',
-			copySha: 'Copy SHA',
-			explain: 'Explain',
-			explainChanges: 'Explain Changes',
-			inspectCommitDetails: 'Inspect Commit Details',
-			openBlamePriorToThisChange: 'Open Blame Prior to this Change',
-			openChangesWithPreviousRevision: 'Open Changes with Previous Revision',
-			openCommitOnProvider: 'Open Commit on {provider}',
-			openInCommitGraph: 'Open in Commit Graph',
-			openPullRequestEllipsis: 'Open Pull Request #{id}...',
-			openPullRequestOnProvider: 'Open Pull Request #{id} on {provider}',
-			remote: 'Remote',
-			revealInSideBar: 'Reveal in Side Bar',
-			searchingForPullRequest: 'Searching for a Pull Request (if any) that introduced this commit...',
-			showMoreActions: 'Show More Actions',
-			showTeamActions: 'Show Team Actions',
-		}),
-		createEntries('commitFormatter.link', {
-			stash: 'Stash',
-			stashNumber: 'Stash #{stashNumber}',
-			workingTree: 'Working Tree',
-		}),
-		createEntries('commitFormatter.message', {
-			mergeChanges: 'Merge changes',
-			stagedChanges: 'Staged changes',
-			uncommittedChanges: 'Uncommitted changes',
-		}),
-		createEntries('commitFormatter.pullRequest.state', {
-			closed: 'closed',
-			merged: 'merged',
-			opened: 'opened',
-		}),
-		createEntries('commitFormatter.signature', {
-			clickToVerifyInCommitDetails: 'Click to verify signature in Commit Details',
-			signed: 'Signed',
-		}),
-	);
-}
-
-function createCommitQuickPickCatalog(): CommitDisplayCatalog {
-	return mergeCatalogs(
-		createCommitQuickPickActionCatalog(),
-		createEntries('commitQuickPick.branch', {
-			current: 'Current Branch',
-		}),
-		createEntries('commitQuickPick.description', {
-			akaCheckout: 'aka checkout',
-			commitMessageCopied: 'Commit Message copied to the clipboard',
-			commitShaCopied: 'Commit SHA copied to the clipboard',
-			stashMessageCopied: 'Stash Message copied to the clipboard',
-			urlCopied: 'URL copied to the clipboard',
-		}),
-		createEntries('commitQuickPick.hint', {
-			clickToSeeAllChangedFiles: 'Click to see all changed files',
-			clickToSeeCommitActions: 'Click to see commit actions',
-			clickToSeeStashActions: 'Click to see stash actions',
-		}),
-		createEntries('commitQuickPick.remoteResource', {
-			branch: 'Branch',
-			branches: 'Branches',
-			commit: 'Commit',
-			comparison: 'Comparison',
-			createPullRequest: 'Create Pull Request',
-			file: 'File',
-			repository: 'Repository',
-		}),
-		createEntries('commitQuickPick.separator', {
-			actions: 'Actions',
-			browse: 'Browse',
-			compare: 'Compare',
-			copy: 'Copy',
-			files: 'Files',
-			open: 'Open',
-		}),
-		createEntries('commitQuickPick.stats', {
-			addition: '{count} addition',
-			additions: '{count} additions',
-			deletion: '{count} deletion',
-			deletions: '{count} deletions',
-			fileAdded: '{count} file added',
-			fileChanged: '{count} file changed',
-			fileDeleted: '{count} file deleted',
-			filesAdded: '{count} files added',
-			filesChanged: '{count} files changed',
-			filesDeleted: '{count} files deleted',
-			lineAdded: '{count} line added',
-			lineDeleted: '{count} line deleted',
-			linesAdded: '{count} lines added',
-			linesDeleted: '{count} lines deleted',
-			noFilesChanged: 'No files changed',
-		}),
-	);
-}
-
-function createCommitQuickPickActionCatalog(): CommitDisplayCatalog {
-	return mergeCatalogs(
-		createEntries('commitQuickPick.action', {
-			applyChanges: 'Apply Changes',
-			copyMessage: 'Copy Message',
-			copySha: 'Copy SHA',
-			explainChanges: 'Explain Changes',
-			openInCommitGraph: 'Open in Commit Graph',
-			openInspectCommitDetails: 'Inspect Commit Details',
-			restore: 'Restore',
-		}),
-		createEntries('commitQuickPick.action', {
-			browseRepositoryFromBeforeHere: 'Browse Repository from Before Here',
-			browseRepositoryFromBeforeHereInNewWindow: 'Browse Repository from Before Here in New Window',
-			browseRepositoryFromHere: 'Browse Repository from Here',
-			browseRepositoryFromHereInNewWindow: 'Browse Repository from Here in New Window',
-		}),
-		createEntries('commitQuickPick.action', {
-			compareWithHead: 'Compare with HEAD',
-			compareWithWorkingTree: 'Compare with Working Tree',
-			openChanges: 'Open Changes',
-			openChangesDifftool: 'Open Changes (difftool)',
-			openChangesWithWorkingFile: 'Open Changes with Working File',
-			openDirectoryCompare: 'Open Directory Compare',
-			openDirectoryCompareWithWorkingTree: 'Open Directory Compare with Working Tree',
-		}),
-		createEntries('commitQuickPick.action', {
-			copyRemoteResourceForProvider: 'Copy Link to {resource} for {provider}{ellipsis}',
-			openRemoteResourceOnProvider: 'Open {resource} on {provider}{ellipsis}',
-		}),
-		createEntries('commitQuickPick.action', {
-			cherryPickCommit: 'Cherry Pick Commit...',
-			createBranchAtCommit: 'Create Branch at Commit...',
-			createTagAtCommit: 'Create Tag at Commit...',
-			pushToCommit: 'Push to Commit...',
-			rebaseBranchOntoCommit: 'Rebase {branch} onto Commit...',
-			resetBranchToCommit: 'Reset {branch} to Commit...',
-			resetBranchToPreviousCommit: 'Reset {branch} to Previous Commit...',
-			revertCommit: 'Revert Commit...',
-			switchToCommit: 'Switch to Commit...',
-		}),
-		createEntries('commitQuickPick.action', {
-			openAllChangedFiles: 'Open All Changed Files',
-			openAllChanges: 'Open All Changes',
-			openAllChangesDifftool: 'Open All Changes (difftool)',
-			openAllChangesWithWorkingTree: 'Open All Changes with Working Tree',
-			openChangedAndCloseUnchangedFiles: 'Open Changed & Close Unchanged Files',
-			openFile: 'Open File',
-			openFileAtRevision: 'Open File at Revision',
-			openFiles: 'Open Files',
-			openFilesAtRevision: 'Open Files at Revision',
-		}),
-		createEntries('commitQuickPick.action', {
-			applyStash: 'Apply Stash...',
-			dropStash: 'Drop Stash...',
-			renameStash: 'Rename Stash...',
-		}),
-	);
-}
-
-function createEntries(prefix: string, entries: CommitDisplayLeafEntries): CommitDisplayCatalog {
-	return Object.fromEntries(Object.entries(entries).map(([key, value]) => [`${prefix}.${key}`, value]));
-}
-
-function mergeCatalogs(...catalogs: CommitDisplayCatalog[]): CommitDisplayCatalog {
-	return Object.assign(Object.create(null) as CommitDisplayCatalog, ...catalogs);
+function createPendingTranslation(
+	key: string,
+	english: string,
+	entry: LocaleCoverageEntry,
+	reason: CommitDisplayPendingTranslation['reason'],
+	options?: { previousEnglish?: string },
+): CommitDisplayPendingTranslation {
+	return {
+		...(entry.authorityEnglish == null ? {} : { authorityEnglish: entry.authorityEnglish }),
+		...(entry.authorityLocalized == null ? {} : { chinese: entry.authorityLocalized }),
+		english: english,
+		key: key,
+		...(options?.previousEnglish == null ? {} : { previousEnglish: options.previousEnglish }),
+		reason: reason,
+	};
 }
 
 function sortCatalog(catalog: CommitDisplayCatalog): CommitDisplayCatalog {
 	return Object.fromEntries(Object.entries(catalog).sort(([a], [b]) => a.localeCompare(b))) as CommitDisplayCatalog;
+}
+
+function collectCommitDisplayKeys(filePath: string): string[] {
+	const sourceText = fs.readFileSync(filePath, 'utf8');
+	const sourceFile = ts.createSourceFile(filePath, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+	const keys = new Set<string>();
+
+	const visit = (node: ts.Node): void => {
+		if (ts.isCallExpression(node)) {
+			const callName = getCallExpressionName(node.expression);
+			if (callName != null && commitDisplayKeyCallNames.has(callName)) {
+				const [firstArgument] = node.arguments;
+				if (firstArgument != null) {
+					for (const key of collectStringLiteralValues(firstArgument)) {
+						keys.add(key);
+					}
+				}
+			}
+		}
+
+		ts.forEachChild(node, visit);
+	};
+
+	visit(sourceFile);
+
+	return [...keys];
+}
+
+function getCallExpressionName(expression: ts.LeftHandSideExpression): string | undefined {
+	return ts.isIdentifier(expression) ? expression.text : undefined;
+}
+
+function collectCommitFormatterLiteralKeys(filePath: string): string[] {
+	const sourceText = fs.readFileSync(filePath, 'utf8');
+	const keys = new Set<string>();
+
+	for (const match of sourceText.matchAll(/\)\}\s+"([^"$\r\n]+)"\)/g)) {
+		keys.add(match[1]);
+	}
+
+	for (const match of sourceText.matchAll(/\$\(sparkle\)\s+([^\]\r\n$]+)(?=\])/g)) {
+		keys.add(match[1]);
+	}
+
+	return [...keys];
+}
+
+function collectStringLiteralValues(node: ts.Node): string[] {
+	if (ts.isStringLiteralLike(node)) {
+		return [node.text];
+	}
+
+	if (ts.isParenthesizedExpression(node)) {
+		return collectStringLiteralValues(node.expression);
+	}
+
+	if (ts.isConditionalExpression(node)) {
+		return [...collectStringLiteralValues(node.whenTrue), ...collectStringLiteralValues(node.whenFalse)];
+	}
+
+	return [];
+}
+
+function validateCommitFormatterSourceCoverage(
+	catalogKeys: ReadonlySet<string>,
+	requiredKeys: readonly string[],
+): void {
+	const missingKeys = requiredKeys.filter(key => !catalogKeys.has(key));
+	if (missingKeys.length === 0) return;
+
+	throw new Error(
+		[
+			'commit-display catalog 缺少来自 src/git/formatters/commitFormatter.ts 的英文模板覆盖。',
+			'请同步更新对应的 runtime helper 或本地化调用：',
+			...missingKeys.map(key => `- ${key}`),
+		].join('\n'),
+	);
 }

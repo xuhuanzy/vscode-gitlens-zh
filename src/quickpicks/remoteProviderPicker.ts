@@ -28,7 +28,7 @@ import {
 	getCommitQuickPickCopyRemoteResourceLabel,
 	getCommitQuickPickOpenRemoteResourceLabel,
 	getCommitQuickPickUrlCopiedNotification,
-} from './items/commitQuickPickText.js';
+} from '../i18n/commitDisplay/commitQuickPickText.js';
 import { CommandQuickPickItem, createQuickPickItemOfT } from './items/common.js';
 import { createDirectiveQuickPickItem, Directive } from './items/directive.js';
 

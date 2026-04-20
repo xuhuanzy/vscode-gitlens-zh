@@ -1,10 +1,11 @@
 import * as path from 'path';
 import {
 	buildCommitDisplayCatalog,
-	commitDisplayNlsZhCnPath,
+	buildCommitDisplayZhCnCatalog,
+	commitDisplayTranslationAuthorityPath,
 	diffCommitDisplayCatalog,
 	findPendingCommitDisplayZhCnTranslations,
-	readCommitDisplayCatalog,
+	readCommitDisplayTranslationAuthority,
 	rootDir,
 	type CommitDisplayCatalog,
 	type CommitDisplayPendingTranslation,
@@ -15,17 +16,18 @@ import {
 	readCatalogFromGit,
 	writePendingReport,
 } from '../shared/report.mts';
-import { applyZhCnProofreader, collectAcceptedZhCnEqualValuesWithProofreader } from '../shared/zhCnPolicy.mts';
 
 type PendingTranslationsReport = {
 	baseRef: string;
 	pending: CommitDisplayPendingTranslation[];
 	summary: {
 		added: number;
-		alreadyCovered: number;
+		authorityCovered: number;
 		pending: number;
 		pendingAdded: number;
+		pendingStale: number;
 		pendingUpdated: number;
+		proofreaderCovered: number;
 		removed: number;
 		updated: number;
 	};
@@ -38,43 +40,32 @@ if (options.helpRequested) {
 	printPendingReportHelp('i18n/commitDisplay/reportPendingCommitDisplayNlsZhCn.mts');
 } else {
 	const currentCommitDisplayCatalog = buildCommitDisplayCatalog();
-	const currentCommitDisplayZhCn = readCommitDisplayCatalog(commitDisplayNlsZhCnPath);
-	const proofreadCurrentCommitDisplayZhCn = applyZhCnProofreader(currentCommitDisplayZhCn, currentCommitDisplayCatalog);
+	const authority = readCommitDisplayTranslationAuthority(commitDisplayTranslationAuthorityPath);
+	const { coverage } = buildCommitDisplayZhCnCatalog(currentCommitDisplayCatalog, authority);
 	const baseCommitDisplayCatalog = readCatalogFromGit<CommitDisplayCatalog>(
 		rootDir,
 		options.baseRef,
 		'src/i18n/commitDisplay/commitDisplay.nls.json',
 		() => Object.create(null) as CommitDisplayCatalog,
 	);
-	const baseCommitDisplayZhCn = readCatalogFromGit<CommitDisplayCatalog>(
-		rootDir,
-		options.baseRef,
-		'src/i18n/commitDisplay/commitDisplay.nls.zh-cn.json',
-		() => Object.create(null) as CommitDisplayCatalog,
-	);
-	const acceptedEqualValues = collectAcceptedZhCnEqualValuesWithProofreader({
-		baseCatalog: baseCommitDisplayCatalog.catalog,
-		baseZhCnCatalog: baseCommitDisplayZhCn.catalog,
-		currentCatalog: currentCommitDisplayCatalog,
-	});
 	const diff = diffCommitDisplayCatalog(baseCommitDisplayCatalog.catalog, currentCommitDisplayCatalog);
 	const pending = findPendingCommitDisplayZhCnTranslations(
 		baseCommitDisplayCatalog.catalog,
 		currentCommitDisplayCatalog,
-		proofreadCurrentCommitDisplayZhCn,
-		{
-			acceptedEqualValues: acceptedEqualValues,
-		},
+		coverage,
 	);
+	const coveredSummary = collectChangedCoverageSummary([...diff.added, ...diff.updated], coverage);
 	const report: PendingTranslationsReport = {
 		baseRef: options.baseRef,
 		pending: pending,
 		summary: {
 			added: diff.added.length,
-			alreadyCovered: diff.added.length + diff.updated.length - pending.length,
+			authorityCovered: coveredSummary.authorityCovered,
 			pending: pending.length,
 			pendingAdded: pending.filter(entry => entry.reason === 'added').length,
+			pendingStale: pending.filter(entry => entry.reason === 'stale').length,
 			pendingUpdated: pending.filter(entry => entry.reason === 'updated').length,
+			proofreaderCovered: coveredSummary.proofreaderCovered,
 			removed: diff.removed.length,
 			updated: diff.updated.length,
 		},
@@ -82,7 +73,6 @@ if (options.helpRequested) {
 
 	printReport(report, {
 		baseCommitDisplayCatalogExists: baseCommitDisplayCatalog.exists,
-		baseCommitDisplayZhCnExists: baseCommitDisplayZhCn.exists,
 	});
 
 	if (options.writePath != null) {
@@ -95,28 +85,20 @@ if (options.helpRequested) {
 	}
 }
 
-function printReport(
-	report: PendingTranslationsReport,
-	options: { baseCommitDisplayCatalogExists: boolean; baseCommitDisplayZhCnExists: boolean },
-): void {
+function printReport(report: PendingTranslationsReport, options: { baseCommitDisplayCatalogExists: boolean }): void {
 	console.log(`已将当前 commit display 目录与 git ref '${report.baseRef}' 进行对比。`);
 	console.log(
 		`英文目录变更：新增 ${report.summary.added} 项，更新 ${report.summary.updated} 项，移除 ${report.summary.removed} 项。`,
 	);
 	console.log(
-		`待处理的 zh-cn 翻译：共 ${report.summary.pending} 项（新增 ${report.summary.pendingAdded} 项，更新 ${report.summary.pendingUpdated} 项）。`,
+		`待处理的 zh-cn 翻译：共 ${report.summary.pending} 项（新增缺失 ${report.summary.pendingAdded} 项，更新缺失 ${report.summary.pendingUpdated} 项，authority 过期 ${report.summary.pendingStale} 项）。`,
 	);
-	console.log(`已由现有翻译、proofreader 或允许保留英文的值覆盖：${report.summary.alreadyCovered} 项。`);
+	console.log(`已由 authority 覆盖：${report.summary.authorityCovered} 项。`);
+	console.log(`已由 proofreader 覆盖：${report.summary.proofreaderCovered} 项。`);
 
 	if (!options.baseCommitDisplayCatalogExists) {
 		console.log(
 			`基线 ref '${report.baseRef}' 不包含 'src/i18n/commitDisplay/commitDisplay.nls.json'；将其视为空目录。`,
-		);
-	}
-
-	if (!options.baseCommitDisplayZhCnExists) {
-		console.log(
-			`基线 ref '${report.baseRef}' 不包含 'src/i18n/commitDisplay/commitDisplay.nls.zh-cn.json'；不会继承已接受的英文直通值。`,
 		);
 	}
 
@@ -131,9 +113,15 @@ function printReport(
 	);
 	for (const entry of report.pending.slice(0, maxPendingPreviewEntries)) {
 		console.log(`- [${formatPendingReason(entry.reason)}] ${entry.key}`);
-		console.log(`  英文：${JSON.stringify(entry.english)}`);
+		console.log(`  当前英文：${JSON.stringify(entry.english)}`);
 		if (entry.previousEnglish != null) {
-			console.log(`  旧英文：${JSON.stringify(entry.previousEnglish)}`);
+			console.log(`  基线英文：${JSON.stringify(entry.previousEnglish)}`);
+		}
+		if (entry.authorityEnglish != null) {
+			console.log(`  authority 英文：${JSON.stringify(entry.authorityEnglish)}`);
+		}
+		if (entry.chinese != null) {
+			console.log(`  authority 中文：${JSON.stringify(entry.chinese)}`);
 		}
 	}
 
@@ -144,6 +132,35 @@ function printReport(
 	}
 }
 
+function collectChangedCoverageSummary(
+	changedKeys: Iterable<string>,
+	coverage: Readonly<Record<string, { source: 'authority' | 'missing' | 'proofreader' | 'stale' }>>,
+): { authorityCovered: number; proofreaderCovered: number } {
+	let authorityCovered = 0;
+	let proofreaderCovered = 0;
+
+	for (const key of changedKeys) {
+		const entry = coverage[key];
+		if (entry?.source === 'authority') {
+			authorityCovered++;
+			continue;
+		}
+
+		if (entry?.source === 'proofreader') {
+			proofreaderCovered++;
+		}
+	}
+
+	return { authorityCovered: authorityCovered, proofreaderCovered: proofreaderCovered };
+}
+
 function formatPendingReason(reason: CommitDisplayPendingTranslation['reason']): string {
-	return reason === 'added' ? '新增' : '更新';
+	switch (reason) {
+		case 'added':
+			return '新增缺失';
+		case 'stale':
+			return 'authority 过期';
+		case 'updated':
+			return '更新缺失';
+	}
 }

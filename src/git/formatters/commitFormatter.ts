@@ -67,7 +67,7 @@ import {
 	getCommitFormatterStashLabel,
 	getCommitFormatterWorkingTreeLabel,
 	localizeCommitFormatterCommandMarkdown,
-} from './commitFormatterText.js';
+} from '../../i18n/commitDisplay/commitFormatterText.js';
 
 const quoteRegex = /"/g;
 const newlineRegex = /\r?\n/g;
