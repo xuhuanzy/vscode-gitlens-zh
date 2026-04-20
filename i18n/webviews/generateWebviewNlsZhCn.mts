@@ -8,12 +8,12 @@ import {
 } from './webviewLocalization.mts';
 import { webviewNlsZhCnValueOverrides } from './webviewNlsZhCnOverrides.mts';
 import { writeStableJsonFile } from '../shared/files.mts';
-import { applyZhCnValueOverrides } from '../shared/zhCnPolicy.mts';
+import { applyZhCnProofreader } from '../shared/zhCnPolicy.mts';
 
 const webviewNls = readWebviewNls(webviewNlsPath);
 const existingZhCn = readWebviewNls(webviewNlsZhCnPath);
 const { catalog: syncedZhCn } = syncWebviewNlsZhCn(webviewNls, existingZhCn);
-const nextZhCn = applyZhCnValueOverrides(syncedZhCn, webviewNls, { extraOverrides: webviewNlsZhCnValueOverrides });
+const nextZhCn = applyZhCnProofreader(syncedZhCn, webviewNls, { extraExceptions: webviewNlsZhCnValueOverrides });
 const diff = diffWebviewNlsCatalog(existingZhCn, nextZhCn);
 
 if (!hasWebviewNlsChanges(diff)) {

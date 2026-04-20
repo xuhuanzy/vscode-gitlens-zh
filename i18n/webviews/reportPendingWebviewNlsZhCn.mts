@@ -15,7 +15,8 @@ import {
 	readCatalogFromGit,
 	writePendingReport,
 } from '../shared/report.mts';
-import { collectAcceptedZhCnEqualValues } from '../shared/zhCnPolicy.mts';
+import { applyZhCnProofreader, collectAcceptedZhCnEqualValuesWithProofreader } from '../shared/zhCnPolicy.mts';
+import { webviewNlsZhCnValueOverrides } from './webviewNlsZhCnOverrides.mts';
 
 type PendingTranslationsReport = {
 	baseRef: string;
@@ -46,6 +47,9 @@ if (options.helpRequested) {
 } else {
 	const currentWebviewNls = readWebviewNls(webviewNlsPath);
 	const currentWebviewNlsZhCn = readWebviewNls(webviewNlsZhCnPath);
+	const proofreadCurrentWebviewNlsZhCn = applyZhCnProofreader(currentWebviewNlsZhCn, currentWebviewNls, {
+		extraExceptions: webviewNlsZhCnValueOverrides,
+	});
 	const baseWebviewNls = readCatalogFromGit<WebviewNlsJson>(
 		rootDir,
 		options.baseRef,
@@ -58,7 +62,7 @@ if (options.helpRequested) {
 		'src/i18n/webviews/webviews.nls.zh-cn.json',
 		() => Object.create(null) as WebviewNlsJson,
 	);
-	const acceptedEqualValues = collectAcceptedZhCnEqualValues({
+	const acceptedEqualValues = collectAcceptedZhCnEqualValuesWithProofreader({
 		baseCatalog: baseWebviewNls.catalog,
 		baseZhCnCatalog: baseWebviewNlsZhCn.catalog,
 		currentCatalog: currentWebviewNls,
@@ -69,7 +73,7 @@ if (options.helpRequested) {
 	const pending = findPendingWebviewNlsZhCnTranslations(
 		baseWebviewNls.catalog,
 		currentWebviewNls,
-		currentWebviewNlsZhCn,
+		proofreadCurrentWebviewNlsZhCn,
 		{
 			acceptedEqualValues: acceptedEqualValues,
 		},
@@ -119,7 +123,7 @@ function printReport(
 		`待处理的 zh-cn 翻译：共 ${report.summary.pending} 项（新增 ${report.summary.pendingAdded} 项，更新 ${report.summary.pendingUpdated} 项）。`,
 	);
 	console.log(`按英文去重后待处理值：共 ${report.summary.pendingValues} 项。`);
-	console.log(`已由现有翻译或允许保留英文的值覆盖：${report.summary.alreadyCovered} 项。`);
+	console.log(`已由现有翻译、proofreader 或允许保留英文的值覆盖：${report.summary.alreadyCovered} 项。`);
 
 	if (!options.baseWebviewNlsExists) {
 		console.log(`基线 ref '${report.baseRef}' 不包含 'src/i18n/webviews/webviews.nls.json'；将其视为空目录。`);

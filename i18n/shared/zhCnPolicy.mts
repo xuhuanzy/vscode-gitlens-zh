@@ -1,25 +1,13 @@
 import { collectAcceptedEqualValues, type StringCatalog } from './catalog.mts';
+import {
+	applyZhCnProofreaderCatalog,
+	collectAcceptedZhCnProofreaderEqualValues,
+	sharedZhCnGlossaryOverrides,
+	sharedZhCnPassthroughValues,
+	type ZhCnProofreaderCatalogOptions,
+} from './zhCnProofreader.mts';
 
-export const sharedZhCnPassthroughValues = new Set([
-	'Git CodeLens',
-	'Git Supercharged',
-	'GitHub',
-	'GitKraken',
-	'GitKraken AI',
-	'GitKraken AI:',
-	'GitKraken DevEx platform',
-	'GitKraken MCP',
-	"GitKraken's DevEx platform",
-	'GitLens',
-	'GitLens Community',
-	'GitLens Pro',
-	'Jira',
-	'Launchpad',
-	'Live Share',
-	'Visual Studio Live Share',
-]);
-
-export const sharedZhCnGlossaryOverrides = new Map<string, string>();
+export { sharedZhCnGlossaryOverrides, sharedZhCnPassthroughValues };
 
 export function collectAcceptedZhCnEqualValues<T extends StringCatalog>(options: {
 	baseCatalog: T;
@@ -54,14 +42,26 @@ export function applyZhCnValueOverrides<T extends StringCatalog>(
 	englishCatalog: T,
 	options?: { extraOverrides?: ReadonlyMap<string, string> },
 ): T {
-	const nextCatalog = { ...catalog } as T;
+	return applyZhCnProofreaderCatalog(catalog, englishCatalog, {
+		extraExceptions: options?.extraOverrides,
+	});
+}
 
-	for (const [key, english] of Object.entries(englishCatalog)) {
-		const override = options?.extraOverrides?.get(english) ?? sharedZhCnGlossaryOverrides.get(english);
-		if (override != null) {
-			nextCatalog[key] = override;
-		}
-	}
+export function applyZhCnProofreader<T extends StringCatalog>(
+	catalog: T,
+	englishCatalog: T,
+	options?: ZhCnProofreaderCatalogOptions,
+): T {
+	return applyZhCnProofreaderCatalog(catalog, englishCatalog, options);
+}
 
-	return nextCatalog;
+export function collectAcceptedZhCnEqualValuesWithProofreader<T extends StringCatalog>(options: {
+	baseCatalog: T;
+	baseZhCnCatalog: T;
+	currentCatalog?: T;
+	extraPassthroughValues?: Iterable<string>;
+	extraProtectedTerms?: Iterable<string>;
+	isImplicitPassthroughValue?: (value: string) => boolean;
+}): Set<string> {
+	return collectAcceptedZhCnProofreaderEqualValues(options);
 }

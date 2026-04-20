@@ -8,15 +8,18 @@ import {
 	syncCommitDisplayZhCnCatalog,
 } from './commitDisplayLocalization.mts';
 import { writeStableJsonFile } from '../shared/files.mts';
+import { applyZhCnProofreader } from '../shared/zhCnPolicy.mts';
 
 const commitDisplayCatalog = buildCommitDisplayCatalog();
 const existingCommitDisplayCatalog = readCommitDisplayCatalog(commitDisplayNlsPath);
 const existingZhCn = readCommitDisplayCatalog(commitDisplayNlsZhCnPath);
 const commitDisplayCatalogDiff = diffCommitDisplayCatalog(existingCommitDisplayCatalog, commitDisplayCatalog);
-const { catalog: nextZhCn, diff: commitDisplayZhCnDiff } = syncCommitDisplayZhCnCatalog(
+const { catalog: syncedZhCn } = syncCommitDisplayZhCnCatalog(
 	commitDisplayCatalog,
 	existingZhCn,
 );
+const nextZhCn = applyZhCnProofreader(syncedZhCn, commitDisplayCatalog);
+const commitDisplayZhCnDiff = diffCommitDisplayCatalog(existingZhCn, nextZhCn);
 
 if (writeStableJsonFile(commitDisplayNlsPath, commitDisplayCatalog)) {
 	console.log("已生成 'src/i18n/commitDisplay/commitDisplay.nls.json'。");

@@ -2,15 +2,19 @@ import {
 	buildCommitDisplayCatalog,
 	commitDisplayNlsPath,
 	commitDisplayNlsZhCnPath,
+	diffCommitDisplayCatalog,
 	hasCommitDisplayCatalogChanges,
 	readCommitDisplayCatalog,
 	syncCommitDisplayZhCnCatalog,
 } from './commitDisplayLocalization.mts';
 import { writeStableJsonFile } from '../shared/files.mts';
+import { applyZhCnProofreader } from '../shared/zhCnPolicy.mts';
 
 const commitDisplayCatalog = buildCommitDisplayCatalog();
 const existingZhCn = readCommitDisplayCatalog(commitDisplayNlsZhCnPath);
-const { catalog: nextZhCn, diff } = syncCommitDisplayZhCnCatalog(commitDisplayCatalog, existingZhCn);
+const { catalog: syncedZhCn } = syncCommitDisplayZhCnCatalog(commitDisplayCatalog, existingZhCn);
+const nextZhCn = applyZhCnProofreader(syncedZhCn, commitDisplayCatalog);
+const diff = diffCommitDisplayCatalog(existingZhCn, nextZhCn);
 
 writeStableJsonFile(commitDisplayNlsPath, commitDisplayCatalog);
 

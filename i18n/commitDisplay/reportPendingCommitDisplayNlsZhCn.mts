@@ -15,7 +15,7 @@ import {
 	readCatalogFromGit,
 	writePendingReport,
 } from '../shared/report.mts';
-import { collectAcceptedZhCnEqualValues } from '../shared/zhCnPolicy.mts';
+import { applyZhCnProofreader, collectAcceptedZhCnEqualValuesWithProofreader } from '../shared/zhCnPolicy.mts';
 
 type PendingTranslationsReport = {
 	baseRef: string;
@@ -39,6 +39,7 @@ if (options.helpRequested) {
 } else {
 	const currentCommitDisplayCatalog = buildCommitDisplayCatalog();
 	const currentCommitDisplayZhCn = readCommitDisplayCatalog(commitDisplayNlsZhCnPath);
+	const proofreadCurrentCommitDisplayZhCn = applyZhCnProofreader(currentCommitDisplayZhCn, currentCommitDisplayCatalog);
 	const baseCommitDisplayCatalog = readCatalogFromGit<CommitDisplayCatalog>(
 		rootDir,
 		options.baseRef,
@@ -51,15 +52,16 @@ if (options.helpRequested) {
 		'src/i18n/commitDisplay/commitDisplay.nls.zh-cn.json',
 		() => Object.create(null) as CommitDisplayCatalog,
 	);
-	const acceptedEqualValues = collectAcceptedZhCnEqualValues({
+	const acceptedEqualValues = collectAcceptedZhCnEqualValuesWithProofreader({
 		baseCatalog: baseCommitDisplayCatalog.catalog,
 		baseZhCnCatalog: baseCommitDisplayZhCn.catalog,
+		currentCatalog: currentCommitDisplayCatalog,
 	});
 	const diff = diffCommitDisplayCatalog(baseCommitDisplayCatalog.catalog, currentCommitDisplayCatalog);
 	const pending = findPendingCommitDisplayZhCnTranslations(
 		baseCommitDisplayCatalog.catalog,
 		currentCommitDisplayCatalog,
-		currentCommitDisplayZhCn,
+		proofreadCurrentCommitDisplayZhCn,
 		{
 			acceptedEqualValues: acceptedEqualValues,
 		},
@@ -104,7 +106,7 @@ function printReport(
 	console.log(
 		`待处理的 zh-cn 翻译：共 ${report.summary.pending} 项（新增 ${report.summary.pendingAdded} 项，更新 ${report.summary.pendingUpdated} 项）。`,
 	);
-	console.log(`已由现有翻译覆盖：${report.summary.alreadyCovered} 项。`);
+	console.log(`已由现有翻译、proofreader 或允许保留英文的值覆盖：${report.summary.alreadyCovered} 项。`);
 
 	if (!options.baseCommitDisplayCatalogExists) {
 		console.log(
