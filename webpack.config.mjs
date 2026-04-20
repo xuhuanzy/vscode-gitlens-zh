@@ -1108,12 +1108,18 @@ class GenerateWebviewLocalizationAssetsPlugin {
 			const logger = compiler.getInfrastructureLogger(GenerateWebviewLocalizationAssetsPlugin.name);
 			const { generateManagedWebviewLocalizationArtifacts } =
 				await import('./i18n/webviews/webviewLocalization.mts');
+			const { generateWebviewNlsZhCn } = await import('./i18n/webviews/generateWebviewNlsZhCn.mts');
 			const result = generateManagedWebviewLocalizationArtifacts({
 				rootDir: __dirname,
 				writeEnglishCatalog: true,
 			});
 			if (result.changedFiles.length > 0) {
 				logger.log(`Generated webview localization assets (${result.changedFiles.length} file(s))`);
+			}
+
+			const zhCnResult = generateWebviewNlsZhCn();
+			if (zhCnResult.updated) {
+				logger.log(`Synced webview zh-cn catalog (${zhCnResult.diff.updated.length + zhCnResult.diff.added.length} change(s))`);
 			}
 		};
 
