@@ -1,5 +1,5 @@
 import * as assert from 'assert';
-import { setCommitDisplayLocaleOverrideForTesting } from '../../../system/-webview/commitDisplayLocalization.js';
+import { setCommitDisplayLocaleOverrideForTesting } from '../../../i18n/commitDisplay/commitDisplayLocalization.js';
 import {
 	getAuthorEmailTitle,
 	getCommitFormatterMessageLabel,

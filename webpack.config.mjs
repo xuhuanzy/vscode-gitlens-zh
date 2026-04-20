@@ -1058,7 +1058,7 @@ class GenerateContributionsPlugin extends FileGeneratorPlugin {
 			pluginName: 'contributions',
 			pathsToWatch: [path.join(__dirname, 'contributions.json')],
 			command: {
-				name: "localized package manifest",
+				name: 'localized package manifest',
 				command: pkgMgr,
 				args: ['run', 'generate:contributions'],
 			},
@@ -1072,7 +1072,7 @@ class GenerateCommitDisplayLocalizationAssetsPlugin extends FileGeneratorPlugin 
 			pluginName: 'commitDisplayLocalization',
 			pathsToWatch: [
 				path.join(__dirname, 'i18n', 'commitDisplay', 'commitDisplayLocalization.mts'),
-				path.join(__dirname, 'commitDisplay.nls.zh-cn.json'),
+				path.join(__dirname, 'src', 'i18n', 'commitDisplay', 'commitDisplay.nls.zh-cn.json'),
 			],
 			command: {
 				name: 'commit display localization assets',
@@ -1106,8 +1106,12 @@ class GenerateWebviewLocalizationAssetsPlugin {
 	apply(compiler) {
 		const run = async () => {
 			const logger = compiler.getInfrastructureLogger(GenerateWebviewLocalizationAssetsPlugin.name);
-			const { generateManagedWebviewLocalizationArtifacts } = await import('./i18n/webviews/webviewLocalization.mts');
-			const result = generateManagedWebviewLocalizationArtifacts({ rootDir: __dirname, writeEnglishCatalog: true });
+			const { generateManagedWebviewLocalizationArtifacts } =
+				await import('./i18n/webviews/webviewLocalization.mts');
+			const result = generateManagedWebviewLocalizationArtifacts({
+				rootDir: __dirname,
+				writeEnglishCatalog: true,
+			});
 			if (result.changedFiles.length > 0) {
 				logger.log(`Generated webview localization assets (${result.changedFiles.length} file(s))`);
 			}

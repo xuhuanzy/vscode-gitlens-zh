@@ -14,5 +14,5 @@
 		"tsBuildInfoFile": "tsconfig.node.tsbuildinfo"
 	},
 	"include": ["src/**/*"],
-	"exclude": ["src/webviews/apps/**/*", "src/env/browser/**/*"]
+	"exclude": ["src/webviews/apps/**/*", "src/env/browser/**/*", "src/i18n/webviews/webviewClientLocalization.ts"]
 }

@@ -1,5 +1,5 @@
 import type { PullRequestState } from '@gitlens/git/models/pullRequest.js';
-import { localizeCommitDisplayString } from '../../system/-webview/commitDisplayLocalization.js';
+import { localizeCommitDisplayString } from '../../i18n/commitDisplay/commitDisplayLocalization.js';
 
 const quoteRegex = /"/g;
 const hashRegex = /#/g;
@@ -56,7 +56,7 @@ export function localizeCommitFormatterCommandMarkdown(commands: string): string
 		},
 	);
 	localized = localized.replace(
-		/"Open Pull Request \\\#([^\n"]+?)(?: on ([^\n"]+)|\.\.\.)\n——\n([^\n]*)\n([^,\n]*), ([^"]*)"/g,
+		/"Open Pull Request \\#([^\n"]+?)(?: on ([^\n"]+)|\.\.\.)\n——\n([^\n]*)\n([^,\n]*), ([^"]*)"/g,
 		(_, id: string, provider: string | undefined, title: string, state: string, date: string) => {
 			const openTitle = getCommitFormatterOpenPullRequestTitle(id, provider);
 			return `"${escapeMarkdownLinkTitle(openTitle, { escapeHashes: true })}\n——\n${title}\n${getCommitFormatterPullRequestStateLabel(

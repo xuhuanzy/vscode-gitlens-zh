@@ -8,6 +8,7 @@ import { debounce } from '@gitlens/utils/debounce.js';
 import type { ScopedLogger } from '@gitlens/utils/logger.scoped.js';
 import type { GlWebviewCommands } from '../../../constants.commands.js';
 import type { CustomEditorIds, WebviewIds, WebviewTypes } from '../../../constants.views.js';
+import { getWebviewLocale, localizeRoot } from '../../../i18n/webviews/webviewClientLocalization.js';
 import { createWebviewCommandLink } from '../../../system/webview.js';
 import type {
 	IpcCallParamsType,
@@ -33,7 +34,6 @@ import { webviewContext } from './contexts/webview.js';
 import { DOM } from './dom.js';
 import type { Disposable } from './events.js';
 import { createFocusTracker } from './focus.js';
-import { getWebviewLocale, localizeRoot } from './i18n.js';
 import type { HostIpcApi } from './ipc.js';
 import { getHostIpcApi, HostIpc } from './ipc.js';
 import { telemetryEventName } from './telemetry.js';

@@ -28,6 +28,8 @@
 		"../../constants.*.ts",
 		"../../env/browser/**/*",
 		"../../features.ts",
+		"../../i18n/webviews/webviewClientLocalization.ts",
+		"../../i18n/webviews/webviewRuntimeLocalizationCore.ts",
 		"../../system/**/*.ts",
 		"../../**/webview/**/*"
 	],

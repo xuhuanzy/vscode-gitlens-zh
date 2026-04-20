@@ -29,6 +29,12 @@ import type {
 	WebviewViewTypes,
 } from '../constants.views.js';
 import type { Container } from '../container.js';
+import {
+	getWebviewRuntimeLocalizationPayload,
+	injectWebviewRuntimeLocalization,
+	localizeWebviewHtmlTemplate,
+	shouldLocalizeWebviewHtml,
+} from '../i18n/webviews/webviewHtmlLocalization.js';
 import { getSubscriptionNextPaidPlanId } from '../plus/gk/utils/subscription.utils.js';
 import { executeCommand, executeCoreCommand } from '../system/-webview/command.js';
 import {
@@ -64,12 +70,6 @@ import {
 import { isRpcMessage } from './rpc/constants.js';
 import { EventVisibilityBuffer, SubscriptionTracker } from './rpc/eventVisibilityBuffer.js';
 import { RpcHost } from './rpc/rpcHost.js';
-import {
-	getWebviewRuntimeLocalizationPayload,
-	injectWebviewRuntimeLocalization,
-	localizeWebviewHtmlTemplate,
-	shouldLocalizeWebviewHtml,
-} from './webviewHtmlLocalization.js';
 import type { WebviewCommandCallback, WebviewCommandRegistrar } from './webviewCommandRegistrar.js';
 import type { CustomEditorDescriptor, WebviewPanelDescriptor, WebviewViewDescriptor } from './webviewDescriptors.js';
 import type { WebviewHost, WebviewProvider, WebviewShowingArgs } from './webviewProvider.js';

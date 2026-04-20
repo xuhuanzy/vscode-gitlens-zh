@@ -1,37 +1,27 @@
-import { existsSync, readFileSync } from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import {
+	diffStringCatalog,
+	findPendingTranslations,
+	hasCatalogChanges,
+	readStringCatalog,
+	syncLocaleCatalog,
+	type PendingTranslation,
+	type StringCatalog,
+	type StringCatalogDiff,
+} from '../shared/catalog.mts';
 
-export type CommitDisplayCatalog = Record<string, string>;
-
-export type CommitDisplayCatalogDiff = {
-	added: string[];
-	removed: string[];
-	unchanged: string[];
-	updated: string[];
-};
-
-export type CommitDisplayPendingTranslation = {
-	chinese?: string;
-	english: string;
-	key: string;
-	previousEnglish?: string;
-	reason: 'added' | 'updated';
-};
+export type CommitDisplayCatalog = StringCatalog;
+export type CommitDisplayCatalogDiff = StringCatalogDiff;
+export type CommitDisplayPendingTranslation = PendingTranslation;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export const rootDir = path.resolve(__dirname, '..', '..');
-export const commitDisplayNlsPath = path.join(rootDir, 'commitDisplay.nls.json');
-export const commitDisplayNlsZhCnPath = path.join(rootDir, 'commitDisplay.nls.zh-cn.json');
-export const commitDisplayLocalizationGeneratedAssetPath = path.join(
-	rootDir,
-	'src',
-	'system',
-	'-webview',
-	'commitDisplayLocalization.generated.ts',
-);
+export const commitDisplayCatalogDir = path.join(rootDir, 'src', 'i18n', 'commitDisplay');
+export const commitDisplayNlsPath = path.join(commitDisplayCatalogDir, 'commitDisplay.nls.json');
+export const commitDisplayNlsZhCnPath = path.join(commitDisplayCatalogDir, 'commitDisplay.nls.zh-cn.json');
 
 export const commitDisplayLocalizationEntries = {
 	'commitFormatter.author.emailTitle': 'Email {name} ({email})',
@@ -147,68 +137,31 @@ export const commitDisplayLocalizationEntries = {
 } as const satisfies CommitDisplayCatalog;
 
 export function buildCommitDisplayCatalog(): CommitDisplayCatalog {
-	return Object.fromEntries(
-		Object.entries(commitDisplayLocalizationEntries).sort(([a], [b]) => a.localeCompare(b)),
-	);
+	return Object.fromEntries(Object.entries(commitDisplayLocalizationEntries).sort(([a], [b]) => a.localeCompare(b)));
 }
 
 export function readCommitDisplayCatalog(filePath: string): CommitDisplayCatalog {
-	if (!existsSync(filePath)) {
-		return Object.create(null);
-	}
-
-	return JSON.parse(readFileSync(filePath, 'utf8')) as CommitDisplayCatalog;
+	return readStringCatalog<CommitDisplayCatalog>(filePath);
 }
 
 export function syncCommitDisplayZhCnCatalog(
 	commitDisplayCatalog: CommitDisplayCatalog,
 	existingZhCn: CommitDisplayCatalog,
 ): { diff: CommitDisplayCatalogDiff; catalog: CommitDisplayCatalog } {
-	const catalog = Object.fromEntries(
-		Object.entries(commitDisplayCatalog)
-			.sort(([a], [b]) => a.localeCompare(b))
-			.map(([key, english]) => [key, existingZhCn[key] ?? english]),
-	);
-
-	return { diff: diffCommitDisplayCatalog(existingZhCn, catalog), catalog: catalog };
+	return syncLocaleCatalog(commitDisplayCatalog, existingZhCn);
 }
 
 export function hasCommitDisplayCatalogChanges(
 	diff: Pick<CommitDisplayCatalogDiff, 'added' | 'removed' | 'updated'>,
 ): boolean {
-	return diff.added.length > 0 || diff.updated.length > 0 || diff.removed.length > 0;
+	return hasCatalogChanges(diff);
 }
 
 export function diffCommitDisplayCatalog(
 	previous: CommitDisplayCatalog,
 	next: CommitDisplayCatalog,
 ): CommitDisplayCatalogDiff {
-	const added: string[] = [];
-	const removed: string[] = [];
-	const unchanged: string[] = [];
-	const updated: string[] = [];
-
-	for (const key of Object.keys(next).sort((a, b) => a.localeCompare(b))) {
-		if (!(key in previous)) {
-			added.push(key);
-			continue;
-		}
-
-		if (previous[key] === next[key]) {
-			unchanged.push(key);
-			continue;
-		}
-
-		updated.push(key);
-	}
-
-	for (const key of Object.keys(previous).sort((a, b) => a.localeCompare(b))) {
-		if (!(key in next)) {
-			removed.push(key);
-		}
-	}
-
-	return { added: added, removed: removed, unchanged: unchanged, updated: updated };
+	return diffStringCatalog(previous, next);
 }
 
 export function findPendingCommitDisplayZhCnTranslations(
@@ -217,78 +170,5 @@ export function findPendingCommitDisplayZhCnTranslations(
 	currentZhCn: CommitDisplayCatalog,
 	options?: { acceptedEqualValues?: Iterable<string> },
 ): CommitDisplayPendingTranslation[] {
-	const acceptedEqualValues = new Set(options?.acceptedEqualValues ?? []);
-	const diff = diffCommitDisplayCatalog(baseCommitDisplayCatalog, currentCommitDisplayCatalog);
-	const pending: CommitDisplayPendingTranslation[] = [];
-
-	for (const key of diff.added) {
-		const english = currentCommitDisplayCatalog[key];
-		const chinese = currentZhCn[key];
-		if (!isPendingCommitDisplayZhCnTranslation(english, chinese, acceptedEqualValues)) continue;
-
-		pending.push({
-			chinese: chinese,
-			english: english,
-			key: key,
-			reason: 'added',
-		});
-	}
-
-	for (const key of diff.updated) {
-		const english = currentCommitDisplayCatalog[key];
-		const chinese = currentZhCn[key];
-		if (!isPendingCommitDisplayZhCnTranslation(english, chinese, acceptedEqualValues)) continue;
-
-		pending.push({
-			chinese: chinese,
-			english: english,
-			key: key,
-			previousEnglish: baseCommitDisplayCatalog[key],
-			reason: 'updated',
-		});
-	}
-
-	return pending.sort((a, b) => a.key.localeCompare(b.key));
-}
-
-export function generateCommitDisplayLocalizationRuntimeAsset(
-	englishCatalog: CommitDisplayCatalog,
-	localizedCatalogs: Record<string, CommitDisplayCatalog>,
-): string {
-	const runtimeCatalogs = Object.fromEntries(
-		Object.entries(localizedCatalogs)
-			.sort(([a], [b]) => a.localeCompare(b))
-			.map(([locale, catalog]) => [
-				locale,
-				Object.fromEntries(
-					Object.entries(englishCatalog)
-						.filter(([key, english]) => {
-							const localized = catalog[key];
-							return localized != null && localized !== english;
-						})
-						.map(([key]) => [key, catalog[key]!]),
-				),
-			]),
-	);
-
-	return `/* eslint-disable */
-// This file is generated by ./i18n/commitDisplay/generateCommitDisplayLocalizationAssets.mts.
-
-export const commitDisplayLocalizationEnglish = ${JSON.stringify(englishCatalog, undefined, '\t')} as const;
-
-export type CommitDisplayLocalizationKey = keyof typeof commitDisplayLocalizationEnglish;
-
-export const commitDisplayLocalizationCatalogs = ${JSON.stringify(runtimeCatalogs, undefined, '\t')} as const;
-`;
-}
-
-function isPendingCommitDisplayZhCnTranslation(
-	english: string,
-	chinese: string | undefined,
-	acceptedEqualValues: ReadonlySet<string>,
-): boolean {
-	if (chinese == null) return true;
-	if (chinese !== english) return false;
-
-	return !acceptedEqualValues.has(english);
+	return findPendingTranslations(baseCommitDisplayCatalog, currentCommitDisplayCatalog, currentZhCn, options);
 }

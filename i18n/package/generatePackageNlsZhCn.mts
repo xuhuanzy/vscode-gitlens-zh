@@ -1,4 +1,3 @@
-import { writeFileSync } from 'fs';
 import {
 	ensurePackageNlsExists,
 	hasPackageNlsChanges,
@@ -7,6 +6,7 @@ import {
 	readPackageNls,
 	syncPackageNlsZhCn,
 } from './packageLocalization.mts';
+import { writeStableJsonFile } from '../shared/files.mts';
 
 ensurePackageNlsExists();
 
@@ -17,7 +17,7 @@ const { catalog: nextZhCn, diff } = syncPackageNlsZhCn(packageNls, existingZhCn)
 if (!hasPackageNlsChanges(diff)) {
 	console.log("已跳过 'package.nls.zh-cn.json'；内容已同步。");
 } else {
-	writeFileSync(packageNlsZhCnPath, `${JSON.stringify(nextZhCn, undefined, '\t')}\n`, 'utf8');
+	writeStableJsonFile(packageNlsZhCnPath, nextZhCn);
 	console.log("已同步 'package.nls.zh-cn.json'。");
 }
 

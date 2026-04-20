@@ -1,11 +1,15 @@
 import { env } from 'vscode';
-import {
-	commitDisplayLocalizationCatalogs,
-	commitDisplayLocalizationEnglish,
-	type CommitDisplayLocalizationKey,
-} from './commitDisplayLocalization.generated.js';
+import commitDisplayLocalizationEnglish from './commitDisplay.nls.json';
+import commitDisplayLocalizationZhCn from './commitDisplay.nls.zh-cn.json';
 
 type CommitDisplayLocalizationParams = Record<string, boolean | number | string | undefined>;
+
+export type CommitDisplayLocalizationKey = keyof typeof commitDisplayLocalizationEnglish;
+
+const commitDisplayLocalizationCatalogs = {
+	'zh-cn': commitDisplayLocalizationZhCn,
+} as const satisfies Partial<Record<string, Partial<Record<CommitDisplayLocalizationKey, string>>>>;
+const emptyCommitDisplayLocalizationCatalog: Partial<Record<CommitDisplayLocalizationKey, string>> = {};
 
 let localeOverrideForTesting: string | undefined;
 
@@ -25,11 +29,11 @@ export function setCommitDisplayLocaleOverrideForTesting(locale?: string): void 
 
 function getLocalizedCommitDisplayCatalog(): Partial<Record<CommitDisplayLocalizationKey, string>> {
 	const locale = normalizeCommitDisplayLocale(localeOverrideForTesting ?? env.language);
-	if (locale === 'en') return Object.create(null);
+	if (locale === 'en') return emptyCommitDisplayLocalizationCatalog;
 
 	return (
 		commitDisplayLocalizationCatalogs[locale as keyof typeof commitDisplayLocalizationCatalogs] ??
-		Object.create(null)
+		emptyCommitDisplayLocalizationCatalog
 	);
 }
 

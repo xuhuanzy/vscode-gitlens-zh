@@ -1,5 +1,8 @@
 import * as assert from 'assert';
-import { buildRuntimeTranslationMap, translatePreservingWhitespace } from '../webviewRuntimeLocalizationCore.js';
+import {
+	buildRuntimeTranslationMap,
+	translatePreservingWhitespace,
+} from '../../i18n/webviews/webviewRuntimeLocalizationCore.js';
 
 suite('webview runtime localization', () => {
 	test('should translate while preserving surrounding whitespace', () => {

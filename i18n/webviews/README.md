@@ -13,8 +13,10 @@
 
 ## 产物
 
-- `[webviews.nls.json](/D:/Workspace/learn/js/vscode-gitlens/webviews.nls.json)`
-- `[webviews.nls.zh-cn.json](/D:/Workspace/learn/js/vscode-gitlens/webviews.nls.zh-cn.json)`
+- `[webviews.nls.json](/D:/Workspace/learn/js/vscode-gitlens/src/i18n/webviews/webviews.nls.json)`
+- `[webviews.nls.zh-cn.json](/D:/Workspace/learn/js/vscode-gitlens/src/i18n/webviews/webviews.nls.zh-cn.json)`
+- `[webviewHtmlLocalization.ts](/D:/Workspace/learn/js/vscode-gitlens/src/i18n/webviews/webviewHtmlLocalization.ts)`
+- `[webviewClientLocalization.ts](/D:/Workspace/learn/js/vscode-gitlens/src/i18n/webviews/webviewClientLocalization.ts)`
 - `[settings.i18n.html](/D:/Workspace/learn/js/vscode-gitlens/dist/webviews/settings.i18n.html)`
 - `[settings.i18n.json](/D:/Workspace/learn/js/vscode-gitlens/dist/webviews/settings.i18n.json)`
 
@@ -23,6 +25,7 @@
 - `settings.html` 仍然是 webpack 生成的原始产物
 - `settings.i18n.html` 是“已插入 i18n 占位符、但尚未替换运行时 token”的模板
 - `settings.i18n.json` 保存 source/template identity，供 host 校验与缓存使用
+- `webviewHtmlLocalization.ts` / `webviewClientLocalization.ts` 是集中在 `src/i18n/webviews` 下的 runtime helper
 - `runtime.*` catalog key 来自 `src/webviews/apps` 的保守运行时 UI 文案抽取
 
 ## 常用命令
@@ -59,8 +62,10 @@ pnpm run report:webview-nls:zh-cn:pending -- --base HEAD
 
 ## 运行时行为
 
-- host 使用当前 `env.language` 选择 `webviews.nls.<locale>.json`
-- 若 locale catalog 不存在，则回退到 `webviews.nls.json`
+- host runtime helper 位于 `src/i18n/webviews/webviewHtmlLocalization.ts`
+- client runtime helper 位于 `src/i18n/webviews/webviewClientLocalization.ts`
+- host 使用当前 `env.language` 选择 `src/i18n/webviews/webviews.nls.<locale>.json`
+- 若 locale catalog 不存在，则回退到 `src/i18n/webviews/webviews.nls.json`
 - 静态 HTML 路径的缓存单位是“token 替换前的已本地化模板”
 - 静态 HTML 缓存 key 包含：
   - webview file

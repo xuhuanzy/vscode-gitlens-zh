@@ -1,8 +1,5 @@
-import { execFileSync } from 'child_process';
-import { writeFileSync } from 'fs';
 import * as path from 'path';
 import {
-	collectAcceptedEqualValues,
 	diffWebviewNlsCatalog,
 	findPendingWebviewNlsZhCnTranslations,
 	readWebviewNls,
@@ -12,18 +9,13 @@ import {
 	webviewNlsPath,
 	webviewNlsZhCnPath,
 } from './webviewLocalization.mts';
-
-type CliOptions = {
-	baseRef: string;
-	failOnPending: boolean;
-	helpRequested: boolean;
-	writePath?: string;
-};
-
-type GitWebviewNlsReadResult = {
-	catalog: WebviewNlsJson;
-	exists: boolean;
-};
+import {
+	parsePendingReportArgs,
+	printPendingReportHelp,
+	readCatalogFromGit,
+	writePendingReport,
+} from '../shared/report.mts';
+import { collectAcceptedZhCnEqualValues } from '../shared/zhCnPolicy.mts';
 
 type PendingTranslationsReport = {
 	baseRef: string;
@@ -46,38 +38,33 @@ type PendingTranslationsReport = {
 	};
 };
 
-const acceptedPassthroughValues = new Set([
-	'GitLens',
-	'GitLens Community',
-	'GitLens docs',
-	'GitLens Pro',
-	'Git CodeLens',
-	'Git Supercharged',
-	'GitHub',
-	'GitKraken',
-	'GitKraken AI:',
-	'GitKraken DevEx platform',
-	'GitKraken MCP',
-	"GitKraken's DevEx platform",
-	'Jira',
-	'Launchpad',
-]);
-const options = parseArgs(process.argv.slice(2));
+const extraAcceptedPassthroughValues = new Set(['GitLens docs']);
+const options = parsePendingReportArgs(process.argv.slice(2));
 
-if (!options.helpRequested) {
+if (options.helpRequested) {
+	printPendingReportHelp('i18n/webviews/reportPendingWebviewNlsZhCn.mts');
+} else {
 	const currentWebviewNls = readWebviewNls(webviewNlsPath);
 	const currentWebviewNlsZhCn = readWebviewNls(webviewNlsZhCnPath);
-	const baseWebviewNls = readWebviewNlsFromGit(options.baseRef, 'webviews.nls.json');
-	const baseWebviewNlsZhCn = readWebviewNlsFromGit(options.baseRef, 'webviews.nls.zh-cn.json');
-	const acceptedEqualValues = collectAcceptedEqualValues(baseWebviewNls.catalog, baseWebviewNlsZhCn.catalog);
-	for (const value of acceptedPassthroughValues) {
-		acceptedEqualValues.add(value);
-	}
-	for (const english of Object.values(currentWebviewNls)) {
-		if (isImplicitPassthroughValue(english)) {
-			acceptedEqualValues.add(english);
-		}
-	}
+	const baseWebviewNls = readCatalogFromGit<WebviewNlsJson>(
+		rootDir,
+		options.baseRef,
+		'src/i18n/webviews/webviews.nls.json',
+		() => Object.create(null) as WebviewNlsJson,
+	);
+	const baseWebviewNlsZhCn = readCatalogFromGit<WebviewNlsJson>(
+		rootDir,
+		options.baseRef,
+		'src/i18n/webviews/webviews.nls.zh-cn.json',
+		() => Object.create(null) as WebviewNlsJson,
+	);
+	const acceptedEqualValues = collectAcceptedZhCnEqualValues({
+		baseCatalog: baseWebviewNls.catalog,
+		baseZhCnCatalog: baseWebviewNlsZhCn.catalog,
+		currentCatalog: currentWebviewNls,
+		extraPassthroughValues: extraAcceptedPassthroughValues,
+		isImplicitPassthroughValue: isImplicitPassthroughValue,
+	});
 	const diff = diffWebviewNlsCatalog(baseWebviewNls.catalog, currentWebviewNls);
 	const pending = findPendingWebviewNlsZhCnTranslations(
 		baseWebviewNls.catalog,
@@ -111,118 +98,13 @@ if (!options.helpRequested) {
 	});
 
 	if (options.writePath != null) {
-		const outputPath = path.isAbsolute(options.writePath) ? options.writePath : path.resolve(rootDir, options.writePath);
-		writeFileSync(outputPath, `${JSON.stringify(report, undefined, '\t')}\n`, 'utf8');
+		const outputPath = writePendingReport(rootDir, options.writePath, report);
 		console.log(`已将待翻译报告写入 '${path.relative(rootDir, outputPath)}'。`);
 	}
 
 	if (options.failOnPending && pending.length > 0) {
 		process.exitCode = 1;
 	}
-}
-
-function parseArgs(args: string[]): CliOptions {
-	let baseRef = 'HEAD';
-	let failOnPending = false;
-	let helpRequested = false;
-	let writePath: string | undefined;
-
-	for (let i = 0; i < args.length; i++) {
-		const arg = args[i];
-
-		if (arg === '--') {
-			continue;
-		}
-
-		if (arg === '--base') {
-			baseRef = readOptionValue(args, ++i, '--base');
-			continue;
-		}
-
-		if (arg === '--write') {
-			writePath = readOptionValue(args, ++i, '--write');
-			continue;
-		}
-
-		if (arg === '--fail-on-pending') {
-			failOnPending = true;
-			continue;
-		}
-
-		if (arg === '--help' || arg === '-h') {
-			printHelp();
-			helpRequested = true;
-			break;
-		}
-
-		throw new Error(`未知参数 '${arg}'。可使用 '--help' 查看支持的选项。`);
-	}
-
-	return { baseRef: baseRef, failOnPending: failOnPending, helpRequested: helpRequested, writePath: writePath };
-}
-
-function readOptionValue(args: string[], index: number, optionName: string): string {
-	const value = args[index];
-	if (value == null || value.startsWith('--')) {
-		throw new Error(`缺少选项 '${optionName}' 的值。`);
-	}
-
-	return value;
-}
-
-function printHelp(): void {
-	console.log(`用法：node ./i18n/webviews/reportPendingWebviewNlsZhCn.mts [options]
-
-选项：
-  --base <ref>          与指定 git ref 对比（默认：HEAD）
-  --write <path>        将稳定 JSON 报告写入指定路径
-  --fail-on-pending     发现待翻译项时以退出码 1 结束
-  --help, -h            显示此帮助信息
-`);
-}
-
-function readWebviewNlsFromGit(ref: string, relativePath: string): GitWebviewNlsReadResult {
-	try {
-		const contents = execFileSync('git', ['show', `${ref}:${toGitPath(relativePath)}`], {
-			cwd: rootDir,
-			encoding: 'utf8',
-			stdio: ['ignore', 'pipe', 'pipe'],
-		});
-
-		return { catalog: JSON.parse(contents) as WebviewNlsJson, exists: true };
-	} catch (ex) {
-		const message = getGitErrorMessage(ex);
-		if (isMissingPathAtGitRef(message)) {
-			return { catalog: Object.create(null) as WebviewNlsJson, exists: false };
-		}
-
-		throw new Error(`无法从 git ref '${ref}' 读取 '${relativePath}'：${message}`);
-	}
-}
-
-function toGitPath(filePath: string): string {
-	return filePath.replaceAll(path.sep, '/');
-}
-
-function getGitErrorMessage(ex: unknown): string {
-	if (typeof ex !== 'object' || ex == null) return String(ex);
-
-	const stderr = 'stderr' in ex ? (ex as { stderr?: Buffer | string }).stderr : undefined;
-	if (stderr != null) {
-		const message = stderr.toString().trim();
-		if (message.length > 0) return message;
-	}
-
-	return ex instanceof Error ? ex.message : String(ex);
-}
-
-function isMissingPathAtGitRef(message: string): boolean {
-	return (
-		message.includes('exists on disk, but not in') ||
-		message.includes('does not exist in') ||
-		message.includes('pathspec') ||
-		message.includes('Path ')
-	);
 }
 
 function printReport(
@@ -240,11 +122,13 @@ function printReport(
 	console.log(`已由现有翻译或允许保留英文的值覆盖：${report.summary.alreadyCovered} 项。`);
 
 	if (!options.baseWebviewNlsExists) {
-		console.log(`基线 ref '${report.baseRef}' 不包含 'webviews.nls.json'；将其视为空目录。`);
+		console.log(`基线 ref '${report.baseRef}' 不包含 'src/i18n/webviews/webviews.nls.json'；将其视为空目录。`);
 	}
 
 	if (!options.baseWebviewNlsZhCnExists) {
-		console.log(`基线 ref '${report.baseRef}' 不包含 'webviews.nls.zh-cn.json'；不会继承可直接保留英文的值。`);
+		console.log(
+			`基线 ref '${report.baseRef}' 不包含 'src/i18n/webviews/webviews.nls.zh-cn.json'；不会继承可直接保留英文的值。`,
+		);
 	}
 
 	if (report.pending.length === 0) {
@@ -259,9 +143,7 @@ function printReport(
 	}
 }
 
-function collectPendingValues(
-	pending: WebviewNlsPendingTranslation[],
-): PendingTranslationsReport['pendingValues'] {
+function collectPendingValues(pending: WebviewNlsPendingTranslation[]): PendingTranslationsReport['pendingValues'] {
 	const grouped = new Map<string, PendingTranslationsReport['pendingValues'][number]>();
 
 	for (const entry of pending) {

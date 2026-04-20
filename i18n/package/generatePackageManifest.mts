@@ -299,7 +299,10 @@ function localizeConfigurationCategory(
 			Object.entries(category.properties).map(([settingId, schema]) => [
 				settingId,
 				isRecord(schema)
-					? localizeConfigurationSchema(schema, existingPackageNls, generatedPackageNls, ['settings', settingId])
+					? localizeConfigurationSchema(schema, existingPackageNls, generatedPackageNls, [
+							'settings',
+							settingId,
+						])
 					: schema,
 			]),
 		);
@@ -518,11 +521,7 @@ function getWalkthroughFieldNlsKey(walkthroughId: string, field: 'title' | 'desc
 	return getContributionFieldNlsKey('walkthroughs', [walkthroughId], [field]);
 }
 
-function getWalkthroughStepFieldNlsKey(
-	walkthroughId: string,
-	stepId: string,
-	field: 'title' | 'description',
-): string {
+function getWalkthroughStepFieldNlsKey(walkthroughId: string, stepId: string, field: 'title' | 'description'): string {
 	return getContributionFieldNlsKey('walkthroughs', [walkthroughId, 'steps', stepId], [field]);
 }
 
@@ -595,7 +594,10 @@ function addNlsEntry(packageNls: PackageNlsJson, key: string, value: string): st
 }
 
 function normalizeNlsKeyPart(value: string): string {
-	const normalized = value.replace(/[^A-Za-z0-9]+/g, '.').replace(/\.{2,}/g, '.').replace(/^\.|\.$/g, '');
+	const normalized = value
+		.replace(/[^A-Za-z0-9]+/g, '.')
+		.replace(/\.{2,}/g, '.')
+		.replace(/^\.|\.$/g, '');
 	return normalized || 'unknown';
 }
 

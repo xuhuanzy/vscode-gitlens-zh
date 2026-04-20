@@ -45,6 +45,5 @@
 	"js/ts.tsdk.path": "node_modules/typescript/lib",
 	"search.exclude": {
 		"**/dist": true
-	},
-	"i18n-ally.localesPaths": ["i18n", "src/i18n"]
+	}
 }

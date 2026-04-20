@@ -15,6 +15,14 @@ import { revealStash, showStashInDetailsView } from '../../../git/actions/stash.
 import type { GlRepository } from '../../../git/models/repository.js';
 import { findCommitFile, isCommitPushed } from '../../../git/utils/-webview/commit.utils.js';
 import {
+	getCommitQuickPickActionLabel,
+	getCommitQuickPickBranchActionLabel,
+	getCommitQuickPickCurrentBranchLabel,
+	getCommitQuickPickSeeActionsHint,
+	getCommitQuickPickSeeAllChangedFilesHint,
+	getCommitQuickPickSeparatorLabel,
+} from '../../../quickpicks/items/commitQuickPickText.js';
+import {
 	CommitApplyFileChangesCommandQuickPickItem,
 	CommitBrowseRepositoryFromHereCommandQuickPickItem,
 	CommitCompareWithHEADCommandQuickPickItem,
@@ -40,14 +48,6 @@ import {
 	CommitOpenRevisionsCommandQuickPickItem,
 	CommitRestoreFileChangesCommandQuickPickItem,
 } from '../../../quickpicks/items/commits.js';
-import {
-	getCommitQuickPickActionLabel,
-	getCommitQuickPickBranchActionLabel,
-	getCommitQuickPickCurrentBranchLabel,
-	getCommitQuickPickSeeActionsHint,
-	getCommitQuickPickSeeAllChangedFilesHint,
-	getCommitQuickPickSeparatorLabel,
-} from '../../../quickpicks/items/commitQuickPickText.js';
 import type { QuickPickSeparator } from '../../../quickpicks/items/common.js';
 import { CommandQuickPickItem, createQuickPickSeparator } from '../../../quickpicks/items/common.js';
 import type { DirectiveQuickPickItem } from '../../../quickpicks/items/directive.js';

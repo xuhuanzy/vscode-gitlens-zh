@@ -316,7 +316,6 @@ export class CommitFormatter extends Formatter<GitCommit, CommitFormatOptions> {
 			case 'markdown':
 				return `[${author}](${email ? `mailto:${email} "${escapeMarkdownLinkTitle(title)}"` : `# "${escapeMarkdownLinkTitle(title)}"`})`;
 			case 'html': {
-				name = encodeHtmlWeak(name);
 				email = encodeHtmlWeak(email);
 				const encodedTitle = encodeHtmlWeak(title);
 				return /*html*/ `<a ${
@@ -367,7 +366,6 @@ export class CommitFormatter extends Formatter<GitCommit, CommitFormatOptions> {
 			case 'markdown':
 				return `[${author}](${email ? `mailto:${email} "${escapeMarkdownLinkTitle(title)}"` : `# "${escapeMarkdownLinkTitle(title)}"`})`;
 			case 'html': {
-				name = encodeHtmlWeak(name);
 				email = encodeHtmlWeak(email);
 				const encodedTitle = encodeHtmlWeak(title);
 				return /*html*/ `<a ${

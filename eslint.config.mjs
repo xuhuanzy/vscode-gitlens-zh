@@ -52,6 +52,8 @@ const filePatterns = {
 		'src/constants.*.ts',
 		'src/env/browser/**/*',
 		'src/features.ts',
+		'src/i18n/webviews/webviewClientLocalization.ts',
+		'src/i18n/webviews/webviewRuntimeLocalizationCore.ts',
 		'src/system/**/*.ts',
 		'**/webview/**/*',
 	],

@@ -3,7 +3,7 @@ import {
 	applyWebviewHtmlCatalog,
 	injectWebviewRuntimeLocalization,
 	shouldLocalizeWebviewHtml,
-} from '../webviewHtmlLocalization.js';
+} from '../../i18n/webviews/webviewHtmlLocalization.js';
 
 suite('webview html localization', () => {
 	test('should only localize the settings webview in the first rollout', () => {

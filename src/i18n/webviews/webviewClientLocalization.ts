@@ -3,7 +3,7 @@
 import {
 	normalizeWebviewLocalizationText,
 	translatePreservingWhitespace as translatePreservingWhitespaceCore,
-} from '../../webviewRuntimeLocalizationCore.js';
+} from './webviewRuntimeLocalizationCore.js';
 
 type RuntimeLocalizationPayload = {
 	locale?: string;

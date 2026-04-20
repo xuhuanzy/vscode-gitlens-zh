@@ -1,6 +1,6 @@
 import type { PropertyValues } from 'lit';
 import { LitElement } from 'lit';
-import { localizeRoot } from '../i18n.js';
+import { localizeRoot } from '../../../../i18n/webviews/webviewClientLocalization.js';
 
 export type CustomEventType<T extends keyof GlobalEventHandlersEventMap> =
 	GlobalEventHandlersEventMap[T] extends CustomEvent<infer D>
@@ -58,7 +58,7 @@ export function observe<T extends GlElement>(keys: keyof T | (keyof T)[], option
 
 export abstract class GlElement extends LitElement {
 	override connectedCallback(): void {
-		super.connectedCallback();
+		super.connectedCallback?.();
 
 		// Localize light/shadow DOM output at the component boundary to minimize call-site churn.
 		queueMicrotask(() => {

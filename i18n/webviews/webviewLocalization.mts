@@ -1,26 +1,24 @@
 import { createRequire } from 'module';
 import { createHash } from 'crypto';
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, readdirSync, readFileSync } from 'fs';
 import * as path from 'path';
 import ts from 'typescript';
 import { fileURLToPath } from 'url';
+import {
+	collectAcceptedEqualValues as collectAcceptedEqualValuesCore,
+	diffStringCatalog,
+	findPendingTranslations,
+	hasCatalogChanges,
+	readStringCatalog,
+	syncLocaleCatalog,
+	type PendingTranslation,
+	type StringCatalogDiff,
+} from '../shared/catalog.mts';
+import { writeStableFile, writeStableJsonFile } from '../shared/files.mts';
 
 export type WebviewNlsJson = Record<string, string>;
-
-export type WebviewNlsDiff = {
-	added: string[];
-	removed: string[];
-	unchanged: string[];
-	updated: string[];
-};
-
-export type WebviewNlsPendingTranslation = {
-	chinese?: string;
-	english: string;
-	key: string;
-	previousEnglish?: string;
-	reason: 'added' | 'updated';
-};
+export type WebviewNlsDiff = StringCatalogDiff;
+export type WebviewNlsPendingTranslation = PendingTranslation;
 
 export type WebviewLocalizationMetadata = {
 	sourceIdentity: string;
@@ -118,8 +116,9 @@ const require = createRequire(import.meta.url);
 
 export const rootDir = path.resolve(__dirname, '..', '..');
 export const distWebviewsDir = path.join(rootDir, 'dist', 'webviews');
-export const webviewNlsPath = path.join(rootDir, 'webviews.nls.json');
-export const webviewNlsZhCnPath = path.join(rootDir, 'webviews.nls.zh-cn.json');
+export const webviewCatalogDir = path.join(rootDir, 'src', 'i18n', 'webviews');
+export const webviewNlsPath = path.join(webviewCatalogDir, 'webviews.nls.json');
+export const webviewNlsZhCnPath = path.join(webviewCatalogDir, 'webviews.nls.zh-cn.json');
 
 const managedWebviews: ManagedWebviewDefinition[] = [
 	{
@@ -146,18 +145,17 @@ const runtimeSourceExtensions = new Set(['.ts', '.tsx']);
 const parse5 = loadParse5();
 
 export function readWebviewNls(filePath: string): WebviewNlsJson {
-	if (!existsSync(filePath)) {
-		return Object.create(null);
-	}
-
-	return JSON.parse(readFileSync(filePath, 'utf8')) as WebviewNlsJson;
+	return readStringCatalog<WebviewNlsJson>(filePath);
 }
 
 export function getManagedWebviewLocalizationDefinition(fileName: string): ManagedWebviewDefinition | undefined {
 	return managedWebviews.find(webview => webview.distFileName === fileName);
 }
 
-export function mergeWebviewNls(existingWebviewNls: WebviewNlsJson, generatedWebviewNls: WebviewNlsJson): WebviewNlsJson {
+export function mergeWebviewNls(
+	existingWebviewNls: WebviewNlsJson,
+	generatedWebviewNls: WebviewNlsJson,
+): WebviewNlsJson {
 	const preservedEntries = Object.entries(existingWebviewNls).filter(
 		([key]) => !managedWebviewNlsPrefixes.some(prefix => key.startsWith(prefix)),
 	);
@@ -171,46 +169,15 @@ export function syncWebviewNlsZhCn(
 	webviewNls: WebviewNlsJson,
 	existingZhCn: WebviewNlsJson,
 ): { diff: WebviewNlsDiff; catalog: WebviewNlsJson } {
-	const catalog = Object.fromEntries(
-		Object.entries(webviewNls)
-			.sort(([a], [b]) => a.localeCompare(b))
-			.map(([key, english]) => [key, existingZhCn[key] ?? english]),
-	);
-
-	return { diff: diffWebviewNlsCatalog(existingZhCn, catalog), catalog: catalog };
+	return syncLocaleCatalog(webviewNls, existingZhCn);
 }
 
 export function hasWebviewNlsChanges(diff: Pick<WebviewNlsDiff, 'added' | 'removed' | 'updated'>): boolean {
-	return diff.added.length > 0 || diff.updated.length > 0 || diff.removed.length > 0;
+	return hasCatalogChanges(diff);
 }
 
 export function diffWebviewNlsCatalog(previous: WebviewNlsJson, next: WebviewNlsJson): WebviewNlsDiff {
-	const added: string[] = [];
-	const removed: string[] = [];
-	const unchanged: string[] = [];
-	const updated: string[] = [];
-
-	for (const key of Object.keys(next).sort((a, b) => a.localeCompare(b))) {
-		if (!(key in previous)) {
-			added.push(key);
-			continue;
-		}
-
-		if (previous[key] === next[key]) {
-			unchanged.push(key);
-			continue;
-		}
-
-		updated.push(key);
-	}
-
-	for (const key of Object.keys(previous).sort((a, b) => a.localeCompare(b))) {
-		if (!(key in next)) {
-			removed.push(key);
-		}
-	}
-
-	return { added: added, removed: removed, unchanged: unchanged, updated: updated };
+	return diffStringCatalog(previous, next);
 }
 
 export function findPendingWebviewNlsZhCnTranslations(
@@ -219,49 +186,11 @@ export function findPendingWebviewNlsZhCnTranslations(
 	currentZhCn: WebviewNlsJson,
 	options?: { acceptedEqualValues?: Iterable<string> },
 ): WebviewNlsPendingTranslation[] {
-	const acceptedEqualValues = new Set(options?.acceptedEqualValues ?? []);
-	const diff = diffWebviewNlsCatalog(baseWebviewNls, currentWebviewNls);
-	const pending: WebviewNlsPendingTranslation[] = [];
-
-	for (const key of diff.added) {
-		const english = currentWebviewNls[key];
-		const chinese = currentZhCn[key];
-		if (!isPendingWebviewNlsZhCnTranslation(english, chinese, acceptedEqualValues)) continue;
-
-		pending.push({
-			chinese: chinese,
-			english: english,
-			key: key,
-			reason: 'added',
-		});
-	}
-
-	for (const key of diff.updated) {
-		const english = currentWebviewNls[key];
-		const chinese = currentZhCn[key];
-		if (!isPendingWebviewNlsZhCnTranslation(english, chinese, acceptedEqualValues)) continue;
-
-		pending.push({
-			chinese: chinese,
-			english: english,
-			key: key,
-			previousEnglish: baseWebviewNls[key],
-			reason: 'updated',
-		});
-	}
-
-	return pending.sort((a, b) => a.key.localeCompare(b.key));
+	return findPendingTranslations(baseWebviewNls, currentWebviewNls, currentZhCn, options);
 }
 
 export function collectAcceptedEqualValues(webviewNls: WebviewNlsJson, webviewNlsZhCn: WebviewNlsJson): Set<string> {
-	const accepted = new Set<string>();
-
-	for (const [key, english] of Object.entries(webviewNls)) {
-		if (webviewNlsZhCn[key] !== english) continue;
-		accepted.add(english);
-	}
-
-	return accepted;
+	return collectAcceptedEqualValuesCore(webviewNls, webviewNlsZhCn);
 }
 
 export function generateManagedWebviewLocalizationArtifacts(
@@ -300,19 +229,23 @@ export function generateManagedWebviewLocalizationArtifacts(
 		generatedCatalog[key] = value;
 	}
 
-	const existingCatalog = readWebviewNls(path.join(resolvedRootDir, path.basename(webviewNlsPath)));
+	const existingCatalog = readWebviewNls(resolveCatalogPath(resolvedRootDir, path.basename(webviewNlsPath)));
 	const nextCatalog =
 		generated.length > 0 || Object.keys(runtimeCatalog).length > 0
 			? mergeWebviewNls(existingCatalog, generatedCatalog)
 			: existingCatalog;
 	if (options?.writeEnglishCatalog !== false && (generated.length > 0 || Object.keys(runtimeCatalog).length > 0)) {
-		const outputPath = path.join(resolvedRootDir, path.basename(webviewNlsPath));
+		const outputPath = resolveCatalogPath(resolvedRootDir, path.basename(webviewNlsPath));
 		if (writeStableJsonFile(outputPath, nextCatalog)) {
 			changedFiles.push(outputPath);
 		}
 	}
-
-	return { changedFiles: changedFiles, englishCatalog: nextCatalog, generated: generated, runtimeCatalog: runtimeCatalog };
+	return {
+		changedFiles: changedFiles,
+		englishCatalog: nextCatalog,
+		generated: generated,
+		runtimeCatalog: runtimeCatalog,
+	};
 }
 
 export function generateWebviewLocalizationArtifactsFromHtml(
@@ -329,10 +262,10 @@ export function generateWebviewLocalizationArtifactsFromHtml(
 			return;
 		}
 
-	if (node.tagName != null) {
-		addOptionElementReplacement(node, definition, pendingReplacements);
-		addAttributeReplacements(node, html, definition, pendingReplacements);
-	}
+		if (node.tagName != null) {
+			addOptionElementReplacement(node, definition, pendingReplacements);
+			addAttributeReplacements(node, html, definition, pendingReplacements);
+		}
 
 		if (node.content?.childNodes != null) {
 			for (const child of node.content.childNodes) {
@@ -387,12 +320,23 @@ export function generateRuntimeWebviewLocalizationCatalog(resolvedRootDir: strin
 	return Object.fromEntries(Object.entries(catalog).sort(([a], [b]) => a.localeCompare(b)));
 }
 
-function collectRuntimeStringsFromSourceFile(sourceFile: ts.SourceFile, relativePath: string, catalog: WebviewNlsJson): void {
+function collectRuntimeStringsFromSourceFile(
+	sourceFile: ts.SourceFile,
+	relativePath: string,
+	catalog: WebviewNlsJson,
+): void {
 	const visit = (node: ts.Node): void => {
 		if (ts.isTaggedTemplateExpression(node) && isLitHtmlTag(node.tag)) {
 			collectRuntimeStringsFromHtmlTemplate(node.template, sourceFile, relativePath, catalog);
 		} else if (ts.isJsxText(node)) {
-			addRuntimeCatalogEntryFromNode(node.getText(sourceFile), sourceFile, relativePath, node, catalog, 'jsx-text');
+			addRuntimeCatalogEntryFromNode(
+				node.getText(sourceFile),
+				sourceFile,
+				relativePath,
+				node,
+				catalog,
+				'jsx-text',
+			);
 		} else if (ts.isJsxAttribute(node) && isRuntimeLocalizableJsxAttribute(node.name.text)) {
 			const initializer = node.initializer;
 			if (initializer != null && ts.isStringLiteral(initializer)) {
@@ -687,9 +631,7 @@ function applyHtmlReplacements(html: string, replacements: HtmlReplacement[]): s
 	let updated = html;
 	for (const replacement of ordered) {
 		updated =
-			updated.slice(0, replacement.startOffset) +
-			replacement.replacement +
-			updated.slice(replacement.endOffset);
+			updated.slice(0, replacement.startOffset) + replacement.replacement + updated.slice(replacement.endOffset);
 	}
 	return updated;
 }
@@ -950,28 +892,8 @@ function setCatalogEntry(catalog: WebviewNlsJson, key: string, value: string): v
 	}
 }
 
-function isPendingWebviewNlsZhCnTranslation(
-	english: string,
-	chinese: string | undefined,
-	acceptedEqualValues: ReadonlySet<string>,
-): boolean {
-	if (chinese == null) return true;
-	if (chinese !== english) return false;
-
-	return !acceptedEqualValues.has(english);
-}
-
-function writeStableJsonFile(filePath: string, data: unknown): boolean {
-	return writeStableFile(filePath, `${JSON.stringify(data, undefined, '\t')}\n`);
-}
-
-function writeStableFile(filePath: string, contents: string): boolean {
-	if (existsSync(filePath) && readFileSync(filePath, 'utf8') === contents) {
-		return false;
-	}
-
-	writeFileSync(filePath, contents, 'utf8');
-	return true;
+function resolveCatalogPath(resolvedRootDir: string, fileName: string): string {
+	return path.join(resolvedRootDir, 'src', 'i18n', 'webviews', fileName);
 }
 
 function loadParse5(): {

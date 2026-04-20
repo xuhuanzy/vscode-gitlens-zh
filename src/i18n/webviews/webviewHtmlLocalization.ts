@@ -1,8 +1,10 @@
 import { env, Uri, workspace } from 'vscode';
 import { md5 } from '@gitlens/utils/crypto.js';
 import { PromiseCache } from '@gitlens/utils/promiseCache.js';
-import type { Container } from '../container.js';
+import type { Container } from '../../container.js';
 import { buildRuntimeTranslationMap } from './webviewRuntimeLocalizationCore.js';
+import webviewLocalizationEnglish from './webviews.nls.json';
+import webviewLocalizationZhCn from './webviews.nls.zh-cn.json';
 
 type LocalizedWebviewTemplate = {
 	catalogIdentity: string;
@@ -40,6 +42,10 @@ const managedWebviews = new Map([
 	],
 ]);
 
+const webviewLocalizationCatalogs = {
+	'zh-cn': webviewLocalizationZhCn,
+} as const satisfies Partial<Record<string, Record<string, string>>>;
+
 export function getWebviewHtmlLocale(): string {
 	return normalizeLocale(env.language);
 }
@@ -49,28 +55,23 @@ export function shouldLocalizeWebviewHtml(fileName: string): boolean {
 }
 
 export async function getWebviewRuntimeLocalizationPayload(
-	container: Container,
+	_container: Container,
 ): Promise<RuntimeWebviewLocalizationPayload | undefined> {
 	const locale = getWebviewHtmlLocale();
 	if (isEnglishLocale(locale)) return undefined;
 
-	const [englishCatalog, localizedCatalog] = await Promise.all([
-		readCatalog(container, 'webviews.nls.json'),
-		readCatalog(container, getCatalogFileName(locale)),
-	]);
-
-	if (englishCatalog == null) return undefined;
-
-	const effectiveLocalizedCatalog =
-		localizedCatalog != null && locale !== 'en' ? localizedCatalog : Object.create(null);
+	const englishCatalog = webviewLocalizationEnglish;
+	const effectiveLocalizedCatalog = getLocalizedCatalog(locale) ?? Object.create(null);
 	const englishCatalogIdentity = `md5:${md5(JSON.stringify(englishCatalog))}`;
 	const localizedCatalogIdentity = `md5:${md5(JSON.stringify(effectiveLocalizedCatalog))}`;
 	const cacheKey = [locale, englishCatalogIdentity, localizedCatalogIdentity].join('|');
 
-	return runtimeCatalogCache.getOrCreate(cacheKey, async () => ({
-		locale: locale,
-		translations: buildRuntimeTranslationMap(englishCatalog, effectiveLocalizedCatalog),
-	}));
+	return runtimeCatalogCache.getOrCreate(cacheKey, () =>
+		Promise.resolve({
+			locale: locale,
+			translations: buildRuntimeTranslationMap(englishCatalog, effectiveLocalizedCatalog),
+		}),
+	);
 }
 
 export async function localizeWebviewHtmlTemplate(
@@ -85,7 +86,7 @@ export async function localizeWebviewHtmlTemplate(
 	if (isEnglishLocale(locale)) return html;
 
 	const sourceIdentity = `md5:${md5(html)}`;
-	const catalog = await loadWebviewCatalog(container, locale);
+	const catalog = getLocalizedCatalog(locale) ?? webviewLocalizationEnglish;
 	const catalogIdentity = `md5:${md5(JSON.stringify(catalog))}`;
 	const cacheIdentity = [webviewFileName, locale, sourceIdentity].join('|');
 	const cacheKey = `${cacheIdentity}|${catalogIdentity}`;
@@ -159,26 +160,8 @@ async function refreshLocalizedTemplate(
 	return localized;
 }
 
-async function loadWebviewCatalog(container: Container, locale: string): Promise<Record<string, string>> {
-	const localizedCatalog = await readCatalog(container, getCatalogFileName(locale));
-	if (localizedCatalog != null) {
-		return localizedCatalog;
-	}
-
-	return (await readCatalog(container, 'webviews.nls.json')) ?? Object.create(null);
-}
-
-async function readCatalog(container: Container, fileName: string): Promise<Record<string, string> | undefined> {
-	try {
-		const bytes = await workspace.fs.readFile(Uri.joinPath(container.context.extensionUri, fileName));
-		return JSON.parse(new TextDecoder().decode(bytes)) as Record<string, string>;
-	} catch {
-		return undefined;
-	}
-}
-
-function getCatalogFileName(locale: string): string {
-	return locale === 'zh-cn' ? 'webviews.nls.zh-cn.json' : `webviews.nls.${locale}.json`;
+function getLocalizedCatalog(locale: string): Record<string, string> | undefined {
+	return webviewLocalizationCatalogs[locale as keyof typeof webviewLocalizationCatalogs];
 }
 
 function applyCatalog(templateHtml: string, catalog: Record<string, string>): string {

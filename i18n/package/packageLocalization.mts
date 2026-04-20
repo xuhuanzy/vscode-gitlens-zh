@@ -1,23 +1,20 @@
-import { existsSync, readFileSync } from 'fs';
+import { existsSync } from 'fs';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
+import {
+	diffStringCatalog,
+	findPendingTranslations,
+	hasCatalogChanges,
+	readStringCatalog,
+	syncLocaleCatalog,
+	type PendingTranslation,
+	type StringCatalog,
+	type StringCatalogDiff,
+} from '../shared/catalog.mts';
 
-export type PackageNlsJson = Record<string, string>;
-
-export type PackageNlsDiff = {
-	added: string[];
-	removed: string[];
-	unchanged: string[];
-	updated: string[];
-};
-
-export type PackageNlsPendingTranslation = {
-	chinese?: string;
-	english: string;
-	key: string;
-	previousEnglish?: string;
-	reason: 'added' | 'updated';
-};
+export type PackageNlsJson = StringCatalog;
+export type PackageNlsDiff = StringCatalogDiff;
+export type PackageNlsPendingTranslation = PendingTranslation;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -51,11 +48,7 @@ export function ensurePackageNlsExists(): void {
 }
 
 export function readPackageNls(filePath: string): PackageNlsJson {
-	if (!existsSync(filePath)) {
-		return Object.create(null);
-	}
-
-	return JSON.parse(readFileSync(filePath, 'utf8')) as PackageNlsJson;
+	return readStringCatalog<PackageNlsJson>(filePath);
 }
 
 export function resolveNlsValue(value: string | undefined, packageNls: PackageNlsJson): string | undefined {
@@ -72,7 +65,10 @@ export function resolveNlsValue(value: string | undefined, packageNls: PackageNl
 	return resolved;
 }
 
-export function mergePackageNls(existingPackageNls: PackageNlsJson, generatedPackageNls: PackageNlsJson): PackageNlsJson {
+export function mergePackageNls(
+	existingPackageNls: PackageNlsJson,
+	generatedPackageNls: PackageNlsJson,
+): PackageNlsJson {
 	const preservedEntries = Object.entries(existingPackageNls).filter(
 		([key]) => !managedPackageNlsPrefixes.some(prefix => key.startsWith(prefix)),
 	);
@@ -86,46 +82,15 @@ export function syncPackageNlsZhCn(
 	packageNls: PackageNlsJson,
 	existingZhCn: PackageNlsJson,
 ): { diff: PackageNlsDiff; catalog: PackageNlsJson } {
-	const catalog = Object.fromEntries(
-		Object.entries(packageNls)
-			.sort(([a], [b]) => a.localeCompare(b))
-			.map(([key, english]) => [key, existingZhCn[key] ?? english]),
-	);
-
-	return { diff: diffPackageNlsCatalog(existingZhCn, catalog), catalog: catalog };
+	return syncLocaleCatalog(packageNls, existingZhCn);
 }
 
 export function hasPackageNlsChanges(diff: Pick<PackageNlsDiff, 'added' | 'removed' | 'updated'>): boolean {
-	return diff.added.length > 0 || diff.updated.length > 0 || diff.removed.length > 0;
+	return hasCatalogChanges(diff);
 }
 
 export function diffPackageNlsCatalog(previous: PackageNlsJson, next: PackageNlsJson): PackageNlsDiff {
-	const added: string[] = [];
-	const removed: string[] = [];
-	const unchanged: string[] = [];
-	const updated: string[] = [];
-
-	for (const key of Object.keys(next).sort((a, b) => a.localeCompare(b))) {
-		if (!(key in previous)) {
-			added.push(key);
-			continue;
-		}
-
-		if (previous[key] === next[key]) {
-			unchanged.push(key);
-			continue;
-		}
-
-		updated.push(key);
-	}
-
-	for (const key of Object.keys(previous).sort((a, b) => a.localeCompare(b))) {
-		if (!(key in next)) {
-			removed.push(key);
-		}
-	}
-
-	return { added: added, removed: removed, unchanged: unchanged, updated: updated };
+	return diffStringCatalog(previous, next);
 }
 
 export function findPendingPackageNlsZhCnTranslations(
@@ -134,47 +99,5 @@ export function findPendingPackageNlsZhCnTranslations(
 	currentZhCn: PackageNlsJson,
 	options?: { acceptedEqualValues?: Iterable<string> },
 ): PackageNlsPendingTranslation[] {
-	const acceptedEqualValues = new Set(options?.acceptedEqualValues ?? []);
-	const diff = diffPackageNlsCatalog(basePackageNls, currentPackageNls);
-	const pending: PackageNlsPendingTranslation[] = [];
-
-	for (const key of diff.added) {
-		const english = currentPackageNls[key];
-		const chinese = currentZhCn[key];
-		if (!isPendingPackageNlsZhCnTranslation(english, chinese, acceptedEqualValues)) continue;
-
-		pending.push({
-			chinese: chinese,
-			english: english,
-			key: key,
-			reason: 'added',
-		});
-	}
-
-	for (const key of diff.updated) {
-		const english = currentPackageNls[key];
-		const chinese = currentZhCn[key];
-		if (!isPendingPackageNlsZhCnTranslation(english, chinese, acceptedEqualValues)) continue;
-
-		pending.push({
-			chinese: chinese,
-			english: english,
-			key: key,
-			previousEnglish: basePackageNls[key],
-			reason: 'updated',
-		});
-	}
-
-	return pending.sort((a, b) => a.key.localeCompare(b.key));
-}
-
-function isPendingPackageNlsZhCnTranslation(
-	english: string,
-	chinese: string | undefined,
-	acceptedEqualValues: ReadonlySet<string>,
-): boolean {
-	if (chinese == null) return true;
-	if (chinese !== english) return false;
-
-	return !acceptedEqualValues.has(english);
+	return findPendingTranslations(basePackageNls, currentPackageNls, currentZhCn, options);
 }

@@ -2,6 +2,8 @@
 
 这个目录存放当前分支专用的 package manifest 本地化辅助脚本。
 
+`./i18n/package` 是 tooling；runtime / manifest catalog 例外地仍然保留在仓库根目录，因为 VS Code 要求 `package.nls*.json` 与 `package.json` 同级。
+
 ## 工作流
 
 1. 先同步上游对 `contributions.json` 的修改。
@@ -17,7 +19,7 @@
 
 - `packageLocalization.mts`
   - 提供 `i18n/package` 目录共用的 package 本地化工具。
-  - 负责 package catalog 读写辅助、差异计算、待翻译分析，以及共享路径与基础校验。
+  - 负责 package catalog 路径、基础校验以及 package-specific merge 规则。
 - `pnpm run generate:package-nls:zh-cn`
   - 根据 `package.nls.json` 同步中文目录。
   - 保留已有翻译。
@@ -33,7 +35,8 @@
 ## 说明
 
 - 当前分支中的 `contributions.json` 由上游维护，是输入文件，不能从 `package.json` 重新生成。
-- 在当前分支中，`i18n/package` 是唯一允许写入 package manifest 本地化产物的目录。
+- 在当前分支中，`./i18n/package` 只负责 tooling，实际产物仍是仓库根目录的 `package.nls*.json`。
+- `./i18n/shared` 负责 package / webview / commit-display 共用的 catalog、report 与 zh-CN policy 基础设施。
 - package contributions 与 configuration 元数据使用稳定的 owner-based key，而不是英文原文作为 key。
 - 上游 `./scripts` 下的 contributions 工具链保持独立，便于将当前分支的本地化逻辑隔离在 `scripts/` 之外，并降低 rebase 成本。
 - 当前分支有意禁用了 `extract:contributions`。

@@ -1,4 +1,3 @@
-import { writeFileSync } from 'fs';
 import {
 	diffWebviewNlsCatalog,
 	hasWebviewNlsChanges,
@@ -8,23 +7,20 @@ import {
 	webviewNlsZhCnPath,
 } from './webviewLocalization.mts';
 import { webviewNlsZhCnValueOverrides } from './webviewNlsZhCnOverrides.mts';
+import { writeStableJsonFile } from '../shared/files.mts';
+import { applyZhCnValueOverrides } from '../shared/zhCnPolicy.mts';
 
 const webviewNls = readWebviewNls(webviewNlsPath);
 const existingZhCn = readWebviewNls(webviewNlsZhCnPath);
-const { catalog: nextZhCn } = syncWebviewNlsZhCn(webviewNls, existingZhCn);
-for (const [key, english] of Object.entries(webviewNls)) {
-	const override = webviewNlsZhCnValueOverrides.get(english);
-	if (override != null) {
-		nextZhCn[key] = override;
-	}
-}
+const { catalog: syncedZhCn } = syncWebviewNlsZhCn(webviewNls, existingZhCn);
+const nextZhCn = applyZhCnValueOverrides(syncedZhCn, webviewNls, { extraOverrides: webviewNlsZhCnValueOverrides });
 const diff = diffWebviewNlsCatalog(existingZhCn, nextZhCn);
 
 if (!hasWebviewNlsChanges(diff)) {
-	console.log("已跳过 'webviews.nls.zh-cn.json'；内容已同步。");
+	console.log("已跳过 'src/i18n/webviews/webviews.nls.zh-cn.json'；内容已同步。");
 } else {
-	writeFileSync(webviewNlsZhCnPath, `${JSON.stringify(nextZhCn, undefined, '\t')}\n`, 'utf8');
-	console.log("已同步 'webviews.nls.zh-cn.json'。");
+	writeStableJsonFile(webviewNlsZhCnPath, nextZhCn);
+	console.log("已同步 'src/i18n/webviews/webviews.nls.zh-cn.json'。");
 }
 
 console.log(

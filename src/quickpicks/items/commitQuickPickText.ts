@@ -4,7 +4,7 @@ import type { RemoteResource } from '@gitlens/git/models/remoteResource.js';
 import { RemoteResourceType } from '@gitlens/git/models/remoteResource.js';
 import { getChangedFilesCount } from '@gitlens/git/utils/commit.utils.js';
 import { GlyphChars } from '../../constants.js';
-import { localizeCommitDisplayString } from '../../system/-webview/commitDisplayLocalization.js';
+import { localizeCommitDisplayString } from '../../i18n/commitDisplay/commitDisplayLocalization.js';
 
 export type CommitQuickPickSeparator = 'actions' | 'browse' | 'compare' | 'copy' | 'files' | 'open';
 
@@ -114,17 +114,29 @@ export function getCommitQuickPickCommitStats(
 	const separator = options?.separator ?? ' ';
 	const fileStats: string[] = [];
 	if (typeof changedFiles === 'number') {
-		if (changedFiles) fileStats.push(getCommitQuickPickCountLabel('filesChanged', changedFiles));
+		if (changedFiles) {
+			fileStats.push(getCommitQuickPickCountLabel('filesChanged', changedFiles));
+		}
 	} else {
 		const { added, changed, deleted } = changedFiles;
-		if (added) fileStats.push(getCommitQuickPickCountLabel('filesAdded', added));
-		if (changed) fileStats.push(getCommitQuickPickCountLabel('filesChanged', changed));
-		if (deleted) fileStats.push(getCommitQuickPickCountLabel('filesDeleted', deleted));
+		if (added) {
+			fileStats.push(getCommitQuickPickCountLabel('filesAdded', added));
+		}
+		if (changed) {
+			fileStats.push(getCommitQuickPickCountLabel('filesChanged', changed));
+		}
+		if (deleted) {
+			fileStats.push(getCommitQuickPickCountLabel('filesDeleted', deleted));
+		}
 	}
 
 	const lineStats: string[] = [];
-	if (additions) lineStats.push(getCommitQuickPickCountLabel('additions', additions));
-	if (deletions) lineStats.push(getCommitQuickPickCountLabel('deletions', deletions));
+	if (additions) {
+		lineStats.push(getCommitQuickPickCountLabel('additions', additions));
+	}
+	if (deletions) {
+		lineStats.push(getCommitQuickPickCountLabel('deletions', deletions));
+	}
 
 	return [...fileStats, ...lineStats].join(separator);
 }
@@ -140,8 +152,12 @@ export function getCommitQuickPickFileChangeStats(
 
 	const separator = options?.separator ?? ' ';
 	const lineStats: string[] = [];
-	if (additions) lineStats.push(getCommitQuickPickCountLabel('linesAdded', additions));
-	if (deletions) lineStats.push(getCommitQuickPickCountLabel('linesDeleted', deletions));
+	if (additions) {
+		lineStats.push(getCommitQuickPickCountLabel('linesAdded', additions));
+	}
+	if (deletions) {
+		lineStats.push(getCommitQuickPickCountLabel('linesDeleted', deletions));
+	}
 
 	if (lineStats.length === 0) return '';
 
