@@ -2,14 +2,94 @@
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	"title": "Package Authority Entries",
 	"type": "object",
-	"required": ["$schema", "version", "kind", "locale", "entries"],
+	"additionalProperties": false,
+	"required": ["$schema", "version", "kind", "locale", "updatedAt", "entries"],
 	"properties": {
 		"$schema": { "type": "string" },
-		"version": { "const": 1 },
+		"version": { "const": 2 },
 		"kind": {
 			"enum": ["messages", "terms", "aliases", "scopeOverrides", "anchorOverrides", "keyOverrides"]
 		},
 		"locale": { "const": "zh-cn" },
+		"updatedAt": { "type": "string", "format": "date-time" },
 		"entries": { "type": "array" }
-	}
+	},
+	"allOf": [
+		{
+			"if": { "properties": { "kind": { "const": "messages" } } },
+			"then": {
+				"properties": {
+					"entries": {
+						"items": { "$ref": "./bilingualMessageRecord.schema.json" }
+					}
+				}
+			}
+		},
+		{
+			"if": { "properties": { "kind": { "const": "terms" } } },
+			"then": {
+				"properties": {
+					"entries": {
+						"items": {
+							"type": "object",
+							"additionalProperties": false,
+							"required": ["source", "translation", "updatedAt"],
+							"properties": {
+								"source": { "type": "string" },
+								"translation": { "type": "string" },
+								"updatedAt": { "type": "string", "format": "date-time" },
+								"note": { "type": "string" }
+							}
+						}
+					}
+				}
+			}
+		},
+		{
+			"if": { "properties": { "kind": { "const": "aliases" } } },
+			"then": {
+				"properties": {
+					"entries": {
+						"items": {
+							"type": "object",
+							"additionalProperties": false,
+							"required": ["aliasId", "canonicalId", "updatedAt"],
+							"properties": {
+								"aliasId": { "type": "string" },
+								"canonicalId": { "type": "string" },
+								"updatedAt": { "type": "string", "format": "date-time" },
+								"reason": { "type": "string" }
+							}
+						}
+					}
+				}
+			}
+		},
+		{
+			"if": {
+				"properties": {
+					"kind": {
+						"enum": ["scopeOverrides", "anchorOverrides", "keyOverrides"]
+					}
+				}
+			},
+			"then": {
+				"properties": {
+					"entries": {
+						"items": {
+							"type": "object",
+							"additionalProperties": false,
+							"required": ["id", "translationPattern", "updatedAt"],
+							"properties": {
+								"id": { "type": "string" },
+								"translationPattern": { "$ref": "./messagePattern.schema.json" },
+								"updatedAt": { "type": "string", "format": "date-time" },
+								"note": { "type": "string" }
+							}
+						}
+					}
+				}
+			}
+		}
+	]
 }

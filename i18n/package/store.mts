@@ -159,7 +159,7 @@ export function createEmptyCatalogFile(): ManifestCatalogFile {
 export function createEmptyWorksetFile(): TranslationWorksetFile {
 	return {
 		$schema: '../schemas/translationWorkset.schema.json',
-		version: 1,
+		version: 2,
 		locale: 'zh-cn',
 		domain: 'manifest',
 		generatedAt: new Date(0).toISOString(),
@@ -170,9 +170,10 @@ export function createEmptyWorksetFile(): TranslationWorksetFile {
 export function createEmptyAuthorityFile<TKind extends string>(kind: TKind): AuthorityEntryFile<TKind, never> {
 	return {
 		$schema: '../../schemas/authority.schema.json',
-		version: 1,
+		version: 2,
 		kind: kind,
 		locale: 'zh-cn',
+		updatedAt: new Date(0).toISOString(),
 		entries: [],
 	};
 }

@@ -13,7 +13,7 @@
 
 - 先读取 report, 用其中的 `items[].id` 或 `items[].keys` 定位待处理 workset 条目。
 - 不要期待 report 提供 `sourceText`、`scope`、`occurrences` 之类的冗余上下文; 需要时回到 workset 或 catalog 查询。
-- 再打开 `i18n/worksets` 下对应文件并修改条目的 `candidateTranslation`、`status`、`note` 等字段。
+- 再打开 `i18n/worksets` 下对应文件并修改条目的 `translation`、`status`、`note` 等字段。
 - 完成一轮翻译后, 重新运行报告命令, 观察 counts/coverage 是否收敛。
 
 ## 禁止事项

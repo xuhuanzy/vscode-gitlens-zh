@@ -6,7 +6,7 @@
 	"required": ["$schema", "version", "locale", "domain", "generatedAt", "entries"],
 	"properties": {
 		"$schema": { "type": "string" },
-		"version": { "const": 1 },
+		"version": { "const": 2 },
 		"locale": { "const": "zh-cn" },
 		"domain": { "const": "manifest" },
 		"generatedAt": { "type": "string", "format": "date-time" },
@@ -16,13 +16,31 @@
 		}
 	},
 	"definitions": {
-		"entry": {
+		"translationValue": {
+			"anyOf": [{ "type": "string" }, { "type": "null" }]
+		},
+		"caseRecord": {
 			"type": "object",
 			"additionalProperties": false,
-			"required": ["id", "sourcePattern", "sourceHash", "keys", "status"],
+			"required": ["source", "translation"],
+			"properties": {
+				"source": { "type": "string" },
+				"translation": { "$ref": "#/definitions/translationValue" }
+			}
+		},
+		"baseEntry": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["id", "kind", "source", "translation", "sourceHash", "keys", "status"],
 			"properties": {
 				"id": { "type": "string" },
-				"sourcePattern": { "$ref": "./messagePattern.schema.json" },
+				"kind": { "enum": ["literal", "template", "select", "plural", "rich"] },
+				"source": { "type": "string" },
+				"translation": { "$ref": "#/definitions/translationValue" },
+				"slots": { "type": "array", "items": { "type": "string" } },
+				"selector": { "type": "string" },
+				"cases": { "type": "object", "additionalProperties": { "$ref": "#/definitions/caseRecord" } },
+				"format": { "const": "markdown" },
 				"sourceHash": { "type": "string" },
 				"keys": {
 					"type": "array",
@@ -30,10 +48,57 @@
 					"uniqueItems": true,
 					"items": { "type": "string" }
 				},
-				"candidateTranslation": { "$ref": "./messagePattern.schema.json" },
 				"status": { "enum": ["pending", "translated", "needsReview", "approved"] },
 				"note": { "type": "string" }
 			}
+		},
+		"entry": {
+			"anyOf": [
+				{
+					"allOf": [
+						{ "$ref": "#/definitions/baseEntry" },
+						{
+							"properties": { "kind": { "const": "literal" } }
+						}
+					]
+				},
+				{
+					"allOf": [
+						{ "$ref": "#/definitions/baseEntry" },
+						{
+							"properties": { "kind": { "const": "template" } },
+							"required": ["slots"]
+						}
+					]
+				},
+				{
+					"allOf": [
+						{ "$ref": "#/definitions/baseEntry" },
+						{
+							"properties": { "kind": { "const": "rich" } },
+							"required": ["format", "slots"]
+						}
+					]
+				},
+				{
+					"allOf": [
+						{ "$ref": "#/definitions/baseEntry" },
+						{
+							"properties": { "kind": { "const": "select" } },
+							"required": ["selector", "cases"]
+						}
+					]
+				},
+				{
+					"allOf": [
+						{ "$ref": "#/definitions/baseEntry" },
+						{
+							"properties": { "kind": { "const": "plural" } },
+							"required": ["selector", "cases"]
+						}
+					]
+				}
+			]
 		}
 	}
 }

@@ -4,6 +4,8 @@ export const translationStatuses = ['pending', 'translated', 'needsReview', 'app
 
 export type TranslationStatus = (typeof translationStatuses)[number];
 
+type MessageTranslation = string | null;
+
 export type MessagePattern =
 	| {
 			kind: 'literal';
@@ -31,6 +33,50 @@ export type MessagePattern =
 			text: string;
 			format: 'markdown';
 			slots: string[];
+	  };
+
+export interface MessageCaseRecord<TTranslation extends MessageTranslation = string> {
+	readonly source: string;
+	readonly translation: TTranslation;
+}
+
+export type BilingualMessageRecord<TTranslation extends MessageTranslation = string> =
+	| {
+			readonly id: string;
+			readonly kind: 'literal';
+			readonly source: string;
+			readonly translation: TTranslation;
+	  }
+	| {
+			readonly id: string;
+			readonly kind: 'template';
+			readonly source: string;
+			readonly translation: TTranslation;
+			readonly slots: string[];
+	  }
+	| {
+			readonly id: string;
+			readonly kind: 'select';
+			readonly source: string;
+			readonly translation: TTranslation;
+			readonly selector: string;
+			readonly cases: Record<string, MessageCaseRecord<TTranslation>>;
+	  }
+	| {
+			readonly id: string;
+			readonly kind: 'plural';
+			readonly source: string;
+			readonly translation: TTranslation;
+			readonly selector: string;
+			readonly cases: Record<string, MessageCaseRecord<TTranslation>>;
+	  }
+	| {
+			readonly id: string;
+			readonly kind: 'rich';
+			readonly source: string;
+			readonly translation: TTranslation;
+			readonly format: 'markdown';
+			readonly slots: string[];
 	  };
 
 export type JsonPathSegment = string | number;
@@ -78,14 +124,7 @@ export interface ManifestCatalogFile {
 	};
 }
 
-export interface AuthorityMessageEntry {
-	readonly id: string;
-	readonly patternFingerprint: string;
-	readonly sourcePattern: MessagePattern;
-	readonly translationPattern: MessagePattern;
-	readonly promotedAt: string;
-	readonly updatedAt: string;
-}
+export type AuthorityMessageEntry = BilingualMessageRecord<string>;
 
 export interface AuthorityTermEntry {
 	readonly source: string;
@@ -110,25 +149,25 @@ export interface OverrideEntry {
 
 export interface AuthorityEntryFile<TKind extends string, TEntry> {
 	readonly $schema: string;
-	readonly version: 1;
+	readonly version: 2;
 	readonly kind: TKind;
 	readonly locale: 'zh-cn';
+	readonly updatedAt: string;
 	readonly entries: TEntry[];
 }
 
-export interface TranslationWorksetEntry {
-	readonly id: string;
-	readonly sourcePattern: MessagePattern;
+export type WorksetMessageRecord = BilingualMessageRecord<MessageTranslation>;
+
+export type TranslationWorksetEntry = WorksetMessageRecord & {
 	readonly sourceHash: string;
 	readonly keys: string[];
-	readonly candidateTranslation?: MessagePattern;
 	readonly status: TranslationStatus;
 	readonly note?: string;
-}
+};
 
 export interface TranslationWorksetFile {
 	readonly $schema: string;
-	readonly version: 1;
+	readonly version: 2;
 	readonly locale: 'zh-cn';
 	readonly domain: 'manifest';
 	readonly generatedAt: string;
@@ -206,6 +245,139 @@ export function createLiteralPattern(text: string): MessagePattern {
 	};
 }
 
+export function createMessageRecord(
+	id: string,
+	sourcePattern: MessagePattern,
+	translationPattern?: MessagePattern | null,
+): WorksetMessageRecord {
+	assertCompatibleMessagePatterns(sourcePattern, translationPattern);
+
+	switch (sourcePattern.kind) {
+		case 'literal':
+			return {
+				id: id,
+				kind: sourcePattern.kind,
+				source: sourcePattern.text,
+				translation: translationPattern?.text ?? null,
+			};
+		case 'template':
+			return {
+				id: id,
+				kind: sourcePattern.kind,
+				source: sourcePattern.text,
+				translation: translationPattern?.text ?? null,
+				slots: [...sourcePattern.slots],
+			};
+		case 'rich':
+			return {
+				id: id,
+				kind: sourcePattern.kind,
+				source: sourcePattern.text,
+				translation: translationPattern?.text ?? null,
+				format: sourcePattern.format,
+				slots: [...sourcePattern.slots],
+			};
+		case 'plural':
+		case 'select':
+			return {
+				id: id,
+				kind: sourcePattern.kind,
+				source: sourcePattern.text,
+				translation: translationPattern?.text ?? null,
+				selector: sourcePattern.selector,
+				cases: Object.fromEntries(
+					Object.entries(sourcePattern.cases).map(([key, source]) => [
+						key,
+						{
+							source: source,
+							translation: translationPattern?.cases[key] ?? null,
+						},
+					]),
+				),
+			};
+	}
+}
+
+export function cloneMessageRecord<TRecord extends WorksetMessageRecord>(record: TRecord): TRecord {
+	return JSON.parse(JSON.stringify(record)) as TRecord;
+}
+
+export function hasTranslation(record: WorksetMessageRecord): record is AuthorityMessageEntry {
+	if (record.translation == null) return false;
+
+	if (record.kind !== 'plural' && record.kind !== 'select') {
+		return true;
+	}
+
+	return Object.values(record.cases).every(entry => entry.translation != null);
+}
+
+export function toTranslationPattern(record: WorksetMessageRecord): MessagePattern | undefined {
+	if (!hasTranslation(record)) return undefined;
+
+	switch (record.kind) {
+		case 'literal':
+			return {
+				kind: record.kind,
+				text: record.translation,
+			};
+		case 'template':
+			return {
+				kind: record.kind,
+				text: record.translation,
+				slots: [...record.slots],
+			};
+		case 'rich':
+			return {
+				kind: record.kind,
+				text: record.translation,
+				format: record.format,
+				slots: [...record.slots],
+			};
+		case 'plural':
+		case 'select':
+			return {
+				kind: record.kind,
+				text: record.translation,
+				selector: record.selector,
+				cases: Object.fromEntries(
+					Object.entries(record.cases).map(([key, value]) => [key, value.translation ?? '']),
+				),
+			};
+	}
+}
+
+export function toSourcePattern(record: WorksetMessageRecord): MessagePattern {
+	switch (record.kind) {
+		case 'literal':
+			return {
+				kind: record.kind,
+				text: record.source,
+			};
+		case 'template':
+			return {
+				kind: record.kind,
+				text: record.source,
+				slots: [...record.slots],
+			};
+		case 'rich':
+			return {
+				kind: record.kind,
+				text: record.source,
+				format: record.format,
+				slots: [...record.slots],
+			};
+		case 'plural':
+		case 'select':
+			return {
+				kind: record.kind,
+				text: record.source,
+				selector: record.selector,
+				cases: Object.fromEntries(Object.entries(record.cases).map(([key, value]) => [key, value.source])),
+			};
+	}
+}
+
 export function createPatternFingerprint(pattern: MessagePattern): string {
 	return createContentHash(stableStringify(toCanonicalPattern(pattern)));
 }
@@ -253,8 +425,55 @@ export function clonePattern(pattern: MessagePattern): MessagePattern {
 	return JSON.parse(JSON.stringify(pattern)) as MessagePattern;
 }
 
+export function getTranslationText(record: WorksetMessageRecord): string | null {
+	return record.translation;
+}
+
 function dedupe(values: readonly string[]): string[] {
 	return [...new Set(values)];
+}
+
+function assertCompatibleMessagePatterns(sourcePattern: MessagePattern, translationPattern?: MessagePattern | null): void {
+	if (translationPattern == null) return;
+	if (sourcePattern.kind !== translationPattern.kind) {
+		throw new Error(`Mismatched message kinds: ${sourcePattern.kind} !== ${translationPattern.kind}`);
+	}
+
+	switch (sourcePattern.kind) {
+		case 'literal':
+			return;
+		case 'template':
+			assertStringArraysMatch(sourcePattern.slots, translationPattern.slots, 'template slots');
+			return;
+		case 'rich':
+			if (sourcePattern.format !== translationPattern.format) {
+				throw new Error(`Mismatched rich formats: ${sourcePattern.format} !== ${translationPattern.format}`);
+			}
+			assertStringArraysMatch(sourcePattern.slots, translationPattern.slots, 'rich slots');
+			return;
+		case 'plural':
+		case 'select': {
+			if (sourcePattern.selector !== translationPattern.selector) {
+				throw new Error(`Mismatched ${sourcePattern.kind} selectors`);
+			}
+			assertStringArraysMatch(Object.keys(sourcePattern.cases), Object.keys(translationPattern.cases), `${sourcePattern.kind} cases`);
+			return;
+		}
+	}
+}
+
+function assertStringArraysMatch(left: readonly string[], right: readonly string[], label: string): void {
+	const sortedLeft = [...left].sort();
+	const sortedRight = [...right].sort();
+	if (sortedLeft.length !== sortedRight.length) {
+		throw new Error(`Mismatched ${label}`);
+	}
+
+	for (let index = 0; index < sortedLeft.length; index++) {
+		if (sortedLeft[index] !== sortedRight[index]) {
+			throw new Error(`Mismatched ${label}`);
+		}
+	}
 }
 
 function sortKeys(value: unknown): unknown {

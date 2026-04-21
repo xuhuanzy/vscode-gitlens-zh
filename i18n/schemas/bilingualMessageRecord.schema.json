@@ -1,0 +1,77 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Bilingual Message Record",
+	"type": "object",
+	"definitions": {
+		"caseRecord": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["source", "translation"],
+			"properties": {
+				"source": { "type": "string" },
+				"translation": { "type": "string" }
+			}
+		},
+		"baseEntry": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["id", "kind", "source", "translation"],
+			"properties": {
+				"id": { "type": "string" },
+				"kind": { "enum": ["literal", "template", "select", "plural", "rich"] },
+				"source": { "type": "string" },
+				"translation": { "type": "string" },
+				"slots": { "type": "array", "items": { "type": "string" } },
+				"selector": { "type": "string" },
+				"cases": { "type": "object", "additionalProperties": { "$ref": "#/definitions/caseRecord" } },
+				"format": { "const": "markdown" }
+			}
+		}
+	},
+	"anyOf": [
+		{
+			"allOf": [
+				{ "$ref": "#/definitions/baseEntry" },
+				{
+					"properties": { "kind": { "const": "literal" } }
+				}
+			]
+		},
+		{
+			"allOf": [
+				{ "$ref": "#/definitions/baseEntry" },
+				{
+					"properties": { "kind": { "const": "template" } },
+					"required": ["slots"]
+				}
+			]
+		},
+		{
+			"allOf": [
+				{ "$ref": "#/definitions/baseEntry" },
+				{
+					"properties": { "kind": { "const": "rich" } },
+					"required": ["format", "slots"]
+				}
+			]
+		},
+		{
+			"allOf": [
+				{ "$ref": "#/definitions/baseEntry" },
+				{
+					"properties": { "kind": { "const": "select" } },
+					"required": ["selector", "cases"]
+				}
+			]
+		},
+		{
+			"allOf": [
+				{ "$ref": "#/definitions/baseEntry" },
+				{
+					"properties": { "kind": { "const": "plural" } },
+					"required": ["selector", "cases"]
+				}
+			]
+		}
+	]
+}

@@ -2,8 +2,8 @@ import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 
 import type { PendingReportFile } from '../shared/model.mts';
-import { nowIso } from '../shared/model.mts';
-import { resolveOccurrenceTranslation, promoteApprovedEntries, syncWorkset } from './authority.mts';
+import { nowIso, stableStringify } from '../shared/model.mts';
+import { promoteApprovedEntries, resolveOccurrenceTranslation, syncWorkset } from './authority.mts';
 import { createPackageI18nContext, type PackageI18nContext } from './context.mts';
 import { extractManifestOccurrences } from './extractor.mts';
 import { reconcileCatalog } from './reconcile.mts';
@@ -12,7 +12,6 @@ import {
 	loadAuthorityBundle,
 	loadCatalog,
 	loadEnglishPackageNls,
-	loadLocalizedPackageNls,
 	loadManifest,
 	loadWorkset,
 	saveAuthorityBundle,
@@ -22,7 +21,6 @@ import {
 	saveManifest,
 	savePendingReport,
 	saveWorkset,
-	type AuthorityBundle,
 } from './store.mts';
 
 export interface WorkflowOptions {
@@ -90,7 +88,6 @@ export function generatePackageManifestOutputs(options: WorkflowOptions = {}): {
 	const manifest = loadManifest(context);
 	const catalog = loadCatalog(context);
 	const bundle = loadAuthorityBundle(context);
-	const localizedPackageNls = loadLocalizedPackageNls(context);
 
 	const englishPackageNls: Record<string, string> = {};
 	const nextLocalizedPackageNls: Record<string, string> = {};
@@ -102,11 +99,6 @@ export function generatePackageManifestOutputs(options: WorkflowOptions = {}): {
 		const resolved = resolveOccurrenceTranslation(occurrence, bundle);
 		if (resolved != null) {
 			nextLocalizedPackageNls[occurrence.key] = resolved.pattern.text;
-			continue;
-		}
-
-		if (localizedPackageNls[occurrence.key] != null) {
-			delete localizedPackageNls[occurrence.key];
 		}
 	}
 
@@ -163,7 +155,8 @@ export function createPendingReport(options: WorkflowOptions = {}): PendingRepor
 			catalogOccurrences: catalog.occurrences.length,
 			resolvedOccurrences: resolvedOccurrences,
 			unresolvedOccurrences: catalog.occurrences.length - resolvedOccurrences,
-			readyForGeneration: workset.entries.every(entry => entry.status !== 'pending') &&
+			readyForGeneration:
+				workset.entries.every(entry => entry.status !== 'pending') &&
 				catalog.occurrences.length === resolvedOccurrences,
 		},
 		items: workset.entries.map(entry => ({
@@ -188,12 +181,12 @@ export function createPendingReport(options: WorkflowOptions = {}): PendingRepor
 }
 
 export function writeWorkflowReadme(context: PackageI18nContext): void {
-const content = `# Package Manifest I18n Workflow
+	const content = `# Package Manifest I18n Workflow
 
 当前阶段仅覆盖 \`package.json\` / \`package.nls*\`。
 
 \`i18n/catalog/package.catalog.json\` 保留完整 occurrence、scope 与对账信息。
-\`i18n/worksets/package.zh-cn.json\` 只保留翻译工作状态、候选译文与 key 引用，不重复落盘 occurrence 元数据。
+\`i18n/worksets/package.zh-cn.json\` 只保留翻译工作状态、双语消息记录与 key 引用，不重复落盘 occurrence 元数据。
 \`i18n/reports/package-pending.json\` 是派生的索引/进度视图，只提供 counts、coverage 与 workset 定位信息，不作为编辑入口。
 
 ## 日常流程
@@ -201,7 +194,7 @@ const content = `# Package Manifest I18n Workflow
 1. 运行 \`pnpm run sync:package-nls\`，从 \`package.json\` + \`package.nls.json\` 重建 catalog 与 workset。
 2. 运行 \`pnpm run report:package-nls:zh-cn:pending\`，它会先刷新 catalog/workset，再默认回写 \`i18n/reports/package-pending.json\`。
 3. 如需额外副本，再使用 \`pnpm run report:package-nls:zh-cn:pending -- --write package-pending.snapshot.json\`。
-4. 由 Codex 读取 report 中的 \`id\` / \`keys\` 定位条目，再修改 \`i18n/worksets/package.zh-cn.json\`，将候选译文推进到 \`translated\` / \`needsReview\` / \`approved\`。
+4. 由 Codex 读取 report 中的 \`id\` / \`keys\` 定位条目，再修改 \`i18n/worksets/package.zh-cn.json\`，补全或修订条目的 \`translation\` 字段，并将状态推进到 \`translated\` / \`needsReview\` / \`approved\`。
 5. 翻译多轮推进时重复运行 \`pnpm run report:package-nls:zh-cn:pending\`，让 authority / override 已覆盖的条目自动从 workset 中收敛掉。
 6. 运行 \`pnpm run promote:package-nls:zh-cn\`，把 \`approved\` 条目晋升到 authority。
 7. 运行 \`pnpm run generate:package-nls\`，重建 \`package.json\`、\`package.nls.json\` 与 \`package.nls.zh-cn.json\`。
@@ -217,7 +210,7 @@ const content = `# Package Manifest I18n Workflow
 ## 约束
 
 - 不使用 \`contributions.json\` 作为 i18n 真源。
-- 不使用 \`generate:contributions\` / \`extract:contributions\` 维护本分支本地化。
+- 旧的 \`generate:contributions\` / \`extract:contributions\` 入口已从本分支移除。
 - \`webviews\`、\`quickpicks\`、\`formatter\` 保留到后续阶段。
 `;
 
@@ -252,13 +245,7 @@ export function diffWorksetAgainstBase(
 			continue;
 		}
 
-		if (
-			baseEntry.status !== entry.status ||
-			baseEntry.sourceHash !== entry.sourceHash ||
-			baseEntry.candidateTranslation?.text !== entry.candidateTranslation?.text ||
-			JSON.stringify(baseEntry.keys) !== JSON.stringify(entry.keys) ||
-			baseEntry.note !== entry.note
-		) {
+		if (stableStringify(baseEntry) !== stableStringify(entry)) {
 			changed += 1;
 		}
 	}

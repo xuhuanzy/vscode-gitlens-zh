@@ -6,7 +6,15 @@ import type {
 	TranslationWorksetEntry,
 	TranslationWorksetFile,
 } from '../shared/model.mts';
-import { clonePattern, createPatternFingerprint, nowIso } from '../shared/model.mts';
+import {
+	cloneMessageRecord,
+	clonePattern,
+	createMessageRecord,
+	hasTranslation,
+	nowIso,
+	stableStringify,
+	toTranslationPattern,
+} from '../shared/model.mts';
 import type { AuthorityBundle } from './store.mts';
 
 export interface ResolvedTranslation {
@@ -55,8 +63,13 @@ export function resolveOccurrenceTranslation(
 	const authorityId = canonicalAuthorityId(occurrence.authorityId, bundle);
 	const authorityMessage = bundle.messages.entries.find(entry => entry.id === authorityId);
 	if (authorityMessage != null) {
+		const pattern = toTranslationPattern(authorityMessage);
+		if (pattern == null) {
+			return undefined;
+		}
+
 		return {
-			pattern: clonePattern(authorityMessage.translationPattern),
+			pattern: pattern,
 			source: 'authorityMessage',
 		};
 	}
@@ -92,8 +105,7 @@ export function syncWorkset(
 
 		if (previous == null) {
 			entries.push({
-				id: authorityId,
-				sourcePattern: sourcePattern,
+				...createMessageRecord(authorityId, sourcePattern, null),
 				sourceHash: sourceHash,
 				keys: keys,
 				status: 'pending',
@@ -101,20 +113,15 @@ export function syncWorkset(
 			continue;
 		}
 
+		const nextRecord = createMessageRecord(previous.id, sourcePattern, toTranslationPattern(previous) ?? null);
 		const sourceChanged = previous.sourceHash !== sourceHash;
-		const hasCandidateTranslation = previous.candidateTranslation != null;
-		const nextStatus = sourceChanged
-			? hasCandidateTranslation
-				? 'needsReview'
-				: 'pending'
-			: previous.status;
+		const previousHasTranslation = hasTranslation(previous);
+		const nextStatus = sourceChanged ? (previousHasTranslation ? 'needsReview' : 'pending') : previousHasTranslation ? previous.status : 'pending';
 
 		entries.push({
-			id: previous.id,
-			sourcePattern: sourcePattern,
+			...nextRecord,
 			sourceHash: sourceHash,
 			keys: keys,
-			candidateTranslation: previous.candidateTranslation,
 			status: nextStatus,
 			note: previous.note,
 		});
@@ -122,7 +129,7 @@ export function syncWorkset(
 
 	return {
 		$schema: '../schemas/translationWorkset.schema.json',
-		version: 1,
+		version: 2,
 		locale: 'zh-cn',
 		domain: 'manifest',
 		generatedAt: nowIso(),
@@ -138,31 +145,30 @@ export function promoteApprovedEntries(
 	const updatedMessages = [...bundle.messages.entries];
 	const retainedEntries: TranslationWorksetEntry[] = [];
 	const timestamp = nowIso();
+	let messagesChanged = false;
 
 	for (const entry of workset.entries) {
-		if (entry.status !== 'approved' || entry.candidateTranslation == null) {
+		if (entry.status !== 'approved' || !hasTranslation(entry)) {
 			retainedEntries.push(entry);
 			continue;
 		}
 
 		promoted.push(entry.id);
 		const existing = updatedMessages.find(message => message.id === entry.id);
-		const nextMessage: AuthorityMessageEntry = {
-			id: entry.id,
-			patternFingerprint: createPatternFingerprint(entry.sourcePattern),
-			sourcePattern: clonePattern(entry.sourcePattern),
-			translationPattern: clonePattern(entry.candidateTranslation),
-			promotedAt: timestamp,
-			updatedAt: timestamp,
-		};
+		const { sourceHash: _sourceHash, keys: _keys, status: _status, note: _note, ...messageRecord } = entry;
+		const nextMessage = cloneMessageRecord(messageRecord as AuthorityMessageEntry);
 
 		if (existing == null) {
 			updatedMessages.push(nextMessage);
+			messagesChanged = true;
 			continue;
 		}
 
 		const index = updatedMessages.indexOf(existing);
-		updatedMessages[index] = nextMessage;
+		if (stableStringify(existing) !== stableStringify(nextMessage)) {
+			updatedMessages[index] = nextMessage;
+			messagesChanged = true;
+		}
 	}
 
 	return {
@@ -175,6 +181,7 @@ export function promoteApprovedEntries(
 			...bundle,
 			messages: {
 				...bundle.messages,
+				updatedAt: messagesChanged ? timestamp : bundle.messages.updatedAt,
 				entries: updatedMessages.sort((left, right) => left.id.localeCompare(right.id)),
 			},
 		},

@@ -91,7 +91,7 @@ function testPromotionWorkflow(): void {
 		assert.deepEqual('occurrences' in workset.entries[0], false);
 		assert.deepEqual(Array.isArray(workset.entries[0].keys), true);
 
-		const targetEntry = workset.entries.find(entry => entry.sourcePattern.text === 'GitLens');
+		const targetEntry = workset.entries.find(entry => entry.source === 'GitLens');
 		assert.notEqual(targetEntry, undefined);
 
 		saveWorkset(context, {
@@ -101,7 +101,7 @@ function testPromotionWorkflow(): void {
 					? {
 							...entry,
 							status: 'approved',
-							candidateTranslation: createLiteralPattern('GitLens 中文'),
+							translation: 'GitLens 中文',
 					  }
 					: entry,
 			),
@@ -121,7 +121,7 @@ function testPromotionWorkflow(): void {
 		assert.equal(englishPackageNls['extension.displayName'], 'Fixture Git UI');
 
 		const authority = loadAuthorityBundle(context);
-		assert.equal(authority.messages.entries.some(entry => entry.translationPattern.text === 'GitLens 中文'), true);
+		assert.equal(authority.messages.entries.some(entry => entry.translation === 'GitLens 中文'), true);
 
 		const resyncResult = syncPackageManifestI18n({ rootDir });
 		assert.equal(resyncResult.occurrenceCount, syncResult.occurrenceCount);
@@ -230,6 +230,7 @@ function testOverridesDoNotRemainPending(): void {
 			...bundle,
 			keyOverrides: {
 				...bundle.keyOverrides,
+				updatedAt: new Date().toISOString(),
 				entries: [
 					{
 						id: 'contributes.commands.fixture.open.title',
@@ -258,7 +259,6 @@ function testOverridesDoNotRemainPending(): void {
 
 		const localizedPackageNls = loadLocalizedPackageNls(context);
 		assert.equal(localizedPackageNls['contributes.commands.fixture.open.title'], '打开图谱');
-
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}
