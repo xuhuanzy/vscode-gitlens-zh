@@ -2,15 +2,72 @@
 	"$schema": "http://json-schema.org/draft-07/schema#",
 	"title": "Pending Translation Report",
 	"type": "object",
+	"additionalProperties": false,
 	"required": ["$schema", "version", "locale", "domain", "generatedAt", "counts", "coverage", "items"],
 	"properties": {
 		"$schema": { "type": "string" },
 		"version": { "const": 1 },
 		"locale": { "const": "zh-cn" },
 		"domain": { "const": "manifest" },
-		"generatedAt": { "type": "string" },
-		"counts": { "type": "object" },
-		"coverage": { "type": "object" },
-		"items": { "type": "array" }
+		"generatedAt": { "type": "string", "format": "date-time" },
+		"baseRef": { "type": "string" },
+		"counts": { "$ref": "#/definitions/counts" },
+		"coverage": { "$ref": "#/definitions/coverage" },
+		"sinceBase": { "$ref": "#/definitions/sinceBase" },
+		"items": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/item" }
+		}
+	},
+	"definitions": {
+		"counts": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["total", "pending", "translated", "needsReview", "approved", "promotable"],
+			"properties": {
+				"total": { "type": "integer", "minimum": 0 },
+				"pending": { "type": "integer", "minimum": 0 },
+				"translated": { "type": "integer", "minimum": 0 },
+				"needsReview": { "type": "integer", "minimum": 0 },
+				"approved": { "type": "integer", "minimum": 0 },
+				"promotable": { "type": "integer", "minimum": 0 }
+			}
+		},
+		"coverage": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["catalogOccurrences", "resolvedOccurrences", "unresolvedOccurrences", "readyForGeneration"],
+			"properties": {
+				"catalogOccurrences": { "type": "integer", "minimum": 0 },
+				"resolvedOccurrences": { "type": "integer", "minimum": 0 },
+				"unresolvedOccurrences": { "type": "integer", "minimum": 0 },
+				"readyForGeneration": { "type": "boolean" }
+			}
+		},
+		"sinceBase": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["added", "changed", "removed"],
+			"properties": {
+				"added": { "type": "integer", "minimum": 0 },
+				"changed": { "type": "integer", "minimum": 0 },
+				"removed": { "type": "integer", "minimum": 0 }
+			}
+		},
+		"item": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["id", "status", "keys"],
+			"properties": {
+				"id": { "type": "string" },
+				"status": { "enum": ["pending", "translated", "needsReview", "approved"] },
+				"keys": {
+					"type": "array",
+					"minItems": 1,
+					"uniqueItems": true,
+					"items": { "type": "string" }
+				}
+			}
+		}
 	}
 }

@@ -138,9 +138,6 @@ export interface TranslationWorksetFile {
 export interface PendingReportItem {
 	readonly id: string;
 	readonly status: TranslationStatus;
-	readonly scope: string;
-	readonly occurrences: number;
-	readonly sourceText: string;
 	readonly keys: string[];
 }
 

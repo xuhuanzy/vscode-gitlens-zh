@@ -242,6 +242,9 @@ function testOverridesDoNotRemainPending(): void {
 
 		const report = createPendingReport({ rootDir });
 		assert.equal(report.items.some(item => item.keys.includes('contributes.commands.fixture.open.title')), false);
+		assert.equal(report.items.every(item => 'sourceText' in item), false);
+		assert.equal(report.items.every(item => 'scope' in item), false);
+		assert.equal(report.items.every(item => 'occurrences' in item), false);
 		assert.equal(fs.existsSync(context.pendingReportFile), true);
 
 		const reportedWorkset = loadWorkset(context);
