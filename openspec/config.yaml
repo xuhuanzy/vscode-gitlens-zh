@@ -1,0 +1,5 @@
+schema: spec-driven
+
+context: |
+    该 i18n 分支必须保持易于持续 rebase 和集成上游 GitLens。
+    对于 i18n 工作，应优先最小化对上游维护源码的侵入.

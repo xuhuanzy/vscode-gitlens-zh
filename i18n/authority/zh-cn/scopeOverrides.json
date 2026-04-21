@@ -1,0 +1,7 @@
+{
+	"$schema": "../../schemas/authority.schema.json",
+	"version": 1,
+	"kind": "scopeOverrides",
+	"locale": "zh-cn",
+	"entries": []
+}

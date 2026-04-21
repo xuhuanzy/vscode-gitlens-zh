@@ -1,0 +1,22 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Manifest Catalog",
+	"type": "object",
+	"required": ["$schema", "version", "domain", "generatedAt", "deferredDomains", "occurrences", "reconciliation"],
+	"properties": {
+		"$schema": { "type": "string" },
+		"version": { "const": 1 },
+		"domain": { "const": "manifest" },
+		"generatedAt": { "type": "string" },
+		"deferredDomains": { "type": "array", "items": { "type": "string" } },
+		"occurrences": { "type": "array" },
+		"reconciliation": {
+			"type": "object",
+			"required": ["entries", "summary"],
+			"properties": {
+				"entries": { "type": "array" },
+				"summary": { "type": "object" }
+			}
+		}
+	}
+}

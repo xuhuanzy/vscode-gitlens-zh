@@ -276,11 +276,7 @@ function getExtensionConfig(target, mode, env) {
 	if (target === 'webworker') {
 		plugins.push(new optimize.LimitChunkCountPlugin({ maxChunks: 1 }));
 	} else {
-		plugins.push(
-			new GenerateContributionsPlugin(),
-			new ExtractContributionsPlugin(),
-			new GenerateCommandTypesPlugin(),
-		);
+		plugins.push(new GenerateCommandTypesPlugin());
 	}
 
 	if (env.analyzeDeps) {

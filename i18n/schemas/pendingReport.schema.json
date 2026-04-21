@@ -1,0 +1,16 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Pending Translation Report",
+	"type": "object",
+	"required": ["$schema", "version", "locale", "domain", "generatedAt", "counts", "coverage", "items"],
+	"properties": {
+		"$schema": { "type": "string" },
+		"version": { "const": 1 },
+		"locale": { "const": "zh-cn" },
+		"domain": { "const": "manifest" },
+		"generatedAt": { "type": "string" },
+		"counts": { "type": "object" },
+		"coverage": { "type": "object" },
+		"items": { "type": "array" }
+	}
+}

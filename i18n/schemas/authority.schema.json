@@ -1,0 +1,15 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Package Authority Entries",
+	"type": "object",
+	"required": ["$schema", "version", "kind", "locale", "entries"],
+	"properties": {
+		"$schema": { "type": "string" },
+		"version": { "const": 1 },
+		"kind": {
+			"enum": ["messages", "terms", "aliases", "scopeOverrides", "anchorOverrides", "keyOverrides"]
+		},
+		"locale": { "const": "zh-cn" },
+		"entries": { "type": "array" }
+	}
+}

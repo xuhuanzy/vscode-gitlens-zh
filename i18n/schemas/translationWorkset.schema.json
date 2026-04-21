@@ -1,0 +1,39 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Translation Workset",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["$schema", "version", "locale", "domain", "generatedAt", "entries"],
+	"properties": {
+		"$schema": { "type": "string" },
+		"version": { "const": 1 },
+		"locale": { "const": "zh-cn" },
+		"domain": { "const": "manifest" },
+		"generatedAt": { "type": "string", "format": "date-time" },
+		"entries": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/entry" }
+		}
+	},
+	"definitions": {
+		"entry": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["id", "sourcePattern", "sourceHash", "keys", "status"],
+			"properties": {
+				"id": { "type": "string" },
+				"sourcePattern": { "$ref": "./messagePattern.schema.json" },
+				"sourceHash": { "type": "string" },
+				"keys": {
+					"type": "array",
+					"minItems": 1,
+					"uniqueItems": true,
+					"items": { "type": "string" }
+				},
+				"candidateTranslation": { "$ref": "./messagePattern.schema.json" },
+				"status": { "enum": ["pending", "translated", "needsReview", "approved"] },
+				"note": { "type": "string" }
+			}
+		}
+	}
+}

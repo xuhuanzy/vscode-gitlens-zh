@@ -294,3 +294,41 @@ When implementing something new, look at these files first:
 **Testing**
 
 - When debugging test failures, DON'T simplify NOR change the intent of the tests just to get them to pass. Instead, INVESTIGATE and UNDERSTAND the root cause of the failure and address that directly, or raise an issue to the user if you can't resolve it.
+
+# i18n 指南
+
+## 核心
+
+这是一个不会被上游合入的分支, 一切本地化翻译相关内容仅限于当前分支, 且我们需要持续合并上游源码.
+
+因此我们必须遵守最小化侵入源码原则, i18n 切入点必须位于最底层而不是上层调用点, 这样我们才能轻松合并上游.
+
+## 文件结构
+
+1. 所有提取/非运行时翻译脚本都应位于`./i18n`下
+2. 运行时脚本必须位于`./src/i18n`下
+3. 禁止在非`./i18n`和`./src/i18n`目录下创建翻译相关脚本
+4. 测试文件应位于对于目录的`__tests__`目录下
+5. 我们应维护一份翻译校对根源于一份运行时翻译文件(一份并不是指一个文件, 他可以由多个文件多个层级组合成)
+
+- 根源应位于`./i18n`下, 用于比对上游合并后原文是否发生更改/删除/新增, 这样方便报告是否需要修订翻译
+- 运行时应位于`./src/i18n`下, 但`package.json`对应的可以位于根目录, 因为这是`vscode`的强制要求
+
+6. 我们或许还要维护一份权威翻译词典用于固定翻译, 但这步可以与`翻译校对根源`合并, 我们需要进一步考虑.
+
+## 禁止事项
+
+1. 禁止以任何方式修改`./contributions.json`, 他必须由上游合并而来.
+2. 禁止在高层调用点改写源码以适配`i18n`, 必须要将对源码的侵入限制在少数受控位置
+3. 禁止保留任何 i18n 兼容性代码, 包括但不限于旧 schema 字段兼容、旧数据迁移 fallback、双写、条件分支兼容. 结构调整后应直接同步更新现有数据文件、测试与脚本, 不需要为历史格式保留任何兼容层.
+
+## Codex 翻译环境声明
+
+1. GitLens 是一个围绕 `git` 工作流构建的专业 VS Code UI 插件, 不是通用消费级应用. Codex 在翻译时必须始终以 `git` 专业语境理解原文, 优先保证语义准确而不是字面通顺.
+2. 所有与 `git` 相关的术语都必须采用稳定、一致、专业的译法, 尤其包括但不限于: `commit`, `branch`, `tag`, `stash`, `rebase`, `cherry-pick`, `blame`, `worktree`, `remote`, `upstream`, `push`, `pull`, `fetch`, `merge`, `merge base`, `checkout`, `stage`, `unstage`, `working tree`, `HEAD`, `Pull Request`.
+3. 如果同一英文词在不同语境下存在不同最佳译法, 必须根据当前 UI 语义选择最准确的表达, 但不得牺牲 `git` 领域含义. 禁止为了“更自然”而改写掉专业语义.
+4. 按钮、菜单、命令标题、设置项标题、设置说明、提示文本、工具提示、欢迎页文案等都属于专业产品 UI 文案. 翻译必须克制、准确、简洁, 避免口语化、营销化、情绪化表达.
+5. 对于 `git` 命令、占位符、模板 token、Markdown 结构、代码片段、配置键、命令 id、链接参数等非自然语言内容, 禁止擅自翻译、改写或破坏其语法结构.
+6. 对于产品名、专有名词或社区已广泛接受的术语, 如果强行翻译会降低可理解性, 应优先保留原文或采用约定俗成的专业表达, 不得生造术语.
+7. 如果译文存在专业歧义或缺少上下文, Codex 必须优先选择保守策略: 保留待复查状态、标记 `needsReview` 或继续依赖权威翻译源/覆盖层, 而不是贸然给出可能误导用户的最终译文.
+8. 所有翻译结果都应默认面向熟悉 `git` 与 IDE 工作流的用户. 对新手友好可以体现在说明清晰, 但不能以牺牲术语准确性为代价.
