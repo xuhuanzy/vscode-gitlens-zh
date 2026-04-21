@@ -28,17 +28,23 @@ The system SHALL maintain an authority translation source that is independent fr
 
 ### Requirement: Authority translations are the lowest-priority translation layer
 
-The system SHALL resolve final translations using layered precedence, where authority message translations are lower priority than scope, anchor, or key-specific overrides.
+The system SHALL resolve final translations using layered precedence, where authority message translations are lower priority than selector-based overrides targeting broader or narrower scopes. The override layer MUST use a unified selector model rather than separate manifest-specific override stores.
 
 #### Scenario: Scope override replaces authority default
 
 - **WHEN** an authority entry provides a default translation and a matching scope override exists
 - **THEN** the resolved translation uses the scope override instead of the authority default
 
-#### Scenario: Key override replaces all broader layers
+#### Scenario: Specific output override replaces all broader layers
 
-- **WHEN** a key-specific override exists for a message occurrence
-- **THEN** the resolved translation uses the key override regardless of any authority or scope translation
+- **WHEN** a selector targeting a concrete output or equivalent most-specific override target exists for a message occurrence
+- **THEN** the resolved translation uses that override regardless of any authority or broader contextual translation
+
+#### Scenario: Future domains use the same override resolver
+
+- **WHEN** a later domain such as webviews introduces an override against an occurrence or runtime output
+- **THEN** the resolver can apply that override through the shared selector model
+- **AND** it does not require a new domain-specific override file type to preserve precedence
 
 ### Requirement: Authority source supports message structures beyond plain strings
 
@@ -70,7 +76,7 @@ The system SHALL maintain separate authority records for full message defaults, 
 
 ### Requirement: Translation worksets support iterative completion states before promotion into authority
 
-The localization workflow SHALL maintain a separate machine-readable translation workset with explicit translation completion states so extraction can produce pending entries before final authority translations are available. Each workset entry MUST reuse the same bilingual message record shape as authority messages while adding only workflow-specific fields such as `status`, `keys`, `sourceHash`, or review notes.
+The localization workflow SHALL maintain a separate machine-readable translation workset with explicit translation completion states so extraction can produce pending entries before final authority translations are available. Each workset entry MUST reuse the same bilingual message record shape as authority messages while adding only workflow-specific fields such as `status`, `occurrenceIds`, `sourceHash`, or review notes.
 
 #### Scenario: New source message creates a pending workset entry
 
@@ -84,10 +90,11 @@ The localization workflow SHALL maintain a separate machine-readable translation
 - **THEN** its default translation is written into the authority source without changing the source-independent identity of the authority message
 - **AND** the promotion step drops workset-only workflow fields instead of rebuilding a different message entry shape
 
-#### Scenario: Translation entry requires later revision
+#### Scenario: Workset entry no longer depends on manifest-only key arrays
 
-- **WHEN** a translated workset entry is judged incomplete or contextually weak
-- **THEN** its state can be changed to a review-required status without forcing an unfinished translation into authority
+- **WHEN** a workset entry references the source occurrences that need the translation
+- **THEN** it stores occurrence identities rather than manifest-only key arrays
+- **AND** the same workset shape can be reused by future non-manifest domains
 
 ### Requirement: Authority message files use file-level metadata instead of per-entry change stamps
 

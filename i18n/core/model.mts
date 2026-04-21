@@ -1,8 +1,11 @@
 import { createHash } from 'node:crypto';
 
 export const translationStatuses = ['pending', 'translated', 'needsReview', 'approved'] as const;
+export const i18nDomains = ['manifest', 'webviews', 'quickpicks', 'formatter', 'runtimeCensus'] as const;
 
 export type TranslationStatus = (typeof translationStatuses)[number];
+export type I18nDomain = (typeof i18nDomains)[number];
+export type I18nLocale = string;
 
 type MessageTranslation = string | null;
 
@@ -81,46 +84,87 @@ export type BilingualMessageRecord<TTranslation extends MessageTranslation = str
 
 export type JsonPathSegment = string | number;
 
-export interface ManifestOccurrence {
-	readonly occurrenceId: string;
-	readonly domain: 'manifest';
+export type SourceReference =
+	| {
+			readonly kind: 'json';
+			readonly file: string;
+			readonly pointer: string;
+			readonly segments: JsonPathSegment[];
+	  }
+	| {
+			readonly kind: 'source';
+			readonly file: string;
+			readonly syntax: string;
+			readonly start: {
+				readonly line: number;
+				readonly column: number;
+			};
+			readonly end: {
+				readonly line: number;
+				readonly column: number;
+			};
+			readonly attribute?: string;
+	  };
+
+export type OutputReference =
+	| {
+			readonly kind: 'manifest-key';
+			readonly key: string;
+	  }
+	| {
+			readonly kind: 'runtime-key';
+			readonly bundle: string;
+			readonly key: string;
+	  };
+
+export interface SourceOccurrence {
+	readonly id: string;
+	readonly domain: I18nDomain;
 	readonly scope: string;
 	readonly anchor: string;
-	readonly key: string;
+	readonly slot: string;
+	readonly businessId?: string;
 	readonly authorityId: string;
 	readonly pattern: MessagePattern;
 	readonly patternFingerprint: string;
 	readonly sourceText: string;
 	readonly sourceHash: string;
-	readonly pathPointer: string;
-	readonly pathSegments: JsonPathSegment[];
-	readonly slot: string;
-	readonly businessId?: string;
-	readonly extractedFrom: 'manifest' | 'package.nls';
-	readonly currentTokenKey?: string;
+	readonly reference: SourceReference;
+	readonly output?: OutputReference;
 }
 
-export interface ManifestReconciliationEntry {
-	readonly key: string;
-	readonly change: 'added' | 'changed' | 'moved' | 'removed' | 'ambiguous';
+export type ReconciliationChange = 'added' | 'changed' | 'moved' | 'removed' | 'ambiguous';
+
+export interface CatalogIssue {
+	readonly occurrenceId?: string;
 	readonly anchor?: string;
-	readonly previousPathPointer?: string;
-	readonly currentPathPointer?: string;
+	readonly reference?: SourceReference;
+	readonly output?: OutputReference;
+	readonly reason: string;
+}
+
+export interface CatalogReconciliationEntry {
+	readonly occurrenceId: string;
+	readonly change: ReconciliationChange;
+	readonly anchor?: string;
+	readonly previousReference?: SourceReference;
+	readonly currentReference?: SourceReference;
 	readonly previousSourceHash?: string;
 	readonly currentSourceHash?: string;
+	readonly output?: OutputReference;
 	readonly reason?: string;
 }
 
-export interface ManifestCatalogFile {
+export interface SourceCatalogFile {
 	readonly $schema: string;
-	readonly version: 1;
-	readonly domain: 'manifest';
+	readonly version: 2;
+	readonly domain: I18nDomain;
 	readonly generatedAt: string;
-	readonly deferredDomains: string[];
-	readonly occurrences: ManifestOccurrence[];
+	readonly deferredDomains: I18nDomain[];
+	readonly occurrences: SourceOccurrence[];
 	readonly reconciliation: {
-		readonly entries: ManifestReconciliationEntry[];
-		readonly summary: Record<ManifestReconciliationEntry['change'], number>;
+		readonly entries: CatalogReconciliationEntry[];
+		readonly summary: Record<ReconciliationChange, number>;
 	};
 }
 
@@ -140,27 +184,54 @@ export interface AuthorityAliasEntry {
 	readonly reason?: string;
 }
 
-export interface OverrideEntry {
-	readonly id: string;
+export type OverrideSelector =
+	| {
+			readonly kind: 'occurrence';
+			readonly occurrenceId: string;
+	  }
+	| {
+			readonly kind: 'anchor';
+			readonly anchor: string;
+	  }
+	| {
+			readonly kind: 'scope';
+			readonly scope: string;
+	  }
+	| {
+			readonly kind: 'output';
+			readonly output: OutputReference;
+	  };
+
+export interface AuthorityOverrideEntry {
+	readonly selector: OverrideSelector;
 	readonly translationPattern: MessagePattern;
 	readonly updatedAt: string;
 	readonly note?: string;
 }
 
-export interface AuthorityEntryFile<TKind extends string, TEntry> {
+export type AuthorityEntryKind = 'messages' | 'terms' | 'aliases' | 'overrides';
+
+export interface AuthorityEntryFile<TKind extends AuthorityEntryKind, TEntry> {
 	readonly $schema: string;
 	readonly version: 2;
 	readonly kind: TKind;
-	readonly locale: 'zh-cn';
+	readonly locale: I18nLocale;
 	readonly updatedAt: string;
 	readonly entries: TEntry[];
+}
+
+export interface AuthorityBundle {
+	readonly messages: AuthorityEntryFile<'messages', AuthorityMessageEntry>;
+	readonly terms: AuthorityEntryFile<'terms', AuthorityTermEntry>;
+	readonly aliases: AuthorityEntryFile<'aliases', AuthorityAliasEntry>;
+	readonly overrides: AuthorityEntryFile<'overrides', AuthorityOverrideEntry>;
 }
 
 export type WorksetMessageRecord = BilingualMessageRecord<MessageTranslation>;
 
 export type TranslationWorksetEntry = WorksetMessageRecord & {
 	readonly sourceHash: string;
-	readonly keys: string[];
+	readonly occurrenceIds: string[];
 	readonly status: TranslationStatus;
 	readonly note?: string;
 };
@@ -168,8 +239,8 @@ export type TranslationWorksetEntry = WorksetMessageRecord & {
 export interface TranslationWorksetFile {
 	readonly $schema: string;
 	readonly version: 2;
-	readonly locale: 'zh-cn';
-	readonly domain: 'manifest';
+	readonly locale: I18nLocale;
+	readonly domain: I18nDomain;
 	readonly generatedAt: string;
 	readonly entries: TranslationWorksetEntry[];
 }
@@ -177,14 +248,14 @@ export interface TranslationWorksetFile {
 export interface PendingReportItem {
 	readonly id: string;
 	readonly status: TranslationStatus;
-	readonly keys: string[];
+	readonly occurrenceIds: string[];
 }
 
 export interface PendingReportFile {
 	readonly $schema: string;
 	readonly version: 1;
-	readonly locale: 'zh-cn';
-	readonly domain: 'manifest';
+	readonly locale: I18nLocale;
+	readonly domain: I18nDomain;
 	readonly generatedAt: string;
 	readonly baseRef?: string;
 	readonly counts: {
@@ -386,6 +457,10 @@ export function createAuthorityId(pattern: MessagePattern): string {
 	return `message.${createPatternFingerprint(pattern)}`;
 }
 
+export function createOccurrenceId(domain: I18nDomain, anchor: string, slot: string): string {
+	return `${domain}:${anchor}#${slot}`;
+}
+
 export function createContentHash(value: string): string {
 	return createHash('sha256').update(value, 'utf8').digest('hex');
 }
@@ -406,6 +481,43 @@ export function toJsonPointer(segments: readonly JsonPathSegment[]): string {
 		.join('/')}`;
 }
 
+export function createJsonSourceReference(file: string, segments: readonly JsonPathSegment[]): SourceReference {
+	return {
+		kind: 'json',
+		file: file,
+		pointer: toJsonPointer(segments),
+		segments: [...segments],
+	};
+}
+
+export function isJsonSourceReference(
+	reference: SourceReference,
+): reference is Extract<SourceReference, { readonly kind: 'json' }> {
+	return reference.kind === 'json';
+}
+
+export function outputReferenceId(output: OutputReference): string {
+	switch (output.kind) {
+		case 'manifest-key':
+			return `manifest-key:${output.key}`;
+		case 'runtime-key':
+			return `runtime-key:${output.bundle}:${output.key}`;
+	}
+}
+
+export function overrideSelectorId(selector: OverrideSelector): string {
+	switch (selector.kind) {
+		case 'occurrence':
+			return `occurrence:${selector.occurrenceId}`;
+		case 'anchor':
+			return `anchor:${selector.anchor}`;
+		case 'scope':
+			return `scope:${selector.scope}`;
+		case 'output':
+			return `output:${outputReferenceId(selector.output)}`;
+	}
+}
+
 export function sanitizeKeySegment(value: string): string {
 	const sanitized = value
 		.trim()
@@ -423,6 +535,16 @@ export function shortHash(value: string): string {
 
 export function clonePattern(pattern: MessagePattern): MessagePattern {
 	return JSON.parse(JSON.stringify(pattern)) as MessagePattern;
+}
+
+export function cloneSourceReference<TReference extends SourceReference | undefined>(reference: TReference): TReference {
+	if (reference == null) return reference;
+	return JSON.parse(JSON.stringify(reference)) as TReference;
+}
+
+export function cloneOutputReference<TOutput extends OutputReference | undefined>(output: TOutput): TOutput {
+	if (output == null) return output;
+	return JSON.parse(JSON.stringify(output)) as TOutput;
 }
 
 export function getTranslationText(record: WorksetMessageRecord): string | null {
@@ -456,7 +578,11 @@ function assertCompatibleMessagePatterns(sourcePattern: MessagePattern, translat
 			if (sourcePattern.selector !== translationPattern.selector) {
 				throw new Error(`Mismatched ${sourcePattern.kind} selectors`);
 			}
-			assertStringArraysMatch(Object.keys(sourcePattern.cases), Object.keys(translationPattern.cases), `${sourcePattern.kind} cases`);
+			assertStringArraysMatch(
+				Object.keys(sourcePattern.cases),
+				Object.keys(translationPattern.cases),
+				`${sourcePattern.kind} cases`,
+			);
 			return;
 		}
 	}

@@ -1,10 +1,4 @@
-# message-catalog-sync Specification
-
-## Purpose
-
-TBD - created by archiving change unify-i18n-message-model. Update Purpose after archive.
-
-## Requirements
+## MODIFIED Requirements
 
 ### Requirement: Message occurrences, anchors, and patterns are tracked separately
 
@@ -41,20 +35,6 @@ The system SHALL support message extraction from the package manifest domain in 
 - **WHEN** webview, quickpick, or formatter sources are not yet implemented in the first phase
 - **THEN** the catalog model still retains domain and anchor abstractions needed to add those adapters later without changing authority or override semantics
 
-### Requirement: Catalog sync detects message lifecycle changes after re-extraction
-
-The system SHALL compare newly extracted occurrences against the existing catalog and report added, changed, moved, removed, and ambiguous messages.
-
-#### Scenario: English source text changes under the same anchor
-
-- **WHEN** a message is re-extracted with the same anchor but a different normalized source pattern
-- **THEN** the catalog marks the message as changed and requires translation review
-
-#### Scenario: Message can no longer be matched confidently
-
-- **WHEN** re-extraction cannot determine whether a new occurrence maps to an existing anchor
-- **THEN** the catalog marks the occurrence as ambiguous instead of silently remapping it
-
 ### Requirement: Localized outputs are regenerated from catalog data
 
 The system SHALL treat localized package or UI outputs as regenerable artifacts derived from the catalog, authority source, and override layers. Output targeting MUST be resolved through occurrence output references rather than by requiring manifest-only fields on every catalog consumer.
@@ -69,17 +49,3 @@ The system SHALL treat localized package or UI outputs as regenerable artifacts 
 
 - **WHEN** a later phase adds a new supported domain
 - **THEN** that domain can consume the same resolved message model without redefining authority or override precedence
-
-### Requirement: Catalog sync produces a separate pending translation workset before finalized output generation
-
-The system SHALL be able to emit a separate machine-readable translation workset from extracted catalog entries before finalized localized output is generated.
-
-#### Scenario: Manifest extraction finds untranslated messages
-
-- **WHEN** the manifest catalog contains entries without resolved translations
-- **THEN** the workflow emits those entries into a pending translation workset instead of requiring immediate inline translation or immediate authority updates
-
-#### Scenario: Pending translations are later completed
-
-- **WHEN** workset entries are approved and promoted into authority
-- **THEN** the same catalog can be re-used to generate finalized manifest localization output without re-keying the messages

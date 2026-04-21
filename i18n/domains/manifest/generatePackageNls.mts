@@ -1,6 +1,6 @@
-import { generatePackageManifestOutputs } from './workflow.mts';
+import { generateManifestLocalizedOutputs } from './workflow.mts';
 
-const result = generatePackageManifestOutputs({
+const result = generateManifestLocalizedOutputs({
 	rootDir: readOption('--root'),
 });
 

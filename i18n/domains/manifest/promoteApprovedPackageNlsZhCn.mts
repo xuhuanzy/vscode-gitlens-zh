@@ -1,6 +1,6 @@
-import { promotePackageManifestAuthority } from './workflow.mts';
+import { promoteManifestAuthority } from './workflow.mts';
 
-const result = promotePackageManifestAuthority({
+const result = promoteManifestAuthority({
 	rootDir: readOption('--root'),
 });
 

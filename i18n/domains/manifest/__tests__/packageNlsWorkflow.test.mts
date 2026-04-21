@@ -3,24 +3,24 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { createLiteralPattern, shortHash } from '../../shared/model.mts';
-import {
-	createPendingReport,
-	generatePackageManifestOutputs,
-	promotePackageManifestAuthority,
-	syncPackageManifestI18n,
-} from '../workflow.mts';
-import { createPackageI18nContext } from '../context.mts';
+import { createLiteralPattern, shortHash } from '../../../core/model.mts';
+import { createManifestDomainContext } from '../context.mts';
 import {
 	loadAuthorityBundle,
-	loadCatalog,
 	loadEnglishPackageNls,
 	loadLocalizedPackageNls,
 	loadManifest,
-	loadWorkset,
+	loadManifestCatalog,
+	loadManifestWorkset,
 	saveAuthorityBundle,
-	saveWorkset,
+	saveManifestWorkset,
 } from '../store.mts';
+import {
+	createPendingReport,
+	generateManifestLocalizedOutputs,
+	promoteManifestAuthority,
+	syncManifestI18n,
+} from '../workflow.mts';
 
 run();
 
@@ -81,20 +81,37 @@ function testPromotionWorkflow(): void {
 			'utf8',
 		);
 
-		const syncResult = syncPackageManifestI18n({ rootDir });
+		const syncResult = syncManifestI18n({ rootDir });
 		assert.equal(syncResult.occurrenceCount > 0, true);
 
-		const context = createPackageI18nContext(rootDir);
-		const workset = loadWorkset(context);
+		const context = createManifestDomainContext(rootDir);
+		const catalog = loadManifestCatalog(context);
+		const workset = loadManifestWorkset(context);
 		assert.equal(workset.entries.length > 0, true);
 		assert.deepEqual('firstSeenAt' in workset.entries[0], false);
 		assert.deepEqual('occurrences' in workset.entries[0], false);
-		assert.deepEqual(Array.isArray(workset.entries[0].keys), true);
+		assert.deepEqual(Array.isArray(workset.entries[0].occurrenceIds), true);
+
+		const commandTitleOccurrence = catalog.occurrences.find(
+			occurrence => occurrence.output?.kind === 'manifest-key' && occurrence.output.key === 'contributes.commands.fixture.open.title',
+		);
+		const commandCategoryOccurrence = catalog.occurrences.find(
+			occurrence =>
+				occurrence.output?.kind === 'manifest-key' && occurrence.output.key === 'contributes.commands.fixture.open.category',
+		);
+		assert.notEqual(commandTitleOccurrence, undefined);
+		assert.notEqual(commandCategoryOccurrence, undefined);
+		assert.equal(commandTitleOccurrence!.anchor, commandCategoryOccurrence!.anchor);
+		assert.notEqual(commandTitleOccurrence!.id, commandCategoryOccurrence!.id);
+		assert.equal(commandTitleOccurrence!.slot, 'title');
+		assert.equal(commandCategoryOccurrence!.slot, 'category');
+		assert.equal(commandTitleOccurrence!.reference.kind, 'json');
+		assert.equal('extractedFrom' in commandTitleOccurrence!.reference, false);
 
 		const targetEntry = workset.entries.find(entry => entry.source === 'GitLens');
 		assert.notEqual(targetEntry, undefined);
 
-		saveWorkset(context, {
+		saveManifestWorkset(context, {
 			...workset,
 			entries: workset.entries.map(entry =>
 				entry.id === targetEntry!.id
@@ -107,10 +124,10 @@ function testPromotionWorkflow(): void {
 			),
 		});
 
-		const promoteResult = promotePackageManifestAuthority({ rootDir });
+		const promoteResult = promoteManifestAuthority({ rootDir });
 		assert.deepEqual(promoteResult.promoted, [targetEntry!.id]);
 
-		const generateResult = generatePackageManifestOutputs({ rootDir });
+		const generateResult = generateManifestLocalizedOutputs({ rootDir });
 		assert.equal(generateResult.englishKeys > 0, true);
 		assert.equal(generateResult.localizedKeys > 0, true);
 
@@ -123,7 +140,7 @@ function testPromotionWorkflow(): void {
 		const authority = loadAuthorityBundle(context);
 		assert.equal(authority.messages.entries.some(entry => entry.translation === 'GitLens 中文'), true);
 
-		const resyncResult = syncPackageManifestI18n({ rootDir });
+		const resyncResult = syncManifestI18n({ rootDir });
 		assert.equal(resyncResult.occurrenceCount, syncResult.occurrenceCount);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
@@ -161,12 +178,12 @@ function testDuplicateViewsWelcomeKeys(): void {
 			'utf8',
 		);
 
-		syncPackageManifestI18n({ rootDir });
-		const context = createPackageI18nContext(rootDir);
-		const catalog = loadCatalog(context);
+		syncManifestI18n({ rootDir });
+		const context = createManifestDomainContext(rootDir);
+		const catalog = loadManifestCatalog(context);
 		assert.equal(catalog.reconciliation.summary.ambiguous, 0);
 
-		generatePackageManifestOutputs({ rootDir });
+		generateManifestLocalizedOutputs({ rootDir });
 
 		const manifest = loadManifest(context);
 		const welcomes = (((manifest.contributes as Record<string, unknown>).viewsWelcome as unknown[]) ?? []) as Array<
@@ -216,24 +233,28 @@ function testOverridesDoNotRemainPending(): void {
 			'utf8',
 		);
 
-		syncPackageManifestI18n({ rootDir });
-		const context = createPackageI18nContext(rootDir);
-		const initialWorkset = loadWorkset(context);
+		syncManifestI18n({ rootDir });
+		const context = createManifestDomainContext(rootDir);
+		const initialWorkset = loadManifestWorkset(context);
 		assert.equal(initialWorkset.entries.length, 4);
-		assert.equal(
-			initialWorkset.entries.some(entry => entry.keys.includes('contributes.commands.fixture.open.title')),
-			true,
-		);
+		const titleEntry = initialWorkset.entries.find(entry => entry.source === 'Open Graph');
+		assert.notEqual(titleEntry, undefined);
 
 		const bundle = loadAuthorityBundle(context);
 		saveAuthorityBundle(context, {
 			...bundle,
-			keyOverrides: {
-				...bundle.keyOverrides,
+			overrides: {
+				...bundle.overrides,
 				updatedAt: new Date().toISOString(),
 				entries: [
 					{
-						id: 'contributes.commands.fixture.open.title',
+						selector: {
+							kind: 'output',
+							output: {
+								kind: 'manifest-key',
+								key: 'contributes.commands.fixture.open.title',
+							},
+						},
 						translationPattern: createLiteralPattern('打开图谱'),
 						updatedAt: new Date().toISOString(),
 					},
@@ -242,19 +263,16 @@ function testOverridesDoNotRemainPending(): void {
 		});
 
 		const report = createPendingReport({ rootDir });
-		assert.equal(report.items.some(item => item.keys.includes('contributes.commands.fixture.open.title')), false);
+		assert.equal(report.items.some(item => item.occurrenceIds.some(id => titleEntry!.occurrenceIds.includes(id))), false);
 		assert.equal(report.items.every(item => 'sourceText' in item), false);
 		assert.equal(report.items.every(item => 'scope' in item), false);
 		assert.equal(report.items.every(item => 'occurrences' in item), false);
 		assert.equal(fs.existsSync(context.pendingReportFile), true);
 
-		const reportedWorkset = loadWorkset(context);
-		assert.equal(
-			reportedWorkset.entries.some(entry => entry.keys.includes('contributes.commands.fixture.open.title')),
-			false,
-		);
+		const reportedWorkset = loadManifestWorkset(context);
+		assert.equal(reportedWorkset.entries.some(entry => entry.id === titleEntry!.id), false);
 
-		const generateResult = generatePackageManifestOutputs({ rootDir });
+		const generateResult = generateManifestLocalizedOutputs({ rootDir });
 		assert.equal(generateResult.localizedKeys, 1);
 
 		const localizedPackageNls = loadLocalizedPackageNls(context);

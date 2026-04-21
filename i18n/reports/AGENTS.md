@@ -1,6 +1,6 @@
 # i18n/reports Agent Guide
 
-本目录下的 JSON 文件是由 `./i18n/package` 工作流生成或刷新的派生报告, 不是翻译真源, 也不是人工维护的工作台。
+本目录下的 JSON 文件是由 `./i18n/domains/manifest` 或后续 domain workflow 生成或刷新的派生报告, 不是翻译真源, 也不是人工维护的工作台。
 
 ## 核心规则
 
@@ -11,7 +11,7 @@
 
 ## Codex 处理方式
 
-- 先读取 report, 用其中的 `items[].id` 或 `items[].keys` 定位待处理 workset 条目。
+- 先读取 report, 用其中的 `items[].id` 或 `items[].occurrenceIds` 定位待处理 workset 条目。
 - 不要期待 report 提供 `sourceText`、`scope`、`occurrences` 之类的冗余上下文; 需要时回到 workset 或 catalog 查询。
 - 再打开 `i18n/worksets` 下对应文件并修改条目的 `translation`、`status`、`note` 等字段。
 - 完成一轮翻译后, 重新运行报告命令, 观察 counts/coverage 是否收敛。

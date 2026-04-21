@@ -1,16 +1,14 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema#",
-	"title": "Package Authority Entries",
+	"title": "Localization Authority Entries",
 	"type": "object",
 	"additionalProperties": false,
 	"required": ["$schema", "version", "kind", "locale", "updatedAt", "entries"],
 	"properties": {
 		"$schema": { "type": "string" },
 		"version": { "const": 2 },
-		"kind": {
-			"enum": ["messages", "terms", "aliases", "scopeOverrides", "anchorOverrides", "keyOverrides"]
-		},
-		"locale": { "const": "zh-cn" },
+		"kind": { "enum": ["messages", "terms", "aliases", "overrides"] },
+		"locale": { "type": "string", "minLength": 1 },
 		"updatedAt": { "type": "string", "format": "date-time" },
 		"entries": { "type": "array" }
 	},
@@ -68,9 +66,7 @@
 		{
 			"if": {
 				"properties": {
-					"kind": {
-						"enum": ["scopeOverrides", "anchorOverrides", "keyOverrides"]
-					}
+					"kind": { "const": "overrides" }
 				}
 			},
 			"then": {
@@ -79,9 +75,70 @@
 						"items": {
 							"type": "object",
 							"additionalProperties": false,
-							"required": ["id", "translationPattern", "updatedAt"],
+							"required": ["selector", "translationPattern", "updatedAt"],
 							"properties": {
-								"id": { "type": "string" },
+								"selector": {
+									"anyOf": [
+										{
+											"type": "object",
+											"additionalProperties": false,
+											"required": ["kind", "occurrenceId"],
+											"properties": {
+												"kind": { "const": "occurrence" },
+												"occurrenceId": { "type": "string" }
+											}
+										},
+										{
+											"type": "object",
+											"additionalProperties": false,
+											"required": ["kind", "anchor"],
+											"properties": {
+												"kind": { "const": "anchor" },
+												"anchor": { "type": "string" }
+											}
+										},
+										{
+											"type": "object",
+											"additionalProperties": false,
+											"required": ["kind", "scope"],
+											"properties": {
+												"kind": { "const": "scope" },
+												"scope": { "type": "string" }
+											}
+										},
+										{
+											"type": "object",
+											"additionalProperties": false,
+											"required": ["kind", "output"],
+											"properties": {
+												"kind": { "const": "output" },
+												"output": {
+													"anyOf": [
+														{
+															"type": "object",
+															"additionalProperties": false,
+															"required": ["kind", "key"],
+															"properties": {
+																"kind": { "const": "manifest-key" },
+																"key": { "type": "string" }
+															}
+														},
+														{
+															"type": "object",
+															"additionalProperties": false,
+															"required": ["kind", "bundle", "key"],
+															"properties": {
+																"kind": { "const": "runtime-key" },
+																"bundle": { "type": "string" },
+																"key": { "type": "string" }
+															}
+														}
+													]
+												}
+											}
+										}
+									]
+								},
 								"translationPattern": { "$ref": "./messagePattern.schema.json" },
 								"updatedAt": { "type": "string", "format": "date-time" },
 								"note": { "type": "string" }

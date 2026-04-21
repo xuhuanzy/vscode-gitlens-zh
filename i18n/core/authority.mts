@@ -1,26 +1,29 @@
 import type {
+	AuthorityBundle,
 	AuthorityMessageEntry,
-	ManifestOccurrence,
+	AuthorityOverrideEntry,
 	MessagePattern,
-	OverrideEntry,
+	SourceOccurrence,
 	TranslationWorksetEntry,
 	TranslationWorksetFile,
-} from '../shared/model.mts';
+} from './model.mts';
 import {
 	cloneMessageRecord,
 	clonePattern,
 	createMessageRecord,
 	hasTranslation,
 	nowIso,
+	overrideSelectorId,
+	outputReferenceId,
 	stableStringify,
 	toTranslationPattern,
-} from '../shared/model.mts';
-import type { AuthorityBundle } from './store.mts';
+} from './model.mts';
 
 export interface ResolvedTranslation {
 	readonly pattern: MessagePattern;
 	readonly source:
-		| 'keyOverride'
+		| 'outputOverride'
+		| 'occurrenceOverride'
 		| 'anchorOverride'
 		| 'scopeOverride'
 		| 'authorityMessage'
@@ -33,18 +36,38 @@ export function canonicalAuthorityId(authorityId: string, bundle: AuthorityBundl
 }
 
 export function resolveOccurrenceTranslation(
-	occurrence: ManifestOccurrence,
+	occurrence: SourceOccurrence,
 	bundle: AuthorityBundle,
 ): ResolvedTranslation | undefined {
-	const keyOverride = lookupOverride(occurrence.key, bundle.keyOverrides.entries);
-	if (keyOverride != null) {
+	const outputOverride =
+		occurrence.output == null
+			? undefined
+			: lookupOverride(
+					entry => entry.selector.kind === 'output' && outputReferenceId(entry.selector.output) === outputReferenceId(occurrence.output!),
+					bundle.overrides.entries,
+			  );
+	if (outputOverride != null) {
 		return {
-			pattern: clonePattern(keyOverride.translationPattern),
-			source: 'keyOverride',
+			pattern: clonePattern(outputOverride.translationPattern),
+			source: 'outputOverride',
 		};
 	}
 
-	const anchorOverride = lookupOverride(occurrence.anchor, bundle.anchorOverrides.entries);
+	const occurrenceOverride = lookupOverride(
+		entry => entry.selector.kind === 'occurrence' && entry.selector.occurrenceId === occurrence.id,
+		bundle.overrides.entries,
+	);
+	if (occurrenceOverride != null) {
+		return {
+			pattern: clonePattern(occurrenceOverride.translationPattern),
+			source: 'occurrenceOverride',
+		};
+	}
+
+	const anchorOverride = lookupOverride(
+		entry => entry.selector.kind === 'anchor' && entry.selector.anchor === occurrence.anchor,
+		bundle.overrides.entries,
+	);
 	if (anchorOverride != null) {
 		return {
 			pattern: clonePattern(anchorOverride.translationPattern),
@@ -52,7 +75,10 @@ export function resolveOccurrenceTranslation(
 		};
 	}
 
-	const scopeOverride = lookupOverride(occurrence.scope, bundle.scopeOverrides.entries);
+	const scopeOverride = lookupOverride(
+		entry => entry.selector.kind === 'scope' && entry.selector.scope === occurrence.scope,
+		bundle.overrides.entries,
+	);
 	if (scopeOverride != null) {
 		return {
 			pattern: clonePattern(scopeOverride.translationPattern),
@@ -90,7 +116,7 @@ export function resolveOccurrenceTranslation(
 
 export function syncWorkset(
 	previousWorkset: TranslationWorksetFile,
-	occurrences: readonly ManifestOccurrence[],
+	occurrences: readonly SourceOccurrence[],
 	bundle: AuthorityBundle,
 ): TranslationWorksetFile {
 	const previousEntries = new Map(previousWorkset.entries.map(entry => [entry.id, entry]));
@@ -101,13 +127,13 @@ export function syncWorkset(
 		const previous = previousEntries.get(authorityId);
 		const sourcePattern = clonePattern(grouped[0].pattern);
 		const sourceHash = grouped[0].sourceHash;
-		const keys = grouped.map(occurrence => occurrence.key).sort((left, right) => left.localeCompare(right));
+		const occurrenceIds = grouped.map(occurrence => occurrence.id).sort((left, right) => left.localeCompare(right));
 
 		if (previous == null) {
 			entries.push({
 				...createMessageRecord(authorityId, sourcePattern, null),
 				sourceHash: sourceHash,
-				keys: keys,
+				occurrenceIds: occurrenceIds,
 				status: 'pending',
 			});
 			continue;
@@ -121,7 +147,7 @@ export function syncWorkset(
 		entries.push({
 			...nextRecord,
 			sourceHash: sourceHash,
-			keys: keys,
+			occurrenceIds: occurrenceIds,
 			status: nextStatus,
 			note: previous.note,
 		});
@@ -130,8 +156,8 @@ export function syncWorkset(
 	return {
 		$schema: '../schemas/translationWorkset.schema.json',
 		version: 2,
-		locale: 'zh-cn',
-		domain: 'manifest',
+		locale: previousWorkset.locale,
+		domain: previousWorkset.domain,
 		generatedAt: nowIso(),
 		entries: entries.sort((left, right) => left.id.localeCompare(right.id)),
 	};
@@ -155,7 +181,7 @@ export function promoteApprovedEntries(
 
 		promoted.push(entry.id);
 		const existing = updatedMessages.find(message => message.id === entry.id);
-		const { sourceHash: _sourceHash, keys: _keys, status: _status, note: _note, ...messageRecord } = entry;
+		const { sourceHash: _sourceHash, occurrenceIds: _occurrenceIds, status: _status, note: _note, ...messageRecord } = entry;
 		const nextMessage = cloneMessageRecord(messageRecord as AuthorityMessageEntry);
 
 		if (existing == null) {
@@ -184,16 +210,22 @@ export function promoteApprovedEntries(
 				updatedAt: messagesChanged ? timestamp : bundle.messages.updatedAt,
 				entries: updatedMessages.sort((left, right) => left.id.localeCompare(right.id)),
 			},
+			overrides: {
+				...bundle.overrides,
+				entries: [...bundle.overrides.entries].sort((left, right) =>
+					overrideSelectorId(left.selector).localeCompare(overrideSelectorId(right.selector)),
+				),
+			},
 		},
 		promoted: promoted,
 	};
 }
 
 function groupUnresolvedOccurrences(
-	occurrences: readonly ManifestOccurrence[],
+	occurrences: readonly SourceOccurrence[],
 	bundle: AuthorityBundle,
-): Map<string, ManifestOccurrence[]> {
-	const grouped = new Map<string, ManifestOccurrence[]>();
+): Map<string, SourceOccurrence[]> {
+	const grouped = new Map<string, SourceOccurrence[]>();
 
 	for (const occurrence of occurrences) {
 		if (resolveOccurrenceTranslation(occurrence, bundle) != null) continue;
@@ -211,6 +243,9 @@ function groupUnresolvedOccurrences(
 	return grouped;
 }
 
-function lookupOverride(id: string, overrides: readonly OverrideEntry[]): OverrideEntry | undefined {
-	return overrides.find(entry => entry.id === id);
+function lookupOverride(
+	matcher: (entry: AuthorityOverrideEntry) => boolean,
+	overrides: readonly AuthorityOverrideEntry[],
+): AuthorityOverrideEntry | undefined {
+	return overrides.find(matcher);
 }

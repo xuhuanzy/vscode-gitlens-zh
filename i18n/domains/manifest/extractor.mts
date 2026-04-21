@@ -1,25 +1,18 @@
-import type { ManifestOccurrence, MessagePattern } from '../shared/model.mts';
+import type { CatalogIssue, JsonPathSegment, SourceOccurrence } from '../../core/model.mts';
 import {
 	createAuthorityId,
 	createContentHash,
+	createJsonSourceReference,
+	createOccurrenceId,
 	createPatternFingerprint,
 	parseMessagePattern,
 	sanitizeKeySegment,
 	shortHash,
-	toJsonPointer,
-	type JsonPathSegment,
-} from '../shared/model.mts';
-
-export interface ManifestExtractionIssue {
-	readonly key: string;
-	readonly anchor?: string;
-	readonly pathPointer?: string;
-	readonly reason: string;
-}
+} from '../../core/model.mts';
 
 export interface ManifestExtractionResult {
-	readonly occurrences: ManifestOccurrence[];
-	readonly issues: ManifestExtractionIssue[];
+	readonly occurrences: SourceOccurrence[];
+	readonly issues: CatalogIssue[];
 }
 
 interface OccurrenceInput {
@@ -29,15 +22,11 @@ interface OccurrenceInput {
 	readonly slot: string;
 	readonly pathSegments: JsonPathSegment[];
 	readonly sourceText: string;
-	readonly extractedFrom: 'manifest' | 'package.nls';
-	readonly currentTokenKey?: string;
 	readonly businessId?: string;
 }
 
 interface ResolvedSource {
 	readonly sourceText: string;
-	readonly extractedFrom: 'manifest' | 'package.nls';
-	readonly currentTokenKey?: string;
 	readonly missingTokenKey?: string;
 }
 
@@ -52,20 +41,20 @@ export function extractManifestOccurrences(
 	manifest: Record<string, unknown>,
 	englishNls: Record<string, string>,
 ): ManifestExtractionResult {
-	const occurrences: ManifestOccurrence[] = [];
-	const issues: ManifestExtractionIssue[] = [];
-	const seenKeys = new Map<string, ManifestOccurrence>();
+	const occurrences: SourceOccurrence[] = [];
+	const issues: CatalogIssue[] = [];
+	const seenOutputKeys = new Map<string, SourceOccurrence>();
 
 	addIfString(manifest.displayName, {
 		scope: 'manifest.extension',
-		anchor: 'manifest.extension.displayName',
+		anchor: 'manifest.extension',
 		key: 'extension.displayName',
 		slot: 'displayName',
 		pathSegments: ['displayName'],
 	});
 	addIfString(manifest.description, {
 		scope: 'manifest.extension',
-		anchor: 'manifest.extension.description',
+		anchor: 'manifest.extension',
 		key: 'extension.description',
 		slot: 'description',
 		pathSegments: ['description'],
@@ -77,7 +66,7 @@ export function extractManifestOccurrences(
 		const identity = getPreferredId(asObject(badge).href, asObject(badge).url, `badge-${index + 1}`);
 		addIfString(description, {
 			scope: 'manifest.badge',
-			anchor: `manifest.badge.${identity}.description`,
+			anchor: `manifest.badge.${identity}`,
 			key: `badges.${identity}.description`,
 			slot: 'description',
 			pathSegments: ['badges', index, 'description'],
@@ -102,16 +91,17 @@ export function extractManifestOccurrences(
 
 	function addIfString(
 		value: unknown,
-		definition: Omit<OccurrenceInput, 'sourceText' | 'extractedFrom' | 'currentTokenKey'>,
+		definition: Omit<OccurrenceInput, 'sourceText'>,
 	): void {
 		if (typeof value !== 'string' || value.length === 0) return;
 
 		const resolved = resolveSource(value, englishNls);
 		if (resolved.missingTokenKey != null) {
 			issues.push({
-				key: definition.key,
+				occurrenceId: createOccurrenceId('manifest', definition.anchor, definition.slot),
 				anchor: definition.anchor,
-				pathPointer: toJsonPointer(definition.pathSegments),
+				reference: createJsonSourceReference('package.json', definition.pathSegments),
+				output: createManifestKeyOutputReference(definition.key),
 				reason: `Missing english package.nls entry for token '${resolved.missingTokenKey}'`,
 			});
 			return;
@@ -120,22 +110,21 @@ export function extractManifestOccurrences(
 		const occurrence = createOccurrence({
 			...definition,
 			sourceText: resolved.sourceText,
-			extractedFrom: resolved.extractedFrom,
-			currentTokenKey: resolved.currentTokenKey,
 		});
 
-		const existing = seenKeys.get(occurrence.key);
+		const existing = seenOutputKeys.get(definition.key);
 		if (existing != null) {
 			issues.push({
-				key: occurrence.key,
+				occurrenceId: occurrence.id,
 				anchor: occurrence.anchor,
-				pathPointer: occurrence.pathPointer,
-				reason: `Duplicate manifest localization key detected for '${occurrence.key}'`,
+				reference: occurrence.reference,
+				output: occurrence.output,
+				reason: `Duplicate manifest localization key detected for '${definition.key}'`,
 			});
 			return;
 		}
 
-		seenKeys.set(occurrence.key, occurrence);
+		seenOutputKeys.set(definition.key, occurrence);
 		occurrences.push(occurrence);
 	}
 }
@@ -143,7 +132,7 @@ export function extractManifestOccurrences(
 function extractMcpLabels(
 	providersValue: unknown,
 	englishNls: Record<string, string>,
-	addIfString: (value: unknown, definition: Omit<OccurrenceInput, 'sourceText' | 'extractedFrom' | 'currentTokenKey'>) => void,
+	addIfString: (value: unknown, definition: Omit<OccurrenceInput, 'sourceText'>) => void,
 ): void {
 	const providers = asArray(providersValue);
 	for (const [index, provider] of providers.entries()) {
@@ -152,7 +141,7 @@ function extractMcpLabels(
 
 		addIfString(resolvePotentialToken(record.label, englishNls), {
 			scope: 'manifest.mcpServerDefinitionProvider',
-			anchor: `manifest.mcpServerDefinitionProvider.${record.id}.label`,
+			anchor: `manifest.mcpServerDefinitionProvider.${record.id}`,
 			key: `contributes.mcpServerDefinitionProviders.${sanitizeKeySegment(record.id)}.label`,
 			slot: 'label',
 			pathSegments: ['contributes', 'mcpServerDefinitionProviders', index, 'label'],
@@ -164,7 +153,7 @@ function extractMcpLabels(
 function extractConfiguration(
 	configurationValue: unknown,
 	englishNls: Record<string, string>,
-	addIfString: (value: unknown, definition: Omit<OccurrenceInput, 'sourceText' | 'extractedFrom' | 'currentTokenKey'>) => void,
+	addIfString: (value: unknown, definition: Omit<OccurrenceInput, 'sourceText'>) => void,
 ): void {
 	const sections = asArray(configurationValue);
 	for (const [sectionIndex, sectionValue] of sections.entries()) {
@@ -172,7 +161,7 @@ function extractConfiguration(
 		if (typeof section.id === 'string') {
 			addIfString(resolvePotentialToken(section.title, englishNls), {
 				scope: 'manifest.configuration.section',
-				anchor: `manifest.configuration.section.${section.id}.title`,
+				anchor: `manifest.configuration.section.${section.id}`,
 				key: `contributes.configuration.${sanitizeKeySegment(section.id)}.title`,
 				slot: 'title',
 				pathSegments: ['contributes', 'configuration', sectionIndex, 'title'],
@@ -186,7 +175,7 @@ function extractConfiguration(
 			for (const field of translatableSettingFields) {
 				addIfString(resolvePotentialToken(property[field], englishNls), {
 					scope: 'manifest.configuration.property',
-					anchor: `manifest.configuration.property.${settingKey}.${field}`,
+					anchor: `manifest.configuration.property.${settingKey}`,
 					key: `contributes.configuration.${sanitizeKeySegment(settingKey)}.${field}`,
 					slot: field,
 					pathSegments: ['contributes', 'configuration', sectionIndex, 'properties', settingKey, field],
@@ -198,9 +187,9 @@ function extractConfiguration(
 			for (const [enumIndex, enumDescription] of enumDescriptions.entries()) {
 				addIfString(resolvePotentialToken(enumDescription, englishNls), {
 					scope: 'manifest.configuration.property',
-					anchor: `manifest.configuration.property.${settingKey}.enumDescriptions.${enumIndex}`,
+					anchor: `manifest.configuration.property.${settingKey}.enumDescriptions`,
 					key: `contributes.configuration.${sanitizeKeySegment(settingKey)}.enumDescriptions.${enumIndex + 1}`,
-					slot: 'enumDescriptions',
+					slot: `item-${enumIndex + 1}`,
 					pathSegments: [
 						'contributes',
 						'configuration',
@@ -220,7 +209,7 @@ function extractConfiguration(
 function extractCommands(
 	commandsValue: unknown,
 	englishNls: Record<string, string>,
-	addIfString: (value: unknown, definition: Omit<OccurrenceInput, 'sourceText' | 'extractedFrom' | 'currentTokenKey'>) => void,
+	addIfString: (value: unknown, definition: Omit<OccurrenceInput, 'sourceText'>) => void,
 ): void {
 	const commands = asArray(commandsValue);
 	for (const [index, commandValue] of commands.entries()) {
@@ -230,7 +219,7 @@ function extractCommands(
 		const commandId = sanitizeKeySegment(command.command);
 		addIfString(resolvePotentialToken(command.title, englishNls), {
 			scope: 'manifest.command',
-			anchor: `manifest.command.${command.command}.title`,
+			anchor: `manifest.command.${command.command}`,
 			key: `contributes.commands.${commandId}.title`,
 			slot: 'title',
 			pathSegments: ['contributes', 'commands', index, 'title'],
@@ -238,7 +227,7 @@ function extractCommands(
 		});
 		addIfString(resolvePotentialToken(command.category, englishNls), {
 			scope: 'manifest.command',
-			anchor: `manifest.command.${command.command}.category`,
+			anchor: `manifest.command.${command.command}`,
 			key: `contributes.commands.${commandId}.category`,
 			slot: 'category',
 			pathSegments: ['contributes', 'commands', index, 'category'],
@@ -250,7 +239,7 @@ function extractCommands(
 function extractSubmenus(
 	submenusValue: unknown,
 	englishNls: Record<string, string>,
-	addIfString: (value: unknown, definition: Omit<OccurrenceInput, 'sourceText' | 'extractedFrom' | 'currentTokenKey'>) => void,
+	addIfString: (value: unknown, definition: Omit<OccurrenceInput, 'sourceText'>) => void,
 ): void {
 	const submenus = asArray(submenusValue);
 	for (const [index, submenuValue] of submenus.entries()) {
@@ -259,7 +248,7 @@ function extractSubmenus(
 
 		addIfString(resolvePotentialToken(submenu.label, englishNls), {
 			scope: 'manifest.submenu',
-			anchor: `manifest.submenu.${submenu.id}.label`,
+			anchor: `manifest.submenu.${submenu.id}`,
 			key: `contributes.submenus.${sanitizeKeySegment(submenu.id)}.label`,
 			slot: 'label',
 			pathSegments: ['contributes', 'submenus', index, 'label'],
@@ -271,7 +260,7 @@ function extractSubmenus(
 function extractViewsContainers(
 	viewsContainersValue: unknown,
 	englishNls: Record<string, string>,
-	addIfString: (value: unknown, definition: Omit<OccurrenceInput, 'sourceText' | 'extractedFrom' | 'currentTokenKey'>) => void,
+	addIfString: (value: unknown, definition: Omit<OccurrenceInput, 'sourceText'>) => void,
 ): void {
 	const viewsContainers = asObject(viewsContainersValue);
 	for (const [location, containersValue] of Object.entries(viewsContainers)) {
@@ -282,7 +271,7 @@ function extractViewsContainers(
 
 			addIfString(resolvePotentialToken(container.title, englishNls), {
 				scope: 'manifest.viewsContainer',
-				anchor: `manifest.viewsContainer.${location}.${container.id}.title`,
+				anchor: `manifest.viewsContainer.${location}.${container.id}`,
 				key: `contributes.viewsContainers.${sanitizeKeySegment(location)}.${sanitizeKeySegment(container.id)}.title`,
 				slot: 'title',
 				pathSegments: ['contributes', 'viewsContainers', location, index, 'title'],
@@ -295,7 +284,7 @@ function extractViewsContainers(
 function extractViews(
 	viewsValue: unknown,
 	englishNls: Record<string, string>,
-	addIfString: (value: unknown, definition: Omit<OccurrenceInput, 'sourceText' | 'extractedFrom' | 'currentTokenKey'>) => void,
+	addIfString: (value: unknown, definition: Omit<OccurrenceInput, 'sourceText'>) => void,
 ): void {
 	const views = asObject(viewsValue);
 	for (const [containerId, viewListValue] of Object.entries(views)) {
@@ -307,7 +296,7 @@ function extractViews(
 			const keyPrefix = `contributes.views.${sanitizeKeySegment(view.id)}`;
 			addIfString(resolvePotentialToken(view.name, englishNls), {
 				scope: 'manifest.view',
-				anchor: `manifest.view.${view.id}.name`,
+				anchor: `manifest.view.${view.id}`,
 				key: `${keyPrefix}.name`,
 				slot: 'name',
 				pathSegments: ['contributes', 'views', containerId, index, 'name'],
@@ -315,7 +304,7 @@ function extractViews(
 			});
 			addIfString(resolvePotentialToken(view.contextualTitle, englishNls), {
 				scope: 'manifest.view',
-				anchor: `manifest.view.${view.id}.contextualTitle`,
+				anchor: `manifest.view.${view.id}`,
 				key: `${keyPrefix}.contextualTitle`,
 				slot: 'contextualTitle',
 				pathSegments: ['contributes', 'views', containerId, index, 'contextualTitle'],
@@ -328,7 +317,7 @@ function extractViews(
 function extractViewsWelcome(
 	viewsWelcomeValue: unknown,
 	englishNls: Record<string, string>,
-	addIfString: (value: unknown, definition: Omit<OccurrenceInput, 'sourceText' | 'extractedFrom' | 'currentTokenKey'>) => void,
+	addIfString: (value: unknown, definition: Omit<OccurrenceInput, 'sourceText'>) => void,
 ): void {
 	const welcomes = asArray(viewsWelcomeValue);
 	const selectorCounts = new Map<string, number>();
@@ -350,11 +339,12 @@ function extractViewsWelcome(
 		const duplicateId = `${welcome.view}\u0000${baseSelector}`;
 		const selector =
 			(selectorCounts.get(duplicateId) ?? 0) > 1 ? `${baseSelector}.slot-${index + 1}` : baseSelector;
+		const slot = (selectorCounts.get(duplicateId) ?? 0) > 1 ? `contents.${index + 1}` : 'contents';
 		addIfString(resolvePotentialToken(welcome.contents, englishNls), {
 			scope: 'manifest.viewsWelcome',
-			anchor: `manifest.viewsWelcome.${welcome.view}.${selector}.contents`,
+			anchor: `manifest.viewsWelcome.${welcome.view}.${baseSelector}`,
 			key: `contributes.viewsWelcome.${sanitizeKeySegment(welcome.view)}.${selector}.contents`,
-			slot: 'contents',
+			slot: slot,
 			pathSegments: ['contributes', 'viewsWelcome', index, 'contents'],
 			businessId: welcome.view,
 		});
@@ -364,7 +354,7 @@ function extractViewsWelcome(
 function extractWalkthroughs(
 	walkthroughsValue: unknown,
 	englishNls: Record<string, string>,
-	addIfString: (value: unknown, definition: Omit<OccurrenceInput, 'sourceText' | 'extractedFrom' | 'currentTokenKey'>) => void,
+	addIfString: (value: unknown, definition: Omit<OccurrenceInput, 'sourceText'>) => void,
 ): void {
 	const walkthroughs = asArray(walkthroughsValue);
 	for (const [walkthroughIndex, walkthroughValue] of walkthroughs.entries()) {
@@ -374,7 +364,7 @@ function extractWalkthroughs(
 		const walkthroughId = sanitizeKeySegment(walkthrough.id);
 		addIfString(resolvePotentialToken(walkthrough.title, englishNls), {
 			scope: 'manifest.walkthrough',
-			anchor: `manifest.walkthrough.${walkthrough.id}.title`,
+			anchor: `manifest.walkthrough.${walkthrough.id}`,
 			key: `contributes.walkthroughs.${walkthroughId}.title`,
 			slot: 'title',
 			pathSegments: ['contributes', 'walkthroughs', walkthroughIndex, 'title'],
@@ -382,7 +372,7 @@ function extractWalkthroughs(
 		});
 		addIfString(resolvePotentialToken(walkthrough.description, englishNls), {
 			scope: 'manifest.walkthrough',
-			anchor: `manifest.walkthrough.${walkthrough.id}.description`,
+			anchor: `manifest.walkthrough.${walkthrough.id}`,
 			key: `contributes.walkthroughs.${walkthroughId}.description`,
 			slot: 'description',
 			pathSegments: ['contributes', 'walkthroughs', walkthroughIndex, 'description'],
@@ -395,7 +385,7 @@ function extractWalkthroughs(
 			const stepId = typeof step.id === 'string' ? sanitizeKeySegment(step.id) : `step-${stepIndex + 1}`;
 			addIfString(resolvePotentialToken(step.title, englishNls), {
 				scope: 'manifest.walkthrough.step',
-				anchor: `manifest.walkthrough.${walkthrough.id}.step.${stepId}.title`,
+				anchor: `manifest.walkthrough.${walkthrough.id}.step.${stepId}`,
 				key: `contributes.walkthroughs.${walkthroughId}.steps.${stepId}.title`,
 				slot: 'title',
 				pathSegments: ['contributes', 'walkthroughs', walkthroughIndex, 'steps', stepIndex, 'title'],
@@ -403,7 +393,7 @@ function extractWalkthroughs(
 			});
 			addIfString(resolvePotentialToken(step.description, englishNls), {
 				scope: 'manifest.walkthrough.step',
-				anchor: `manifest.walkthrough.${walkthrough.id}.step.${stepId}.description`,
+				anchor: `manifest.walkthrough.${walkthrough.id}.step.${stepId}`,
 				key: `contributes.walkthroughs.${walkthroughId}.steps.${stepId}.description`,
 				slot: 'description',
 				pathSegments: ['contributes', 'walkthroughs', walkthroughIndex, 'steps', stepIndex, 'description'],
@@ -413,25 +403,22 @@ function extractWalkthroughs(
 	}
 }
 
-function createOccurrence(input: OccurrenceInput): ManifestOccurrence {
+function createOccurrence(input: OccurrenceInput): SourceOccurrence {
 	const pattern = parseMessagePattern(input.sourceText);
 	return {
-		occurrenceId: input.key,
+		id: createOccurrenceId('manifest', input.anchor, input.slot),
 		domain: 'manifest',
 		scope: input.scope,
 		anchor: input.anchor,
-		key: input.key,
+		slot: input.slot,
+		businessId: input.businessId,
 		authorityId: createAuthorityId(pattern),
 		pattern: pattern,
 		patternFingerprint: createPatternFingerprint(pattern),
 		sourceText: input.sourceText,
 		sourceHash: createContentHash(input.sourceText),
-		pathPointer: toJsonPointer(input.pathSegments),
-		pathSegments: [...input.pathSegments],
-		slot: input.slot,
-		businessId: input.businessId,
-		extractedFrom: input.extractedFrom,
-		currentTokenKey: input.currentTokenKey,
+		reference: createJsonSourceReference('package.json', input.pathSegments),
+		output: createManifestKeyOutputReference(input.key),
 	};
 }
 
@@ -440,7 +427,6 @@ function resolveSource(value: string, englishNls: Record<string, string>): Resol
 	if (tokenMatch == null) {
 		return {
 			sourceText: value,
-			extractedFrom: 'manifest',
 		};
 	}
 
@@ -449,24 +435,26 @@ function resolveSource(value: string, englishNls: Record<string, string>): Resol
 	if (typeof englishText !== 'string') {
 		return {
 			sourceText: value,
-			extractedFrom: 'package.nls',
-			currentTokenKey: tokenKey,
 			missingTokenKey: tokenKey,
 		};
 	}
 
 	return {
 		sourceText: englishText,
-		extractedFrom: 'package.nls',
-		currentTokenKey: tokenKey,
 	};
 }
 
 function resolvePotentialToken(value: unknown, englishNls: Record<string, string>): unknown {
 	if (typeof value !== 'string') return value;
+	void englishNls;
+	return value;
+}
 
-	const resolved = resolveSource(value, englishNls);
-	return resolved.missingTokenKey == null ? value : value;
+function createManifestKeyOutputReference(key: string): SourceOccurrence['output'] {
+	return {
+		kind: 'manifest-key',
+		key: key,
+	};
 }
 
 function getConditionalSegment(value: unknown, fallbackIndex: number): string {

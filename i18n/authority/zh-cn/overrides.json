@@ -1,8 +1,8 @@
 {
 	"$schema": "../../schemas/authority.schema.json",
 	"version": 2,
-	"kind": "scopeOverrides",
+	"kind": "overrides",
 	"locale": "zh-cn",
-	"entries": [],
-	"updatedAt": "1970-01-01T00:00:00.000Z"
+	"updatedAt": "1970-01-01T00:00:00.000Z",
+	"entries": []
 }

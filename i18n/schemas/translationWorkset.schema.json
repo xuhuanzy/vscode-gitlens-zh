@@ -7,8 +7,8 @@
 	"properties": {
 		"$schema": { "type": "string" },
 		"version": { "const": 2 },
-		"locale": { "const": "zh-cn" },
-		"domain": { "const": "manifest" },
+		"locale": { "type": "string", "minLength": 1 },
+		"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "runtimeCensus"] },
 		"generatedAt": { "type": "string", "format": "date-time" },
 		"entries": {
 			"type": "array",
@@ -31,7 +31,7 @@
 		"baseEntry": {
 			"type": "object",
 			"additionalProperties": false,
-			"required": ["id", "kind", "source", "translation", "sourceHash", "keys", "status"],
+			"required": ["id", "kind", "source", "translation", "sourceHash", "occurrenceIds", "status"],
 			"properties": {
 				"id": { "type": "string" },
 				"kind": { "enum": ["literal", "template", "select", "plural", "rich"] },
@@ -42,7 +42,7 @@
 				"cases": { "type": "object", "additionalProperties": { "$ref": "#/definitions/caseRecord" } },
 				"format": { "const": "markdown" },
 				"sourceHash": { "type": "string" },
-				"keys": {
+				"occurrenceIds": {
 					"type": "array",
 					"minItems": 1,
 					"uniqueItems": true,

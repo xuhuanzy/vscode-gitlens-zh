@@ -1,0 +1,23 @@
+{
+	"$schema": "../schemas/pendingReport.schema.json",
+	"version": 1,
+	"locale": "zh-cn",
+	"domain": "manifest",
+	"generatedAt": "2026-04-21T12:59:48.055Z",
+	"baseRef": "HEAD",
+	"counts": {
+		"total": 0,
+		"pending": 0,
+		"translated": 0,
+		"needsReview": 0,
+		"approved": 0,
+		"promotable": 0
+	},
+	"coverage": {
+		"catalogOccurrences": 2196,
+		"resolvedOccurrences": 2196,
+		"unresolvedOccurrences": 0,
+		"readyForGeneration": true
+	},
+	"items": []
+}

@@ -1,0 +1,159 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Source Catalog",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["$schema", "version", "domain", "generatedAt", "deferredDomains", "occurrences", "reconciliation"],
+	"properties": {
+		"$schema": { "type": "string" },
+		"version": { "const": 2 },
+		"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "runtimeCensus"] },
+		"generatedAt": { "type": "string", "format": "date-time" },
+		"deferredDomains": {
+			"type": "array",
+			"items": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "runtimeCensus"] }
+		},
+		"occurrences": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/occurrence" }
+		},
+		"reconciliation": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["entries", "summary"],
+			"properties": {
+				"entries": {
+					"type": "array",
+					"items": { "$ref": "#/definitions/reconciliationEntry" }
+				},
+				"summary": {
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["added", "changed", "moved", "removed", "ambiguous"],
+					"properties": {
+						"added": { "type": "integer", "minimum": 0 },
+						"changed": { "type": "integer", "minimum": 0 },
+						"moved": { "type": "integer", "minimum": 0 },
+						"removed": { "type": "integer", "minimum": 0 },
+						"ambiguous": { "type": "integer", "minimum": 0 }
+					}
+				}
+			}
+		}
+	},
+	"definitions": {
+		"sourceReference": {
+			"anyOf": [
+				{
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["kind", "file", "pointer", "segments"],
+					"properties": {
+						"kind": { "const": "json" },
+						"file": { "type": "string" },
+						"pointer": { "type": "string" },
+						"segments": {
+							"type": "array",
+							"items": {
+								"anyOf": [{ "type": "string" }, { "type": "integer" }]
+							}
+						}
+					}
+				},
+				{
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["kind", "file", "syntax", "start", "end"],
+					"properties": {
+						"kind": { "const": "source" },
+						"file": { "type": "string" },
+						"syntax": { "type": "string" },
+						"start": { "$ref": "#/definitions/position" },
+						"end": { "$ref": "#/definitions/position" },
+						"attribute": { "type": "string" }
+					}
+				}
+			]
+		},
+		"position": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["line", "column"],
+			"properties": {
+				"line": { "type": "integer", "minimum": 1 },
+				"column": { "type": "integer", "minimum": 1 }
+			}
+		},
+		"outputReference": {
+			"anyOf": [
+				{
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["kind", "key"],
+					"properties": {
+						"kind": { "const": "manifest-key" },
+						"key": { "type": "string" }
+					}
+				},
+				{
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["kind", "bundle", "key"],
+					"properties": {
+						"kind": { "const": "runtime-key" },
+						"bundle": { "type": "string" },
+						"key": { "type": "string" }
+					}
+				}
+			]
+		},
+		"occurrence": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": [
+				"id",
+				"domain",
+				"scope",
+				"anchor",
+				"slot",
+				"authorityId",
+				"pattern",
+				"patternFingerprint",
+				"sourceText",
+				"sourceHash",
+				"reference"
+			],
+			"properties": {
+				"id": { "type": "string" },
+				"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "runtimeCensus"] },
+				"scope": { "type": "string" },
+				"anchor": { "type": "string" },
+				"slot": { "type": "string" },
+				"businessId": { "type": "string" },
+				"authorityId": { "type": "string" },
+				"pattern": { "$ref": "./messagePattern.schema.json" },
+				"patternFingerprint": { "type": "string" },
+				"sourceText": { "type": "string" },
+				"sourceHash": { "type": "string" },
+				"reference": { "$ref": "#/definitions/sourceReference" },
+				"output": { "$ref": "#/definitions/outputReference" }
+			}
+		},
+		"reconciliationEntry": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["occurrenceId", "change"],
+			"properties": {
+				"occurrenceId": { "type": "string" },
+				"change": { "enum": ["added", "changed", "moved", "removed", "ambiguous"] },
+				"anchor": { "type": "string" },
+				"previousReference": { "$ref": "#/definitions/sourceReference" },
+				"currentReference": { "$ref": "#/definitions/sourceReference" },
+				"previousSourceHash": { "type": "string" },
+				"currentSourceHash": { "type": "string" },
+				"output": { "$ref": "#/definitions/outputReference" },
+				"reason": { "type": "string" }
+			}
+		}
+	}
+}
