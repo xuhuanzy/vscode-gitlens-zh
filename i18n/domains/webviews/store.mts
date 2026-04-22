@@ -1,4 +1,5 @@
 import fs from 'node:fs';
+import path from 'node:path';
 
 import type { WebviewsDomainContext } from './context.mts';
 
@@ -43,6 +44,25 @@ export function saveLocalizedSettingsShell(context: WebviewsDomainContext, html:
 export function loadLocalizedSettingsShell(context: WebviewsDomainContext): string | undefined {
 	try {
 		return fs.readFileSync(context.localizedSettingsShellSourceFile, 'utf8');
+	} catch {
+		return undefined;
+	}
+}
+
+export function saveLocalizedRuntimeBundle(
+	context: WebviewsDomainContext,
+	bundle: string,
+	contents: string,
+): void {
+	writeTextFile(path.join(context.localizedRuntimeBundleSourceDir, `${bundle}.json`), contents);
+}
+
+export function loadLocalizedRuntimeBundle(
+	context: WebviewsDomainContext,
+	bundle: string,
+): string | undefined {
+	try {
+		return fs.readFileSync(path.join(context.localizedRuntimeBundleSourceDir, `${bundle}.json`), 'utf8');
 	} catch {
 		return undefined;
 	}

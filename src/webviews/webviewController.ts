@@ -29,7 +29,12 @@ import type {
 	WebviewViewTypes,
 } from '../constants.views.js';
 import type { Container } from '../container.js';
-import { getAvailableLocalizedWebviewShellUri, getCurrentWebviewLocale } from '../i18n/webviews.js';
+import {
+	getAvailableLocalizedWebviewShellUri,
+	getCurrentWebviewLocale,
+	getWebviewRuntimeLocalizationPayload,
+	injectWebviewRuntimeLocalization,
+} from '../i18n/webviews.js';
 import { getSubscriptionNextPaidPlanId } from '../plus/gk/utils/subscription.utils.js';
 import { executeCommand, executeCoreCommand } from '../system/-webview/command.js';
 import {
@@ -741,12 +746,13 @@ export class WebviewController<
 		);
 		const uri = localizedUri ?? Uri.joinPath(webRootUri, this.descriptor.fileName);
 
-		const [bytes, bootstrap, head, body, endOfBody] = await Promise.all([
+		const [bytes, bootstrap, head, body, endOfBody, localization] = await Promise.all([
 			workspace.fs.readFile(uri),
 			this.provider.includeBootstrap?.(true),
 			this.provider.includeHead?.(),
 			this.provider.includeBody?.(),
 			this.provider.includeEndOfBody?.(),
+			getWebviewRuntimeLocalizationPayload(this.getRootUri(), locale, this.descriptor.fileName),
 		]);
 
 		const sw = maybeStopWatch(scope, { log: { onlyExit: true, level: 'debug' } });
@@ -754,7 +760,7 @@ export class WebviewController<
 		sw?.stop({ message: `\u2022 serialized bootstrap; length=${serialized.length}` });
 
 		const html = replaceWebviewHtmlTokens(
-			strFromU8(bytes),
+			injectWebviewRuntimeLocalization(strFromU8(bytes), this._cspNonce, locale, localization),
 			this.id,
 			this.instanceId,
 			webview.cspSource,

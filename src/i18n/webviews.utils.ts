@@ -15,10 +15,6 @@ export function buildWebviewLocaleCandidates(locale: string | undefined): string
 		addLocaleCandidate(candidates, segments.slice(0, length).join('-'));
 	}
 
-	for (const alias of getLocaleFallbackAliases(normalized)) {
-		addLocaleCandidate(candidates, alias);
-	}
-
 	return candidates;
 }
 
@@ -26,6 +22,13 @@ const localizedWebviewShellBasePaths = [
 	['src', 'i18n', 'webviews'],
 	['dist', 'webviews', 'i18n'],
 ] as const;
+
+const localizedWebviewBundleBasePaths = [
+	['src', 'i18n', 'webviews'],
+	['dist', 'webviews', 'i18n'],
+] as const;
+
+const runtimeBundleOverridesByWebviewFileName = new Map<string, string>([]);
 
 export function buildLocalizedWebviewShellRelativePaths(locale: string | undefined, fileName: string): string[] {
 	const paths: string[] = [];
@@ -41,18 +44,31 @@ export function buildLocalizedWebviewShellRelativePaths(locale: string | undefin
 	return paths;
 }
 
+export function getWebviewRuntimeBundle(fileName: string): string | undefined {
+	const override = runtimeBundleOverridesByWebviewFileName.get(fileName);
+	if (override != null) return override;
+
+	const match = /^(?<bundle>[^/\\]+)\.html$/i.exec(fileName);
+	return match?.groups?.bundle;
+}
+
+export function buildLocalizedWebviewBundleRelativePaths(locale: string | undefined, bundle: string): string[] {
+	const paths: string[] = [];
+
+	for (const candidate of buildWebviewLocaleCandidates(locale)) {
+		if (candidate === 'en' || candidate.startsWith('en-')) continue;
+
+		for (const basePath of localizedWebviewBundleBasePaths) {
+			paths.push([...basePath, candidate, `${bundle}.json`].join('/'));
+		}
+	}
+
+	return paths;
+}
+
 function addLocaleCandidate(candidates: string[], locale: string | undefined): void {
 	if (locale == null || locale.length === 0) return;
 	if (candidates.includes(locale)) return;
 
 	candidates.push(locale);
-}
-
-function getLocaleFallbackAliases(locale: string): readonly string[] {
-	if (!locale.startsWith('zh')) return [];
-	if (locale === 'zh-hans-cn') return [];
-
-	// This branch currently only maintains a zh-cn webview shell. VS Code can report
-	// zh-Hans/zh-SG, so we fall back to zh-cn instead of silently using English.
-	return ['zh-cn'];
 }

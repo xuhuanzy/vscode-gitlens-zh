@@ -1,0 +1,779 @@
+{
+	"version": 1,
+	"locale": "zh-cn",
+	"bundle": "commitDetails",
+	"messages": [
+		{
+			"key": "commitDetails.imperative-display-121-22.text.eb3f5937ae",
+			"source": "Forward",
+			"pattern": {
+				"kind": "literal",
+				"text": "前进"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-122-19.text.5dc15775ef",
+			"source": "Back",
+			"pattern": {
+				"kind": "literal",
+				"text": "返回"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-132-15.text.9a5297b9b1",
+			"source": "View as Tree",
+			"pattern": {
+				"kind": "literal",
+				"text": "以树形显示"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-137-13.text.63b947dfa4",
+			"source": "View as List",
+			"pattern": {
+				"kind": "literal",
+				"text": "以列表显示"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-142-13.text.8878455c0e",
+			"source": "View as Tree",
+			"pattern": {
+				"kind": "literal",
+				"text": "以树形显示"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-147-13.text.c139bd03e4",
+			"source": "View as Auto",
+			"pattern": {
+				"kind": "literal",
+				"text": "自动显示"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-152-44.text.355e99e470",
+			"source": "Stash Name",
+			"pattern": {
+				"kind": "literal",
+				"text": "贮藏名称"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-161-15.text.538784e8c7",
+			"source": "Share as Cloud Patch",
+			"pattern": {
+				"kind": "literal",
+				"text": "共享为云补丁"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-162-43.text.5ce02d2084",
+			"source": " is-active",
+			"pattern": {
+				"kind": "literal",
+				"text": " is-active"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-169-8.text.e249dc68e5",
+			"source": "Explain Working Changes",
+			"pattern": {
+				"kind": "literal",
+				"text": "解释工作树更改"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-170-50.text.0897b2096b",
+			"source": "Stash",
+			"pattern": {
+				"kind": "literal",
+				"text": "贮藏"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-170-60.text.ef067e71a6",
+			"source": "Commit",
+			"pattern": {
+				"kind": "literal",
+				"text": "提交"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-170-8.text.80e3c6bad4",
+			"source": "Explain Changes in this ${slot1}",
+			"pattern": {
+				"kind": "template",
+				"text": "解释此${slot1}中的更改",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-174-62.text.e435b06864",
+			"source": " is-disabled",
+			"pattern": {
+				"kind": "literal",
+				"text": " is-disabled"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-175-13.text.10c619e55e",
+			"source": "Suggest Changes for PR",
+			"pattern": {
+				"kind": "literal",
+				"text": "为 PR 提出更改建议"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-178-13.text.25e56c1d81",
+			"source": "Close Suggestion for PR",
+			"pattern": {
+				"kind": "literal",
+				"text": "关闭 PR 建议"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-208-58.text.db0a61591a",
+			"source": "Error retrieving content",
+			"pattern": {
+				"kind": "literal",
+				"text": "检索内容时出错"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-212-33.text.b73350eee9",
+			"source": "Error retrieving content",
+			"pattern": {
+				"kind": "literal",
+				"text": "检索内容时出错"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-221-13.text.80e039de6d",
+			"source": "Staged Changes",
+			"pattern": {
+				"kind": "literal",
+				"text": "已暂存更改"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-221-58.text.598d079e4f",
+			"source": "Error retrieving content",
+			"pattern": {
+				"kind": "literal",
+				"text": "检索内容时出错"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-228-33.text.c470e2e86e",
+			"source": "Error retrieving content",
+			"pattern": {
+				"kind": "literal",
+				"text": "检索内容时出错"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-237-13.text.306f0dd92d",
+			"source": "Unstaged Changes",
+			"pattern": {
+				"kind": "literal",
+				"text": "未暂存更改"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-238-59.text.b6655e55ae",
+			"source": "Modified",
+			"pattern": {
+				"kind": "literal",
+				"text": "已修改"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-238-72.text.75898578f9",
+			"source": "Committed",
+			"pattern": {
+				"kind": "literal",
+				"text": "已提交"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-253-35.text.adf59036c6",
+			"source": "Pull",
+			"pattern": {
+				"kind": "literal",
+				"text": "拉取"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-253-56.text.47de96584f",
+			"source": "Push",
+			"pattern": {
+				"kind": "literal",
+				"text": "推送"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-253-65.text.d23cf05ab0",
+			"source": "Fetch",
+			"pattern": {
+				"kind": "literal",
+				"text": "获取"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-255-37.text.03df98bf39",
+			"source": "Pull from",
+			"pattern": {
+				"kind": "literal",
+				"text": "从以下位置拉取"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-255-63.text.4c7aa4a286",
+			"source": "Push to",
+			"pattern": {
+				"kind": "literal",
+				"text": "推送到"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-255-75.text.5ccb9d7d7e",
+			"source": "Fetch from",
+			"pattern": {
+				"kind": "literal",
+				"text": "从以下位置获取"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-291-10.text.3fd24907c5",
+			"source": "No matching files",
+			"pattern": {
+				"kind": "literal",
+				"text": "没有匹配的文件"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-292-10.text.a00f74383e",
+			"source": "No changes",
+			"pattern": {
+				"kind": "literal",
+				"text": "无更改"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-326-4.text.9a7df19449",
+			"source": "Configure autolinks to linkify external references, like Jira or Zendesk tickets, in commit messages.",
+			"pattern": {
+				"kind": "literal",
+				"text": "配置自动链接，以便在提交消息中将 Jira 或 Zendesk 工单等外部引用转换为链接。"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-368-13.text.c10f229da8",
+			"source": "Share Staged Changes",
+			"pattern": {
+				"kind": "literal",
+				"text": "共享已暂存更改"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-374-14.text.a8388dc6e3",
+			"source": "Custom Autolink ${slot1}${slot2}",
+			"pattern": {
+				"kind": "template",
+				"text": "自定义自动链接 ${slot1}${slot2}",
+				"slots": ["slot1", "slot2"]
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-381-13.text.b958bb2ba1",
+			"source": "Share Unstaged Changes",
+			"pattern": {
+				"kind": "literal",
+				"text": "共享未暂存更改"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-412-11.text.470e2c2ff1",
+			"source": "Open file",
+			"pattern": {
+				"kind": "literal",
+				"text": "打开文件"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-416-47.text.92f00bd3d5",
+			"source": "Unstage changes",
+			"pattern": {
+				"kind": "literal",
+				"text": "取消暂存更改"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-418-44.text.9395136886",
+			"source": "Stage changes",
+			"pattern": {
+				"kind": "literal",
+				"text": "暂存更改"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-489-52.text.f91aa69870",
+			"source": " is-active",
+			"pattern": {
+				"kind": "literal",
+				"text": " is-active"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-504-11.text.17295dfef8",
+			"source": "Inspect",
+			"pattern": {
+				"kind": "literal",
+				"text": "检查"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-512-51.text.8ad3973354",
+			"source": " is-active",
+			"pattern": {
+				"kind": "literal",
+				"text": " is-active"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-568-12.text.0aee916c59",
+			"source": "Open File",
+			"pattern": {
+				"kind": "literal",
+				"text": "打开文件"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-579-11.text.992b954209",
+			"source": "Open Changes with Working File",
+			"pattern": {
+				"kind": "literal",
+				"text": "打开与工作文件比较的更改"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-586-12.text.1dbbe6bdfb",
+			"source": "Open on Remote",
+			"pattern": {
+				"kind": "literal",
+				"text": "在远程上打开"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-597-22.text.ab43041837",
+			"source": "No working changes",
+			"pattern": {
+				"kind": "literal",
+				"text": "无工作树更改"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-72-69.text.5270426f07",
+			"source": "Files",
+			"pattern": {
+				"kind": "literal",
+				"text": "文件"
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-89-13.text.259bb9a35a",
+			"source": "Search matched ${slot1} of ${slot2} files\nClick to highlight matching files",
+			"pattern": {
+				"kind": "template",
+				"text": "搜索匹配了 ${slot2} 个文件中的 ${slot1} 个\\n点击高亮匹配文件",
+				"slots": ["slot1", "slot2"]
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-93-13.text.4ad31b1ad5",
+			"source": "Search matched ${slot1} of ${slot2} files\nClick to show only matching files",
+			"pattern": {
+				"kind": "template",
+				"text": "搜索匹配了 ${slot2} 个文件中的 ${slot1} 个\\n点击仅显示匹配文件",
+				"slots": ["slot1", "slot2"]
+			}
+		},
+		{
+			"key": "commitDetails.imperative-display-98-13.text.c918b3d1c2",
+			"source": "Showing ${slot1} of ${slot2} files\nClick to show all files",
+			"pattern": {
+				"kind": "template",
+				"text": "正在显示 ${slot2} 个文件中的 ${slot1} 个\\n点击显示全部文件",
+				"slots": ["slot1", "slot2"]
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-1-div-group-gl-tooltip-tooltip-overflowed-div-1.text.8a4d083d24",
+			"source": "Switch to Another Branch... ${slot1}",
+			"pattern": {
+				"kind": "template",
+				"text": "切换到其他分支... ${slot1}",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-1-div-section-button-container-1-gl-button-1-span-1-strong-1.text.fddd2096b5",
+			"source": "Compose Commits",
+			"pattern": {
+				"kind": "literal",
+				"text": "编排提交"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-1-div-section-button-container-1-gl-button-1.text.8793b6501b",
+			"source": "Compose Commits... ${slot1} (Preview) ${slot2}",
+			"pattern": {
+				"kind": "template",
+				"text": "编排提交... ${slot1}（预览）${slot2}",
+				"slots": ["slot1", "slot2"]
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-1-div-section-button-container-1-gl-button-2-tooltip.tooltip.cccd0a8bf9",
+			"source": "Commit via SCM",
+			"pattern": {
+				"kind": "literal",
+				"text": "通过 SCM 提交"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-1-root.text.ebfbe188ce",
+			"source": "Unpin this Commit Restores Automatic Following",
+			"pattern": {
+				"kind": "literal",
+				"text": "取消固定此提交 恢复自动跟随"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-10-span-mq-hide-sm.text.8aa60279c6",
+			"source": "Learn about autolinks",
+			"pattern": {
+				"kind": "literal",
+				"text": "了解自动链接"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-10-webview-pane-1-action-nav-1-action-item-1-label.label.47bde2c105",
+			"source": "Open Pull Request Changes",
+			"pattern": {
+				"kind": "literal",
+				"text": "打开拉取请求更改"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-10-webview-pane-1-action-nav-1-action-item-2-label.label.6786409eb6",
+			"source": "Compare Pull Request",
+			"pattern": {
+				"kind": "literal",
+				"text": "比较拉取请求"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-10-webview-pane-1-action-nav-1-action-item-3-label.label.25e5a7602a",
+			"source": "Open Pull Request on Remote",
+			"pattern": {
+				"kind": "literal",
+				"text": "在远程上打开拉取请求"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-10-webview-pane-1-span-1.text.6b0e3f7824",
+			"source": "Pull Request # ${slot1}",
+			"pattern": {
+				"kind": "template",
+				"text": "拉取请求 #${slot1}",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-11-webview-pane-1-span-1.text.c94bfc2c20",
+			"source": "Incoming / Outgoing",
+			"pattern": {
+				"kind": "literal",
+				"text": "传入 / 传出"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-12-root.text.09d4a82380",
+			"source": "Inspect Commit ${slot1}",
+			"pattern": {
+				"kind": "template",
+				"text": "查看提交 ${slot1}",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-13-root.text.d7d554bc7a",
+			"source": "Inspect Stash # ${slot1}",
+			"pattern": {
+				"kind": "template",
+				"text": "查看贮藏 #${slot1}",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-14-root.text.d788e7b109",
+			"source": "(pinned) Automatic following is suspended while pinned",
+			"pattern": {
+				"kind": "literal",
+				"text": "（已固定）固定期间自动跟随已暂停"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-16-gl-action-chip-1-label.label.f3ba6b8ac3",
+			"source": "Loading branches and tags which contain this commit",
+			"pattern": {
+				"kind": "literal",
+				"text": "正在加载包含此提交的分支和标签"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-17-gl-action-chip-error-label.label.5d503d7df5",
+			"source": "Failed to load branches and tags. Click to retry.",
+			"pattern": {
+				"kind": "literal",
+				"text": "加载分支和标签失败。点击重试。"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-17-gl-action-chip-error-span-mq-hide-sm.text.a088b6a688",
+			"source": "Failed to load",
+			"pattern": {
+				"kind": "literal",
+				"text": "加载失败"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-18-gl-action-chip-1-label.label.ed8b22832f",
+			"source": "Show which branches and tags contain this commit",
+			"pattern": {
+				"kind": "literal",
+				"text": "显示包含此提交的分支和标签"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-18-gl-action-chip-1-span-mq-hide-sm.text.27ed036c6f",
+			"source": "Show Branches & Tags",
+			"pattern": {
+				"kind": "literal",
+				"text": "显示分支和标签"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-19-gl-action-chip-warning-label.label.cfadfe4354",
+			"source": "Commit is not on any branch or tag",
+			"pattern": {
+				"kind": "literal",
+				"text": "此提交不在任何分支或标签上"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-19-gl-action-chip-warning-span-mq-hide-sm.text.4e584902bd",
+			"source": "Not on any branch or tag",
+			"pattern": {
+				"kind": "literal",
+				"text": "不在任何分支或标签上"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-2-div-section-div-alert-p-alert__content.text.ba8a6ddcd7",
+			"source": "This ${slot1} is not currently visible in the Commit Graph.",
+			"pattern": {
+				"kind": "template",
+				"text": "此${slot1}当前在提交图中不可见。",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-2-root.text.cc00d75c97",
+			"source": "Pin this Commit Suspends Automatic Following",
+			"pattern": {
+				"kind": "literal",
+				"text": "固定此提交 暂停自动跟随"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-22-gl-popover-reachability-range-chip-wrapper-div-reachability-popover-div-reachability-popover__header.text.ceb04827bf",
+			"source": "Commit is on ${slot1} ${slot2}",
+			"pattern": {
+				"kind": "template",
+				"text": "此提交位于 ${slot1} 个${slot2}",
+				"slots": ["slot1", "slot2"]
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-3-div-empty-p-1.text.ed726e125a",
+			"source": "Rich details for commits and stashes are shown as you navigate:",
+			"pattern": {
+				"kind": "literal",
+				"text": "可视化仓库历史"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-3-div-empty-p-2.text.27d17beea0",
+			"source": "Alternatively, show your work-in-progress, or search for or choose a commit",
+			"pattern": {
+				"kind": "literal",
+				"text": "共享为云补丁"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-3-div-empty-p-button-container-span-button-group-gl-button-1.text.31a2dae84e",
+			"source": "Choose Commit...",
+			"pattern": {
+				"kind": "literal",
+				"text": "选择提交..."
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-3-div-empty-p-button-container-span-button-group-gl-button-1.text.7a4922d8a8",
+			"source": "Overview",
+			"pattern": {
+				"kind": "literal",
+				"text": "概览"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-3-div-empty-p-button-container-span-button-group-gl-button-2-tooltip.tooltip.5da9e5290c",
+			"source": "Search for Commit",
+			"pattern": {
+				"kind": "literal",
+				"text": "搜索提交"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-3-div-empty-ul-bulleted-li-1.text.981b919b0a",
+			"source": "lines in the text editor",
+			"pattern": {
+				"kind": "literal",
+				"text": "${slot1} ${slot2} 需要你审查"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-3-div-empty-ul-bulleted-li-2-a-1.text.63070d55c5",
+			"source": "Commit Graph",
+			"pattern": {
+				"kind": "literal",
+				"text": "提交图"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-3-div-empty-ul-bulleted-li-2-a-2.text.6e2dd49f55",
+			"source": "Visual File History",
+			"pattern": {
+				"kind": "literal",
+				"text": "可视文件历史"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-3-div-empty-ul-bulleted-li-2-a-3.text.d11d5daf04",
+			"source": "Commits view",
+			"pattern": {
+				"kind": "literal",
+				"text": "提交视图"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-3-div-empty-ul-bulleted-li-2.text.0e24674268",
+			"source": "commits in the ${slot1}, ${slot2}, or ${slot3}",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1}、${slot2} 或 ${slot3} 中的提交",
+				"slots": ["slot1", "slot2", "slot3"]
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-3-div-empty-ul-bulleted-li-3-a-1.text.593437ba91",
+			"source": "Stashes view",
+			"pattern": {
+				"kind": "literal",
+				"text": "贮藏视图"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-3-div-empty-ul-bulleted-li-3.text.8545eadb43",
+			"source": "stashes in the ${slot1}",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} 中的贮藏",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-3-gl-button-2-tooltip.tooltip.082c6ca69c",
+			"source": "Share as Cloud Patch",
+			"pattern": {
+				"kind": "literal",
+				"text": "共享为云补丁"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-4-gl-action-chip-1-span-1.text.5160afc17a",
+			"source": "explain",
+			"pattern": {
+				"kind": "literal",
+				"text": "解释"
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-4-gl-tooltip-1-span-1.text.c6be7cec15",
+			"source": "Copy ${slot1} [${slot2}] Copy Message",
+			"pattern": {
+				"kind": "template",
+				"text": "将 Issue 与分支关联",
+				"slots": ["slot1", "slot2"]
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-5-gl-button-1.text.8dcf26299d",
+			"source": "Publish Branch Publish (push) ${slot1} to ${slot2}",
+			"pattern": {
+				"kind": "template",
+				"text": "发布分支 发布（push）${slot1} 到 ${slot2}",
+				"slots": ["slot1", "slot2"]
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-6-root.text.a643523008",
+			"source": "Overview of ${slot1} ${slot2} ${slot3} ${slot4} ${slot5}",
+			"pattern": {
+				"kind": "template",
+				"text": "概览：${slot1} ${slot2} ${slot3} ${slot4} ${slot5}",
+				"slots": ["slot1", "slot2", "slot3", "slot4", "slot5"]
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-7-root.text.043fbb0003",
+			"source": "${slot1} is ${slot2} behind and ${slot3} ahead of ${slot4}",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} 比 ${slot4} 落后 ${slot2}，并超前 ${slot3}",
+				"slots": ["slot1", "slot2", "slot3", "slot4"]
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-8-root.text.9a090fc828",
+			"source": "${slot1} is ${slot2} behind ${slot3}",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} 比 ${slot3} 落后 ${slot2}",
+				"slots": ["slot1", "slot2", "slot3"]
+			}
+		},
+		{
+			"key": "commitDetails.lit-template-9-root.text.d895cfb874",
+			"source": "${slot1} is ${slot2} ahead of ${slot3}",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} 比 ${slot3} 超前 ${slot2}",
+				"slots": ["slot1", "slot2", "slot3"]
+			}
+		}
+	]
+}

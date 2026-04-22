@@ -3,6 +3,564 @@
 	"version": 2,
 	"locale": "zh-cn",
 	"domain": "webviews",
-	"generatedAt": "2026-04-22T07:14:51.049Z",
-	"entries": []
+	"generatedAt": "2026-04-22T20:47:39.129Z",
+	"entries": [
+		{
+			"id": "message.000d1a29b2365349f8762064ef86edc1f548f435002395035bdc26f6c87754fc",
+			"kind": "template",
+			"source": "Showing all ${slot1}",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "c787bc425a23fb11f8bbbb696d71af5c238630a51e392905ff08c8d13979aa13",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-659-7.text.c7d1e856bb#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.01f1b9d42d64548da22f78c077f2bc6115d8a7dcadf0cde49e3601469cdb33a3",
+			"kind": "template",
+			"source": "${slot1} ${slot2} ${slot3} behind ${slot4} ${slot5}",
+			"translation": null,
+			"slots": ["slot1", "slot2", "slot3", "slot4", "slot5"],
+			"sourceHash": "26fbecd8df8ad1cabd780c1c10ffa89915e87c43c8825f340cefa86d4873280e",
+			"occurrenceIds": ["webviews:webviews.graph.graph.lit-template-12-root.text.7a0fb80828#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.02a8bcb25109550d4669bee85ba42987f0851a10b835da2ad8415eb15eac63d9",
+			"kind": "template",
+			"source": "Push ${slot1} to ${slot2} ${slot3} ${slot4} ${slot5} ahead of ${slot6}",
+			"translation": null,
+			"slots": ["slot1", "slot2", "slot3", "slot4", "slot5", "slot6"],
+			"sourceHash": "7bb2c2410d3faafac564599819756be91e984f6035368b8e9c1c903f3cd67bed",
+			"occurrenceIds": ["webviews:webviews.graph.graph.lit-template-13-root.text.80789f48a8#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.07f62778251c8f26440c7779a4c76a8cafaa73cfa9082b6bf91936c394deb45b",
+			"kind": "template",
+			"source": "found ${slot1} in existing rows",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "24828a34fcb848cd626b76c4291a98642c639f90f6614527944048ad2c475f1a",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-338-34.text.6b9266c32c#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.081b6ed49a6f5816aeac5704ceccccb51a7881b6da6cdcf5e531d1b2825cdfe3",
+			"kind": "rich",
+			"source": "$(git-branch) `${slot1}/${slot2}`",
+			"translation": null,
+			"format": "markdown",
+			"slots": ["slot1", "slot2"],
+			"sourceHash": "a5c84d72d873d3e531bbf6142b3364c3f325c237b72cbbe71adb89c1f6e5fdde",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-623-15.text.2d37a57038#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.15fb97e74d22186c40875af77fc13f775c82e7245127f238c1e45c6cf1e4f2f9",
+			"kind": "template",
+			"source": "${slot1} &mdash; organizes your pull requests into actionable groups to help you focus and keep your team unblocked",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "3734525c66110d63cdeef859093382a676357d7675c54de8a33db7959957ffec",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-2-div-titlebar__row-div-titlebar__group-gl-tooltip-2-span-1.text.26115ef05a#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.1aaa30322cf50d38e8a8653055cbbfdfdbdbc2556a5e7c9f6f427729ae164c9c",
+			"kind": "template",
+			"source": "graph-icon icon--${slot1}",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "075026411700f2c48af75ff375a6fa7fc43a50d5704b8f6ffb9b42a61ceae85d",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-163-64.text.55ad7e60ac#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.213bc770a6ead018f6b9ef755612e4cb29a839aedf5b49623aeb9f06b16c382e",
+			"kind": "template",
+			"source": "setting to ${slot1} rows",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "021dfa9316c3bd534f58557a27f72d31518dedb5c0ac401c47430d5f24229bf4",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-360-31.text.944e1ed66b#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.24c010f4bd85f22433f04ea8450b5e12c62ca4e0b281796edf75ba678aa3806d",
+			"kind": "template",
+			"source": "Switch Branch... ${slot1}",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "9b78a5a08afd944bda30d5c0018b9d011cac7d2165ce2c54513ac30423241766",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-3-gl-ref-button-1-div-1.text.f8bba945cc#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.267a629f92fa080a8222e4432466812c319444440a3b15aea3fc7dbb101c4e11",
+			"kind": "template",
+			"source": "${slot1} ${slot2} ${slot3} behind and ${slot4} ahead of ${slot5} ${slot6}",
+			"translation": null,
+			"slots": ["slot1", "slot2", "slot3", "slot4", "slot5", "slot6"],
+			"sourceHash": "04afe2676feaeb46cd1239b8f70b40033337cd494e260f54f334de87bb12001f",
+			"occurrenceIds": ["webviews:webviews.graph.graph.lit-template-11-root.text.8627279e02#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.29eb2b33e2ee77174739befbcb484e11d2c6688e9980ae22098be6531ea3d8bc",
+			"kind": "literal",
+			"source": "Open GitLens Home View",
+			"translation": null,
+			"sourceHash": "db72ad19edfcb8fae88b171446d6cbb4f1f3746ce28789326a9cfd11f76f795d",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-1112-20.text.37a0641141#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.2ce5be005b0cabf414282062cfef093e4d48e9a6d2150a4ad5089f54bbf2ebcd",
+			"kind": "literal",
+			"source": "Showing commits per day",
+			"translation": null,
+			"sourceHash": "c3f9aa184e77a7fa6eec36e0dfd3bf2cb679947f138aab1dacc28562c8ee2e20",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-1096-70.text.ed24674c95#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.33c3c52fa1d306354d62852a5dea48dd16f3f1130da3697620cc0b9101ba8156",
+			"kind": "literal",
+			"source": "Failed to load data",
+			"translation": null,
+			"sourceHash": "afa69443bb931e88100648a5eb9c43d054bd223e31750c4359fb8a33047163f9",
+			"occurrenceIds": ["webviews:webviews.graph.graph.lit-template-4-div-empty.text.8c20926103#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.3842e2b42a93a0eba8c466856818e368ad8b8cf3d25f82cc92de59c5173d7659",
+			"kind": "literal",
+			"source": "Force Push",
+			"translation": null,
+			"sourceHash": "163f86dca7d999f82bd16f30cd8a1e7a7d9c272d76914547653ccb5b0913b9d4",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-19-gl-tooltip-1-a-action-button-aria-label.aria-label.053e28aaa0#aria-label"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.3b726c385d4df703892e3cfd3708ad1a44a129b2d93030e1d6826af943608f4c",
+			"kind": "template",
+			"source": "on ${slot1}",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "e30daed036cfeee178fb1dcc9355d8efd6c92553a02296cf49f0cb65d7e899c4",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-20-root.text.ee1af5f197#text",
+				"webviews:webviews.graph.graph.lit-template-5-root.text.abb3f8a66e#text",
+				"webviews:webviews.graph.graph.lit-template-9-root.text.44cb56fb48#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.3ebd9095ca68042420f2db0120c64bd039991a46a5e09a6d54dd0f69e8ea6b48",
+			"kind": "template",
+			"source": "graph-icon mini-icon icon--${slot1}",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "6432817c0c70439fe0ad8477ade19c8f9e0beedff509e64854cbf492c74e4ea7",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-166-64.text.4fb0545404#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.4182836808fc2b44b32f34b06d242e2f66b6706b30afbcf99f07b878523d6a1a",
+			"kind": "template",
+			"source": "Showing ${slot1} of ${slot2}${slot3}",
+			"translation": null,
+			"slots": ["slot1", "slot2", "slot3"],
+			"sourceHash": "5f26be1ce50a16d98bf462bd69ac32bbf4462087b3dd5731925ed37b37b43560",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-668-7.text.133cdc4e50#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.4a8805c8d86f184351e84469c89422192a13131ecdfd33fa3ccae0fbb6ac96f4",
+			"kind": "literal",
+			"source": "Enter",
+			"translation": null,
+			"sourceHash": "dc8659db6d416dc32fcad510cc921af3c7eaf1176ddedfbe050ecf708fbac087",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.imperative-display-312-18.text.caf403c9e0#text",
+				"webviews:webviews.graph.graph.imperative-display-323-71.text.ccede75de3#text",
+				"webviews:webviews.graph.graph.imperative-display-683-21.text.643d955747#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.50f192adf792065e4c77c04aa9a7cf6dc8e487e08b01fb6ad006e9f68ce7753b",
+			"kind": "template",
+			"source": "${slot1} — track, manage, and collaborate on your branches and pull requests, all in one intuitive hub",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "9938b73ed5b28804cf4ff311f2be24c57d7ea2abe04101777201aa0545dac7b8",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-2-div-titlebar__row-div-titlebar__group-gl-tooltip-4-span-1.text.437efdb3d1#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.513a86734fa785dc53fa0c6d041ddcba810f8b02cd218e6b27deb5643c9e2ae7",
+			"kind": "literal",
+			"source": " is-ahead",
+			"translation": null,
+			"sourceHash": "1e98d9ab57bfcbb17cb8cbf295ada0b9d746af58929007f3cc7765f1df190728",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-219-79.text.81f9b75e3c#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.53f518d114059c0820e944b0ba1b159b32a2e2339901b074adb40f781d2df831",
+			"kind": "literal",
+			"source": " is-behind",
+			"translation": null,
+			"sourceHash": "b0ac194314cb64500919437029b28ce97c6dcee13d87be4c7ea4b01a3012a348",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-219-44.text.c314a51a64#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.579d4d217d45c8a9294cc6abe301701c4287e8609823ad3ab3b29f35c5b05c60",
+			"kind": "literal",
+			"source": "Create New Branch from",
+			"translation": null,
+			"sourceHash": "db825c535ba33a35cd36a10568f361c2e3e0cdb681a62509448b7e50a8c31bb4",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-2-div-titlebar__row-div-titlebar__group-gl-tooltip-1-span-1.text.30eabf0667#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.5ad0bef6bccc63970dba201f6b9fb30635408fa023d7ba236a32e4fcaedd2b24",
+			"kind": "template",
+			"source": "searching for ${slot1} in existing rows",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "284fe57a92c0cdeaa9f3d484a985831a74ce69819e9ff098183f449f0b81b7e3",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-331-32.text.b9b38d3b39#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.65d50778da965d58a7141339c31596a64efe0b6734bca4913156c9f5e8f116ef",
+			"kind": "template",
+			"source": "${slot1} Leverage Git and Integration information from GitLens in AI chat. ${slot2}",
+			"translation": null,
+			"slots": ["slot1", "slot2"],
+			"sourceHash": "f84e501083be613e92e7531f6196fa3dfb38522b4acf7791deb6273ea7260368",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-6-gl-popover-mcp-tooltip-div-mcp-tooltip__content.text.86c84fc0b9#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.6b67e41fa8f4a87b52fab246506defd7483b20325e2e5620a3a540ce86634469",
+			"kind": "literal",
+			"source": "GitLens Home",
+			"translation": null,
+			"sourceHash": "e938c4d5017d407c014c9a306ca6202d9c6fd62df8c560cb8aa657c7a676c728",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-2-div-titlebar__row-div-titlebar__group-gl-tooltip-4-span-1-strong-1.text.b3c03a8536#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.735820648ae1ccc27c3919193ff7ed53680aa3da3599e90de77c7d3d5e1e27c1",
+			"kind": "literal",
+			"source": "Locked",
+			"translation": null,
+			"sourceHash": "a424e33d90931d1ed22f2af37a3f3491a5c9de0dfae079f6f3ff4edf0309e07f",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-600-67.text.4b43679aa9#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.770d8d7a2756bf145a0e4e779c96244e8a2722ec2478c16fe51ca52c23c4561c",
+			"kind": "template",
+			"source": "Pull ${slot1} from ${slot2} ${slot3}",
+			"translation": null,
+			"slots": ["slot1", "slot2", "slot3"],
+			"sourceHash": "ead3e75e5261f8ef885b7774182072939cda533da7d90f11ba3edb7bf8c01cc6",
+			"occurrenceIds": ["webviews:webviews.graph.graph.lit-template-10-root.text.170276948d#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.855337c402db9e18bb2acd45bf341b09b8e60b7165a8a1a377514a7b1a2bd24a",
+			"kind": "literal",
+			"source": "No items",
+			"translation": null,
+			"sourceHash": "6c351c116cc7feeaf5724426f891c890b4f7d9cb8baab5f2ec1d6c512cc016b6",
+			"occurrenceIds": ["webviews:webviews.graph.graph.lit-template-5-div-empty.text.db4e1d4767#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.85a1a2e68f0c7ca54af73fe406798dc51c56b850b288b54f5fa20f342ab2434e",
+			"kind": "literal",
+			"source": ".graph-header .resizable.resizing",
+			"translation": null,
+			"sourceHash": "9c768821f003c195cab466a41b084781b63efc1fb08e257eac3ce411f0b7285b",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-338-54.text.a0579548e7#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.920d9bbcaa3f0cb3887d01b80b01e1b67452180aa6040cea0bfcfef3b8ffc93b",
+			"kind": "literal",
+			"source": "Jump to HEAD [Alt] Jump to Reference...",
+			"translation": null,
+			"sourceHash": "a22cab25778a5e40b75f179358e2d20837d8de7eeff18e2372c34e43f3900486",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-3-gl-button-jump-to-ref-span-1.text.3fb1eed258#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.a7882e478b9cc08b0566bb81fed5d739cda0f6da6281cda94f387132c49e8cbc",
+			"kind": "literal",
+			"source": "Open Visual History",
+			"translation": null,
+			"sourceHash": "aaf8d358cfecb14872882594e4f366a855ab123e35bdaef3eb32919ef6da880b",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-1093-20.text.5b3d7bc249#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.a88817842d3d33e72a1c351ca20e4266e731f06ec24bc9613f42e21d8c7b7235",
+			"kind": "template",
+			"source": "Last fetched ${slot1}",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "34d000e14590dc796feeaad71861491ec98f82874f52492719c32d638200bb02",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-18-root.text.a3945ad7af#text",
+				"webviews:webviews.graph.graph.lit-template-6-root.text.ae194661f1#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.aaf766b3ff9ea66a3b1235aeea89863377443120abeda95c161ac10a526fa690",
+			"kind": "template",
+			"source": "Fetch ${slot1}",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "f9d9237015f574571a81ea1ee4c52a550d1d6c35f82a18a19183b3e38ca0ce55",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-3-gl-tooltip-1-a-action-button.text.bd2c428c8a#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.add9268d4cfaef90b3c879ec912f605bb7f687655b879a06664a6f7bbf7c98cc",
+			"kind": "template",
+			"source": "${slot1} &mdash; easily visualize your repository and keep track of all work in progress. Use the rich commit search to find a specific commit, message, author, a changed file or files, or even a specific code change.",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "9e8e3b44f190893a27f12abcb2e10c7873986f7f5aea477a55f934d9e2745314",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-1-gl-feature-gate-1-p-1.text.bce73cd1c4#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.adf6924d83016b8004066c70201d013b134717d042002341d4622c396eb66e78",
+			"kind": "template",
+			"source": "Shows only relevant branches ${slot1}",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "2185f0b5bf20df0f2e02de07a7a4aaec24edbdfcdb74434918f345b59d4bdd16",
+			"occurrenceIds": ["webviews:webviews.graph.graph.lit-template-10-gl-tooltip-1-span-1.text.8d959ddb9c#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.b2aedd3b5607ebcd88970907bcd2c0cab2ba5309323bd18b7b09d3b370071c72",
+			"kind": "literal",
+			"source": "Open Worktree...",
+			"translation": null,
+			"sourceHash": "9d92d6ca1a0442f003fa4b51d279be60da8856c7e3dbc83ef9cf5d98774eb146",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.imperative-display-505-12.text.45f724bd9f#text",
+				"webviews:webviews.graph.graph.imperative-display-582-12.text.7ef601ed5a#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.b6b82bcb126c87c8cac484256e96a9d2ebb9871a553b6098a5b7ec17135fe3e7",
+			"kind": "literal",
+			"source": "Hidden Branches / Tags",
+			"translation": null,
+			"sourceHash": "ab9e0062810867bd4e92494cb6d0dd27a375917f72abcbbbdd2a8889fd46b94d",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-12-gl-popover-popover-gl-tooltip-1-span-1.text.5ee0970805#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.b74e7c835873281ebaef6f7814bdf3fcab8c1dea833c44668ae5a95ed1897ffb",
+			"kind": "literal",
+			"source": "Graph Filtering",
+			"translation": null,
+			"sourceHash": "ec999d114cbe7d389253e8e7992c2c9ea047d84beb3c04e784cfd7a50ec436bc",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-15-div-titlebar__row-div-titlebar__group-gl-popover-popover-gl-tooltip-1-span-1.text.f21bef18f0#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.b7f0e5bfcfc9d8ff33d259b4be6cc8c9217e9f84165e0eff15ec0742b83e5969",
+			"kind": "literal",
+			"source": "Active",
+			"translation": null,
+			"sourceHash": "92340695899bd2d86223e4a007620e0d6502fc0e08809773634c7e0743764a9c",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-599-68.text.cd5f8800d4#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.c146bff03f7b1b7ffef119f6f2b84e870aa6045a10c85e8414ccbf6a95c403dd",
+			"kind": "template",
+			"source": "Fetch from ${slot1} ${slot2} ${slot3}",
+			"translation": null,
+			"slots": ["slot1", "slot2", "slot3"],
+			"sourceHash": "0fd207f99acf7d00559a8242ed11d6a357d537c99b492e6d8db854957f5e79c4",
+			"occurrenceIds": ["webviews:webviews.graph.graph.lit-template-3-gl-tooltip-1-span-1.text.b13d30912f#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.c35eb0d5cc5fed40207686ac90a0b9387c190f84a0142853dabf3501f95dc77d",
+			"kind": "literal",
+			"source": "MMMM Do, YYYY",
+			"translation": null,
+			"sourceHash": "84f224f6a1a3242129c4015da7fe702b262d8e4c1b86292007b00a895b12c7f1",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-981-55.text.f16098a43f#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.c394656cea2202773d1dbfc95b471ec8693b1e72128255a22dcef15939ca2868",
+			"kind": "template",
+			"source": "Shows only branches that have been starred as favorites ${slot1}",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "1601c68615f03a7be81b52a417cccd8bb743880481a9f6f31ca7dd5e39077df6",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-9-gl-tooltip-1-sl-select-1-sl-option-4-gl-tooltip-1-span-1.text.cc6109ae07#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.c87fb3a6c99a3128077d1cdc1abaa480a2626ee5f424f91d244334922f13b868",
+			"kind": "template",
+			"source": "${slot1} is",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "8c42db24c225a5f17011c9c91bb54ca214cd8fbbdf693297dbcd2ee0a5c093f3",
+			"occurrenceIds": ["webviews:webviews.graph.graph.lit-template-8-root.text.165ff7d02e#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.d152c680852056d83f309aa540e8b0a9961a6235ea1b442d321accbfd9579f0c",
+			"kind": "literal",
+			"source": "Showing lines changed per day",
+			"translation": null,
+			"sourceHash": "a0ae3538e072a0e097061607d205a1aad5d45a105c7cd3633a9d4746bc8b084f",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-1096-36.text.93dc150598#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.d7dc81fd19b0ddf24e510aea6da5aa6019daf49d487ae8963ea9efd614347fb8",
+			"kind": "template",
+			"source": "paging in ${slot1} rows into existing ${slot2} rows at ${slot3} (last existing row: ${slot4})",
+			"translation": null,
+			"slots": ["slot1", "slot2", "slot3", "slot4"],
+			"sourceHash": "17041f4dce5fc7db6eaaf2aaba248ef6afcb89538a1343d565eb456a3bfd79fa",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-324-7.text.176ca262e3#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.dbb1f3810e9ea9717a0210fa7940010fa7317dd5e98c45a1d9644e1c50d4aa5d",
+			"kind": "literal",
+			"source": " current",
+			"translation": null,
+			"sourceHash": "2fb742e5820b6c028d4b76db84364d1376fe6b98478c889658152fa396bac808",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.imperative-display-1002-58.text.20a467abc2#text",
+				"webviews:webviews.graph.graph.imperative-display-1017-58.text.2e0e2a815a#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.dbd21d00baea15b94c1df563841fbfc543dfcf0ac3fd418cfe824bc1f9a0be69",
+			"kind": "template",
+			"source": "Force Push ${slot1} to ${slot2} ${slot3}",
+			"translation": null,
+			"slots": ["slot1", "slot2", "slot3"],
+			"sourceHash": "0284b5c235aed6ac7474c8076c57304135aee23652ffa8f805b8c589abe269a9",
+			"occurrenceIds": ["webviews:webviews.graph.graph.lit-template-19-gl-tooltip-1-span-1.text.2cbb8f5884#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.dcc5bca38c7fddbabd9d1916514e82ed24a55b1fa5be0e94fb751b615bf88e23",
+			"kind": "literal",
+			"source": "Choose a reference to jump to",
+			"translation": null,
+			"sourceHash": "d38b96026f2c82554f55c22faf12f23af6253375682f291a8e7b8e674d07c0d9",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-221-20.text.cd885f6aef#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.e255e34215307b18a57e2798d512cc05417e6313941eee9dfefec79135081178",
+			"kind": "literal",
+			"source": "Delete Stash...",
+			"translation": null,
+			"sourceHash": "b951e9f83f12f0928360730718b3417f08c526fef45eabbbbad33e5c08382368",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-440-32.text.ae47840be5#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.e58710661eb10ae8c13dce452e57eacf0faaf00cb88233350f2a488a1cc19cc7",
+			"kind": "literal",
+			"source": "Toggle Minimap",
+			"translation": null,
+			"sourceHash": "f1a9d44768edd0bea56a83dfaedc2b700d0f48a80ee84ccfa37e3aa684d8c971",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-15-div-titlebar__row-div-titlebar__group-span-button-group-gl-tooltip-1-button-action-button-aria-label.aria-label.c83a0fa10e#aria-label",
+				"webviews:webviews.graph.graph.lit-template-15-div-titlebar__row-div-titlebar__group-span-button-group-gl-tooltip-1-span-1.text.b7e3d9762f#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.ebd8d9de58f636017dd447e29dfbf65aef420e96e26720560c10034224180331",
+			"kind": "template",
+			"source": "${slot1}, ${slot2} changed",
+			"translation": null,
+			"slots": ["slot1", "slot2"],
+			"sourceHash": "79eeae433c24c077cbe8a05295a48a5506c2f9a0853641f92574801844031bee",
+			"occurrenceIds": ["webviews:webviews.graph.graph.imperative-display-963-24.text.4341ba2303#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.f200fae6d75b5fbe9941993d8930a32f32921cca4618ec7a799afc993495c626",
+			"kind": "template",
+			"source": "${slot1} — visualize the evolution of a repository, branch, folder, or file and identify when the most impactful changes were made and by whom",
+			"translation": null,
+			"slots": ["slot1"],
+			"sourceHash": "887ea14bfc2a2b9587714b649e37410eb09b5617714e9a7fa0dfaa3b9d1dba18",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-2-div-titlebar__row-div-titlebar__group-gl-tooltip-3-span-1.text.e0a88ff482#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.f7387e1b3464674275f02ccc9231b5cbd29223552f9f18d5d5a89f9c68607f06",
+			"kind": "literal",
+			"source": "Minimap Options",
+			"translation": null,
+			"sourceHash": "ac45bf3ca8ed0235e6400a3d42f43abf45e6c043227276c60be80f35ad66ad94",
+			"occurrenceIds": [
+				"webviews:webviews.graph.graph.lit-template-15-div-titlebar__row-div-titlebar__group-span-button-group-gl-popover-popover-gl-tooltip-1-button-action-button-aria-label.aria-label.fff10f53c2#aria-label",
+				"webviews:webviews.graph.graph.lit-template-15-div-titlebar__row-div-titlebar__group-span-button-group-gl-popover-popover-gl-tooltip-1-span-1.text.ba97c46cec#text"
+			],
+			"status": "pending"
+		}
+	]
 }

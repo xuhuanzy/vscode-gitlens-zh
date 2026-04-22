@@ -1,0 +1,497 @@
+{
+	"version": 1,
+	"locale": "zh-cn",
+	"bundle": "graph",
+	"messages": [
+		{
+			"key": "graph.imperative-display-213-33.text.94a306ea2d",
+			"source": "Pull",
+			"pattern": {
+				"kind": "literal",
+				"text": "拉取"
+			}
+		},
+		{
+			"key": "graph.imperative-display-213-42.text.5f3101af48",
+			"source": "Push",
+			"pattern": {
+				"kind": "literal",
+				"text": "推送"
+			}
+		},
+		{
+			"key": "graph.imperative-display-23-59.text.e8c4f81751",
+			"source": "Worktrees",
+			"pattern": {
+				"kind": "literal",
+				"text": "工作树"
+			}
+		},
+		{
+			"key": "graph.imperative-display-24-57.text.c9d4be66ea",
+			"source": "Branches",
+			"pattern": {
+				"kind": "literal",
+				"text": "分支"
+			}
+		},
+		{
+			"key": "graph.imperative-display-25-55.text.40766a0a7d",
+			"source": "Remotes",
+			"pattern": {
+				"kind": "literal",
+				"text": "远程"
+			}
+		},
+		{
+			"key": "graph.imperative-display-26-55.text.e45965fe0c",
+			"source": "Stashes",
+			"pattern": {
+				"kind": "literal",
+				"text": "贮藏"
+			}
+		},
+		{
+			"key": "graph.imperative-display-27-49.text.9c7312973f",
+			"source": "Tags",
+			"pattern": {
+				"kind": "literal",
+				"text": "标签"
+			}
+		},
+		{
+			"key": "graph.imperative-display-349-12.text.d613e2b090",
+			"source": "Switch to List Layout",
+			"pattern": {
+				"kind": "literal",
+				"text": "切换到列表布局"
+			}
+		},
+		{
+			"key": "graph.imperative-display-350-12.text.0f83bfdcf0",
+			"source": "Switch to Tree Layout",
+			"pattern": {
+				"kind": "literal",
+				"text": "切换到树形布局"
+			}
+		},
+		{
+			"key": "graph.imperative-display-439-39.text.59f968c5ce",
+			"source": "Apply Stash...",
+			"pattern": {
+				"kind": "literal",
+				"text": "应用贮藏..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-472-12.text.ff333b5d3f",
+			"source": "Pull",
+			"pattern": {
+				"kind": "literal",
+				"text": "拉取"
+			}
+		},
+		{
+			"key": "graph.imperative-display-479-45.text.593a30d3f9",
+			"source": "Push",
+			"pattern": {
+				"kind": "literal",
+				"text": "推送"
+			}
+		},
+		{
+			"key": "graph.imperative-display-483-12.text.67fb5b8a16",
+			"source": "Fetch",
+			"pattern": {
+				"kind": "literal",
+				"text": "获取"
+			}
+		},
+		{
+			"key": "graph.imperative-display-494-12.text.cc4918453a",
+			"source": "Switch to Another Branch...",
+			"pattern": {
+				"kind": "literal",
+				"text": "切换到另一个分支..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-499-12.text.fead787b63",
+			"source": "Compare with Working Tree",
+			"pattern": {
+				"kind": "literal",
+				"text": "与工作区比较"
+			}
+		},
+		{
+			"key": "graph.imperative-display-514-12.text.be49f04dbe",
+			"source": "Switch to Branch...",
+			"pattern": {
+				"kind": "literal",
+				"text": "切换到分支..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-519-12.text.e0c17976f7",
+			"source": "Compare with HEAD",
+			"pattern": {
+				"kind": "literal",
+				"text": "与 HEAD 比较"
+			}
+		},
+		{
+			"key": "graph.imperative-display-54-37.text.156c6e9c5f",
+			"source": "Create Worktree...",
+			"pattern": {
+				"kind": "literal",
+				"text": "创建工作树..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-548-42.text.54353622fa",
+			"source": "Switch to Tag...",
+			"pattern": {
+				"kind": "literal",
+				"text": "切换到标签..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-560-12.text.401f104726",
+			"source": "Pull",
+			"pattern": {
+				"kind": "literal",
+				"text": "拉取"
+			}
+		},
+		{
+			"key": "graph.imperative-display-567-45.text.6dc8c9b892",
+			"source": "Push",
+			"pattern": {
+				"kind": "literal",
+				"text": "推送"
+			}
+		},
+		{
+			"key": "graph.imperative-display-571-12.text.19e49257ac",
+			"source": "Fetch",
+			"pattern": {
+				"kind": "literal",
+				"text": "获取"
+			}
+		},
+		{
+			"key": "graph.imperative-display-60-34.text.d3485c57a6",
+			"source": "Switch to Branch...",
+			"pattern": {
+				"kind": "literal",
+				"text": "切换到分支..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-61-28.text.75880745db",
+			"source": "Create Branch...",
+			"pattern": {
+				"kind": "literal",
+				"text": "创建分支..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-647-44.text.29bef2b396",
+			"source": "Fetch",
+			"pattern": {
+				"kind": "literal",
+				"text": "获取"
+			}
+		},
+		{
+			"key": "graph.imperative-display-67-37.text.050b05a9db",
+			"source": "Add Remote...",
+			"pattern": {
+				"kind": "literal",
+				"text": "添加远程..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-689-39.text.8e637cb782",
+			"source": "Load more results...",
+			"pattern": {
+				"kind": "literal",
+				"text": "加载更多结果..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-689-64.text.7da5c09a14",
+			"source": "Load more commits...",
+			"pattern": {
+				"kind": "literal",
+				"text": "加载更多提交..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-73-38.text.b882e8fc44",
+			"source": "Stash All Changes...",
+			"pattern": {
+				"kind": "literal",
+				"text": "贮藏所有更改..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-74-37.text.ef4f4c8710",
+			"source": "Apply Stash...",
+			"pattern": {
+				"kind": "literal",
+				"text": "应用贮藏..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-742-17.text.a6f7a0304c",
+			"source": "Compose Commits...",
+			"pattern": {
+				"kind": "literal",
+				"text": "编排提交..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-743-20.text.c0469c2ea2",
+			"source": "Compose Commits...",
+			"pattern": {
+				"kind": "literal",
+				"text": "编排提交..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-753-18.text.be302af962",
+			"source": "Generate Commit Message",
+			"pattern": {
+				"kind": "literal",
+				"text": "生成提交消息"
+			}
+		},
+		{
+			"key": "graph.imperative-display-754-21.text.ac6a94b919",
+			"source": "Generate Commit Message",
+			"pattern": {
+				"kind": "literal",
+				"text": "生成提交消息"
+			}
+		},
+		{
+			"key": "graph.imperative-display-761-18.text.333c7be993",
+			"source": "Stash All Changes...",
+			"pattern": {
+				"kind": "literal",
+				"text": "贮藏所有更改..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-762-21.text.c871ad33f9",
+			"source": "Stash All Changes...",
+			"pattern": {
+				"kind": "literal",
+				"text": "贮藏所有更改..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-80-37.text.684fff22f0",
+			"source": "Create Tag...",
+			"pattern": {
+				"kind": "literal",
+				"text": "创建标签..."
+			}
+		},
+		{
+			"key": "graph.imperative-display-965-16.text.cf1aedf160",
+			"source": "No",
+			"pattern": {
+				"kind": "literal",
+				"text": "否"
+			}
+		},
+		{
+			"key": "graph.imperative-display-971-17.text.45ad3ca0d4",
+			"source": "No",
+			"pattern": {
+				"kind": "literal",
+				"text": "否"
+			}
+		},
+		{
+			"key": "graph.imperative-display-976-18.text.94995b6b6e",
+			"source": "No commits",
+			"pattern": {
+				"kind": "literal",
+				"text": "没有提交"
+			}
+		},
+		{
+			"key": "graph.imperative-display-985-41.text.ad2ea066a0",
+			"source": ", ${slot1}",
+			"pattern": {
+				"kind": "template",
+				"text": "，${slot1}",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "graph.imperative-property-title-52-10.text.952494c8b7",
+			"source": "Worktrees",
+			"pattern": {
+				"kind": "literal",
+				"text": "工作树"
+			}
+		},
+		{
+			"key": "graph.imperative-property-title-57-10.text.6533f8dfd9",
+			"source": "Branches",
+			"pattern": {
+				"kind": "literal",
+				"text": "分支"
+			}
+		},
+		{
+			"key": "graph.imperative-property-title-65-10.text.aadd455d27",
+			"source": "Remotes",
+			"pattern": {
+				"kind": "literal",
+				"text": "远程"
+			}
+		},
+		{
+			"key": "graph.imperative-property-title-70-10.text.157775538c",
+			"source": "Stashes",
+			"pattern": {
+				"kind": "literal",
+				"text": "贮藏"
+			}
+		},
+		{
+			"key": "graph.imperative-property-title-78-10.text.2b8502c2f8",
+			"source": "Tags",
+			"pattern": {
+				"kind": "literal",
+				"text": "标签"
+			}
+		},
+		{
+			"key": "graph.jsx-attribute-aria-label-743-20.aria-label.1ea7c92772",
+			"source": "Compose Commits...",
+			"pattern": {
+				"kind": "literal",
+				"text": "编排提交..."
+			}
+		},
+		{
+			"key": "graph.jsx-attribute-aria-label-754-21.aria-label.f9784bd9fd",
+			"source": "Generate Commit Message",
+			"pattern": {
+				"kind": "literal",
+				"text": "生成提交消息"
+			}
+		},
+		{
+			"key": "graph.jsx-attribute-aria-label-762-21.aria-label.e0a7988e32",
+			"source": "Stash All Changes...",
+			"pattern": {
+				"kind": "literal",
+				"text": "贮藏所有更改..."
+			}
+		},
+		{
+			"key": "graph.jsx-attribute-tooltip-742-17.tooltip.d3bd2abead",
+			"source": "Compose Commits...",
+			"pattern": {
+				"kind": "literal",
+				"text": "编排提交..."
+			}
+		},
+		{
+			"key": "graph.jsx-attribute-tooltip-753-18.tooltip.74913f0215",
+			"source": "Generate Commit Message",
+			"pattern": {
+				"kind": "literal",
+				"text": "生成提交消息"
+			}
+		},
+		{
+			"key": "graph.jsx-attribute-tooltip-761-18.tooltip.38f1c95579",
+			"source": "Stash All Changes...",
+			"pattern": {
+				"kind": "literal",
+				"text": "贮藏所有更改..."
+			}
+		},
+		{
+			"key": "graph.jsx-text-643-17.text.68479af554",
+			"source": "No results found",
+			"pattern": {
+				"kind": "literal",
+				"text": "未找到结果"
+			}
+		},
+		{
+			"key": "graph.jsx-text-745-58.text.72f79a2374",
+			"source": "Compose Commits...",
+			"pattern": {
+				"kind": "literal",
+				"text": "编排提交..."
+			}
+		},
+		{
+			"key": "graph.lit-template-1-div-panel-div-header-div-header-actions-gl-button-1-tooltip.tooltip.91d7f6f2cb",
+			"source": "Refresh",
+			"pattern": {
+				"kind": "literal",
+				"text": "刷新"
+			}
+		},
+		{
+			"key": "graph.lit-template-1-gl-feature-gate-1-p-1-a-1.text.c301532e7b",
+			"source": "Commit Graph",
+			"pattern": {
+				"kind": "literal",
+				"text": "提交图"
+			}
+		},
+		{
+			"key": "graph.lit-template-2-div-titlebar__row-div-titlebar__group-gl-repo-button-group-1-span-1.text.54f96aef96",
+			"source": "Switch to Another Repository... ${slot1}",
+			"pattern": {
+				"kind": "template",
+				"text": "切换到另一个仓库... ${slot1}",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "graph.lit-template-2-div-titlebar__row-div-titlebar__group-gl-tooltip-2-span-1-strong-1.text.32ce12a488",
+			"source": "Launchpad",
+			"pattern": {
+				"kind": "literal",
+				"text": "Launchpad"
+			}
+		},
+		{
+			"key": "graph.lit-template-2-div-titlebar__row-div-titlebar__group-gl-tooltip-3-span-1-strong-1.text.1d16d75774",
+			"source": "Visual History",
+			"pattern": {
+				"kind": "literal",
+				"text": "可视历史"
+			}
+		},
+		{
+			"key": "graph.lit-template-6-gl-popover-mcp-tooltip-div-mcp-tooltip__content-a-1.text.6104c4866d",
+			"source": "Learn more",
+			"pattern": {
+				"kind": "literal",
+				"text": "了解更多"
+			}
+		},
+		{
+			"key": "graph.lit-template-6-gl-popover-mcp-tooltip-div-mcp-tooltip__content-strong-1.text.2fc987dbcd",
+			"source": "Install GitKraken MCP for GitLens",
+			"pattern": {
+				"kind": "literal",
+				"text": "为 GitLens 安装 GitKraken MCP"
+			}
+		}
+	]
+}

@@ -1,5 +1,7 @@
 import { sanitizeKeySegment } from '../../core/model.mts';
 
+import { containsSyntheticAttributeSlotToken } from './template.mts';
+
 export interface HtmlTextNode {
 	readonly kind: 'text';
 	readonly start: number;
@@ -56,7 +58,25 @@ const voidTags = new Set([
 	'track',
 	'wbr',
 ]);
-const translatableContentTags = new Set(['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'label', 'button', 'option', 'a', 'small']);
+const translatableContentTags = new Set([
+	'h1',
+	'h2',
+	'h3',
+	'h4',
+	'h5',
+	'h6',
+	'p',
+	'li',
+	'label',
+	'button',
+	'option',
+	'a',
+	'b',
+	'em',
+	'small',
+	'strong',
+	'gl-button',
+]);
 const slotOnlyTags = new Set(['a', 'button', 'kbd', 'code', 'select', 'textarea', 'input', 'b', 'strong', 'i', 'em']);
 const ignoredPatternTags = new Set(['img', 'svg']);
 
@@ -155,11 +175,24 @@ export function visitHtmlElements(
 }
 
 export function shouldExtractElementContent(element: HtmlElementNode): boolean {
+	if (shouldSkipWrapperContentExtraction(element)) return false;
 	if (translatableContentTags.has(element.tag)) return true;
+	if (element.tag === 'div') {
+		if (hasTranslatableContentAncestor(element.parent)) return false;
+		return hasMeaningfulDirectTextChild(element);
+	}
 	if (element.tag !== 'span') return false;
 
 	const classList = getClassList(element);
-	return classList.includes('setting__hint') || classList.includes('token-popup__hint');
+	if (classList.includes('setting__hint') || classList.includes('token-popup__hint')) return true;
+	if (hasTranslatableContentAncestor(element.parent)) return false;
+	if (element.attributes.slot != null) return true;
+
+	return true;
+}
+
+export function shouldExtractRootContent(root: HtmlElementNode): boolean {
+	return root.tag === 'root' && hasMeaningfulDirectTextChild(root);
 }
 
 export function shouldSkipLocalizationSubtree(element: HtmlElementNode): boolean {
@@ -192,6 +225,7 @@ export function isTranslatableLiteralText(text: string): boolean {
 	if (text.includes('#{')) return false;
 	if (text.includes('<%=')) return false;
 	if (text.includes('${')) return false;
+	if (containsSyntheticAttributeSlotToken(text)) return false;
 	if (text === '•') return false;
 	if (/^\d+(?:\.\d+)?$/u.test(text)) return false;
 	return /[\p{L}\p{N}]/u.test(text);
@@ -268,15 +302,20 @@ export function findAttributeValueRange(
 	attribute: string,
 ): { readonly start: number; readonly end: number } | undefined {
 	const escapedAttribute = escapeRegex(attribute);
-	const regex = new RegExp(`${escapedAttribute}\\s*=\\s*(\"([^\"]*)\"|'([^']*)')`, 'iu');
+	const regex = new RegExp(
+		'(?:^|\\s)' + escapedAttribute + '\\s*=\\s*(?:"([^"]*)"|\'([^\']*)\'|([^\\s"\'=<>`]+))',
+		'iu',
+	);
 	const match = regex.exec(rawTag);
 	if (match == null) return undefined;
 
-	const quoted = match[1];
-	const offset = match.index + match[0].indexOf(quoted);
+	const value = match[1] ?? match[2] ?? match[3];
+	if (value == null) return undefined;
+
+	const offset = match.index + match[0].indexOf(value);
 	return {
-		start: offset + 1,
-		end: offset + quoted.length - 1,
+		start: offset,
+		end: offset + value.length,
 	};
 }
 
@@ -288,6 +327,40 @@ export function getClassList(element: HtmlElementNode): string[] {
 	return (element.attributes.class ?? '')
 		.split(/\s+/u)
 		.filter(Boolean);
+}
+
+function hasTranslatableContentAncestor(element: HtmlElementNode | undefined): boolean {
+	for (let current = element; current != null; current = current.parent) {
+		if (shouldSkipWrapperContentExtraction(current)) continue;
+		if (translatableContentTags.has(current.tag)) return true;
+		if (current.tag !== 'span') continue;
+
+		const classList = getClassList(current);
+		if (classList.includes('setting__hint') || classList.includes('token-popup__hint')) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+function shouldSkipWrapperContentExtraction(element: HtmlElementNode): boolean {
+	if (!translatableContentTags.has(element.tag) && element.tag !== 'span') return false;
+	if (hasMeaningfulDirectTextChild(element)) return false;
+
+	const meaningfulChildren = element.children.filter(
+		(child): child is HtmlElementNode =>
+			child.kind === 'element' && !shouldSkipLocalizationSubtree(child) && !isDecorativeElement(child),
+	);
+	if (meaningfulChildren.length === 0) return false;
+
+	return meaningfulChildren.every(
+		child => child.tag.includes('-') || translatableContentTags.has(child.tag) || child.tag === 'span',
+	);
+}
+
+function hasMeaningfulDirectTextChild(element: HtmlElementNode): boolean {
+	return element.children.some(child => child.kind === 'text' && normalizeWhitespace(child.raw).length !== 0);
 }
 
 function visitHtmlElement(element: HtmlElementNode, visitor: (element: HtmlElementNode) => void): void {
@@ -329,12 +402,12 @@ function getPathSegment(element: HtmlElementNode, siblingIndex: number): string 
 
 function parseAttributes(source: string): Record<string, string> {
 	const attributes: Record<string, string> = {};
-	const regex = /([^\s=/>]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'))?/gu;
+	const regex = /([^\s=/>]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/gu;
 	for (const match of source.matchAll(regex)) {
-		const [, rawName, doubleQuoted, singleQuoted] = match;
+		const [, rawName, doubleQuoted, singleQuoted, unquoted] = match;
 		const name = rawName.toLowerCase();
 		if (name === '/') continue;
-		attributes[name] = doubleQuoted ?? singleQuoted ?? '';
+		attributes[name] = doubleQuoted ?? singleQuoted ?? unquoted ?? '';
 	}
 	return attributes;
 }
@@ -426,6 +499,10 @@ function collectPatternSegments(
 }
 
 function shouldRepresentElementAsSlot(element: HtmlElementNode, parent: HtmlElementNode): boolean {
+	if (element.tag === 'gl-i18n-slot') {
+		return true;
+	}
+
 	if (element.tag === 'div') {
 		return getClassList(element).includes('select-container');
 	}
@@ -511,6 +588,7 @@ function normalizePatternSegments(
 		.replace(/\s+([,.;:!?])/gu, '$1')
 		.replace(/([([{])\s+/gu, '$1')
 		.replace(/\s+([)\]}])/gu, '$1')
+		.replace(/(\$\{[^}]+\})\s*\/\s*(\$\{[^}]+\})/gu, '$1/$2')
 		.trim();
 }
 

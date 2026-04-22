@@ -25,9 +25,11 @@ export function createWebviewsDomainContext(rootDir?: string): {
 	readonly worksetFile: string;
 	readonly pendingReportFile: string;
 	readonly settingsTemplateFile: string;
+	readonly runtimeBuildDir: string;
 	readonly settingsBuildFile: string;
 	readonly localizedShellSourceDir: string;
 	readonly localizedSettingsShellSourceFile: string;
+	readonly localizedRuntimeBundleSourceDir: string;
 } {
 	const workspace = createI18nWorkspaceContext(rootDir);
 	const domain = createDomainContext(workspace, {
@@ -41,8 +43,10 @@ export function createWebviewsDomainContext(rootDir?: string): {
 	return {
 		...domain,
 		settingsTemplateFile: path.join(domain.rootDir, 'src', 'webviews', 'apps', 'settings', 'settings.html'),
+		runtimeBuildDir: path.join(domain.rootDir, 'dist', 'webviews'),
 		settingsBuildFile: path.join(domain.rootDir, 'dist', 'webviews', 'settings.html'),
 		localizedShellSourceDir: localizedShellSourceDir,
 		localizedSettingsShellSourceFile: path.join(localizedShellSourceDir, 'settings.html'),
+		localizedRuntimeBundleSourceDir: localizedShellSourceDir,
 	};
 }

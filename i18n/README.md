@@ -4,7 +4,7 @@
 
 - `i18n/core` 负责通用 occurrence、reference、output reference、authority、workset、report 模型
 - `i18n/domains/manifest` 负责 `package.json` / `package.nls*` 的提取、对账与生成
-- `i18n/domains/webviews` 当前先覆盖 `settings` 静态 HTML shell 的提取、对账与生成
+- `i18n/domains/webviews` 当前覆盖 `settings` 静态 HTML shell 的端到端提取/生成，以及 `settings` / `welcome` / `rebase` / `home` / `commitDetails` / `timeline` 的运行时消息 bundle 生成；controller 会在底层注入 DOM 本地化 runtime，`graph`、`patchDetails` 与其他 mixed-renderer 或后续页面族仍通过 deferred issues 显式保留在后续范围
 
 `i18n/authority/zh-cn/overrides.json` 统一承载 `occurrence` / `anchor` / `scope` / `output` 四类覆盖规则。
 
@@ -27,6 +27,8 @@
 - `i18n/worksets/webviews.zh-cn.json` 保留 webviews 翻译工作状态与 `occurrenceIds`
 - `i18n/reports/webviews-pending.json` 是 webviews 域的派生进度视图
 - `src/i18n/webviews/zh-cn/settings.html` 是由 workflow 生成的本地化静态壳页真源，运行时优先从 `src/i18n/webviews` 读取，构建产物回退到 `dist/webviews/i18n`
+- `src/i18n/webviews/zh-cn/{settings,welcome,rebase,home,commitDetails,timeline}.json` 是由 workflow 生成的运行时消息 bundle，`WebviewController` 会在最终 HTML 装配时注入底层 DOM 本地化 runtime，并优先读取这些文件
+- `graph`、`patchDetails` 与其余 mixed-renderer / follow-up 页面当前不会生成运行时产物，而是通过 catalog reconciliation 中的 deferred issues 暴露后续范围
 
 常用命令：
 

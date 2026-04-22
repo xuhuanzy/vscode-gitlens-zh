@@ -1,0 +1,481 @@
+{
+	"version": 1,
+	"locale": "zh-cn",
+	"bundle": "timeline",
+	"messages": [
+		{
+			"key": "timeline.imperative-display-369-9.text.b40af951ec",
+			"source": "Showing All Branches",
+			"pattern": {
+				"kind": "literal",
+				"text": "正在显示所有分支"
+			}
+		},
+		{
+			"key": "timeline.imperative-display-551-9.text.d26494f162",
+			"source": "Showing All Branches",
+			"pattern": {
+				"kind": "literal",
+				"text": "正在显示所有分支"
+			}
+		},
+		{
+			"key": "timeline.imperative-display-603-54.text.69d48d84f1",
+			"source": "Additions",
+			"pattern": {
+				"kind": "literal",
+				"text": "新增"
+			}
+		},
+		{
+			"key": "timeline.imperative-display-603-78.text.8621a6c20a",
+			"source": "Deletions",
+			"pattern": {
+				"kind": "literal",
+				"text": "删除"
+			}
+		},
+		{
+			"key": "timeline.imperative-display-621-13.text.16aba6eb27",
+			"source": "Up to 1wk ago",
+			"pattern": {
+				"kind": "literal",
+				"text": "最多 1 周前"
+			}
+		},
+		{
+			"key": "timeline.imperative-display-624-13.text.080a19c6c3",
+			"source": "Up to 1mo ago",
+			"pattern": {
+				"kind": "literal",
+				"text": "最多 1 个月前"
+			}
+		},
+		{
+			"key": "timeline.imperative-display-627-13.text.5a16b53867",
+			"source": "Up to 3mo ago",
+			"pattern": {
+				"kind": "literal",
+				"text": "最多 3 个月前"
+			}
+		},
+		{
+			"key": "timeline.imperative-display-630-13.text.14b1b20915",
+			"source": "Up to 6mo ago",
+			"pattern": {
+				"kind": "literal",
+				"text": "最多 6 个月前"
+			}
+		},
+		{
+			"key": "timeline.imperative-display-633-13.text.1967c218bc",
+			"source": "Up to 9mo ago",
+			"pattern": {
+				"kind": "literal",
+				"text": "最多 9 个月前"
+			}
+		},
+		{
+			"key": "timeline.imperative-display-636-13.text.3bae3581ec",
+			"source": "Up to 1yr ago",
+			"pattern": {
+				"kind": "literal",
+				"text": "最多 1 年前"
+			}
+		},
+		{
+			"key": "timeline.imperative-display-639-13.text.86874f9086",
+			"source": "Up to 2yr ago",
+			"pattern": {
+				"kind": "literal",
+				"text": "最多 2 年前"
+			}
+		},
+		{
+			"key": "timeline.imperative-display-642-13.text.7b2e4e1f55",
+			"source": "Up to 4yr ago",
+			"pattern": {
+				"kind": "literal",
+				"text": "最多 4 年前"
+			}
+		},
+		{
+			"key": "timeline.imperative-display-645-13.text.9d14d0cf15",
+			"source": "All time",
+			"pattern": {
+				"kind": "literal",
+				"text": "全部时段"
+			}
+		},
+		{
+			"key": "timeline.imperative-display-780-50.text.554ee5bd1b",
+			"source": "Lines changed",
+			"pattern": {
+				"kind": "literal",
+				"text": "更改的行数"
+			}
+		},
+		{
+			"key": "timeline.imperative-display-81-40.text.327b39843c",
+			"source": "Hold shift to compare with working tree",
+			"pattern": {
+				"kind": "literal",
+				"text": "按住 Shift 以与工作树比较"
+			}
+		},
+		{
+			"key": "timeline.imperative-display-862-26.text.402499144c",
+			"source": ", ${slot1}",
+			"pattern": {
+				"kind": "template",
+				"text": "，${slot1}",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "timeline.imperative-property-title-362-11.text.611811e18b",
+			"source": "Select a File or Folder to Visualize",
+			"pattern": {
+				"kind": "literal",
+				"text": "选择要可视化的文件或文件夹"
+			}
+		},
+		{
+			"key": "timeline.lit-template-11-gl-breadcrumb-item-1-gl-button-1-span-1.text.33d6e6d4b4",
+			"source": "Visualize Folder History ${slot1}",
+			"pattern": {
+				"kind": "template",
+				"text": "可视化文件夹历史 ${slot1}",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "timeline.lit-template-13-gl-breadcrumb-item-child-1-gl-button-1-span-1.text.c83e241b5c",
+			"source": "Visualize Folder History ${slot1}",
+			"pattern": {
+				"kind": "template",
+				"text": "可视化文件夹历史 ${slot1}",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "timeline.lit-template-15-div-timeline__empty-p-1.text.d7d3a7e269",
+			"source": "There are no editors open that can provide file history information.",
+			"pattern": {
+				"kind": "literal",
+				"text": "当前没有可提供文件历史信息的已打开编辑器。"
+			}
+		},
+		{
+			"key": "timeline.lit-template-17-p-1.text.5cfe70c876",
+			"source": "Something went wrong",
+			"pattern": {
+				"kind": "literal",
+				"text": "发生了错误"
+			}
+		},
+		{
+			"key": "timeline.lit-template-17-p-2.text.bdb00eeb76",
+			"source": "Please close this tab and try again",
+			"pattern": {
+				"kind": "literal",
+				"text": "请关闭此标签页后重试"
+			}
+		},
+		{
+			"key": "timeline.lit-template-18-p-1.text.22724a27a2",
+			"source": "No commits found for the specified time period",
+			"pattern": {
+				"kind": "literal",
+				"text": "在指定时间范围内未找到提交"
+			}
+		},
+		{
+			"key": "timeline.lit-template-2-div-notice-gl-watermark-loader-1-p-1.text.3044e659d5",
+			"source": "Loading...",
+			"pattern": {
+				"kind": "literal",
+				"text": "获取全部"
+			}
+		},
+		{
+			"key": "timeline.lit-template-2-gl-button-1-aria-label.aria-label.e2e8516072",
+			"source": "Open in Editor",
+			"pattern": {
+				"kind": "literal",
+				"text": "在编辑器中打开"
+			}
+		},
+		{
+			"key": "timeline.lit-template-2-gl-button-1-tooltip.tooltip.2148aeaaf5",
+			"source": "Open in Editor",
+			"pattern": {
+				"kind": "literal",
+				"text": "在编辑器中打开"
+			}
+		},
+		{
+			"key": "timeline.lit-template-20-section-1-gl-ref-button-1-span-1.text.e47d23acab",
+			"source": "Change Reference... ${slot1}",
+			"pattern": {
+				"kind": "template",
+				"text": "更改引用... ${slot1}",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "timeline.lit-template-20-section-1-label-1.text.1670352187",
+			"source": "Branch",
+			"pattern": {
+				"kind": "literal",
+				"text": "分支"
+			}
+		},
+		{
+			"key": "timeline.lit-template-23-section-1-span-select-container-label-1.text.86ac9fd95e",
+			"source": "Timeframe",
+			"pattern": {
+				"kind": "literal",
+				"text": "时间范围"
+			}
+		},
+		{
+			"key": "timeline.lit-template-23-section-1-span-select-container-select-select-option-1.text.9e60ee6d07",
+			"source": "1 week",
+			"pattern": {
+				"kind": "literal",
+				"text": "1 周"
+			}
+		},
+		{
+			"key": "timeline.lit-template-23-section-1-span-select-container-select-select-option-2.text.b3dd747a65",
+			"source": "1 month",
+			"pattern": {
+				"kind": "literal",
+				"text": "1 个月"
+			}
+		},
+		{
+			"key": "timeline.lit-template-23-section-1-span-select-container-select-select-option-3.text.f4dd5bcd56",
+			"source": "3 months",
+			"pattern": {
+				"kind": "literal",
+				"text": "3 个月"
+			}
+		},
+		{
+			"key": "timeline.lit-template-23-section-1-span-select-container-select-select-option-4.text.9eaa6712fc",
+			"source": "6 months",
+			"pattern": {
+				"kind": "literal",
+				"text": "6 个月"
+			}
+		},
+		{
+			"key": "timeline.lit-template-23-section-1-span-select-container-select-select-option-5.text.ac54487b8f",
+			"source": "9 months",
+			"pattern": {
+				"kind": "literal",
+				"text": "9 个月"
+			}
+		},
+		{
+			"key": "timeline.lit-template-23-section-1-span-select-container-select-select-option-6.text.31868ce02d",
+			"source": "1 year",
+			"pattern": {
+				"kind": "literal",
+				"text": "1 年"
+			}
+		},
+		{
+			"key": "timeline.lit-template-23-section-1-span-select-container-select-select-option-7.text.5ca3fc1f77",
+			"source": "2 years",
+			"pattern": {
+				"kind": "literal",
+				"text": "2 年"
+			}
+		},
+		{
+			"key": "timeline.lit-template-23-section-1-span-select-container-select-select-option-8.text.eea60a564b",
+			"source": "4 years",
+			"pattern": {
+				"kind": "literal",
+				"text": "4 年"
+			}
+		},
+		{
+			"key": "timeline.lit-template-23-section-1-span-select-container-select-select-option-9.text.ec51d21567",
+			"source": "Full history",
+			"pattern": {
+				"kind": "literal",
+				"text": "完整历史"
+			}
+		},
+		{
+			"key": "timeline.lit-template-23-section-1-span-select-container.text.f317b3cb7b",
+			"source": "Timeframe ${slot1}",
+			"pattern": {
+				"kind": "template",
+				"text": "时间范围 ${slot1}",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "timeline.lit-template-24-section-1-span-select-container-label-1.text.0b7995b394",
+			"source": "Slice By",
+			"pattern": {
+				"kind": "literal",
+				"text": "切分方式"
+			}
+		},
+		{
+			"key": "timeline.lit-template-24-section-1-span-select-container-select-select-option-1.text.ea3a1d27e1",
+			"source": "Author",
+			"pattern": {
+				"kind": "literal",
+				"text": "作者"
+			}
+		},
+		{
+			"key": "timeline.lit-template-24-section-1-span-select-container-select-select-option-2.text.2f6e3c0eb4",
+			"source": "Branch",
+			"pattern": {
+				"kind": "literal",
+				"text": "分支"
+			}
+		},
+		{
+			"key": "timeline.lit-template-24-section-1-span-select-container.text.1ddc4a0136",
+			"source": "Slice By ${slot1}",
+			"pattern": {
+				"kind": "template",
+				"text": "切分方式 ${slot1}",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "timeline.lit-template-4-gl-feature-gate-1-p-1-a-1.text.c70b52631f",
+			"source": "Visual History",
+			"pattern": {
+				"kind": "literal",
+				"text": "可视历史"
+			}
+		},
+		{
+			"key": "timeline.lit-template-4-gl-feature-gate-1-p-1.text.f2e1056201",
+			"source": "${slot1} &mdash; visualize the evolution of a repository, branch, folder, or file and identify when the most impactful changes were made and by whom. Quickly see unmerged changes in files or folders, when slicing by branch.",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1}，可视化仓库、分支、文件夹或文件的演变，识别最有影响的更改是在何时、由谁完成的。按分支切片时，还可快速查看文件或文件夹中尚未合并的更改。",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "timeline.lit-template-5-div-actions-gl-button-1-aria-label.aria-label.e28fec8abe",
+			"source": "Zoom In",
+			"pattern": {
+				"kind": "literal",
+				"text": "放大"
+			}
+		},
+		{
+			"key": "timeline.lit-template-5-div-actions-gl-button-1-tooltip.tooltip.5ec8037bfd",
+			"source": "Zoom In",
+			"pattern": {
+				"kind": "literal",
+				"text": "放大"
+			}
+		},
+		{
+			"key": "timeline.lit-template-5-gl-feature-gate-1-p-1-a-1.text.2c86477986",
+			"source": "Visual File History",
+			"pattern": {
+				"kind": "literal",
+				"text": "可视文件历史"
+			}
+		},
+		{
+			"key": "timeline.lit-template-5-gl-feature-gate-1-p-1.text.8578161fb6",
+			"source": "${slot1} &mdash; visualize the evolution of a file and quickly identify when the most impactful changes were made and by whom. Quickly see unmerged changes in files or folders, when slicing by branch.",
+			"pattern": {
+				"kind": "template",
+				"text": "强制推送${slot1}",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "timeline.lit-template-6-gl-button-1-aria-label.aria-label.3870541571",
+			"source": "Zoom Out",
+			"pattern": {
+				"kind": "literal",
+				"text": "缩小"
+			}
+		},
+		{
+			"key": "timeline.lit-template-6-gl-button-1-span-1.text.c7681a5c5d",
+			"source": "Zoom Out [Alt] Reset Zoom",
+			"pattern": {
+				"kind": "literal",
+				"text": "${slot1} ${slot2} 需要后续跟进"
+			}
+		},
+		{
+			"key": "timeline.lit-template-7-gl-button-1-aria-label.aria-label.c30853b2d3",
+			"source": "Choose File or Folder to Visualize...",
+			"pattern": {
+				"kind": "literal",
+				"text": "选择要可视化的文件或文件夹..."
+			}
+		},
+		{
+			"key": "timeline.lit-template-7-gl-button-1-tooltip.tooltip.4a85fad4b9",
+			"source": "Choose File or Folder to Visualize...",
+			"pattern": {
+				"kind": "literal",
+				"text": "选择要可视化的文件或文件夹..."
+			}
+		},
+		{
+			"key": "timeline.lit-template-7-gl-button-1.text.a201a35058",
+			"source": "Choose File / Folder...",
+			"pattern": {
+				"kind": "literal",
+				"text": "选择文件 / 文件夹..."
+			}
+		},
+		{
+			"key": "timeline.lit-template-8-gl-breadcrumb-item-1-gl-repo-button-group-1-aria-label.aria-label.711897f10f",
+			"source": "Visualize Repository History",
+			"pattern": {
+				"kind": "literal",
+				"text": "可视化仓库历史"
+			}
+		},
+		{
+			"key": "timeline.lit-template-8-gl-breadcrumb-item-1-gl-repo-button-group-1-span-1.text.19e0be4824",
+			"source": "Visualize Repository History ${slot1}",
+			"pattern": {
+				"kind": "template",
+				"text": "可视化仓库历史 ${slot1}",
+				"slots": ["slot1"]
+			}
+		},
+		{
+			"key": "timeline.lit-template-9-gl-breadcrumb-item-1-gl-ref-button-1-span-1.text.f6bca28b0e",
+			"source": "All Branches",
+			"pattern": {
+				"kind": "literal",
+				"text": "所有分支"
+			}
+		},
+		{
+			"key": "timeline.lit-template-9-gl-breadcrumb-item-1-gl-ref-button-1-span-2.text.30786ec290",
+			"source": "Change Reference... ${slot1}",
+			"pattern": {
+				"kind": "template",
+				"text": "更改引用... ${slot1}",
+				"slots": ["slot1"]
+			}
+		}
+	]
+}
