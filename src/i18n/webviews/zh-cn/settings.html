@@ -1,0 +1,3360 @@
+<!doctype html>
+<html lang="zh-CN">
+	<head><meta http-equiv="Content-Security-Policy" content="base-uri 'self'; object-src 'none'; script-src #{cspSource} 'nonce-#{cspNonce}' 'unsafe-eval'; style-src #{cspSource} 'unsafe-hashes' 'unsafe-inline'; default-src 'none'; img-src #{cspSource} https: data:; font-src #{cspSource}">
+		<meta charset="utf-8">
+		<style nonce="#{cspNonce}">
+			@font-face {
+				font-family: 'codicon';
+				font-display: block;
+				src: url('#{webroot}/codicon.ttf?79130123c9d3674a686cf03962523e8a') format('truetype');
+			}
+		</style>
+	<script type="module" src="#{root}/dist/webviews/settings.js" nonce="#{cspNonce}"></script><link href="#{root}/dist/webviews/settings.css" rel="stylesheet"></head>
+
+	<body class="scrollable preload" data-placement="#{placement}" data-vscode-context="{ &quot;webview&quot;: &quot;#{webviewId}&quot;, &quot;webviewInstance&quot;: &quot;#{webviewInstanceId}&quot; }">
+		<div class="container">
+			<header>
+				<h1 class="brand"><gitlens-logo></gitlens-logo>Git 全面增强</h1>
+				<p class="release">版本 <a id="version" href="https://github.com/gitkraken/vscode-gitlens/blob/main/CHANGELOG.md" title="打开 CHANGELOG" aria-label="打开 CHANGELOG"></a><a href="https://help.gitkraken.com/gitlens/gitlens-release-notes-current" title="打开发布说明" aria-label="打开发布说明">发布说明</a></p>
+			</header>
+
+			<div class="hero__area hero__area--sticky">
+				<div class="hero__row">
+					<h2 class="hero__title">设置</h2>
+					<div class="hero__title-actions">
+						<a href="#" data-action="collapse" title="全部折叠">全部折叠</a>
+						<a href="#" data-action="expand" class="hidden" title="展开所有部分">全部展开</a>
+					</div>
+					<div class="hero__toolbar">
+						<div class="hero__toolbar-scope hidden">
+							<label for="scopes">将设置保存到</label>
+							<div class="select-container">
+								<select id="scopes" name="scope"></select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<p class="hero__subtitle">如需高级自定义，请参阅<a class="secondary" title="查看 GitLens 设置文档" href="https://help.gitkraken.com/gitlens/gitlens-settings/">GitLens 文档</a>并编辑你的<a class="secondary" title="打开用户设置" href="command:workbench.action.openGlobalSettings">用户设置</a></p>
+			</div>
+
+			<div class="content__area content__area--full-scroll">
+				<!-- prettier-ignore -->
+				<section id="current-line" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<div class="setting__input setting__input--big">
+			<input id="currentLine.enabled" name="currentLine.enabled" type="checkbox" data-setting data-add-settings-off="hovers.currentLine.over=line">
+			<label for="currentLine.enabled">行内 Blame</label>
+			<a class="link__learn-more" title="了解更多" href="https://help.gitkraken.com/gitlens/gitlens-features/#current-line-blame">
+				<i class="icon icon__info"></i>
+			</a>
+		</div>
+
+		<p class="section__header-hint">在当前行末尾添加不显眼的 Blame 注解</p>
+		<div class="section__header-info">
+			<i class="icon icon--md icon__bulb"></i>
+			<div>
+				<p>使用<a class="command" title="运行命令" href="command:gitlens.toggleLineBlame">GitLens: 切换行 Blame 注解</a>命令可为当前窗口覆盖此设置</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting" data-enablement="currentLine.enabled">
+						<div class="setting__input">
+							<input id="currentLine.pullRequests.enabled" name="currentLine.pullRequests.enabled" type="checkbox" data-setting disabled>
+							<label for="currentLine.pullRequests.enabled">显示引入该提交的拉取请求（如有）</label>
+						</div>
+
+						<p class="setting__hint hidden" data-visibility="currentLine.pullRequests.enabled">需要连接到受支持的远程服务（例如 GitHub）</p>
+					</div>
+
+					<div class="setting" data-enablement="currentLine.enabled">
+						<div class="setting__input setting__input--format">
+							<label for="currentLine.format">注解格式</label>
+							<input id="currentLine.format" name="currentLine.format" type="text" placeholder="${author, }${agoOrDate}${' via 'pullRequest}${ • message|50?}" data-setting data-setting-preview data-default-value="${author, }${agoOrDate}${' via 'pullRequest}${ • message|50?}" data-popup-trigger disabled>
+							<label for="currentLine.format" title="查看可用 token">
+								<i class="icon icon__chevron-down"></i>
+							</label>
+						</div>
+						<div id="currentLine.format.popup" class="popup hidden"></div>
+						<span class="setting__hint">示例：<span data-setting-preview="currentLine.format" data-setting-preview-type="commit" data-setting-preview-default="${author, }${agoOrDate}${' via 'pullRequest}${ • message|50?}"></span></span>
+					</div>
+
+					<div class="setting" data-enablement="currentLine.enabled">
+						<div class="setting__input setting__input--format">
+							<input id="currentLine.useUncommittedChangesFormat" name="currentLine.useUncommittedChangesFormat" type="checkbox" data-setting disabled>
+							<label for="currentLine.useUncommittedChangesFormat">覆盖未提交更改的格式</label>
+						</div>
+						<span class="setting__hint" data-visibility="currentLine.useUncommittedChangesFormat =false">Example:
+							<span data-setting-preview="currentLine.uncommittedChangesFormat" data-setting-preview-type="commit-uncommitted" data-setting-preview-default-lookup="currentLine.format"></span>
+						</span>
+					</div>
+					<div class="setting ml-2" data-enablement="currentLine.enabled" data-visibility="currentLine.useUncommittedChangesFormat">
+						<div class="setting__input setting__input--format">
+							<label for="currentLine.uncommittedChangesFormat">未提交更改格式</label>
+							<input id="currentLine.uncommittedChangesFormat" name="currentLine.uncommittedChangesFormat" type="text" placeholder="format for uncommitted changes" data-setting data-setting-preview data-default-value data-popup-trigger disabled>
+							<label for="currentLine.uncommittedChangesFormat" title="See available tokens">
+								<i class="icon icon__chevron-down"></i>
+							</label>
+						</div>
+						<div id="currentLine.uncommittedChangesFormat.popup" class="popup hidden"></div>
+						<span class="setting__hint" data-visibility="currentLine.useUncommittedChangesFormat">Example:
+							<span data-setting-preview="currentLine.uncommittedChangesFormat" data-setting-preview-type="commit-uncommitted" data-setting-preview-default></span>
+						</span>
+					</div>
+
+					<div class="setting" data-enablement="currentLine.enabled">
+						<div class="setting__input">
+							<input id="currentLine.scrollable" name="currentLine.scrollable" type="checkbox" data-setting disabled>
+							<label for="currentLine.scrollable">水平滚动编辑器时一并滚动该注解</label>
+						</div>
+						<p class="setting__hint">启用后，当注解位于视口外时，可以通过滚动将其带入视图。</p>
+						<p class="setting__hint">将此项设为<code>false</code>会阻止悬停提示在注解上显示；将<a title="跳转到悬停提示设置" data-action="jump" href="#hovers.currentLine.over"><code>gitlens.hovers.currentLine.over</code></a>设为<code>line</code>可让悬停提示在整行任意位置显示。</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview" src="#{webroot}/media/current-line-blame.webp" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/current-line-blame-on.webp" data-visibility="currentLine.enabled &amp; currentLine.pullRequests.enabled =false" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/current-line-blame-on+pr.webp" data-visibility="currentLine.enabled &amp; currentLine.pullRequests.enabled" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/current-line-blame-on-scrollable.webp" data-visibility="currentLine.enabled &amp; currentLine.scrollable" loading="lazy" width="600" height="206">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.currentLine%22">设置界面</a>并搜索<b><i>gitlens.currentLine</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="code-lens" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<div class="setting__input setting__input--big">
+			<input id="codeLens.enabled" name="codeLens.enabled" type="checkbox" data-setting>
+			<label for="codeLens.enabled">Git CodeLens</label>
+			<a class="link__learn-more" title="了解更多" href="https://help.gitkraken.com/gitlens/gitlens-features/#git-codelens">
+				<i class="icon icon__info"></i>
+			</a>
+		</div>
+
+		<p class="section__header-hint">在文件顶部和代码块上添加作者信息 CodeLens</p>
+		<div class="section__header-info">
+			<i class="icon icon__bulb"></i>
+			<div>
+				<p>使用<a class="command" title="运行命令" href="command:gitlens.toggleCodeLens">GitLens: 切换 Git CodeLens</a>命令可为当前窗口覆盖此设置</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting" data-enablement="codeLens.enabled">
+						<div class="setting__input">
+							<input id="codeLens.recentChange.enabled" name="codeLens.recentChange.enabled" type="checkbox" data-setting disabled>
+							<label for="codeLens.recentChange.enabled">添加文件或代码块最近一次更改的作者和日期</label>
+						</div>
+					</div>
+
+					<div class="settings settings--fixed ml-2">
+						<div class="setting" data-enablement="codeLens.enabled &amp; codeLens.recentChange.enabled">
+							<div class="setting__input">
+								<input id="codeLens.recentChange.command" name="codeLens.recentChange.command" type="checkbox" value="gitlens.showQuickCommitFileDetails" data-setting disabled>
+								<label class="nowrap" for="codeLens.recentChange.command">点击时</label>
+								<div class="select-container">
+									<select id="codeLens.recentChange.command" name="codeLens.recentChange.command" data-setting data-enablement="codeLens.enabled &amp; codeLens.recentChange.enabled &amp; codeLens.recentChange.command !false" disabled>
+										<option value="gitlens.toggleFileBlame">切换文件 Blame</option>
+										<option value="gitlens.toggleFileHeatmap">切换文件热度图</option>
+										<option value="gitlens.toggleFileChanges">切换该提交之前至今的文件更改</option>
+										<option value="gitlens.toggleFileChangesOnly">切换该提交的文件更改</option>
+										<option value="gitlens.diffWithPrevious">打开与上一个版本的更改对比</option>
+										<option value="gitlens.revealCommitInView">在侧边栏中显示该提交</option>
+										<option value="gitlens.showCommitsInView">显示该提交的详情</option>
+										<option value="gitlens.showQuickCommitDetails">显示提交的快速详情</option>
+										<option value="gitlens.showQuickCommitFileDetails">显示该提交的快速文件详情（默认）</option>
+										<option value="gitlens.showQuickFileHistory">显示当前文件历史</option>
+										<option value="gitlens.showQuickRepoHistory">显示当前分支历史</option>
+										<option value="gitlens.openCommitOnRemote">在远程服务上打开该提交（如果可用）</option>
+										<option value="gitlens.copyRemoteCommitUrl">将远程提交 URL 复制到剪贴板（如果可用）</option>
+										<option value="gitlens.openFileOnRemote">在远程服务上打开该文件修订（如果可用）</option>
+										<option value="gitlens.copyRemoteFileUrl">将远程文件修订 URL 复制到剪贴板（如果可用）</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="codeLens.enabled">
+						<div class="setting__input">
+							<input id="codeLens.authors.enabled" name="codeLens.authors.enabled" type="checkbox" data-setting disabled>
+							<label for="codeLens.authors.enabled">添加文件或代码块的作者数量以及最主要作者</label>
+						</div>
+					</div>
+
+					<div class="settings settings--fixed ml-2">
+						<div class="setting" data-enablement="codeLens.enabled &amp; codeLens.authors.enabled">
+							<div class="setting__input">
+								<input id="codeLens.authors.command" name="codeLens.authors.command" type="checkbox" value="gitlens.toggleFileBlame" data-setting disabled>
+								<label class="nowrap" for="codeLens.authors.command">When clicked</label>
+								<div class="select-container">
+									<select id="codeLens.authors.command" name="codeLens.authors.command" data-setting data-enablement="codeLens.enabled &amp; codeLens.authors.enabled &amp; codeLens.authors.command !false" disabled>
+										<option value="gitlens.toggleFileBlame">切换文件 Blame（默认）</option>
+										<option value="gitlens.toggleFileHeatmap">切换文件热度图</option>
+										<option value="gitlens.toggleFileChanges">切换该提交之前至今的文件更改</option>
+										<option value="gitlens.toggleFileChangesOnly">切换该提交的文件更改</option>
+										<option value="gitlens.diffWithPrevious">打开与上一个版本的更改对比</option>
+										<option value="gitlens.revealCommitInView">在侧边栏中显示该提交</option>
+										<option value="gitlens.showCommitsInView">搜索该范围内的提交</option>
+										<option value="gitlens.showQuickCommitDetails">显示提交的快速详情</option>
+										<option value="gitlens.showQuickCommitFileDetails">显示该提交的快速文件详情</option>
+										<option value="gitlens.showQuickFileHistory">显示当前文件历史</option>
+										<option value="gitlens.showQuickRepoHistory">显示当前分支历史</option>
+										<option value="gitlens.openCommitOnRemote">在远程服务上打开该提交（如果可用）</option>
+										<option value="gitlens.copyRemoteCommitUrl">将远程提交 URL 复制到剪贴板（如果可用）</option>
+										<option value="gitlens.copyRemoteFileUrl">将远程文件修订 URL 复制到剪贴板（如果可用）</option>
+										<option value="gitlens.openFileOnRemote">在远程服务上打开该文件修订（如果可用）</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="codeLens.enabled">
+						<div class="setting__input">
+							<label class="non-interactive">在以下范围添加 CodeLens</label>
+						</div>
+					</div>
+
+					<div class="settings ml-2">
+						<div class="setting" data-enablement="codeLens.enabled">
+							<div class="setting__input">
+								<input id="codeLens.scopes" name="codeLens.scopes" type="checkbox" value="document" data-setting data-setting-type="array" disabled>
+								<label for="codeLens.scopes">文件范围</label>
+							</div>
+							<p class="setting__hint">位于文件顶部</p>
+						</div>
+
+						<div class="setting" data-enablement="codeLens.enabled">
+							<div class="setting__input">
+								<input id="codeLens.scopes-1" name="codeLens.scopes" type="checkbox" value="containers" data-setting data-setting-type="array" disabled>
+								<label for="codeLens.scopes-1">容器范围</label>
+							</div>
+							<p class="setting__hint">位于模块、类、接口等的开头</p>
+						</div>
+
+						<div class="setting" data-enablement="codeLens.enabled">
+							<div class="setting__input">
+								<input id="codeLens.scopes-2" name="codeLens.scopes" type="checkbox" value="blocks" data-setting data-setting-type="array" disabled>
+								<label for="codeLens.scopes-2">块范围</label>
+							</div>
+							<p class="setting__hint">位于函数、方法等的开头</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview" src="#{webroot}/media/code-lens.webp" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/code-lens-file-recent+authors.webp" data-visibility="codeLens.enabled &amp; codeLens.recentChange.enabled &amp; codeLens.authors.enabled &amp; codeLens.scopes +document" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/code-lens-file-recent.webp" data-visibility="codeLens.enabled &amp; codeLens.recentChange.enabled &amp; codeLens.authors.enabled =false &amp; codeLens.scopes +document" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/code-lens-file-authors.webp" data-visibility="codeLens.enabled &amp; codeLens.recentChange.enabled =false &amp; codeLens.authors.enabled &amp; codeLens.scopes +document" loading="lazy" width="600" height="206">
+
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/code-lens-containers-recent+authors.webp" data-visibility="codeLens.enabled &amp; codeLens.recentChange.enabled &amp; codeLens.authors.enabled &amp; codeLens.scopes +containers" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/code-lens-containers-recent.webp" data-visibility="codeLens.enabled &amp; codeLens.recentChange.enabled &amp; codeLens.authors.enabled =false &amp; codeLens.scopes +containers" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/code-lens-containers-authors.webp" data-visibility="codeLens.enabled &amp; codeLens.recentChange.enabled =false &amp; codeLens.authors.enabled &amp; codeLens.scopes +containers" loading="lazy" width="600" height="206">
+
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/code-lens-blocks-recent+authors.webp" data-visibility="codeLens.enabled &amp; codeLens.recentChange.enabled &amp; codeLens.authors.enabled &amp; codeLens.scopes +blocks" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/code-lens-blocks-recent.webp" data-visibility="codeLens.enabled &amp; codeLens.recentChange.enabled &amp; codeLens.authors.enabled =false &amp; codeLens.scopes +blocks" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/code-lens-blocks-authors.webp" data-visibility="codeLens.enabled &amp; codeLens.recentChange.enabled =false &amp; codeLens.authors.enabled &amp; codeLens.scopes +blocks" loading="lazy" width="600" height="206">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.codeLens%22">设置界面</a>并搜索<b><i>gitlens.codeLens</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="status-bar" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<div class="setting__input setting__input--big">
+			<input id="statusBar.enabled" name="statusBar.enabled" type="checkbox" data-setting>
+			<label for="statusBar.enabled">状态栏 Blame</label>
+			<a class="link__learn-more" title="了解更多" href="https://help.gitkraken.com/gitlens/gitlens-features/#status-bar-blame">
+				<i class="icon icon__info"></i>
+			</a>
+		</div>
+
+		<p class="section__header-hint">在状态栏中添加当前行的 Git Blame 注解</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting" data-enablement="statusBar.enabled">
+						<div class="setting__input">
+							<input id="statusBar.pullRequests.enabled" name="statusBar.pullRequests.enabled" type="checkbox" data-setting disabled>
+							<label for="statusBar.pullRequests.enabled">显示引入该提交的拉取请求（如有）</label>
+						</div>
+
+						<p class="setting__hint hidden" data-visibility="statusBar.pullRequests.enabled">需要连接到受支持的远程服务（例如 GitHub）</p>
+					</div>
+
+					<div class="setting" data-enablement="statusBar.enabled">
+						<div class="setting__input setting__input--format">
+							<label for="statusBar.format">注解格式</label>
+							<input id="statusBar.format" name="statusBar.format" type="text" placeholder="${author}, ${agoOrDate}${' via 'pullRequest}" data-setting data-setting-preview data-default-value="${author}, ${agoOrDate}${' via 'pullRequest}" data-popup-trigger disabled>
+							<label for="statusBar.format" title="查看可用 token">
+								<i class="icon icon__chevron-down"></i>
+							</label>
+						</div>
+						<div id="statusBar.format.popup" class="popup hidden"></div>
+						<span class="setting__hint">示例：<span data-setting-preview="statusBar.format" data-setting-preview-type="commit" data-setting-preview-default="${author}, ${agoOrDate}${' via 'pullRequest}"></span></span>
+					</div>
+
+					<div class="setting" data-enablement="statusBar.enabled">
+						<div class="setting__input">
+							<label for="statusBar.alignment">将注解放在</label>
+							<div class="select-container">
+								<select id="statusBar.alignment" name="statusBar.alignment" data-setting disabled>
+									<option value="left">左侧</option>
+									<option value="right">右侧</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="statusBar.enabled">
+						<div class="setting__input">
+							<label class="nowrap" for="statusBar.command">点击时</label>
+							<div class="select-container">
+								<select id="statusBar.command" name="statusBar.command" data-setting disabled>
+									<option value="gitlens.toggleFileBlame">切换文件 Blame</option>
+									<option value="gitlens.toggleFileHeatmap">切换文件热度图</option>
+									<option value="gitlens.toggleFileChanges">切换该提交之前至今的文件更改</option>
+									<option value="gitlens.toggleFileChangesOnly">切换该提交的文件更改</option>
+									<option value="gitlens.toggleCodeLens">切换 Git CodeLens</option>
+									<option value="gitlens.diffWithPrevious">打开与上一个版本的行更改对比</option>
+									<option value="gitlens.diffWithWorking">打开与工作文件的行更改</option>
+									<option value="gitlens.revealCommitInView">在侧边栏中显示该提交</option>
+									<option value="gitlens.showCommitsInView">显示该提交的详情</option>
+									<option value="gitlens.showQuickCommitDetails">显示提交的快速详情（默认）</option>
+									<option value="gitlens.showQuickCommitFileDetails">显示该提交的快速文件详情</option>
+									<option value="gitlens.showQuickFileHistory">显示当前文件历史</option>
+									<option value="gitlens.showQuickRepoHistory">显示当前分支历史</option>
+									<option value="gitlens.openCommitOnRemote">在远程服务上打开该提交（如果可用）</option>
+									<option value="gitlens.copyRemoteCommitUrl">将远程提交 URL 复制到剪贴板（如果可用）</option>
+									<option value="gitlens.openFileOnRemote">在远程服务上打开该文件修订（如果可用）</option>
+									<option value="gitlens.copyRemoteFileUrl">将远程文件修订 URL 复制到剪贴板（如果可用）</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="statusBar.enabled">
+						<div class="setting__input">
+							<input id="statusBar.reduceFlicker" name="statusBar.reduceFlicker" type="checkbox" data-setting disabled>
+							<label for="statusBar.reduceFlicker">减少更新注解时的闪烁</label>
+						</div>
+						<p class="setting__hint">在切换行时避免清除之前的 Blame 信息，以减少状态栏“闪烁”</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview" src="#{webroot}/media/status-bar.webp" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/status-bar-right+pr.webp" data-visibility="statusBar.enabled &amp; statusBar.alignment =right &amp; statusBar.pullRequests.enabled" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/status-bar-right.webp" data-visibility="statusBar.enabled &amp; statusBar.alignment =right &amp; statusBar.pullRequests.enabled =false" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/status-bar-left+pr.webp" data-visibility="statusBar.enabled &amp; statusBar.alignment =left &amp; statusBar.pullRequests.enabled" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/status-bar-left.webp" data-visibility="statusBar.enabled &amp; statusBar.alignment =left &amp; statusBar.pullRequests.enabled =false" loading="lazy" width="600" height="206">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.statusBar%22">设置界面</a>并搜索<b><i>gitlens.statusBar</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="hovers" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<div class="setting__input setting__input--big">
+			<input id="hovers.enabled" name="hovers.enabled" type="checkbox" data-setting>
+			<label for="hovers.enabled">悬停</label>
+			<a class="link__learn-more" title="了解更多" href="https://help.gitkraken.com/gitlens/gitlens-features/#hovers">
+				<i class="icon icon__info"></i>
+			</a>
+		</div>
+
+		<p class="section__header-hint">添加可通过悬停提示访问的详细 Blame 信息</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting" data-enablement="hovers.enabled">
+						<div class="setting__input">
+							<input id="hovers.avatars" name="hovers.avatars" type="checkbox" data-setting disabled>
+							<label for="hovers.avatars">使用作者头像</label>
+						</div>
+					</div>
+
+					<div class="section__group">
+						<div class="section__content">
+							<div class="settings settings--fixed">
+								<div class="setting" data-enablement="hovers.enabled">
+									<div class="setting__input">
+										<input id="hovers.autolinks.enabled" name="hovers.autolinks.enabled" type="checkbox" data-setting disabled>
+										<label for="hovers.autolinks.enabled">在提交消息中显示自动链接</label>
+									</div>
+								</div>
+
+								<div class="settings settings--fixed ml-2">
+									<div class="setting" data-enablement="hovers.enabled &amp; hovers.autolinks.enabled">
+										<div class="setting__input">
+											<input id="hovers.autolinks.enhanced" name="hovers.autolinks.enhanced" type="checkbox" data-setting disabled>
+											<label for="hovers.autolinks.enhanced">使用远程详情增强自动链接</label>
+										</div>
+										<p class="setting__hint">需要连接到受支持的远程服务（例如 GitHub）</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="hovers.enabled">
+						<div class="setting__input">
+							<input id="hovers.pullRequests.enabled" name="hovers.pullRequests.enabled" type="checkbox" data-setting disabled>
+							<label for="hovers.pullRequests.enabled">显示引入该提交的拉取请求（如有）</label>
+						</div>
+
+						<p class="setting__hint hidden" data-visibility="hovers.pullRequests.enabled">需要连接到受支持的远程服务（例如 GitHub）</p>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="section__group section__group--rev mt-05">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting hidden" data-visibility="currentLine.enabled" data-enablement="hovers.enabled">
+						<div class="setting__input">
+							<input id="hovers.currentLine.enabled" name="hovers.currentLine.enabled" type="checkbox" data-setting disabled>
+							<label for="hovers.currentLine.enabled">为当前行显示悬停提示</label>
+						</div>
+					</div>
+
+					<div class="setting hidden" data-visibility="currentLine.enabled =false" data-enablement="hovers.enabled">
+						<div class="setting__input">
+							<input id="hovers.currentLine.enabled-1" name="hovers.currentLine.enabled" type="checkbox" data-setting data-add-settings-on="hovers.currentLine.over=line" disabled>
+							<label for="hovers.currentLine.enabled-1">Show hovers for the current line</label>
+						</div>
+					</div>
+
+					<div class="settings settings--fixed ml-2">
+						<div class="setting hidden" data-visibility="currentLine.enabled" data-enablement="hovers.enabled &amp; hovers.currentLine.enabled">
+							<div class="setting__input">
+								<label for="hovers.currentLine.over">悬停于以下位置时显示</label>
+								<div class="select-container">
+									<select id="hovers.currentLine.over" name="hovers.currentLine.over" data-setting disabled>
+										<option value="annotation">仅注解</option>
+										<option value="line">整行与注解</option>
+									</select>
+								</div>
+							</div>
+						</div>
+
+						<div class="setting hidden" data-visibility="currentLine.enabled =false" data-enablement="hovers.enabled &amp; hovers.currentLine.enabled &amp; currentLine.enabled">
+							<div class="setting__input">
+								<label for="hovers.currentLine.over">Shown when over the</label>
+								<div class="select-container">
+									<select id="hovers.currentLine.over" name="hovers.currentLine.over" data-setting disabled>
+										<option value="annotation">annotation only</option>
+										<option value="line">整行</option>
+									</select>
+								</div>
+							</div>
+						</div>
+
+						<div class="setting" data-enablement="hovers.enabled &amp; hovers.currentLine.enabled">
+							<div class="setting__input">
+								<input id="hovers.currentLine.details" name="hovers.currentLine.details" type="checkbox" data-setting disabled>
+								<label for="hovers.currentLine.details">添加 Blame 详情</label>
+							</div>
+						</div>
+
+						<div class="setting" data-enablement="hovers.enabled &amp; hovers.currentLine.enabled">
+							<div class="setting__input">
+								<input id="hovers.currentLine.changes" name="hovers.currentLine.changes" type="checkbox" data-setting disabled>
+								<label for="hovers.currentLine.changes">添加更改（diff）</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview" data-visibility="hovers.enabled">
+				<img class="image__preview" src="#{webroot}/media/hovers-currentLine.webp" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/hovers-currentLine-on.webp" data-visibility="currentLine.enabled &amp; currentLine.pullRequests.enabled =false" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/hovers-currentLine-on+pr.webp" data-visibility="currentLine.enabled &amp; currentLine.pullRequests.enabled" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/hovers-details+pr+changes.webp" data-visibility="hovers.enabled &amp; hovers.currentLine.enabled &amp; hovers.currentLine.details &amp; hovers.currentLine.changes &amp; hovers.pullRequests.enabled" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/hovers-details+changes.webp" data-visibility="hovers.enabled &amp; hovers.currentLine.enabled &amp; hovers.currentLine.details &amp; hovers.currentLine.changes &amp; hovers.pullRequests.enabled =false" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/hovers-details+pr.webp" data-visibility="hovers.enabled &amp; hovers.currentLine.enabled &amp; hovers.currentLine.details &amp; hovers.currentLine.changes =false &amp; hovers.pullRequests.enabled" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/hovers-details.webp" data-visibility="hovers.enabled &amp; hovers.currentLine.enabled &amp; hovers.currentLine.details &amp; hovers.currentLine.changes =false &amp; hovers.pullRequests.enabled =false" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/hovers-changes.webp" data-visibility="hovers.enabled &amp; hovers.currentLine.enabled &amp; hovers.currentLine.details =false &amp; hovers.currentLine.changes" loading="lazy" width="600" height="206">
+			</div>
+		</div>
+
+		<div class="section__group section__group--rev">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting" data-enablement="hovers.enabled">
+						<div class="setting__input">
+							<input id="hovers.annotations.enabled" name="hovers.annotations.enabled" type="checkbox" data-setting disabled>
+							<label for="hovers.annotations.enabled">在显示注解时显示悬停提示</label>
+						</div>
+					</div>
+
+					<div class="settings settings--fixed ml-2">
+						<div class="setting" data-enablement="hovers.enabled &amp; hovers.annotations.enabled">
+							<div class="setting__input">
+								<div class="setting__input">
+									<label for="hovers.annotations.over">悬停于以下位置时显示</label>
+									<div class="select-container">
+										<select id="hovers.annotations.over" name="hovers.annotations.over" data-setting disabled>
+											<option value="annotation">仅注解</option>
+											<option value="line">整行与注解</option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="setting" data-enablement="hovers.enabled &amp; hovers.annotations.enabled">
+							<div class="setting__input">
+								<input id="hovers.annotations.details" name="hovers.annotations.details" type="checkbox" data-setting disabled>
+								<label for="hovers.annotations.details">Add blame details</label>
+							</div>
+						</div>
+
+						<div class="setting" data-enablement="hovers.enabled &amp; hovers.annotations.enabled">
+							<div class="setting__input">
+								<input id="hovers.annotations.changes" name="hovers.annotations.changes" type="checkbox" data-setting disabled>
+								<label for="hovers.annotations.changes">Add changes (diff)</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview" data-visibility="hovers.enabled">
+				<img class="image__preview hidden" src="#{webroot}/media/hovers-annotations.webp" data-visibility="blame.compact =false" loading="lazy" width="600" height="206">
+				<img class="image__preview hidden" src="#{webroot}/media/hovers-annotations-compact.webp" data-visibility="blame.compact" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/hovers-annotations-currentLine-on.webp" data-visibility="currentLine.enabled" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/hovers-details+pr+changes.webp" data-visibility="hovers.enabled &amp; hovers.annotations.enabled &amp; hovers.annotations.details &amp; hovers.annotations.changes &amp; hovers.pullRequests.enabled" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/hovers-details+changes.webp" data-visibility="hovers.enabled &amp; hovers.annotations.enabled &amp; hovers.annotations.details &amp; hovers.annotations.changes &amp; hovers.pullRequests.enabled =false" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/hovers-details+pr.webp" data-visibility="hovers.enabled &amp; hovers.annotations.enabled &amp; hovers.annotations.details &amp; hovers.annotations.changes =false &amp; hovers.pullRequests.enabled" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/hovers-details.webp" data-visibility="hovers.enabled &amp; hovers.annotations.enabled &amp; hovers.annotations.details &amp; hovers.annotations.changes =false &amp; hovers.pullRequests.enabled =false" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/hovers-changes.webp" data-visibility="hovers.enabled &amp; hovers.annotations.enabled &amp; hovers.annotations.details =false &amp; hovers.annotations.changes" loading="lazy" width="600" height="206">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.hovers%22">设置界面</a>并搜索<b><i>gitlens.hovers</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="file-annotations" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>文件注解</h2>
+
+		<p class="section__header-hint">自定义整个文件的按需 Blame、更改或热度图注解</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="setting">
+					<div class="setting__input">
+						<input id="fileAnnotations.dismissOnEscape" name="fileAnnotations.dismissOnEscape" type="checkbox" data-setting>
+						<label for="fileAnnotations.dismissOnEscape">使用<kbd>Esc</kbd>键关闭当前活动的文件注解</label>
+					</div>
+					<p class="setting__hint"></p>
+				</div>
+
+				<div class="setting">
+					<div class="setting__input">
+						<input id="fileAnnotations.preserveWhileEditing" name="fileAnnotations.preserveWhileEditing" type="checkbox" data-setting>
+						<label for="fileAnnotations.preserveWhileEditing">编辑时保留文件注解</label>
+					</div>
+					<p class="setting__hint" data-visibility="fileAnnotations.preserveWhileEditing =true">注解将基于上次保存的版本显示</p>
+				</div>
+
+				<div class="setting">
+					<div class="setting__input">
+						<label for="advanced.blame.delayAfterEdit">有未保存更改后，暂停重新计算注解的时长为</label>
+						<input id="advanced.blame.delayAfterEdit" name="advanced.blame.delayAfterEdit" type="number" placeholder="5000" data-setting data-default-value="5000">
+						<label for="advanced.blame.delayAfterEdit">毫秒</label>
+					</div>
+					<p class="setting__hint">较小的延迟可带来更好的体验，但也会带来更大的性能影响。也适用于行内 Blame 注解</p>
+				</div>
+
+				<div class="setting">
+					<div class="setting__input">
+						<label for="advanced.blame.sizeThresholdAfterEdit">有未保存更改后，不要在超过</label>
+						<input id="advanced.blame.sizeThresholdAfterEdit" name="advanced.blame.sizeThresholdAfterEdit" type="number" placeholder="5000" data-setting data-default-value="5000">
+						<label for="advanced.blame.sizeThresholdAfterEdit">行的文件上重新计算注解</label>
+					</div>
+					<p class="setting__hint">大于该阈值的文件只会在保存时重新计算。此设置也适用于行内 Blame 注解</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.fileAnnotations%22">设置界面</a>并搜索<b><i>gitlens.fileAnnotations</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="blame" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>文件 Blame</h2>
+
+		<p class="section__header-hint">按需为整个文件添加 Blame 注解</p>
+		<div class="section__header-info">
+			<i class="icon icon--md icon__bulb"></i>
+			<div>
+				<p>使用 GitLens: 切换文件 Blame 注解 <a class="command hidden" title="运行命令" href="command:gitlens.toggleFileBlame" data-visibility="blame.toggleMode =window">GitLens: 切换文件 Blame 注解</a> 命令来开启或关闭这些注解</p>
+				<p>按 <kbd>Esc</kbd> 可关闭这些注解</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="setting">
+					<div class="setting__input">
+						<label for="blame.toggleMode">切换注解</label>
+						<div class="select-container">
+							<select id="blame.toggleMode" name="blame.toggleMode" data-setting>
+								<option value="file">分别针对每个文件</option>
+								<option value="window">针对所有文件</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting">
+					<div class="setting__input setting__input--format">
+						<label for="blame.format">注解格式</label>
+						<input id="blame.format" name="blame.format" type="text" placeholder="${message|50?} ${agoOrDate|14-}" data-setting data-setting-preview data-default-value="${message|50?} ${agoOrDate|14-}" data-popup-trigger>
+						<label for="blame.format" title="查看可用 token">
+							<i class="icon icon__chevron-down"></i>
+						</label>
+					</div>
+					<div id="blame.format.popup" class="popup hidden"></div>
+					<span class="setting__hint">示例：<span data-setting-preview="blame.format" data-setting-preview-type="commit" data-setting-preview-default="${message|50?} ${agoOrDate|14-}"></span></span>
+				</div>
+
+				<div class="setting">
+					<div class="setting__input">
+						<input id="blame.heatmap.enabled" name="blame.heatmap.enabled" type="checkbox" data-setting>
+						<label for="blame.heatmap.enabled">添加热度图（年龄）指示器，以显示各行最近一次更改距今多久</label>
+					</div>
+					<p class="setting__hint">指示器颜色反映最近一次更改的新旧程度（热或冷），而指示器亮度则根据相对新旧程度从明亮（较新）到暗淡（较旧）变化</p>
+				</div>
+
+				<div class="settings settings--fixed ml-2">
+					<div class="setting" data-enablement="blame.heatmap.enabled" disabled>
+						<div class="setting__input">
+							<label for="blame.heatmap.location">将热度图放在</label>
+							<div class="select-container">
+								<select id="blame.heatmap.location" name="blame.heatmap.location" data-setting disabled>
+									<option value="left">左侧</option>
+									<option value="right">右侧</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting">
+					<div class="setting__input">
+						<input id="blame.avatars" name="blame.avatars" type="checkbox" data-setting>
+						<label for="blame.avatars">添加作者头像</label>
+					</div>
+				</div>
+
+				<div class="setting">
+					<div class="setting__input">
+						<input id="blame.compact" name="blame.compact" type="checkbox" data-setting>
+						<label for="blame.compact">使用紧凑视图</label>
+					</div>
+					<p class="setting__hint">压缩（去重）相邻且相同的 Blame 注解</p>
+				</div>
+
+				<div class="setting">
+					<div class="setting__input">
+						<input id="blame.highlight.enabled" name="blame.highlight.enabled" type="checkbox" data-setting>
+						<label for="blame.highlight.enabled">高亮与当前行同一提交所更改的其他行</label>
+					</div>
+				</div>
+
+				<div class="settings ml-2">
+					<div class="setting" data-enablement="blame.highlight.enabled">
+						<div class="setting__input">
+							<input id="blame.highlight.locations" name="blame.highlight.locations" type="checkbox" value="gutter" data-setting data-setting-type="array" disabled>
+							<label for="blame.highlight.locations">添加 gutter 指示器</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="blame.highlight.enabled">
+						<div class="setting__input">
+							<input id="blame.highlight.locations-1" name="blame.highlight.locations" type="checkbox" value="line" data-setting data-setting-type="array" disabled>
+							<label for="blame.highlight.locations-1">添加行高亮</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="blame.highlight.enabled">
+						<div class="setting__input">
+							<input id="blame.highlight.locations-2" name="blame.highlight.locations" type="checkbox" value="overview" data-setting data-setting-type="array" disabled>
+							<label for="blame.highlight.locations-2">添加滚动条指示器</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview hidden" src="#{webroot}/media/blame.webp" data-visibility="blame.compact =false" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/blame-highlight.webp" data-visibility="blame.compact =false &amp; blame.highlight.enabled &amp; blame.highlight.locations +line" loading="lazy" width="600" height="206">
+				<img class="image__preview hidden" src="#{webroot}/media/blame-compact.webp" data-visibility="blame.compact" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/blame-compact-highlight.webp" data-visibility="blame.compact &amp; blame.highlight.enabled &amp; blame.highlight.locations +line" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/blame-highlight-gutter.webp" data-visibility="blame.highlight.enabled &amp; blame.highlight.locations +gutter" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/blame-highlight-scrollbar.webp" data-visibility="blame.highlight.enabled &amp; blame.highlight.locations +overview" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/blame-heatmap-left.webp" data-visibility="blame.heatmap.enabled &amp; blame.heatmap.location =left" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/blame-heatmap-right.webp" data-visibility="blame.heatmap.enabled &amp; blame.heatmap.location =right" loading="lazy" width="600px" height="206px">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.blame%22">设置界面</a>并搜索<b><i>gitlens.blame</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="changes" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>文件更改</h2>
+
+		<p class="section__header-hint">按需添加文件更改注解，以突出显示任何本地（未发布）更改或最近一次提交更改过的行</p>
+		<div class="section__header-info">
+			<i class="icon icon--md icon__bulb"></i>
+			<div>
+				<p>使用 GitLens: 切换文件更改注解 <a class="command hidden" title="运行命令" href="command:gitlens.toggleFileChanges" data-visibility="changes.toggleMode =window">GitLens: 切换文件更改注解</a> 命令来开启或关闭这些注解</p>
+				<p>按 <kbd>Esc</kbd> 可关闭这些注解</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="setting">
+					<div class="setting__input">
+						<label for="changes.toggleMode">切换注解</label>
+						<div class="select-container">
+							<select id="changes.toggleMode" name="changes.toggleMode" data-setting>
+								<option value="file">分别针对每个文件</option>
+								<option value="window">针对所有文件</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="settings">
+					<div class="setting">
+						<div class="setting__input">
+							<input id="changes.locations" name="changes.locations" type="checkbox" value="gutter" data-setting data-setting-type="array">
+							<label for="changes.locations">添加 gutter 指示器</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="changes.locations-1" name="changes.locations" type="checkbox" value="line" data-setting data-setting-type="array">
+							<label for="changes.locations-1">添加行高亮</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="changes.locations-2" name="changes.locations" type="checkbox" value="overview" data-setting data-setting-type="array">
+							<label for="changes.locations-2">添加滚动条指示器</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview" src="#{webroot}/media/changes.webp" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/changes-highlight-gutter.webp" data-visibility="changes.locations +gutter" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/changes-highlight-scrollbar.webp" data-visibility="changes.locations +overview" loading="lazy" width="600" height="206">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary UI" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.changes%22">设置界面</a>并搜索<b><i>gitlens.changes</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="heatmap" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>文件热度图</h2>
+
+		<p class="section__header-hint">按需在文件中添加热度图（年龄）指示器，以显示各行最近一次更改距今多久</p>
+		<div class="section__header-info">
+			<i class="icon icon--md icon__bulb"></i>
+			<div>
+				<p>使用 GitLens: 切换文件热度图注解 <a class="command hidden" title="运行命令" href="command:gitlens.toggleFileHeatmap" data-visibility="heatmap.toggleMode =window">GitLens: 切换文件热度图注解</a> 命令来开启或关闭这些注解</p>
+				<p>按 <kbd>Esc</kbd> 可关闭这些注解</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<p class="setting__hint">指示器颜色反映最近一次更改的新旧程度（热或冷），而指示器亮度则根据相对新旧程度从明亮（较新）到暗淡（较旧）变化</p>
+
+				<div class="setting">
+					<div class="setting__input">
+						<label for="heatmap.toggleMode">切换注解</label>
+						<div class="select-container">
+							<select id="heatmap.toggleMode" name="heatmap.toggleMode" data-setting>
+								<option value="file">分别针对每个文件</option>
+								<option value="window">针对所有文件</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="settings">
+					<div class="setting">
+						<div class="setting__input">
+							<input id="heatmap.locations" name="heatmap.locations" type="checkbox" value="gutter" data-setting data-setting-type="array">
+							<label for="heatmap.locations">添加 gutter 指示器</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="heatmap.locations-1" name="heatmap.locations" type="checkbox" value="line" data-setting data-setting-type="array">
+							<label for="heatmap.locations-1">添加行高亮</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="heatmap.locations-2" name="heatmap.locations" type="checkbox" value="overview" data-setting data-setting-type="array">
+							<label for="heatmap.locations-2">添加滚动条指示器</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting">
+					<div class="setting__input">
+						<input id="heatmap.fadeLines" name="heatmap.fadeLines" type="checkbox" data-setting>
+						<label for="heatmap.fadeLines">淡化较旧的行</label>
+					</div>
+				</div>
+
+				<div class="setting">
+					<div class="setting__input">
+						<label for="heatmap.ageThreshold">冷热阈值</label>
+						<input id="heatmap.ageThreshold" name="heatmap.ageThreshold" type="number" placeholder="90" data-setting data-default-value="90">
+						<label for="heatmap.ageThreshold">天</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview" src="#{webroot}/media/heatmap.webp" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/heatmap-gutter.webp" data-visibility="heatmap.locations +gutter" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/heatmap-scrollbar.webp" data-visibility="heatmap.locations +overview" loading="lazy" width="600" height="206">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.heatmap%22">设置界面</a>并搜索<b><i>gitlens.heatmap</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="commit-graph" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>提交图<gl-feature-badge></gl-feature-badge></h2>
+
+		<p class="section__header-hint">添加一个<a class="command command--show-view" title="显示提交图" href="command:gitlens.showGraph">提交图</a>，用于可视化、浏览和管理 Git 仓库</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting">
+						<div class="setting__input">
+							<label for="graph.layout">优先在以下位置显示提交图</label>
+							<div class="select-container">
+								<select id="graph.layout" name="graph.layout" data-setting>
+									<option value="editor">编辑器区域</option>
+									<option value="panel">底部面板</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="graph.defaultItemLimit">显示</label>
+							<input id="graph.defaultItemLimit" name="graph.defaultItemLimit" type="number" placeholder="500" data-setting data-default-value="500">
+							<label for="graph.defaultItemLimit">行，</label>
+							<label for="graph.pageItemLimit">滚动时再分页加载</label>
+							<input id="graph.pageItemLimit" name="graph.pageItemLimit" type="number" placeholder="200" data-setting data-default-value="200">
+							<label for="graph.pageItemLimit">行</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="graph.searchItemLimit">Show </label>
+							<input id="graph.searchItemLimit" name="graph.searchItemLimit" type="number" placeholder="0" data-setting data-default-value="0">
+							<label for="graph.searchItemLimit">条搜索结果（初始与分页时）</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="graph.scrollRowPadding">开始滚动时距离边缘</label>
+							<input id="graph.scrollRowPadding" name="graph.scrollRowPadding" type="number" placeholder="0" data-setting data-default-value="0">
+							<label for="graph.scrollRowPadding">行</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="graph.scrollMarkers.enabled" name="graph.scrollMarkers.enabled" type="checkbox" data-setting>
+							<label for="graph.scrollMarkers.enabled">在提交图滚动条上显示标记</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input setting__input--inner-select">
+							<input id="graph.showDetailsView" name="graph.showDetailsView" type="checkbox" value="selection" data-setting>
+							<label for="graph.showDetailsView">显示检查视图</label>
+							<div class="select-container">
+								<select id="graph.showDetailsView" name="graph.showDetailsView" data-setting data-enablement="graph.showDetailsView !false" disabled>
+									<option value="open">仅在打开时</option>
+									<option value="selection">选中项变化时（默认）</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="graph.showGhostRefsOnRowHover" name="graph.showGhostRefsOnRowHover" type="checkbox" data-setting>
+							<label for="graph.showGhostRefsOnRowHover">在悬停于提交上或选中提交时显示幽灵分支 / 标签</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="graph.highlightRowsOnRefHover" name="graph.highlightRowsOnRefHover" type="checkbox" data-setting>
+							<label for="graph.highlightRowsOnRefHover">悬停在分支上时高亮关联行</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="graph.dimMergeCommits" name="graph.dimMergeCommits" type="checkbox" data-setting>
+							<label for="graph.dimMergeCommits">淡化合并提交行</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="graph.showRemoteNames" name="graph.showRemoteNames" type="checkbox" data-setting>
+							<label for="graph.showRemoteNames">在远程分支上显示远程名称</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="graph.showUpstreamStatus" name="graph.showUpstreamStatus" type="checkbox" data-setting>
+							<label for="graph.showUpstreamStatus">在带有远程的本地分支上显示上游状态</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="graph.issues.enabled" name="graph.issues.enabled" type="checkbox" data-setting>
+							<label for="graph.issues.enabled">在分支上显示关联议题</label>
+						</div>
+						<p class="setting__hint hidden" data-visibility="graph.issues.enabled">需要连接到受支持的议题服务（例如 GitHub）</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="graph.pullRequests.enabled" name="graph.pullRequests.enabled" type="checkbox" data-setting>
+							<label for="graph.pullRequests.enabled">在远程分支上显示关联的拉取请求</label>
+						</div>
+						<p class="setting__hint hidden" data-visibility="graph.pullRequests.enabled">需要连接到受支持的远程服务（例如 GitHub）</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="graph.avatars" name="graph.avatars" type="checkbox" data-setting>
+							<label for="graph.avatars">使用作者和远程头像</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="graph.dateStyle" name="graph.dateStyle" type="checkbox" value="relative" data-value-off="absolute" data-setting>
+							<label for="graph.dateStyle">允许相对日期格式化</label>
+						</div>
+						<span class="setting__hint hidden" data-visibility="graph.dateStyle =relative">以相对方式显示部分日期，例如 1 天前</span>
+						<span class="setting__hint hidden" data-visibility="graph.dateStyle =null &amp; defaultDateStyle =relative">Shows some dates relatively, e.g. 1 day ago</span>
+						<span class="setting__hint hidden" data-visibility="graph.dateStyle =absolute">以绝对方式显示日期，例如 <span data-setting-preview="graph.dateFormat" data-setting-preview-type="date" data-setting-preview-default="MMMM Do, YYYY h:mma" data-setting-preview-default-lookup="defaultDateFormat"></span></span>
+						<span class="setting__hint hidden" data-visibility="graph.dateStyle =null &amp; defaultDateStyle =absolute">Shows dates absolutely, e.g.
+							<span data-setting-preview="graph.dateFormat" data-setting-preview-type="date" data-setting-preview-default="MMMM Do, YYYY h:mma" data-setting-preview-default-lookup="defaultDateFormat"></span>
+						</span>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="graph.dateFormat">日期格式</label>
+							<input id="graph.dateFormat" name="graph.dateFormat" type="text" placeholder="defaults to `defaultDateFormat` value" data-setting data-setting-preview>
+							<a class="link__learn-more" title="支持的日期格式请参阅 Moment.js 文档" href="https://momentjs.com/docs/#/displaying/format/">
+								<i class="icon icon__info"></i>
+							</a>
+						</div>
+						<span class="setting__hint">示例日期：<span data-setting-preview="graph.dateFormat" data-setting-preview-type="date" data-setting-preview-default="MMMM Do, YYYY h:mma" data-setting-preview-default-lookup="defaultDateFormat"></span></span>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview" src="#{webroot}/media/plus-commit-graph-illustrated.webp" loading="lazy" width="850" height="450">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.graph%22">设置界面</a>并搜索<b><i>gitlens.graph</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="commits-view" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>提交视图</h2>
+
+		<p class="section__header-hint">添加一个<a class="command command--show-view" title="在侧边栏中显示视图" href="command:gitlens.showCommitsView">提交视图</a>，用于可视化、浏览和管理 Git 提交</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting">
+						<div class="setting__input setting__input--inner-select">
+							<input id="views.commits.showBranchComparison" name="views.commits.showBranchComparison" type="checkbox" value="working" data-setting>
+							<label for="views.commits.showBranchComparison">显示</label>
+							<div class="select-container">
+								<select id="views.commits.showBranchComparison" name="views.commits.showBranchComparison" data-setting data-enablement="views.commits.showBranchComparison !false">
+									<option value="branch">当前分支</option>
+									<option value="working">工作树</option>
+								</select>
+							</div>
+							<label for="views.commits.showBranchComparison">与用户选择的引用（分支、标签等）的比较</label>
+						</div>
+					</div>
+
+					<div class="section__group">
+						<div class="section__content">
+							<div class="settings settings--fixed">
+								<div class="setting">
+									<div class="setting__input">
+										<input id="views.commits.pullRequests.enabled" name="views.commits.pullRequests.enabled" type="checkbox" data-setting>
+										<label for="views.commits.pullRequests.enabled">显示关联的拉取请求</label>
+									</div>
+									<p class="setting__hint">需要连接到受支持的远程服务（例如 GitHub）</p>
+								</div>
+
+								<div class="settings settings--fixed ml-2">
+									<div class="setting" data-enablement="views.commits.pullRequests.enabled">
+										<div class="setting__input">
+											<input id="views.commits.pullRequests.showForBranches" name="views.commits.pullRequests.showForBranches" type="checkbox" data-setting disabled>
+											<label for="views.commits.pullRequests.showForBranches">显示与当前分支关联的拉取请求</label>
+										</div>
+									</div>
+
+									<div class="setting" data-enablement="views.commits.pullRequests.enabled">
+										<div class="setting__input">
+											<input id="views.commits.pullRequests.showForCommits" name="views.commits.pullRequests.showForCommits" type="checkbox" data-setting disabled>
+											<label for="views.commits.pullRequests.showForCommits">显示引入各提交的拉取请求</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.commits.files.layout">文件布局</label>
+							<div class="select-container">
+								<select id="views.commits.files.layout" name="views.commits.files.layout" data-setting>
+									<option value="auto">自动</option>
+									<option value="list">以列表显示</option>
+									<option value="tree">树状</option>
+								</select>
+							</div>
+						</div>
+						<p class="setting__hint" data-visibility="views.commits.files.layout =auto">根据各嵌套层级的文件数量选择最佳布局</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.commits.files.icon">文件图标</label>
+							<div class="select-container">
+								<select id="views.commits.files.icon" name="views.commits.files.icon" data-setting>
+									<option value="type">显示文件类型（默认）</option>
+									<option value="status">显示文件状态</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.commits.files.compact" name="views.commits.files.compact" type="checkbox" data-setting>
+							<label for="views.commits.files.compact">使用紧凑文件布局</label>
+						</div>
+						<p class="setting__hint">在使用树状布局时压平不必要的嵌套</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.commits.avatars" name="views.commits.avatars" type="checkbox" data-setting>
+							<label for="views.commits.avatars">使用作者头像</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input setting__input--format">
+							<label for="views.formats.commits.label">提交标签格式</label>
+							<input id="views.formats.commits.label" name="views.formats.commits.label" type="text" placeholder="${❰ tips ❱➤  }${message}" data-setting data-setting-preview data-default-value="${❰ tips ❱➤  }${message}" data-popup-trigger>
+							<label for="views.formats.commits.label" title="查看可用 token">
+								<i class="icon icon__chevron-down"></i>
+							</label>
+						</div>
+						<div id="views.formats.commits.label.popup" class="popup hidden"></div>
+						<span class="setting__hint">示例：<span data-setting-preview="views.formats.commits.label" data-setting-preview-type="commit" data-setting-preview-default="${❰ tips ❱➤  }${message}"></span></span>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input setting__input--format">
+							<label for="views.formats.commits.description">提交描述格式</label>
+							<input id="views.formats.commits.description" name="views.formats.commits.description" type="text" placeholder="${author, }${agoOrDate}" data-setting data-setting-preview data-default-value="${author, }${agoOrDate}" data-popup-trigger>
+							<label for="views.formats.commits.description" title="See available tokens">
+								<i class="icon icon__chevron-down"></i>
+							</label>
+						</div>
+						<div id="views.formats.commits.description.popup" class="popup hidden"></div>
+						<span class="setting__hint">Example:
+							<span data-setting-preview="views.formats.commits.description" data-setting-preview-type="commit" data-setting-preview-default="${author, }${agoOrDate}"></span>
+						</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-auto-compare+pr+commit-pr.webp" data-visibility="views.commits.files.layout !tree &amp; views.commits.showBranchComparison !false &amp; views.commits.pullRequests.enabled &amp; views.commits.pullRequests.showForBranches &amp; views.commits.pullRequests.showForCommits" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-auto-compare+pr.webp" data-visibility="views.commits.files.layout !tree &amp; views.commits.showBranchComparison !false &amp; views.commits.pullRequests.enabled &amp; views.commits.pullRequests.showForBranches &amp; views.commits.pullRequests.showForCommits =false" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-auto-compare+commit-pr.webp" data-visibility="views.commits.files.layout !tree &amp; views.commits.showBranchComparison !false &amp; views.commits.pullRequests.enabled &amp; views.commits.pullRequests.showForBranches =false &amp; views.commits.pullRequests.showForCommits" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-auto-compare.webp" data-visibility="views.commits.files.layout !tree &amp; views.commits.showBranchComparison !false &amp; views.commits.pullRequests.enabled =false" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-auto-compare.webp" data-visibility="views.commits.files.layout !tree &amp; views.commits.showBranchComparison !false &amp; views.commits.pullRequests.enabled &amp; views.commits.pullRequests.showForBranches =false &amp; views.commits.pullRequests.showForCommits =false" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-auto-pr+commit-pr.webp" data-visibility="views.commits.files.layout !tree &amp; views.commits.showBranchComparison =false &amp; views.commits.pullRequests.enabled &amp; views.commits.pullRequests.showForBranches &amp; views.commits.pullRequests.showForCommits" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-auto-pr.webp" data-visibility="views.commits.files.layout !tree &amp; views.commits.showBranchComparison =false &amp; views.commits.pullRequests.enabled &amp; views.commits.pullRequests.showForBranches &amp; views.commits.pullRequests.showForCommits =false" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-auto-commit-pr.webp" data-visibility="views.commits.files.layout !tree &amp; views.commits.showBranchComparison =false &amp; views.commits.pullRequests.enabled &amp; views.commits.pullRequests.showForBranches =false &amp; views.commits.pullRequests.showForCommits" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-auto.webp" data-visibility="views.commits.files.layout !tree &amp; views.commits.showBranchComparison =false &amp; views.commits.pullRequests.enabled =false" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-auto.webp" data-visibility="views.commits.files.layout !tree &amp; views.commits.showBranchComparison =false &amp; views.commits.pullRequests.enabled &amp; views.commits.pullRequests.showForBranches =false &amp; views.commits.pullRequests.showForCommits =false" loading="lazy" width="600" height="400">
+
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-tree-compare+pr+commit-pr.webp" data-visibility="views.commits.files.layout =tree &amp; views.commits.showBranchComparison !false &amp; views.commits.pullRequests.enabled &amp; views.commits.pullRequests.showForBranches &amp; views.commits.pullRequests.showForCommits" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-tree-compare+pr.webp" data-visibility="views.commits.files.layout =tree &amp; views.commits.showBranchComparison !false &amp; views.commits.pullRequests.enabled &amp; views.commits.pullRequests.showForBranches &amp; views.commits.pullRequests.showForCommits = false" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-tree-compare+commit-pr.webp" data-visibility="views.commits.files.layout =tree &amp; views.commits.showBranchComparison !false &amp; views.commits.pullRequests.enabled &amp; views.commits.pullRequests.showForBranches =false &amp; views.commits.pullRequests.showForCommits" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-tree-compare.webp" data-visibility="views.commits.files.layout =tree &amp; views.commits.showBranchComparison !false &amp; views.commits.pullRequests.enabled =false" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-tree-compare.webp" data-visibility="views.commits.files.layout =tree &amp; views.commits.showBranchComparison !false &amp; views.commits.pullRequests.enabled &amp; views.commits.pullRequests.showForBranches =false &amp; views.commits.pullRequests.showForCommits =false " loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-tree-pr+commit-pr.webp" data-visibility="views.commits.files.layout =tree &amp; views.commits.showBranchComparison =false &amp; views.commits.pullRequests.enabled &amp; views.commits.pullRequests.showForBranches &amp; views.commits.pullRequests.showForCommits" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-tree-pr.webp" data-visibility="views.commits.files.layout =tree &amp; views.commits.showBranchComparison =false &amp; views.commits.pullRequests.enabled &amp; views.commits.pullRequests.showForBranches &amp; views.commits.pullRequests.showForCommits =false" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-tree-commit-pr.webp" data-visibility="views.commits.files.layout =tree &amp; views.commits.showBranchComparison =false &amp; views.commits.pullRequests.enabled &amp; views.commits.pullRequests.showForBranches =false &amp; views.commits.pullRequests.showForCommits" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-tree.webp" data-visibility="views.commits.files.layout =tree &amp; views.commits.showBranchComparison =false &amp; views.commits.pullRequests.enabled =false" loading="lazy" width="600" height="400">
+				<img class="image__preview hidden" src="#{webroot}/media/commits-view-tree.webp" data-visibility="views.commits.files.layout =tree &amp; views.commits.showBranchComparison =false &amp; views.commits.pullRequests.enabled &amp; views.commits.pullRequests.showForBranches =false &amp; views.commits.pullRequests.showForCommits =false" loading="lazy" width="600" height="400">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.views.commits%22">设置界面</a>并搜索<b><i>gitlens.views.commits</i></b>或<b><i>gitlens.views</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="commit-details-view" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>检查视图</h2>
+
+		<p class="section__header-hint">添加一个<a class="command command--show-view" title="在侧边栏中显示视图" href="command:gitlens.showCommitDetailsView">检查视图</a>，以查看某个提交的丰富详情</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="section__group">
+						<div class="section__content">
+							<div class="settings settings--fixed">
+								<div class="setting">
+									<div class="setting__input">
+										<input id="views.commitDetails.autolinks.enabled" name="views.commitDetails.autolinks.enabled" type="checkbox" data-setting>
+										<label for="views.commitDetails.autolinks.enabled">在提交消息中显示自动链接</label>
+									</div>
+								</div>
+
+								<div class="settings settings--fixed ml-2">
+									<div class="setting">
+										<div class="setting__input" data-enablement="views.commitDetails.autolinks.enabled">
+											<input id="views.commitDetails.autolinks.enhanced" name="views.commitDetails.autolinks.enhanced" type="checkbox" data-setting disabled>
+											<label for="views.commitDetails.autolinks.enhanced">使用远程详情增强自动链接</label>
+										</div>
+										<p class="setting__hint">需要连接到受支持的远程服务（例如 GitHub）</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.commitDetails.pullRequests.enabled" name="views.commitDetails.pullRequests.enabled" type="checkbox" data-setting>
+							<label for="views.commitDetails.pullRequests.enabled">显示引入该提交的拉取请求（如有）</label>
+						</div>
+						<p class="setting__hint">需要连接到受支持的远程服务（例如 GitHub）</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.commitDetails.files.layout">文件布局</label>
+							<div class="select-container">
+								<select id="views.commitDetails.files.layout" name="views.commitDetails.files.layout" data-setting>
+									<option value="auto">自动</option>
+									<option value="list">以列表显示</option>
+									<option value="tree">树状</option>
+								</select>
+							</div>
+						</div>
+						<p class="setting__hint" data-visibility="views.commitDetails.files.layout =auto">根据各嵌套层级的文件数量选择最佳布局</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.commitDetails.files.compact" name="views.commitDetails.files.compact" type="checkbox" data-setting>
+							<label for="views.commitDetails.files.compact">使用紧凑文件布局</label>
+						</div>
+						<p class="setting__hint">在使用树状布局时压平不必要的嵌套</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.commitDetails.avatars" name="views.commitDetails.avatars" type="checkbox" data-setting>
+							<label for="views.commitDetails.avatars">使用作者头像</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview image__preview--fit" src="#{webroot}/media/commit-details.webp" loading="lazy" width="524" height="445">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.views.commitDetails%22">设置界面</a>并搜索<b><i>gitlens.views.commitDetails</i></b>或<b><i>gitlens.views</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="repositories-view" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>仓库视图</h2>
+
+		<p class="section__header-hint">添加一个默认隐藏的<a class="command command--show-view" title="在侧边栏中显示视图" href="command:gitlens.showRepositoriesView">仓库视图</a>，用于可视化、浏览和管理 Git 仓库</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting">
+						<div class="setting__input">
+							<label class="non-interactive">在每个仓库下显示以下分区</label>
+						</div>
+					</div>
+
+					<div class="settings ml-2">
+						<div class="setting">
+							<div class="setting__input setting__input--inner-select">
+								<input id="views.repositories.showBranchComparison" name="views.repositories.showBranchComparison" type="checkbox" value="working" data-setting>
+								<label for="views.repositories.showBranchComparison">比较</label>
+								<div class="select-container">
+									<select id="views.repositories.showBranchComparison" name="views.repositories.showBranchComparison" data-setting data-enablement="views.repositories.showBranchComparison !false">
+										<option value="branch">当前分支</option>
+										<option value="working">工作树</option>
+									</select>
+								</div>
+								<label for="views.repositories.showBranchComparison">与用户选择的引用（分支、标签等）的比较</label>
+							</div>
+						</div>
+
+						<div class="setting">
+							<div class="setting__input">
+								<input id="views.repositories.showUpstreamStatus" name="views.repositories.showUpstreamStatus" type="checkbox" data-setting>
+								<label for="views.repositories.showUpstreamStatus">当前分支状态</label>
+							</div>
+						</div>
+
+						<div class="setting">
+							<div class="setting__input">
+								<input id="views.repositories.includeWorkingTree" name="views.repositories.includeWorkingTree" type="checkbox" data-setting>
+								<label for="views.repositories.includeWorkingTree">工作树文件更改</label>
+							</div>
+						</div>
+
+						<div class="section__group">
+							<div class="section__content">
+								<div class="settings settings--fixed">
+									<div class="setting">
+										<div class="setting__input">
+											<input id="views.repositories.pullRequests.enabled" name="views.repositories.pullRequests.enabled" type="checkbox" data-setting>
+											<label for="views.repositories.pullRequests.enabled">关联的拉取请求</label>
+										</div>
+										<p class="setting__hint">需要连接到受支持的远程服务（例如 GitHub）</p>
+									</div>
+
+									<div class="settings settings--fixed ml-2">
+										<div class="setting" data-enablement="views.repositories.pullRequests.enabled">
+											<div class="setting__input">
+												<input id="views.repositories.pullRequests.showForBranches" name="views.repositories.pullRequests.showForBranches" type="checkbox" data-setting disabled>
+												<label for="views.repositories.pullRequests.showForBranches">显示与各分支关联的拉取请求</label>
+											</div>
+										</div>
+
+										<div class="setting" data-enablement="views.repositories.pullRequests.enabled">
+											<div class="setting__input">
+												<input id="views.repositories.pullRequests.showForCommits" name="views.repositories.pullRequests.showForCommits" type="checkbox" data-setting disabled>
+												<label for="views.repositories.pullRequests.showForCommits">显示引入各提交的拉取请求</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="setting">
+							<div class="setting__input">
+								<input id="views.repositories.showCommits" name="views.repositories.showCommits" type="checkbox" data-setting>
+								<label for="views.repositories.showCommits">提交</label>
+							</div>
+						</div>
+
+						<div class="setting">
+							<div class="setting__input">
+								<input id="views.repositories.showBranches" name="views.repositories.showBranches" type="checkbox" data-setting>
+								<label for="views.repositories.showBranches">分支</label>
+							</div>
+						</div>
+
+						<div class="setting">
+							<div class="setting__input">
+								<input id="views.repositories.showRemotes" name="views.repositories.showRemotes" type="checkbox" data-setting>
+								<label for="views.repositories.showRemotes">远程</label>
+							</div>
+						</div>
+
+						<div class="setting">
+							<div class="setting__input">
+								<input id="views.repositories.showStashes" name="views.repositories.showStashes" type="checkbox" data-setting>
+								<label for="views.repositories.showStashes">贮藏</label>
+							</div>
+						</div>
+
+						<div class="setting">
+							<div class="setting__input">
+								<input id="views.repositories.showTags" name="views.repositories.showTags" type="checkbox" data-setting>
+								<label for="views.repositories.showTags">标签</label>
+							</div>
+						</div>
+
+						<div class="setting">
+							<div class="setting__input">
+								<input id="views.repositories.showContributors" name="views.repositories.showContributors" type="checkbox" data-setting>
+								<label for="views.repositories.showContributors">贡献者</label>
+							</div>
+						</div>
+
+						<div class="setting">
+							<div class="setting__input">
+								<input id="views.repositories.showIncomingActivity" name="views.repositories.showIncomingActivity" type="checkbox" data-setting>
+								<label for="views.repositories.showIncomingActivity">传入活动（实验性）</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.repositories.autoRefresh" name="views.repositories.autoRefresh" type="checkbox" data-setting>
+							<label for="views.repositories.autoRefresh">当仓库或文件系统发生变化时自动刷新</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.repositories.autoReveal" name="views.repositories.autoReveal" type="checkbox" data-setting>
+							<label for="views.repositories.autoReveal">打开文件时自动显示所在仓库</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.repositories.avatars" name="views.repositories.avatars" type="checkbox" data-setting>
+							<label for="views.repositories.avatars">使用作者头像</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.repositories.branches.layout">分支布局</label>
+							<div class="select-container">
+								<select id="views.repositories.branches.layout" name="views.repositories.branches.layout" data-setting>
+									<option value="list">以列表显示</option>
+									<option value="tree">树状</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.repositories.files.layout">文件布局</label>
+							<div class="select-container">
+								<select id="views.repositories.files.layout" name="views.repositories.files.layout" data-setting>
+									<option value="auto">自动</option>
+									<option value="list">以列表显示</option>
+									<option value="tree">树状</option>
+								</select>
+							</div>
+						</div>
+						<p class="setting__hint" data-visibility="views.repositories.files.layout =auto">根据各嵌套层级的文件数量选择最佳布局</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.repositories.files.icon">文件图标</label>
+							<div class="select-container">
+								<select id="views.repositories.files.icon" name="views.repositories.files.icon" data-setting>
+									<option value="type">显示文件类型（默认）</option>
+									<option value="status">显示文件状态</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.repositories.files.compact" name="views.repositories.files.compact" type="checkbox" data-setting>
+							<label for="views.repositories.files.compact">使用紧凑文件布局</label>
+						</div>
+						<p class="setting__hint">在使用树状布局时压平不必要的嵌套</p>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview" src="#{webroot}/media/repositories-view.webp" loading="lazy" width="600" height="360">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.views.repositories%22">设置界面</a>并搜索<b><i>gitlens.views.repositories</i></b>或<b><i>gitlens.views</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="file-history-view" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>文件历史视图</h2>
+
+		<p class="section__header-hint">添加一个<a class="command command--show-view" title="在侧边栏中显示视图" href="command:gitlens.showFileHistoryView">文件历史视图</a>，用于可视化、导航和浏览当前文件、指定文件或文件夹，或仅当前文件所选行的修订历史</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.fileHistory.avatars" name="views.fileHistory.avatars" type="checkbox" data-setting>
+							<label for="views.fileHistory.avatars">使用作者头像</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label class="non-interactive">仅在显示文件夹历史时适用：</label>
+						</div>
+					</div>
+
+					<div class="settings ml-2">
+						<div class="section__group">
+							<div class="section__content">
+								<div class="settings settings--fixed">
+									<div class="setting">
+										<div class="setting__input">
+											<input id="views.fileHistory.pullRequests.enabled" name="views.fileHistory.pullRequests.enabled" type="checkbox" data-setting>
+											<label for="views.fileHistory.pullRequests.enabled">显示关联的拉取请求</label>
+										</div>
+										<p class="setting__hint">需要连接到受支持的远程服务（例如 GitHub）</p>
+									</div>
+
+									<div class="settings settings--fixed ml-2">
+										<div class="setting" data-enablement="views.fileHistory.pullRequests.enabled">
+											<div class="setting__input">
+												<input id="views.fileHistory.pullRequests.showForCommits" name="views.fileHistory.pullRequests.showForCommits" type="checkbox" data-setting disabled>
+												<label for="views.fileHistory.pullRequests.showForCommits">显示引入各提交的拉取请求</label>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="setting">
+							<div class="setting__input">
+								<label for="views.fileHistory.files.layout">文件布局</label>
+								<div class="select-container">
+									<select id="views.fileHistory.files.layout" name="views.fileHistory.files.layout" data-setting>
+										<option value="auto">自动</option>
+										<option value="list">以列表显示</option>
+										<option value="tree">树状</option>
+									</select>
+								</div>
+							</div>
+							<p class="setting__hint" data-visibility="views.fileHistory.files.layout =auto">根据各嵌套层级的文件数量选择最佳布局</p>
+						</div>
+
+						<div class="setting">
+							<div class="setting__input">
+								<label for="views.fileHistory.files.icon">文件图标</label>
+								<div class="select-container">
+									<select id="views.fileHistory.files.icon" name="views.fileHistory.files.icon" data-setting>
+										<option value="type">显示文件类型（默认）</option>
+										<option value="status">显示文件状态</option>
+									</select>
+								</div>
+							</div>
+						</div>
+
+						<div class="setting">
+							<div class="setting__input">
+								<input id="views.fileHistory.files.compact" name="views.fileHistory.files.compact" type="checkbox" data-setting>
+								<label for="views.fileHistory.files.compact">使用紧凑文件布局</label>
+							</div>
+							<p class="setting__hint">在使用树状布局时压平不必要的嵌套</p>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview" src="#{webroot}/media/file-history-view.webp" loading="lazy" width="600" height="360">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/file-history-view-avatars.webp" data-visibility="views.fileHistory.avatars" loading="lazy" width="600" height="360">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.views.fileHistory%22">设置界面</a>并搜索<b><i>gitlens.views.fileHistory</i></b>或<b><i>gitlens.views</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="line-history-view" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>行历史视图</h2>
+
+		<p class="section__header-hint">添加一个默认隐藏的<a class="command command--show-view" title="在侧边栏中显示视图" href="command:gitlens.showLineHistoryView">行历史视图</a>，用于可视化、导航和浏览当前文件所选行的修订历史</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.lineHistory.avatars" name="views.lineHistory.avatars" type="checkbox" data-setting>
+							<label for="views.lineHistory.avatars">使用作者头像</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview" src="#{webroot}/media/line-history-view.webp" loading="lazy" width="600" height="360">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/line-history-view-avatars.webp" data-visibility="views.lineHistory.avatars" loading="lazy" width="600" height="360">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.views.lineHistory%22">设置界面</a>并搜索<b><i>gitlens.views.lineHistory</i></b>或<b><i>gitlens.views</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="branches-view" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>分支视图</h2>
+
+		<p class="section__header-hint">添加<a class="command command--show-view" title="在侧边栏中显示视图" href="command:gitlens.showBranchesView">分支视图</a>，用于可视化、浏览和管理 Git 分支</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.branches.showBranchComparison" name="views.branches.showBranchComparison" type="checkbox" value="branch" data-setting>
+							<label for="views.branches.showBranchComparison">显示该分支与用户选择的引用（分支、标签等）的比较</label>
+						</div>
+					</div>
+
+					<div class="section__group">
+						<div class="section__content">
+							<div class="settings settings--fixed">
+								<div class="setting">
+									<div class="setting__input">
+										<input id="views.branches.pullRequests.enabled" name="views.branches.pullRequests.enabled" type="checkbox" data-setting>
+										<label for="views.branches.pullRequests.enabled">显示关联的拉取请求</label>
+									</div>
+									<p class="setting__hint">需要连接到受支持的远程服务（例如 GitHub）</p>
+								</div>
+
+								<div class="settings settings--fixed ml-2">
+									<div class="setting" data-enablement="views.branches.pullRequests.enabled">
+										<div class="setting__input">
+											<input id="views.branches.pullRequests.showForBranches" name="views.branches.pullRequests.showForBranches" type="checkbox" data-setting disabled>
+											<label for="views.branches.pullRequests.showForBranches">显示与各分支关联的拉取请求</label>
+										</div>
+									</div>
+
+									<div class="setting" data-enablement="views.branches.pullRequests.enabled">
+										<div class="setting__input">
+											<input id="views.branches.pullRequests.showForCommits" name="views.branches.pullRequests.showForCommits" type="checkbox" data-setting disabled>
+											<label for="views.branches.pullRequests.showForCommits">显示引入各提交的拉取请求</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.branches.branches.layout">分支布局</label>
+							<div class="select-container">
+								<select id="views.branches.branches.layout" name="views.branches.branches.layout" data-setting>
+									<option value="list">以列表显示</option>
+									<option value="tree">树状</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.branches.files.layout">文件布局</label>
+							<div class="select-container">
+								<select id="views.branches.files.layout" name="views.branches.files.layout" data-setting>
+									<option value="auto">自动</option>
+									<option value="list">以列表显示</option>
+									<option value="tree">树状</option>
+								</select>
+							</div>
+						</div>
+						<p class="setting__hint" data-visibility="views.branches.files.layout =auto">根据各嵌套层级的文件数量选择最佳布局</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.branches.files.icon">文件图标</label>
+							<div class="select-container">
+								<select id="views.branches.files.icon" name="views.branches.files.icon" data-setting>
+									<option value="type">显示文件类型（默认）</option>
+									<option value="status">显示文件状态</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.branches.files.compact" name="views.branches.files.compact" type="checkbox" data-setting>
+							<label for="views.branches.files.compact">使用紧凑文件布局</label>
+						</div>
+						<p class="setting__hint">在使用树状布局时压平不必要的嵌套</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.branches.avatars" name="views.branches.avatars" type="checkbox" data-setting>
+							<label for="views.branches.avatars">使用作者头像</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview hidden" src="#{webroot}/media/branches-view-compare+pr.webp" data-visibility="views.branches.showBranchComparison !false &amp; views.branches.pullRequests.enabled &amp; views.branches.pullRequests.showForBranches" loading="lazy" width="600" height="360">
+				<img class="image__preview hidden" src="#{webroot}/media/branches-view-compare.webp" data-visibility="views.branches.showBranchComparison !false &amp; views.branches.pullRequests.enabled =false" loading="lazy" width="600" height="360">
+				<img class="image__preview hidden" src="#{webroot}/media/branches-view-compare.webp" data-visibility="views.branches.showBranchComparison !false &amp; views.branches.pullRequests.enabled &amp; views.branches.pullRequests.showForBranches =false" loading="lazy" width="600" height="360">
+				<img class="image__preview hidden" src="#{webroot}/media/branches-view-pr.webp" data-visibility="views.branches.showBranchComparison =false &amp; views.branches.pullRequests.enabled &amp; views.branches.pullRequests.showForBranches" loading="lazy" width="600" height="360">
+				<img class="image__preview hidden" src="#{webroot}/media/branches-view.webp" data-visibility="views.branches.showBranchComparison =false &amp; views.branches.pullRequests.enabled =false" loading="lazy" width="600" height="360">
+				<img class="image__preview hidden" src="#{webroot}/media/branches-view.webp" data-visibility="views.branches.showBranchComparison =false &amp; views.branches.pullRequests.enabled &amp; views.branches.pullRequests.showForBranches =false" loading="lazy" width="600" height="360">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.views.branches%22">设置界面</a>并搜索<b><i>gitlens.views.branches</i></b>或<b><i>gitlens.views</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="remotes-view" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>远程视图</h2>
+
+		<p class="section__header-hint">添加一个<a class="command command--show-view" title="在侧边栏中显示视图" href="command:gitlens.showRemotesView">远程视图</a>，用于可视化、浏览和管理 Git 远程与远程分支</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="section__group">
+						<div class="section__content">
+							<div class="settings settings--fixed">
+								<div class="setting">
+									<div class="setting__input">
+										<input id="views.remotes.pullRequests.enabled" name="views.remotes.pullRequests.enabled" type="checkbox" data-setting>
+										<label for="views.remotes.pullRequests.enabled">显示关联的拉取请求</label>
+									</div>
+									<p class="setting__hint">需要连接到受支持的远程服务（例如 GitHub）</p>
+								</div>
+
+								<div class="settings settings--fixed ml-2">
+									<div class="setting" data-enablement="views.remotes.pullRequests.enabled">
+										<div class="setting__input">
+											<input id="views.remotes.pullRequests.showForBranches" name="views.remotes.pullRequests.showForBranches" type="checkbox" data-setting disabled>
+											<label for="views.remotes.pullRequests.showForBranches">显示与各分支关联的拉取请求</label>
+										</div>
+									</div>
+
+									<div class="setting" data-enablement="views.remotes.pullRequests.enabled">
+										<div class="setting__input">
+											<input id="views.remotes.pullRequests.showForCommits" name="views.remotes.pullRequests.showForCommits" type="checkbox" data-setting disabled>
+											<label for="views.remotes.pullRequests.showForCommits">显示引入各提交的拉取请求</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.remotes.branches.layout">分支布局</label>
+							<div class="select-container">
+								<select id="views.remotes.branches.layout" name="views.remotes.branches.layout" data-setting>
+									<option value="list">以列表显示</option>
+									<option value="tree">树状</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.remotes.files.layout">文件布局</label>
+							<div class="select-container">
+								<select id="views.remotes.files.layout" name="views.remotes.files.layout" data-setting>
+									<option value="auto">自动</option>
+									<option value="list">以列表显示</option>
+									<option value="tree">树状</option>
+								</select>
+							</div>
+						</div>
+						<p class="setting__hint" data-visibility="views.remotes.files.layout =auto">根据各嵌套层级的文件数量选择最佳布局</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.remotes.files.icon">文件图标</label>
+							<div class="select-container">
+								<select id="views.remotes.files.icon" name="views.remotes.files.icon" data-setting>
+									<option value="type">显示文件类型（默认）</option>
+									<option value="status">显示文件状态</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.remotes.files.compact" name="views.remotes.files.compact" type="checkbox" data-setting>
+							<label for="views.remotes.files.compact">使用紧凑文件布局</label>
+						</div>
+						<p class="setting__hint">在使用树状布局时压平不必要的嵌套</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.remotes.avatars" name="views.remotes.avatars" type="checkbox" data-setting>
+							<label for="views.remotes.avatars">使用作者头像</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview hidden" src="#{webroot}/media/remotes-view-pr.webp" data-visibility="views.remotes.pullRequests.enabled &amp; views.remotes.pullRequests.showForBranches" loading="lazy" width="600" height="360">
+				<img class="image__preview hidden" src="#{webroot}/media/remotes-view.webp" data-visibility="views.remotes.pullRequests.enabled =false" loading="lazy" width="600" height="360">
+				<img class="image__preview hidden" src="#{webroot}/media/remotes-view.webp" data-visibility="views.remotes.pullRequests.enabled &amp; views.remotes.pullRequests.showForBranches =false" loading="lazy" width="600" height="360">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.views.remotes%22">设置界面</a>并搜索<b><i>gitlens.views.remotes</i></b>或<b><i>gitlens.views</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="stashes-view" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>贮藏视图</h2>
+
+		<p class="section__header-hint">添加<a class="command command--show-view" title="在侧边栏中显示视图" href="command:gitlens.showStashesView">贮藏视图</a>，用于可视化、浏览和管理 Git 贮藏</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.stashes.files.layout">文件布局</label>
+							<div class="select-container">
+								<select id="views.stashes.files.layout" name="views.stashes.files.layout" data-setting>
+									<option value="auto">自动</option>
+									<option value="list">以列表显示</option>
+									<option value="tree">树状</option>
+								</select>
+							</div>
+						</div>
+						<p class="setting__hint" data-visibility="views.stashes.files.layout =auto">根据各嵌套层级的文件数量选择最佳布局</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.stashes.files.icon">文件图标</label>
+							<div class="select-container">
+								<select id="views.stashes.files.icon" name="views.stashes.files.icon" data-setting>
+									<option value="type">显示文件类型（默认）</option>
+									<option value="status">显示文件状态</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.stashes.files.compact" name="views.stashes.files.compact" type="checkbox" data-setting>
+							<label for="views.stashes.files.compact">使用紧凑文件布局</label>
+						</div>
+						<p class="setting__hint">在使用树状布局时压平不必要的嵌套</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input setting__input--format">
+							<label for="views.formats.stashes.label">贮藏标签格式</label>
+							<input id="views.formats.stashes.label" name="views.formats.stashes.label" type="text" placeholder="${message}" data-setting data-setting-preview data-default-value="${message}" data-popup-trigger>
+							<label for="views.formats.stashes.label" title="查看可用 token">
+								<i class="icon icon__chevron-down"></i>
+							</label>
+						</div>
+						<div id="views.formats.stashes.label.popup" class="popup hidden"></div>
+						<span class="setting__hint">示例：<span data-setting-preview="views.formats.stashes.label" data-setting-preview-type="commit" data-setting-preview-default="${message}"></span></span>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input setting__input--format">
+							<label for="views.formats.stashes.description">贮藏描述格式</label>
+							<input id="views.formats.stashes.description" name="views.formats.stashes.description" type="text" placeholder="${stashOnRef, }${agoOrDate}" data-setting data-setting-preview data-default-value="${stashOnRef, }${agoOrDate}" data-popup-trigger>
+							<label for="views.formats.stashes.description" title="See available tokens">
+								<i class="icon icon__chevron-down"></i>
+							</label>
+						</div>
+						<div id="views.formats.stashes.description.popup" class="popup hidden"></div>
+						<span class="setting__hint">Example:
+							<span data-setting-preview="views.formats.stashes.description" data-setting-preview-type="commit" data-setting-preview-default="${stashOnRef, }${agoOrDate}"></span>
+						</span>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview hidden" src="#{webroot}/media/stashes-view-auto.webp" data-visibility="views.stashes.files.layout !tree" loading="lazy" width="600" height="360">
+				<img class="image__preview hidden" src="#{webroot}/media/stashes-view-tree.webp" data-visibility="views.stashes.files.layout =tree" loading="lazy" width="600" height="360">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.views.stashes%22">设置界面</a>并搜索<b><i>gitlens.views.stashes</i></b>或<b><i>gitlens.views</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="tags-view" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>标签视图</h2>
+
+		<p class="section__header-hint">添加一个<a class="command command--show-view" title="在侧边栏中显示视图" href="command:gitlens.showTagsView">标签视图</a>，用于可视化、浏览和管理 Git 标签</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.tags.branches.layout">标签布局</label>
+							<div class="select-container">
+								<select id="views.tags.branches.layout" name="views.tags.branches.layout" data-setting>
+									<option value="list">以列表显示</option>
+									<option value="tree">树状</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.tags.files.layout">文件布局</label>
+							<div class="select-container">
+								<select id="views.tags.files.layout" name="views.tags.files.layout" data-setting>
+									<option value="auto">自动</option>
+									<option value="list">以列表显示</option>
+									<option value="tree">树状</option>
+								</select>
+							</div>
+						</div>
+						<p class="setting__hint" data-visibility="views.tags.files.layout =auto">根据各嵌套层级的文件数量选择最佳布局</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.tags.files.icon">文件图标</label>
+							<div class="select-container">
+								<select id="views.tags.files.icon" name="views.tags.files.icon" data-setting>
+									<option value="type">显示文件类型（默认）</option>
+									<option value="status">显示文件状态</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.tags.files.compact" name="views.tags.files.compact" type="checkbox" data-setting>
+							<label for="views.tags.files.compact">使用紧凑文件布局</label>
+						</div>
+						<p class="setting__hint">在使用树状布局时压平不必要的嵌套</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.tags.avatars" name="views.tags.avatars" type="checkbox" data-setting>
+							<label for="views.tags.avatars">使用作者头像</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview hidden" src="#{webroot}/media/tags-view-list.webp" data-visibility="views.tags.branches.layout !tree" loading="lazy" width="600" height="360">
+				<img class="image__preview hidden" src="#{webroot}/media/tags-view-tree.webp" data-visibility="views.tags.branches.layout =tree" loading="lazy" width="600" height="360">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.views.tags%22">设置界面</a>并搜索<b><i>gitlens.views.tags</i></b>或<b><i>gitlens.views</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="worktrees-view" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>工作树视图<gl-feature-badge></gl-feature-badge></h2>
+
+		<p class="section__header-hint">添加一个<a class="command command--show-view" title="在侧边栏中显示视图" href="command:gitlens.showWorktreesView">工作树视图</a>，用于可视化、浏览和管理 Git 工作树</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting">
+						<div class="setting__input">
+							<input id="worktrees.promptForLocation" name="worktrees.promptForLocation" type="checkbox" data-setting>
+							<label for="worktrees.promptForLocation">始终询问将新工作树放在何处</label>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="worktrees.defaultLocation">默认工作树位置</label>
+							<input id="worktrees.defaultLocation" name="worktrees.defaultLocation" type="text" placeholder="用于放置新工作树的绝对路径" data-setting>
+						</div>
+						<p class="setting__hint">可按工作区或文件夹分别配置</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.worktrees.showBranchComparison" name="views.worktrees.showBranchComparison" type="checkbox" value="branch" data-setting>
+							<label for="views.worktrees.showBranchComparison">显示工作树分支与用户所选引用（分支、标签等）之间的比较</label>
+						</div>
+					</div>
+
+					<div class="section__group">
+						<div class="section__content">
+							<div class="settings settings--fixed">
+								<div class="setting">
+									<div class="setting__input">
+										<input id="views.worktrees.pullRequests.enabled" name="views.worktrees.pullRequests.enabled" type="checkbox" data-setting>
+										<label for="views.worktrees.pullRequests.enabled">显示关联的拉取请求</label>
+									</div>
+									<p class="setting__hint">需要连接到受支持的远程服务（例如 GitHub）</p>
+								</div>
+
+								<div class="settings settings--fixed ml-2">
+									<div class="setting" data-enablement="views.worktrees.pullRequests.enabled">
+										<div class="setting__input">
+											<input id="views.worktrees.pullRequests.showForBranches" name="views.worktrees.pullRequests.showForBranches" type="checkbox" data-setting disabled>
+											<label for="views.worktrees.pullRequests.showForBranches">显示与工作树分支关联的拉取请求</label>
+										</div>
+									</div>
+
+									<div class="setting" data-enablement="views.worktrees.pullRequests.enabled">
+										<div class="setting__input">
+											<input id="views.worktrees.pullRequests.showForCommits" name="views.worktrees.pullRequests.showForCommits" type="checkbox" data-setting disabled>
+											<label for="views.worktrees.pullRequests.showForCommits">显示引入各提交的拉取请求</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.worktrees.files.layout">文件布局</label>
+							<div class="select-container">
+								<select id="views.worktrees.files.layout" name="views.worktrees.files.layout" data-setting>
+									<option value="auto">自动</option>
+									<option value="list">以列表显示</option>
+									<option value="tree">树状</option>
+								</select>
+							</div>
+						</div>
+						<p class="setting__hint" data-visibility="views.worktrees.files.layout =auto">根据各嵌套层级的文件数量选择最佳布局</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.worktrees.files.icon">文件图标</label>
+							<div class="select-container">
+								<select id="views.worktrees.files.icon" name="views.worktrees.files.icon" data-setting>
+									<option value="type">显示文件类型（默认）</option>
+									<option value="status">显示文件状态</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.worktrees.files.compact" name="views.worktrees.files.compact" type="checkbox" data-setting>
+							<label for="views.worktrees.files.compact">使用紧凑文件布局</label>
+						</div>
+						<p class="setting__hint">在使用树状布局时压平不必要的嵌套</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.worktrees.avatars" name="views.worktrees.avatars" type="checkbox" data-setting>
+							<label for="views.worktrees.avatars">使用作者头像</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview hidden" src="#{webroot}/media/worktrees-view-compare+pr.webp" data-visibility="views.worktrees.showBranchComparison !false &amp; views.worktrees.pullRequests.enabled &amp; views.worktrees.pullRequests.showForBranches" loading="lazy" width="600" height="360">
+				<img class="image__preview hidden" src="#{webroot}/media/worktrees-view-compare.webp" data-visibility="views.worktrees.showBranchComparison !false &amp; views.worktrees.pullRequests.enabled =false" loading="lazy" width="600" height="360">
+				<img class="image__preview hidden" src="#{webroot}/media/worktrees-view-compare.webp" data-visibility="views.worktrees.showBranchComparison !false &amp; views.worktrees.pullRequests.enabled &amp; views.worktrees.pullRequests.showForBranches =false" loading="lazy" width="600" height="360">
+				<img class="image__preview hidden" src="#{webroot}/media/worktrees-view-pr.webp" data-visibility="views.worktrees.showBranchComparison =false &amp; views.worktrees.pullRequests.enabled &amp; views.worktrees.pullRequests.showForBranches" loading="lazy" width="600" height="360">
+				<img class="image__preview hidden" src="#{webroot}/media/worktrees-view.webp" data-visibility="views.worktrees.showBranchComparison =false &amp; views.worktrees.pullRequests.enabled =false" loading="lazy" width="600" height="360">
+				<img class="image__preview hidden" src="#{webroot}/media/worktrees-view.webp" data-visibility="views.worktrees.showBranchComparison =false &amp; views.worktrees.pullRequests.enabled &amp; views.worktrees.pullRequests.showForBranches =false" loading="lazy" width="600" height="360">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.views.worktrees%22">设置界面</a>并搜索<b><i>gitlens.views.worktrees</i></b>或<b><i>gitlens.views</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="contributors-view" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>贡献者视图</h2>
+
+		<p class="section__header-hint">添加一个默认隐藏的<a class="command command--show-view" title="在侧边栏中显示视图" href="command:gitlens.showContributorsView">贡献者视图</a>，用于可视化、导航和浏览贡献者</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.contributors.showAllBranches" name="views.contributors.showAllBranches" type="checkbox" data-setting>
+							<label for="views.contributors.showAllBranches">显示所有分支中的提交</label>
+						</div>
+					</div>
+
+					<div class="section__group">
+						<div class="section__content">
+							<div class="settings settings--fixed">
+								<div class="setting">
+									<div class="setting__input">
+										<input id="views.contributors.pullRequests.enabled" name="views.contributors.pullRequests.enabled" type="checkbox" data-setting>
+										<label for="views.contributors.pullRequests.enabled">显示关联的拉取请求</label>
+									</div>
+									<p class="setting__hint">需要连接到受支持的远程服务（例如 GitHub）</p>
+								</div>
+
+								<div class="settings settings--fixed ml-2">
+									<div class="setting" data-enablement="views.contributors.pullRequests.enabled">
+										<div class="setting__input">
+											<input id="views.contributors.pullRequests.showForCommits" name="views.contributors.pullRequests.showForCommits" type="checkbox" data-setting disabled>
+											<label for="views.contributors.pullRequests.showForCommits">显示引入各提交的拉取请求</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.contributors.files.layout">文件布局</label>
+							<div class="select-container">
+								<select id="views.contributors.files.layout" name="views.contributors.files.layout" data-setting>
+									<option value="auto">自动</option>
+									<option value="list">以列表显示</option>
+									<option value="tree">树状</option>
+								</select>
+							</div>
+						</div>
+						<p class="setting__hint" data-visibility="views.contributors.files.layout =auto">根据各嵌套层级的文件数量选择最佳布局</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.contributors.files.icon">文件图标</label>
+							<div class="select-container">
+								<select id="views.contributors.files.icon" name="views.contributors.files.icon" data-setting>
+									<option value="type">显示文件类型（默认）</option>
+									<option value="status">显示文件状态</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.contributors.files.compact" name="views.contributors.files.compact" type="checkbox" data-setting>
+							<label for="views.contributors.files.compact">使用紧凑文件布局</label>
+						</div>
+						<p class="setting__hint">在使用树状布局时压平不必要的嵌套</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.contributors.avatars" name="views.contributors.avatars" type="checkbox" data-setting>
+							<label for="views.contributors.avatars">使用作者头像</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview" src="#{webroot}/media/contributors-view.webp" loading="lazy" width="600" height="360">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.views.contributors%22">设置界面</a>并搜索<b><i>gitlens.views.contributors</i></b>或<b><i>gitlens.views</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="search-compare-view" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>搜索与比较视图</h2>
+
+		<p class="section__header-hint">添加一个<a class="command command--show-view" title="在侧边栏中显示视图" href="command:gitlens.showSearchAndCompareView">搜索与比较视图</a>，用于按消息、作者、文件、ID 等搜索和浏览提交历史，或可视化分支、标签、提交等之间的比较</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="section__group">
+						<div class="section__content">
+							<div class="settings settings--fixed">
+								<div class="setting">
+									<div class="setting__input">
+										<input id="views.searchAndCompare.pullRequests.enabled" name="views.searchAndCompare.pullRequests.enabled" type="checkbox" data-setting>
+										<label for="views.searchAndCompare.pullRequests.enabled">显示关联的拉取请求</label>
+									</div>
+									<p class="setting__hint">需要连接到受支持的远程服务（例如 GitHub）</p>
+								</div>
+
+								<div class="settings settings--fixed ml-2">
+									<div class="setting" data-enablement="views.searchAndCompare.pullRequests.enabled">
+										<div class="setting__input">
+											<input id="views.searchAndCompare.pullRequests.showForCommits" name="views.searchAndCompare.pullRequests.showForCommits" type="checkbox" data-setting disabled>
+											<label for="views.searchAndCompare.pullRequests.showForCommits">显示引入各提交的拉取请求</label>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.searchAndCompare.files.layout">文件布局</label>
+							<div class="select-container">
+								<select id="views.searchAndCompare.files.layout" name="views.searchAndCompare.files.layout" data-setting>
+									<option value="auto">自动</option>
+									<option value="list">以列表显示</option>
+									<option value="tree">树状</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="views.searchAndCompare.files.icon">文件图标</label>
+							<div class="select-container">
+								<select id="views.searchAndCompare.files.icon" name="views.searchAndCompare.files.icon" data-setting>
+									<option value="type">显示文件类型（默认）</option>
+									<option value="status">显示文件状态</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.searchAndCompare.files.compact" name="views.searchAndCompare.files.compact" type="checkbox" data-setting>
+							<label for="views.searchAndCompare.files.compact">使用紧凑文件布局</label>
+						</div>
+						<p class="setting__hint">在使用树状布局时压平不必要的嵌套</p>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<input id="views.searchAndCompare.avatars" name="views.searchAndCompare.avatars" type="checkbox" data-setting>
+							<label for="views.searchAndCompare.avatars">使用作者头像</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview" src="#{webroot}/media/search-and-compare-view.webp" loading="lazy" width="600" height="360">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.views.searchAndCompare%22">设置界面</a>并搜索<b><i>gitlens.views.searchAndCompare</i></b>或<b><i>gitlens.views</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="rebase-editor" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<div class="setting__input setting__input--big">
+			<input id="rebaseEditor.enabled" name="rebaseEditor.enabled" type="checkbox" data-setting data-setting-type="custom">
+			<label for="rebaseEditor.enabled">交互式变基编辑器</label>
+			<a class="link__learn-more" title="了解更多" href="https://help.gitkraken.com/gitlens/gitlens-features/#interactive-rebase-editor">
+				<i class="icon icon__info"></i>
+			</a>
+		</div>
+
+		<p class="section__header-hint">添加一个易用的交互式变基编辑器，便于配置交互式变基会话</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="settings settings--fixed ml-1">
+					<div class="setting" data-enablement="rebaseEditor.enabled" disabled>
+						<div class="setting__input setting__input--inner-select">
+							<label for="rebaseEditor.ordering">显示</label>
+							<div class="select-container">
+								<select id="rebaseEditor.ordering" name="rebaseEditor.ordering" data-setting>
+									<option value="asc">最旧提交优先</option>
+									<option value="desc">最新提交优先（默认）</option>
+								</select>
+							</div>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="rebaseEditor.enabled" disabled>
+						<div class="setting__input setting__input--inner-select">
+							<input id="rebaseEditor.showDetailsView" name="rebaseEditor.showDetailsView" type="checkbox" value="selection" data-setting data-enablement="rebaseEditor.enabled" disabled>
+							<label for="rebaseEditor.showDetailsView">显示检查视图</label>
+							<div class="select-container">
+								<select id="rebaseEditor.showDetailsView" name="rebaseEditor.showDetailsView" data-setting data-enablement="rebaseEditor.enabled &amp; rebaseEditor.showDetailsView !false" disabled>
+									<option value="open">仅在打开时</option>
+									<option value="selection">选中项变化时（默认）</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview hidden" src="#{webroot}/media/rebase-editor.webp" data-visibility="rebaseEditor.enabled" loading="lazy" width="600" height="291">
+			</div>
+		</div>
+	</div>
+</section>
+
+				<section id="autolinks" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>自动链接</h2>
+		<p class="section__header-hint">使用自动链接在提交消息中将 Jira issue 或 Zendesk ticket 等外部引用转换为链接。</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__preview mb-0">
+				<img class="image__preview image__preview--fit" src="#{webroot}/media/hovers-autolink.webp" loading="lazy" width="329" height="112">
+			</div>
+		</div>
+		<div class="section__group">
+			<div class="section__content">
+				<div data-component="autolink-integration"></div>
+				<div class="setting-list" data-component="autolinks"></div>
+				<p class="mb-0">
+					<button class="button button--compact button--flat m-0" type="button" data-action="show" data-action-target="autolink">添加自动链接</button>
+				</p>
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.autolinks%22">设置界面</a>并搜索<b><i>gitlens.autolinks</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="terminal-links" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<div class="setting__input setting__input--big">
+			<input id="terminalLinks.enabled" name="terminalLinks.enabled" type="checkbox" data-setting>
+			<label for="terminalLinks.enabled">终端链接</label>
+			<a class="link__learn-more" title="了解更多" href="https://help.gitkraken.com/gitlens/gitlens-features/#terminal-links">
+				<i class="icon icon__info"></i>
+			</a>
+		</div>
+
+		<p class="section__header-hint">在集成终端中为分支、标签、提交以及提交范围添加自动链接</p>
+	</div>
+
+	<div class="section__group">
+		<div class="section__content">
+			<div class="settings settings--fixed ml-1">
+				<div class="setting" data-enablement="terminalLinks.enabled" disabled>
+					<div class="setting__input">
+						<input id="terminalLinks.showDetailsView" name="terminalLinks.showDetailsView" type="checkbox" data-setting disabled>
+						<label for="terminalLinks.showDetailsView">为提交链接显示检查视图</label>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="section__preview"></div>
+	</div>
+</section>
+
+				<section id="dates" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>日期与时间</h2>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="setting">
+					<div class="setting__input">
+						<input id="defaultDateStyle" name="defaultDateStyle" type="checkbox" value="relative" data-value-off="absolute" data-setting>
+						<label for="defaultDateStyle">允许相对日期格式化</label>
+					</div>
+					<span class="setting__hint hidden" data-visibility="defaultDateStyle =relative">以相对方式显示部分日期，例如 1 天前</span>
+					<span class="setting__hint hidden" data-visibility="defaultDateStyle =absolute">以绝对方式显示日期，例如 <span data-setting-preview="defaultDateFormat" data-setting-preview-type="date" data-setting-preview-default="MMMM Do, YYYY h:mma"></span></span>
+				</div>
+
+				<div class="settings">
+					<div class="setting">
+						<div class="setting__input">
+							<label for="defaultDateLocale">日期区域设置</label>
+							<input id="defaultDateLocale" name="defaultDateLocale" type="text" placeholder="defaults to VS Code locale" data-setting data-setting-preview>
+							<a class="link__learn-more" title="受支持的 locale 值请参阅 BCP 47 语言标签" href="https://en.wikipedia.org/wiki/IETF_language_tag#List_of_major_primary_language_subtags">
+								<i class="icon icon__info">Can use <code>system</code> to follow the system locale, or enter a locale language
+									tag, e.g. en-US</i>
+							</a>
+						</div>
+						<span class="setting__hint">使用 <code>system</code> 表示系统区域设置，或填写语言区域标签，例如 en-US。示例日期：<span data-setting-preview="defaultDateLocale" data-setting-preview-type="date-locale" data-setting-preview-default="defaultDateFormat"></span></span>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="defaultDateFormat">日期格式</label>
+							<input id="defaultDateFormat" name="defaultDateFormat" type="text" placeholder="defaults to MMMM Do, YYYY h:mma" data-setting data-setting-preview>
+							<a class="link__learn-more" title="支持的日期格式请参阅 Moment.js 文档" href="https://momentjs.com/docs/#/displaying/format/">
+								<i class="icon icon__info"></i>
+							</a>
+						</div>
+						<span class="setting__hint">示例日期：<span data-setting-preview="defaultDateFormat" data-setting-preview-type="date" data-setting-preview-default="MMMM Do, YYYY h:mma"></span></span>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="defaultDateShortFormat">短日期格式</label>
+							<input id="defaultDateShortFormat" name="defaultDateShortFormat" type="text" placeholder="defaults to system short date format" data-setting data-setting-preview>
+							<a class="link__learn-more" title="See Moment.js docs for supported date formats" href="https://momentjs.com/docs/#/displaying/format/">
+								<i class="icon icon__info"></i>
+							</a>
+						</div>
+						<span class="setting__hint">示例短日期：<span data-setting-preview="defaultDateShortFormat" data-setting-preview-type="date" data-setting-preview-default="short"></span></span>
+					</div>
+
+					<div class="setting">
+						<div class="setting__input">
+							<label for="defaultTimeFormat">时间格式</label>
+							<input id="defaultTimeFormat" name="defaultTimeFormat" type="text" placeholder="defaults to h:mma" data-setting data-setting-preview>
+							<a class="link__learn-more" title="See Moment.js docs for supported date formats" href="https://momentjs.com/docs/#/displaying/format/">
+								<i class="icon icon__info"></i>
+							</a>
+						</div>
+						<span class="setting__hint">示例时间：<span data-setting-preview="defaultTimeFormat" data-setting-preview-type="date" data-setting-preview-default="h:mma"></span></span>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.default%22">设置界面</a>并搜索<b><i>gitlens.default</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="views" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>排序</h2>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="setting">
+					<div class="setting__input">
+						<label for="sortRepositoriesBy">仓库排序</label>
+						<div class="select-container">
+							<select id="sortRepositoriesBy" name="sortRepositoriesBy" data-setting>
+								<option value="dcovered">按发现顺序或工作区顺序</option>
+								<option value="lastFetched:desc">按上次获取日期降序</option>
+								<option value="lastFetched:asc">按上次获取日期升序</option>
+								<option value="name:asc">按名称升序</option>
+								<option value="name:desc">按名称降序</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting">
+					<div class="setting__input">
+						<label for="sortBranchesBy">分支排序</label>
+						<div class="select-container">
+							<select id="sortBranchesBy" name="sortBranchesBy" data-setting>
+								<option value="date:desc">按最近提交日期降序</option>
+								<option value="date:asc">按最近提交日期升序</option>
+								<option value="name:asc">按名称升序</option>
+								<option value="name:desc">按名称降序</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting">
+					<div class="setting__input">
+						<label for="sortTagsBy">标签排序</label>
+						<div class="select-container">
+							<select id="sortTagsBy" name="sortTagsBy" data-setting>
+								<option value="date:desc">按最近提交日期降序</option>
+								<option value="date:asc">按最近提交日期升序</option>
+								<option value="name:asc">按名称升序</option>
+								<option value="name:desc">按名称降序</option>
+							</select>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting">
+					<div class="setting__input">
+						<label for="sortContributorsBy">贡献者排序</label>
+						<div class="select-container">
+							<select id="sortContributorsBy" name="sortContributorsBy" data-setting>
+								<option value="count:desc">按提交次数降序</option>
+								<option value="count:asc">按提交次数升序</option>
+								<option value="date:desc">按最近提交日期降序</option>
+								<option value="date:asc">按最近提交日期升序</option>
+								<option value="name:asc">按名称升序</option>
+								<option value="name:desc">按名称降序</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+				<section id="menus" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<div class="setting__input setting__input--big">
+			<input id="menus" name="menus" type="checkbox" value="undefined" data-setting>
+			<label for="menus">菜单和工具栏</label>
+		</div>
+
+		<p class="section__header-hint">向内置菜单和工具栏添加许多实用命令</p>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="setting setting--expandable" data-enablement="menus">
+					<div class="setting__input">
+						<div class="setting__expander"></div>
+						<input id="menus.editor" name="menus.editor" type="checkbox" value="undefined" data-setting data-setting-type="object" disabled>
+						<label for="menus.editor">添加到编辑器上下文菜单</label>
+					</div>
+				</div>
+
+				<div class="settings ml-4">
+					<div class="setting" data-enablement="menus.editor">
+						<div class="setting__input">
+							<input id="menus.editor.compare" name="menus.editor.compare" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.editor.compare">添加<i>Open Changes</i>子菜单</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.editor">
+						<div class="setting__input">
+							<input id="menus.editor.remote" name="menus.editor.remote" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.editor.remote">Add an <i>Open on Remote (Web)</i> submenu</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.editor">
+						<div class="setting__input">
+							<input id="menus.editor.blame" name="menus.editor.blame" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.editor.blame">添加<i>File Annotations</i>子菜单</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.editor">
+						<div class="setting__input">
+							<input id="menus.editor.history" name="menus.editor.history" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.editor.history">Add a <i>File History</i> submenu</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.editor">
+						<div class="setting__input">
+							<input id="menus.editor.clipboard" name="menus.editor.clipboard" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.editor.clipboard">添加到<i>Copy As</i>子菜单</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting setting--expandable" data-enablement="menus">
+					<div class="setting__input">
+						<div class="setting__expander"></div>
+						<input id="menus.editorGutter" name="menus.editorGutter" type="checkbox" value="undefined" data-setting data-setting-type="object" disabled>
+						<label for="menus.editorGutter">添加到编辑器行号（gutter）上下文菜单</label>
+					</div>
+				</div>
+
+				<div class="settings ml-4">
+					<div class="setting" data-enablement="menus.editorGutter">
+						<div class="setting__input">
+							<input id="menus.editorGutter.share" name="menus.editorGutter.share" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.editorGutter.share">Add a <i>Share</i> submenu</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.editorGutter">
+						<div class="setting__input">
+							<input id="menus.editorGutter.compare" name="menus.editorGutter.compare" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.editorGutter.compare">Add an <i>Open Changes</i> submenu</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.editorGutter">
+						<div class="setting__input">
+							<input id="menus.editorGutter.remote" name="menus.editorGutter.remote" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.editorGutter.remote">Add an <i>Open on Remote (Web)</i> submenu</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting setting--expandable" data-enablement="menus">
+					<div class="setting__input">
+						<div class="setting__expander"></div>
+						<input id="menus.editorTab" name="menus.editorTab" type="checkbox" value="undefined" data-setting data-setting-type="object" disabled>
+						<label for="menus.editorTab">添加到编辑器标签页上下文菜单</label>
+					</div>
+				</div>
+
+				<div class="settings ml-4">
+					<div class="setting" data-enablement="menus.editorTab">
+						<div class="setting__input">
+							<input id="menus.editorTab.clipboard" name="menus.editorTab.clipboard" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.editorTab.clipboard">添加<i>Copy Remote File URL *</i>命令</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.editorTab">
+						<div class="setting__input">
+							<input id="menus.editorTab.compare" name="menus.editorTab.compare" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.editorTab.compare">Add an <i>Open Changes</i> submenu</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.editorTab">
+						<div class="setting__input">
+							<input id="menus.editorTab.remote" name="menus.editorTab.remote" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.editorTab.remote">Add an <i>Open on Remote (Web)</i> submenu</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.editorTab">
+						<div class="setting__input">
+							<input id="menus.editorTab.history" name="menus.editorTab.history" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.editorTab.history">Add a <i>File History</i> submenu</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting setting--expandable" data-enablement="menus">
+					<div class="setting__input">
+						<div class="setting__expander"></div>
+						<input id="menus.editorGroup" name="menus.editorGroup" type="checkbox" value="undefined" data-setting data-setting-type="object" disabled>
+						<label for="menus.editorGroup">添加到编辑器组工具栏</label>
+					</div>
+				</div>
+
+				<div class="settings ml-4">
+					<div class="setting" data-enablement="menus.editorGroup">
+						<div class="setting__input">
+							<input id="menus.editorGroup.compare" name="menus.editorGroup.compare" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.editorGroup.compare">添加修订历史导航命令</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.editorGroup">
+						<div class="setting__input">
+							<input id="menus.editorGroup.blame" name="menus.editorGroup.blame" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.editorGroup.blame">添加</label>
+							<div class="select-container">
+								<select id="fileAnnotations.command" name="fileAnnotations.command" data-setting data-enablement="menus.editorGroup.blame" disabled>
+									<option value="null">文件注解子菜单</option>
+									<option value="blame"><i>Toggle File Blame</i>命令</option>
+									<option value="heatmap"><i>Toggle File Heatmap</i>命令</option>
+									<option value="changes"><i>Toggle File Changes</i>命令</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting setting--expandable" data-enablement="menus">
+					<div class="setting__input">
+						<div class="setting__expander"></div>
+						<input id="menus.explorer" name="menus.explorer" type="checkbox" value="undefined" data-setting data-setting-type="object" disabled>
+						<label for="menus.explorer">添加到资源管理器项目上下文菜单</label>
+					</div>
+				</div>
+
+				<div class="settings ml-4">
+					<div class="setting" data-enablement="menus.explorer">
+						<div class="setting__input">
+							<input id="menus.explorer.compare" name="menus.explorer.compare" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.explorer.compare">Add an <i>Open Changes</i> submenu</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.explorer">
+						<div class="setting__input">
+							<input id="menus.explorer.remote" name="menus.explorer.remote" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.explorer.remote">Add an <i>Open on Remote (Web)</i> submenu</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.explorer">
+						<div class="setting__input">
+							<input id="menus.explorer.history" name="menus.explorer.history" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.explorer.history">Add a <i>File History</i> submenu</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.explorer">
+						<div class="setting__input">
+							<input id="menus.explorer.clipboard" name="menus.explorer.clipboard" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.explorer.clipboard">Add <i>Copy Remote File URL *</i> commands</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting setting--expandable" data-enablement="menus">
+					<div class="setting__input">
+						<div class="setting__expander"></div>
+						<input id="menus.ghpr" name="menus.ghpr" type="checkbox" value="undefined" data-setting data-setting-type="object" disabled>
+						<label for="menus.scm">添加到 GitHub Pull Request and Issues 的拉取请求上下文菜单</label>
+					</div>
+				</div>
+
+				<div class="settings ml-4">
+					<div class="setting" data-enablement="menus.scm">
+						<div class="setting__input">
+							<input id="menus.ghpr.worktree" name="menus.ghpr.worktree" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.ghpr.worktree">添加一个<i>Open Worktree for Pull Request</i>命令</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting setting--expandable" data-enablement="menus">
+					<div class="setting__input">
+						<div class="setting__expander"></div>
+						<input id="menus.scm" name="menus.scm" type="checkbox" value="undefined" data-setting data-setting-type="object" disabled>
+						<label for="menus.scm">添加到源代码管理上下文菜单</label>
+					</div>
+				</div>
+
+				<div class="settings ml-4">
+					<div class="setting" data-enablement="menus.scm">
+						<div class="setting__input">
+							<input id="menus.scm.graph" name="menus.scm.graph" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scm.graph">添加一个<i>Show Commit Graph</i>命令</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="settings ml-4">
+					<div class="setting" data-enablement="menus.scm">
+						<div class="setting__input">
+							<input id="menus.scm.visualHistory" name="menus.scm.visualHistory" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scm.visualHistory">Add a <i>Visualize Repository History</i> command</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting setting--expandable" data-enablement="menus">
+					<div class="setting__input">
+						<div class="setting__expander"></div>
+						<input id="menus.scmRepositoryInline" name="menus.scmRepositoryInline" type="checkbox" value="undefined" data-setting data-setting-type="object" disabled>
+						<label for="menus.scmRepositoryInline">添加到源代码管理仓库工具栏</label>
+					</div>
+				</div>
+
+				<div class="settings ml-4">
+					<div class="setting" data-enablement="menus.scmRepositoryInline">
+						<div class="setting__input">
+							<input id="menus.scmRepositoryInline.stash" name="menus.scmRepositoryInline.stash" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmRepositoryInline.stash">Add a <i>Stash All Changes</i> command</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.scmRepositoryInline">
+						<div class="setting__input">
+							<input id="menus.scmRepositoryInline.graph" name="menus.scmRepositoryInline.graph" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmRepositoryInline.graph">Add a <i>Show Commit Graph</i> command</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.scmRepositoryInline">
+						<div class="setting__input">
+							<input id="menus.scmRepositoryInline.visualHistory" name="menus.scmRepositoryInline.visualHistory" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmRepositoryInline.visualHistory">Add a <i>Visualize Repository History</i> command</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting setting--expandable" data-enablement="menus">
+					<div class="setting__input">
+						<div class="setting__expander"></div>
+						<input id="menus.scmRepository" name="menus.scmRepository" type="checkbox" value="undefined" data-setting data-setting-type="object" disabled>
+						<label for="menus.scmRepository">添加到源代码管理仓库上下文菜单</label>
+					</div>
+				</div>
+
+				<div class="settings ml-4">
+					<div class="setting" data-enablement="menus.scmRepository">
+						<div class="setting__input">
+							<input id="menus.scmRepository.generateCommitMessage" name="menus.scmRepository.generateCommitMessage" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmRepository.generateCommitMessage">Add a <i>Generate Commit Message (Experimental)</i> command</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.scmRepository">
+						<div class="setting__input">
+							<input id="menus.scmRepository.authors" name="menus.scmRepository.authors" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmRepository.authors">Add an <i>Add Co-authors</i> command</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.scmRepository">
+						<div class="setting__input">
+							<input id="menus.scmRepository.graph" name="menus.scmRepository.graph" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmRepository.graph">Add a <i>Show Commit Graph</i> command</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.scmRepository">
+						<div class="setting__input">
+							<input id="menus.scmRepository.visualHistory" name="menus.scmRepository.visualHistory" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmRepository.visualHistory">Add a <i>Visualize Repository History</i> command</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting setting--expandable" data-enablement="menus">
+					<div class="setting__input">
+						<div class="setting__expander"></div>
+						<input id="menus.scmGroupInline" name="menus.scmGroupInline" type="checkbox" value="undefined" data-setting data-setting-type="object" disabled>
+						<label for="menus.scmGroupInline">添加到源代码管理分组工具栏</label>
+					</div>
+				</div>
+
+				<div class="settings ml-4">
+					<div class="setting" data-enablement="menus.scmGroupInline">
+						<div class="setting__input">
+							<input id="menus.scmGroupInline.stash" name="menus.scmGroupInline.stash" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmGroupInline.stash">Add a <i>Stash All Changes</i> command</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting setting--expandable" data-enablement="menus">
+					<div class="setting__input">
+						<div class="setting__expander"></div>
+						<input id="menus.scmGroup" name="menus.scmGroup" type="checkbox" value="undefined" data-setting data-setting-type="object" disabled>
+						<label for="menus.scmGroup">添加到源代码管理分组上下文菜单</label>
+					</div>
+				</div>
+
+				<div class="settings ml-4">
+					<div class="setting" data-enablement="menus.scmGroup">
+						<div class="setting__input">
+							<input id="menus.scmGroup.stash" name="menus.scmGroup.stash" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmGroup.stash">Add a <i>Stash All Changes</i> command</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.scmGroup">
+						<div class="setting__input">
+							<input id="menus.scmGroup.compare" name="menus.scmGroup.compare" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmGroup.compare">Add an <i>Open Changes</i> submenu</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.scmGroup">
+						<div class="setting__input">
+							<input id="menus.scmGroup.openClose" name="menus.scmGroup.openClose" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmGroup.openClose">添加<i>Open Changed Files</i>和<i>Close Unchanged Files</i>命令</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.scmGroup">
+						<div class="setting__input">
+							<input id="menus.scmGroup.patch" name="menus.scmGroup.patch" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmGroup.patch">Add <i>Copy as Patch</i> and <i>Share as Cloud Patch...</i> commands</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting setting--expandable" data-enablement="menus">
+					<div class="setting__input">
+						<div class="setting__expander"></div>
+						<input id="menus.scmItemInline" name="menus.scmItemInline" type="checkbox" value="undefined" data-setting data-setting-type="object" disabled>
+						<label for="menus.scmItemInline">添加到源代码管理条目工具栏</label>
+					</div>
+				</div>
+
+				<div class="settings ml-4">
+					<div class="setting" data-enablement="menus.scmItemInline">
+						<div class="setting__input">
+							<input id="menus.scmItemInline.stash" name="menus.scmItemInline.stash" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmItemInline.stash">Add a <i>Stash Changes</i> command</label>
+						</div>
+					</div>
+				</div>
+
+				<div class="setting setting--expandable" data-enablement="menus">
+					<div class="setting__input">
+						<div class="setting__expander"></div>
+						<input id="menus.scmItem" name="menus.scmItem" type="checkbox" value="undefined" data-setting data-setting-type="object" disabled>
+						<label for="menus.scmItem">添加到源代码管理条目上下文菜单</label>
+					</div>
+				</div>
+
+				<div class="settings ml-4">
+					<div class="setting" data-enablement="menus.scmItem">
+						<div class="setting__input">
+							<input id="menus.scmItem.compare" name="menus.scmItem.compare" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmItem.compare">Add an <i>Open Changes with</i> submenu</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.scmItem">
+						<div class="setting__input">
+							<input id="menus.scmItem.remote" name="menus.scmItem.remote" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmItem.remote">Add an <i>Open on Remote (Web)</i> submenu</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.scmItem">
+						<div class="setting__input">
+							<input id="menus.scmItem.history" name="menus.scmItem.history" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmItem.history">Add a <i>File History</i> submenu</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.scmItem">
+						<div class="setting__input">
+							<input id="menus.scmItem.stash" name="menus.scmItem.stash" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmItem.stash">Add a <i>Stash Changes</i> command</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.scmItem">
+						<div class="setting__input">
+							<input id="menus.scmItem.share" name="menus.scmItem.share" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmItem.share">Add a <i>Share</i> submenu</label>
+						</div>
+					</div>
+
+					<div class="setting" data-enablement="menus.scmItem">
+						<div class="setting__input">
+							<input id="menus.scmItem.clipboard" name="menus.scmItem.clipboard" type="checkbox" data-setting data-setting-type="object" disabled>
+							<label for="menus.scmItem.clipboard">Add a <i>Copy Relative Path</i> command</label>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.menus%22">设置界面</a>并搜索<b><i>gitlens.menus</i></b></p>
+		</div>
+	</div>
+</section>
+
+				<section id="shortcuts" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>键盘快捷方式</h2>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="setting">
+					<div class="setting__input">
+						<label for="keymap">使用</label>
+						<div class="select-container">
+							<select id="keymap" name="keymap" data-setting>
+								<option value="alternate">基于 Alt</option>
+								<option value="chorded">和弦式（默认）</option>
+								<option value="none">用户自定义</option>
+							</select>
+						</div>
+						<label for="keymap">键盘快捷方式</label>
+					</div>
+					<span class="setting__hint hidden" data-visibility="keymap =alternate">基于 <kbd>Alt</kbd> 的快捷键（在 macOS 上为 <kbd>&#x2325;</kbd>）。对非英文键盘布局不太友好</span>
+					<span class="setting__hint hidden" data-visibility="keymap =chorded">以<kbd>Ctrl+Shift+G</kbd>开头的和弦快捷方式（在 macOS 上为<kbd>&#x2325;&#x2318;G</kbd>）。更适合非英语键盘布局</span>
+					<span class="setting__hint hidden" data-visibility="keymap =none">GitLens 不会绑定任何键盘快捷方式。请通过<a class="command" title="打开键盘快捷方式" href="command:workbench.action.openGlobalKeybindings">键盘快捷方式</a>编辑器自行配置</span>
+				</div>
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">在<a class="command" title="打开键盘快捷方式" href="command:workbench.action.openGlobalKeybindings">键盘快捷方式</a>编辑器中搜索<b><i>gitlens</i></b>，以查看这些快捷方式并进一步自定义</p>
+		</div>
+	</div>
+</section>
+
+				<section id="modes" class="section--settings section--collapsible" tabindex="-1">
+	<div class="section__header">
+		<h2>模式</h2>
+
+		<p class="section__header-hint">支持用户自定义模式，以便在多组设置之间快速切换</p>
+		<div class="section__header-info">
+			<i class="icon icon--md icon__bulb"></i>
+			<div>
+				<p>使用<a class="command" title="运行命令" href="command:gitlens.switchMode">GitLens: 切换模式</a>命令快速切换当前活动模式</p>
+				<p>使用<a class="command" title="运行命令" href="command:gitlens.toggleReviewMode">GitLens: 切换审阅模式</a>命令来切换审阅模式</p>
+				<p>使用<a class="command" title="运行命令" href="command:gitlens.toggleZenMode">GitLens: 切换禅模式</a>命令来切换禅模式</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="section__collapsible">
+		<div class="section__group">
+			<div class="section__content">
+				<div class="setting">
+					<div class="setting__input">
+						<input id="mode.statusBar.enabled" name="mode.statusBar.enabled" type="checkbox" data-setting>
+						<label for="mode.statusBar.enabled">在状态栏中显示当前活动模式</label>
+					</div>
+				</div>
+
+				<div class="settings ml-2">
+					<div class="setting" data-enablement="mode.statusBar.enabled">
+						<div class="setting__input">
+							<label for="mode.statusBar.alignment">将注解放在</label>
+							<div class="select-container">
+								<select id="mode.statusBar.alignment" name="mode.statusBar.alignment" data-setting disabled>
+									<option value="left">左侧</option>
+									<option value="right">右侧</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="section__preview">
+				<img class="image__preview" src="#{webroot}/media/status-bar.webp" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/modes-status-bar-left.webp" data-visibility="mode.statusBar.enabled &amp; mode.statusBar.alignment =left" loading="lazy" width="600" height="206">
+				<img class="image__preview--overlay hidden" src="#{webroot}/media/modes-status-bar-right.webp" data-visibility="mode.statusBar.enabled &amp; mode.statusBar.alignment =right" loading="lazy" width="600" height="206">
+			</div>
+		</div>
+
+		<div class="section__group">
+			<p class="section__hint">如需更多选项，或添加你自己的自定义模式，请打开<a class="secondary" title="打开设置界面" href="command:workbench.action.openSettings?%22gitlens.modes%22">设置界面</a>并搜索<b><i>gitlens.modes</i></b></p>
+		</div>
+	</div>
+</section>
+
+			</div>
+
+			<div class="sidebar">
+				<div class="sidebar__group">
+					<h2>跳转到</h2>
+					<ul>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#current-line" title="跳转到行内 Blame 设置">行内 Blame</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#code-lens" title="跳转到 Git CodeLens 设置">Git CodeLens</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#status-bar" title="跳转到状态栏 Blame 设置">状态栏 Blame</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#hovers" title="跳转到悬停提示设置">悬停</a>
+						</li>
+
+						<li class="mt-1">
+							<a class="sidebar__jump-link" data-action="jump" href="#file-annotations" title="跳转到文件注解设置">文件注解</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#blame" title="跳转到文件 Blame 设置">文件 Blame</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#changes" title="跳转到文件更改设置">文件更改</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#heatmap" title="跳转到文件热度图设置">文件热度图</a>
+						</li>
+
+						<li class="mt-1">
+							<a class="sidebar__jump-link" data-action="jump" href="#commit-graph" title="跳转到提交图设置">提交图</a>
+							<gl-feature-badge></gl-feature-badge>
+						</li>
+
+						<li class="mt-1">
+							<a class="sidebar__jump-link" data-action="jump" href="#commits-view" title="跳转到提交视图设置">提交视图</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#commit-details-view" title="跳转到检查视图设置">检查视图</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#repositories-view" title="跳转到仓库视图设置">仓库视图</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#file-history-view" title="跳转到文件历史视图设置">文件历史视图</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#line-history-view" title="跳转到行历史视图设置">行历史视图</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#branches-view" title="跳转到分支视图设置">分支视图</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#remotes-view" title="跳转到远程视图设置">远程视图</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#stashes-view" title="跳转到贮藏视图设置">贮藏视图</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#tags-view" title="跳转到标签视图设置">标签视图</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#worktrees-view" title="跳转到工作树视图设置">工作树视图</a>
+							<gl-feature-badge></gl-feature-badge>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#contributors-view" title="跳转到贡献者视图设置">贡献者视图</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#search-compare-view" title="跳转到搜索与比较视图设置">搜索与比较视图</a>
+						</li>
+
+						<li class="mt-1">
+							<a class="sidebar__jump-link" data-action="jump" href="#rebase-editor" title="跳转到交互式变基编辑器设置">交互式变基编辑器</a>
+						</li>
+
+						<li class="mt-1">
+							<a class="sidebar__jump-link" data-action="jump" href="#autolinks" title="跳转到自动链接">自动链接</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#terminal-links" title="跳转到终端链接">终端链接</a>
+						</li>
+
+						<li class="mt-1">
+							<a class="sidebar__jump-link" data-action="jump" href="#dates" title="跳转到日期与时间设置">日期与时间</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#views" title="跳转到排序设置">排序</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#menus" title="跳转到菜单与工具栏设置">菜单和工具栏</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#shortcuts" title="跳转到键盘快捷方式设置">键盘快捷方式</a>
+						</li>
+						<li>
+							<a class="sidebar__jump-link" data-action="jump" href="#modes" title="跳转到模式设置">模式</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		#{endOfBody}
+	</body>
+
+	<template id="token-popup">
+		<h3 class="token-popup__title">Available Tokens</h3>
+		<div class="token-popup__scroller scrollable">
+			<table class="token-popup__table">
+				<tbody>
+					<tr>
+						<td>Commit SHA</td>
+						<td><span class="token" data-token="id">id</span></td>
+					</tr>
+					<tr>
+						<td>Commit Author</td>
+						<td><span class="token" data-token="author">author</span></td>
+					</tr>
+					<tr>
+						<td>Commit Author First Name</td>
+						<td><span class="token" data-token="authorFirst">authorFirst</span></td>
+					</tr>
+					<tr>
+						<td>Commit Author Last Name</td>
+						<td><span class="token" data-token="authorLast">authorLast</span></td>
+					</tr>
+					<tr>
+						<td>Commit Author (except you)</td>
+						<td><span class="token" data-token="authorNotYou">authorNotYou</span></td>
+					</tr>
+					<tr>
+						<td>Commit Author E-mail</td>
+						<td><span class="token" data-token="email">email</span></td>
+					</tr>
+					<tr>
+						<td>Commit Message</td>
+						<td><span class="token" data-token="message">message</span></td>
+					</tr>
+					<tr>
+						<td>
+							Commit or Authored Date<br><i>Relative, e.g. 1 day ago<br>Committed vs Authored based on setting</i>
+						</td>
+						<td><span class="token" data-token="ago">ago</span></td>
+					</tr>
+					<tr>
+						<td>
+							Commit or Authored Date<br><i>Absolute, e.g. August 8th, 2016 10:48am<br>Committed vs Authored based on setting</i>
+						</td>
+						<td><span class="token" data-token="date">date</span></td>
+					</tr>
+					<tr>
+						<td>
+							Commit or Authored Date<br><i>Relative or absolute based on date setting<br>Committed vs Authored based on
+								setting</i>
+						</td>
+						<td><span class="token" data-token="agoOrDate">agoOrDate</span></td>
+					</tr>
+					<tr>
+						<td>
+							Commit or Authored Date (Short)<br><i>Short relative or absolute based on date setting<br>Committed vs Authored based on
+								setting</i>
+						</td>
+						<td><span class="token" data-token="agoOrDateShort">agoOrDateShort</span></td>
+					</tr>
+					<tr>
+						<td>Authored Date<br><i>Relative date</i></td>
+						<td><span class="token" data-token="authorAgo">authorAgo</span></td>
+					</tr>
+					<tr>
+						<td>Authored Date<br><i>Absolute, e.g. August 8th, 2016 10:48am</i></td>
+						<td><span class="token" data-token="authorDate">authorDate</span></td>
+					</tr>
+					<tr>
+						<td>Authored Date<br><i>Relative or absolute date based on date setting</i></td>
+						<td><span class="token" data-token="authorAgoOrDate">authorAgoOrDate</span></td>
+					</tr>
+					<tr>
+						<td>Authored Date (Short)<br><i>Short relative or absolute date based on date setting</i></td>
+						<td><span class="token" data-token="authorAgoOrDateShort">authorAgoOrDateShort</span></td>
+					</tr>
+					<tr>
+						<td>Commit Date<br><i>Relative date</i></td>
+						<td><span class="token" data-token="committerAgo">committerAgo</span></td>
+					</tr>
+					<tr>
+						<td>Commit Date<br><i>Absolute, e.g. August 8th, 2016 10:48am</i></td>
+						<td><span class="token" data-token="committerDate">committerDate</span></td>
+					</tr>
+					<tr>
+						<td>Commit Date<br><i>Relative or absolute date based on date setting</i></td>
+						<td><span class="token" data-token="committerAgoOrDate">committerAgoOrDate</span></td>
+					</tr>
+					<tr>
+						<td>Commit Date (Short)<br><i>Short relative or absolute date based on date setting</i></td>
+						<td><span class="token" data-token="committerAgoOrDateShort">committerAgoOrDateShort</span></td>
+					</tr>
+					<tr>
+						<td>Branch & Tag Tips<br><i>Indicates if the commit is a tip of any branches or tags</i></td>
+						<td><span class="token" data-token="tips">tips</span></td>
+					</tr>
+					<tr>
+						<td>
+							Changes Indicator<br><i>Indicates adds, changes, renames, and deletes<br>e.g +1 ~3 -0</i>
+						</td>
+						<td><span class="token" data-token="changes">changes</span></td>
+					</tr>
+					<tr>
+						<td>
+							Changes Indicator (short)<br><i>Indicates adds, changes, renames, and deletes<br>e.g +1~3</i>
+						</td>
+						<td><span class="token" data-token="changesShort">changesShort</span></td>
+					</tr>
+					<tr>
+						<td>Pull Request<br><i>Pull request (if any) that introduced the commit</i></td>
+						<td><span class="token" data-token="pullRequest">pullRequest</span></td>
+					</tr>
+					<tr>
+						<td>
+							Pull Request State<br><i>State (open, merged, closed) of the pull request (if any) that introduced the commit</i>
+						</td>
+						<td><span class="token" data-token="pullRequestState">pullRequestState</span></td>
+					</tr>
+					<!-- <tr>
+						<td>Author Avatar</td>
+						<td><span class="token" data-token="avatar">avatar</span></td>
+					</tr> -->
+					<!-- <tr>
+						<td>
+							Commands<br /><i>Set of commit command buttons<br />only valid in hovers</i>
+						</td>
+						<td><span class="token" data-token="commands">commands</span></td>
+					</tr> -->
+				</tbody>
+			</table>
+		</div>
+		<span class="token-popup__hint">
+			<i class="icon icon__info"></i>
+			<a href="https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting" title="Open formatting docs">Learn more</a>
+			about formatting options
+		</span>
+	</template>
+</html>

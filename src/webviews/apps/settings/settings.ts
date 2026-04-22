@@ -524,7 +524,10 @@ export class SettingsApp extends App<State> {
 
 	private updateState() {
 		const { version } = this.state;
-		document.getElementById('version')!.textContent = version;
+		const versionEl = document.getElementById('version');
+		if (versionEl != null) {
+			versionEl.textContent = version;
+		}
 
 		const focusId = document.activeElement?.id;
 		this.renderAutolinkIntegration();
@@ -563,7 +566,7 @@ export class SettingsApp extends App<State> {
 
 			for (const el of document.querySelectorAll<HTMLSelectElement>('select[data-setting]')) {
 				const value = this.getSettingValue<string>(el.name);
-				const option = el.querySelector<HTMLOptionElement>(`option[value='${value}']`);
+				const option = findOptionByValue(el.options, value);
 				if (option != null) {
 					option.selected = true;
 				}
@@ -637,7 +640,7 @@ export class SettingsApp extends App<State> {
 					value ??= el.dataset.settingPreviewDefault;
 				}
 
-				el.innerText = value == null ? '' : formatDate(date, value, undefined, false);
+				el.innerText = value == null ? '' : safeFormatSettingsDatePreview(date, value);
 				break;
 			}
 			case 'date-locale': {
@@ -650,11 +653,7 @@ export class SettingsApp extends App<State> {
 				}
 
 				const format = this.getSettingValue<string>(el.dataset.settingPreviewDefault!) ?? 'MMMM Do, YYYY h:mma';
-				try {
-					el.innerText = formatDate(date, format, value, false);
-				} catch (ex) {
-					el.innerText = ex.message;
-				}
+				el.innerText = safeFormatSettingsDatePreview(date, format, value);
 				break;
 			}
 			case 'commit':
@@ -741,8 +740,8 @@ export class SettingsApp extends App<State> {
 					el.classList.add('collapsed');
 				}
 
-				document.querySelector('[data-action="collapse"]')!.classList.add('hidden');
-				document.querySelector('[data-action="expand"]')!.classList.remove('hidden');
+				document.querySelector('[data-action="collapse"]')?.classList.add('hidden');
+				document.querySelector('[data-action="expand"]')?.classList.remove('hidden');
 				break;
 
 			case 'expand':
@@ -750,8 +749,8 @@ export class SettingsApp extends App<State> {
 					el.classList.remove('collapsed');
 				}
 
-				document.querySelector('[data-action="collapse"]')!.classList.remove('hidden');
-				document.querySelector('[data-action="expand"]')!.classList.add('hidden');
+				document.querySelector('[data-action="collapse"]')?.classList.remove('hidden');
+				document.querySelector('[data-action="expand"]')?.classList.add('hidden');
 				break;
 
 			case 'show':
@@ -1011,14 +1010,28 @@ function parseStateExpression(expression: string): [string, string, string | boo
 	return [lhs.trim(), op !== undefined ? op.trim() : '=', rhs !== undefined ? rhs.trim() : rhs];
 }
 
-function flatten(o: Record<string, any>, path?: string): Record<string, any> {
+function findOptionByValue<T extends { value: string }>(
+	options: Iterable<T>,
+	value: string | undefined,
+): T | undefined {
+	if (value == null) return undefined;
+
+	for (const option of options) {
+		if (option.value === value) return option;
+	}
+
+	return undefined;
+}
+
+function flatten(o: Record<string, any> | null | undefined, path?: string): Record<string, any> {
 	const results: Record<string, any> = {};
+	if (o == null) return results;
 
 	for (const key in o) {
 		const value = o[key];
 		if (Array.isArray(value)) continue;
 
-		if (typeof value === 'object') {
+		if (value != null && typeof value === 'object') {
 			Object.assign(results, flatten(value, path === undefined ? key : `${path}.${key}`));
 		} else {
 			results[path === undefined ? key : `${path}.${key}`] = value;
@@ -1026,6 +1039,18 @@ function flatten(o: Record<string, any>, path?: string): Record<string, any> {
 	}
 
 	return results;
+}
+
+function safeFormatSettingsDatePreview(
+	date: Date | number,
+	format: string | null | undefined,
+	locale?: string,
+): string {
+	try {
+		return formatDate(date, format, locale, false);
+	} catch (ex) {
+		return ex instanceof Error ? ex.message : String(ex);
+	}
 }
 
 function fromCheckboxValue(elementValue: unknown) {

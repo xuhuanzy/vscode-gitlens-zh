@@ -29,6 +29,7 @@ import type {
 	WebviewViewTypes,
 } from '../constants.views.js';
 import type { Container } from '../container.js';
+import { getAvailableLocalizedWebviewShellUri, getCurrentWebviewLocale } from '../i18n/webviews.js';
 import { getSubscriptionNextPaidPlanId } from '../plus/gk/utils/subscription.utils.js';
 import { executeCommand, executeCoreCommand } from '../system/-webview/command.js';
 import {
@@ -732,7 +733,13 @@ export class WebviewController<
 		const scope = getScopedLogger();
 
 		const webRootUri = this.getWebRootUri();
-		const uri = Uri.joinPath(webRootUri, this.descriptor.fileName);
+		const locale = getCurrentWebviewLocale();
+		const localizedUri = await getAvailableLocalizedWebviewShellUri(
+			this.getRootUri(),
+			locale,
+			this.descriptor.fileName,
+		);
+		const uri = localizedUri ?? Uri.joinPath(webRootUri, this.descriptor.fileName);
 
 		const [bytes, bootstrap, head, body, endOfBody] = await Promise.all([
 			workspace.fs.readFile(uri),

@@ -255,7 +255,7 @@ function testOverridesDoNotRemainPending(): void {
 								key: 'contributes.commands.fixture.open.title',
 							},
 						},
-						translationPattern: createLiteralPattern('打开图谱'),
+						translationPattern: createLiteralPattern('打开图表'),
 						updatedAt: new Date().toISOString(),
 					},
 				],
@@ -276,7 +276,7 @@ function testOverridesDoNotRemainPending(): void {
 		assert.equal(generateResult.localizedKeys, 1);
 
 		const localizedPackageNls = loadLocalizedPackageNls(context);
-		assert.equal(localizedPackageNls['contributes.commands.fixture.open.title'], '打开图谱');
+		assert.equal(localizedPackageNls['contributes.commands.fixture.open.title'], '打开图表');
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}

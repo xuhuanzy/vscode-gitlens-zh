@@ -517,6 +517,11 @@ function getWebviewsCommonConfig(mode, env) {
 					),
 					to: path.posix.join(__dirname.replace(/\\/g, '/'), 'dist', 'webviews'),
 				},
+				{
+					from: path.posix.join(__dirname.replace(/\\/g, '/'), 'src', 'i18n', 'webviews'),
+					to: path.posix.join(__dirname.replace(/\\/g, '/'), 'dist', 'webviews', 'i18n'),
+					noErrorOnMissing: true,
+				},
 			],
 		}),
 	];

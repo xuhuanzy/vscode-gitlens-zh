@@ -2,8 +2,9 @@
 	"$schema": "../schemas/pendingReport.schema.json",
 	"version": 1,
 	"locale": "zh-cn",
-	"domain": "manifest",
-	"generatedAt": "2026-04-21T18:33:13.554Z",
+	"domain": "webviews",
+	"generatedAt": "2026-04-22T06:05:42.708Z",
+	"baseRef": "HEAD",
 	"counts": {
 		"total": 0,
 		"pending": 0,
@@ -13,8 +14,8 @@
 		"promotable": 0
 	},
 	"coverage": {
-		"catalogOccurrences": 2196,
-		"resolvedOccurrences": 2196,
+		"catalogOccurrences": 740,
+		"resolvedOccurrences": 740,
 		"unresolvedOccurrences": 0,
 		"readyForGeneration": true
 	},
