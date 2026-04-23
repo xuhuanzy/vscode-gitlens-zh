@@ -1,28 +1,20 @@
 import { env, Uri, workspace } from 'vscode';
 
 import {
-	buildLocalizedWebviewBundleRelativePaths,
+	buildLocalizedWebviewScriptRelativePaths,
 	buildLocalizedWebviewShellRelativePaths,
 	buildWebviewLocaleCandidates,
-	getWebviewRuntimeBundle,
+	getWebviewLocalizedScriptBundle,
 	normalizeI18nLocale,
 } from './webviews.utils.js';
-import {
-	buildRuntimeWebviewLocalizationPayload,
-	type RuntimeWebviewLocalizationPayload,
-	type WebviewLocalizationPayload,
-} from './webviews.shared.js';
-import { injectWebviewRuntimeLocalization } from './webviews.runtime.js';
 
 export {
-	buildLocalizedWebviewBundleRelativePaths,
+	buildLocalizedWebviewScriptRelativePaths,
 	buildLocalizedWebviewShellRelativePaths,
 	buildWebviewLocaleCandidates,
-	getWebviewRuntimeBundle,
-	injectWebviewRuntimeLocalization,
+	getWebviewLocalizedScriptBundle,
 	normalizeI18nLocale,
 };
-export type { WebviewLocalizationPayload } from './webviews.shared.js';
 
 export function getCurrentWebviewLocale(): string {
 	return normalizeI18nLocale(env.language);
@@ -51,12 +43,12 @@ export async function getAvailableLocalizedWebviewShellUri(
 	return undefined;
 }
 
-export async function getAvailableLocalizedWebviewBundleUri(
+export async function getAvailableLocalizedWebviewScriptUri(
 	rootUri: Uri,
 	locale: string,
 	bundle: string,
 ): Promise<Uri | undefined> {
-	const candidates = buildLocalizedWebviewBundleRelativePaths(locale, bundle);
+	const candidates = buildLocalizedWebviewScriptRelativePaths(locale, bundle);
 	for (const candidate of candidates) {
 		const uri = getLocalizedWebviewShellUri(rootUri, candidate);
 
@@ -68,28 +60,4 @@ export async function getAvailableLocalizedWebviewBundleUri(
 	}
 
 	return undefined;
-}
-
-export async function getWebviewRuntimeLocalizationPayload(
-	rootUri: Uri,
-	locale: string,
-	fileName: string,
-): Promise<RuntimeWebviewLocalizationPayload | undefined> {
-	const bundle = getWebviewRuntimeBundle(fileName);
-	if (bundle == null) return undefined;
-
-	const uri = await getAvailableLocalizedWebviewBundleUri(rootUri, locale, bundle);
-	if (uri == null) return undefined;
-
-	try {
-		const bytes = await workspace.fs.readFile(uri);
-		const payload = JSON.parse(Buffer.from(bytes).toString('utf8')) as WebviewLocalizationPayload;
-		return buildRuntimeWebviewLocalizationPayload({
-			...payload,
-			locale: locale,
-			bundle: payload.bundle ?? bundle,
-		});
-	} catch {
-		return undefined;
-	}
 }

@@ -280,8 +280,7 @@ export interface PendingReportFile {
 	readonly items: PendingReportItem[];
 }
 
-const markdownPattern =
-	/(\[[^\]]+\]\([^)]+\)|`[^`]+`|\*\*[^*]+\*\*|__(?:.+?)__|(^|\n)(?:[-*]|\d+\.)\s|\n\n|command:)/m;
+const markdownPattern = /(\[[^\]]+\]\([^)]+\)|`[^`]+`|\*\*[^*]+\*\*|__(?:.+?)__|(^|\n)(?:[-*]|\d+\.)\s|\n\n|command:)/m;
 const templateSlotPattern = /\$\{([^}]+)\}/g;
 
 export function parseMessagePattern(text: string): MessagePattern {
@@ -476,9 +475,7 @@ export function nowIso(): string {
 export function toJsonPointer(segments: readonly JsonPathSegment[]): string {
 	if (segments.length === 0) return '';
 
-	return `/${segments
-		.map(segment => String(segment).replaceAll('~', '~0').replaceAll('/', '~1'))
-		.join('/')}`;
+	return `/${segments.map(segment => String(segment).replaceAll('~', '~0').replaceAll('/', '~1')).join('/')}`;
 }
 
 export function createJsonSourceReference(file: string, segments: readonly JsonPathSegment[]): SourceReference {
@@ -537,7 +534,9 @@ export function clonePattern(pattern: MessagePattern): MessagePattern {
 	return JSON.parse(JSON.stringify(pattern)) as MessagePattern;
 }
 
-export function cloneSourceReference<TReference extends SourceReference | undefined>(reference: TReference): TReference {
+export function cloneSourceReference<TReference extends SourceReference | undefined>(
+	reference: TReference,
+): TReference {
 	if (reference == null) return reference;
 	return JSON.parse(JSON.stringify(reference)) as TReference;
 }
@@ -555,7 +554,10 @@ function dedupe(values: readonly string[]): string[] {
 	return [...new Set(values)];
 }
 
-function assertCompatibleMessagePatterns(sourcePattern: MessagePattern, translationPattern?: MessagePattern | null): void {
+function assertCompatibleMessagePatterns(
+	sourcePattern: MessagePattern,
+	translationPattern?: MessagePattern | null,
+): void {
 	if (translationPattern == null) return;
 	if (sourcePattern.kind !== translationPattern.kind) {
 		throw new Error(`Mismatched message kinds: ${sourcePattern.kind} !== ${translationPattern.kind}`);

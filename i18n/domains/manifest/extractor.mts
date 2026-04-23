@@ -89,10 +89,7 @@ export function extractManifestOccurrences(
 		issues: issues,
 	};
 
-	function addIfString(
-		value: unknown,
-		definition: Omit<OccurrenceInput, 'sourceText'>,
-	): void {
+	function addIfString(value: unknown, definition: Omit<OccurrenceInput, 'sourceText'>): void {
 		if (typeof value !== 'string' || value.length === 0) return;
 
 		const resolved = resolveSource(value, englishNls);

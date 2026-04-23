@@ -42,7 +42,10 @@ export function loadManifestCatalog(context: ManifestDomainContext) {
 	return loadCatalog(context, createEmptyManifestCatalogFile());
 }
 
-export function saveManifestCatalog(context: ManifestDomainContext, catalog: ReturnType<typeof createEmptyManifestCatalogFile>): void {
+export function saveManifestCatalog(
+	context: ManifestDomainContext,
+	catalog: ReturnType<typeof createEmptyManifestCatalogFile>,
+): void {
 	saveCatalog(context, catalog);
 }
 
@@ -50,7 +53,10 @@ export function loadManifestWorkset(context: ManifestDomainContext) {
 	return loadWorkset(context, createEmptyManifestWorksetFile());
 }
 
-export function saveManifestWorkset(context: ManifestDomainContext, workset: ReturnType<typeof createEmptyManifestWorksetFile>): void {
+export function saveManifestWorkset(
+	context: ManifestDomainContext,
+	workset: ReturnType<typeof createEmptyManifestWorksetFile>,
+): void {
 	saveWorkset(context, workset);
 }
 

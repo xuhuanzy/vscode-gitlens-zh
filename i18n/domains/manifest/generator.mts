@@ -50,7 +50,11 @@ function getManifestOutputKey(output: OutputReference | undefined): string | und
 	return output?.kind === 'manifest-key' ? output.key : undefined;
 }
 
-function setManifestValue(target: Record<string, unknown>, segments: readonly (string | number)[], value: string): void {
+function setManifestValue(
+	target: Record<string, unknown>,
+	segments: readonly (string | number)[],
+	value: string,
+): void {
 	let current: unknown = target;
 	for (let index = 0; index < segments.length - 1; index++) {
 		const segment = segments[index];
@@ -59,7 +63,8 @@ function setManifestValue(target: Record<string, unknown>, segments: readonly (s
 			continue;
 		}
 
-		current = current != null && typeof current === 'object' ? (current as Record<string, unknown>)[segment] : undefined;
+		current =
+			current != null && typeof current === 'object' ? (current as Record<string, unknown>)[segment] : undefined;
 	}
 
 	const lastSegment = segments.at(-1);

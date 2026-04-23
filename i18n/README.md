@@ -27,8 +27,8 @@
 - `i18n/worksets/webviews.zh-cn.json` 保留 webviews 翻译工作状态与 `occurrenceIds`
 - `i18n/reports/webviews-pending.json` 是 webviews 域的派生进度视图
 - `src/i18n/webviews/zh-cn/settings.html` 是由 workflow 生成的本地化静态壳页真源，运行时优先从 `src/i18n/webviews` 读取，构建产物回退到 `dist/webviews/i18n`
-- `src/i18n/webviews/zh-cn/{settings,welcome,rebase,home,commitDetails,timeline}.json` 是由 workflow 生成的运行时消息 bundle，`WebviewController` 会在最终 HTML 装配时注入底层 DOM 本地化 runtime，并优先读取这些文件
-- `graph`、`patchDetails` 与其余 mixed-renderer / follow-up 页面当前不会生成运行时产物，而是通过 catalog reconciliation 中的 deferred issues 暴露后续范围
+- `.work/i18n/webviews-sources/zh-cn/src/webviews/apps/welcome/**` 是由 workflow 基于上游英文源码 AST 派生的本地化动态源码真源，webpack 会再将其编译为 `dist/webviews/i18n/zh-cn/welcome.js`
+- `patchDetails` 与其余尚未接入的 mixed-renderer / follow-up 页面当前不会生成本地化脚本产物，而是通过 catalog reconciliation 中的 deferred issues 暴露后续范围
 
 常用命令：
 
@@ -36,6 +36,7 @@
 2. `pnpm run report:webview-nls:zh-cn:pending`
 3. `pnpm run promote:webview-nls:zh-cn`
 4. `pnpm run generate:webview-nls`
+5. `pnpm run build:webviews`
 
 ## Override Selector 语义
 

@@ -10,6 +10,11 @@ export interface SyntheticTextTemplateFragment {
 	readonly expressions: ReadonlyMap<string, string>;
 }
 
+export interface SyntheticHtmlTemplateSlotContext {
+	readonly kind: 'text' | 'attribute';
+	readonly attribute?: string;
+}
+
 interface HtmlInsertionContext {
 	inTag: boolean;
 	quote?: '"' | "'";
@@ -42,7 +47,7 @@ export function buildSyntheticHtmlTemplateFragment(
 	appendStaticPart(parts, context, template.head.text);
 	for (const [index, span] of template.templateSpans.entries()) {
 		const slotName = `slot${index + 1}`;
-		const attributeValueSlot = isAttributeValueContext(context);
+		const attributeValueSlot = isAttributeValueContext(context) || context.inTag;
 		parts.push(
 			attributeValueSlot
 				? createSyntheticAttributeSlotToken(slotName)
@@ -97,6 +102,42 @@ export function buildSyntheticTextTemplateFragment(
 		text: parts.join(''),
 		expressions: expressions,
 	};
+}
+
+export function getSyntheticHtmlTemplateSlotContext(
+	template: ts.TemplateLiteral,
+	slotIndex: number,
+): SyntheticHtmlTemplateSlotContext | undefined {
+	if (ts.isNoSubstitutionTemplateLiteral(template)) return undefined;
+
+	const context = createHtmlInsertionContext();
+	advanceHtmlInsertionContext(context, template.head.text);
+
+	for (const [index, span] of template.templateSpans.entries()) {
+		const attributeValueSlot = isAttributeValueContext(context) || context.inTag;
+		if (index === slotIndex) {
+			if (!attributeValueSlot) return { kind: 'text' };
+
+			const attribute = getPendingAttributeName(context.tagTail);
+			if (attribute == null) return undefined;
+
+			const normalizedAttribute = normalizePendingAttributeName(attribute);
+			if (normalizedAttribute == null) return undefined;
+
+			return {
+				kind: 'attribute',
+				attribute: normalizedAttribute,
+			};
+		}
+
+		if (attributeValueSlot && context.quote == null) {
+			context.inUnquotedAttributeValue = true;
+		}
+
+		advanceHtmlInsertionContext(context, span.literal.text);
+	}
+
+	return undefined;
 }
 
 function createSyntheticAttributeSlotToken(slotName: string): string {
@@ -189,6 +230,17 @@ function isAttributeValueContext(context: HtmlInsertionContext): boolean {
 	if (context.quote != null || context.inUnquotedAttributeValue) return true;
 
 	return /(?:^|[\s<])[^\s=<>/]+\s*=\s*$/u.test(context.tagTail);
+}
+
+function getPendingAttributeName(tagTail: string): string | undefined {
+	const match = /(?:^|[\s<])([^\s=<>/]+)\s*=\s*(?:"|')?$/u.exec(tagTail);
+	return match?.[1];
+}
+
+function normalizePendingAttributeName(name: string): string | undefined {
+	if (name.startsWith('@')) return undefined;
+	if (name.startsWith('.') || name.startsWith('?')) return name.slice(1);
+	return name;
 }
 
 function pushTagTail(context: HtmlInsertionContext, char: string): void {

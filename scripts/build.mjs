@@ -27,6 +27,13 @@ const env = {
 	FORCE_COLOR: '1',
 };
 
+const shouldBuildWebviews =
+	Boolean(build?.includes('webviews')) || Boolean(webviews?.length) || (build == null && target == null);
+const localizedDynamicWebviews = new Set(['welcome', 'rebase', 'home', 'commitDetails', 'timeline', 'graph']);
+const shouldBuildLocalizedWebviews =
+	shouldBuildWebviews &&
+	(webviews == null || webviews.length === 0 || webviews.some(webview => localizedDynamicWebviews.has(webview)));
+
 // Build webpack command
 let cmd = `webpack`;
 if (watch) {
@@ -53,6 +60,10 @@ if (build?.length || webviews?.length) {
 			cmd += ` --config-name webviews`;
 		}
 
+		if (shouldBuildLocalizedWebviews) {
+			cmd += ` --config-name webviews:i18n:zh-cn`;
+		}
+
 		if (webviews?.length) {
 			cmd += ` --env webviews=${webviews.join(',')}`;
 		}
@@ -72,6 +83,10 @@ if (build?.length || webviews?.length) {
 		cmd += ` --config-name webviews:${webviews[0]}`;
 	} else {
 		cmd += ` --config-name webviews`;
+	}
+
+	if (shouldBuildLocalizedWebviews) {
+		cmd += ` --config-name webviews:i18n:zh-cn`;
 	}
 
 	if (webviews?.length) {
@@ -103,6 +118,25 @@ if (build?.includes('unit-tests')) {
 
 	if (pkgsCode !== 0) {
 		process.exit(pkgsCode);
+	}
+}
+
+if (shouldBuildLocalizedWebviews) {
+	const generateWebviewNlsCmd = `pnpm run generate:webview-nls -- --dynamic-sources-only`;
+	console.log(`Running: ${generateWebviewNlsCmd}`);
+
+	const webviewNlsCode = await new Promise(resolve => {
+		const webviewNls = spawn(generateWebviewNlsCmd, [], {
+			shell: true,
+			stdio: 'inherit',
+			env: env,
+		});
+
+		webviewNls.on('exit', code => resolve(code || 0));
+	});
+
+	if (webviewNlsCode !== 0) {
+		process.exit(webviewNlsCode);
 	}
 }
 

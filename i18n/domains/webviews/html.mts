@@ -73,9 +73,14 @@ const translatableContentTags = new Set([
 	'a',
 	'b',
 	'em',
+	'i',
 	'small',
 	'strong',
 	'gl-button',
+	'menu-label',
+	'menu-item',
+	'gl-checkbox',
+	'gl-radio',
 ]);
 const slotOnlyTags = new Set(['a', 'button', 'kbd', 'code', 'select', 'textarea', 'input', 'b', 'strong', 'i', 'em']);
 const ignoredPatternTags = new Set(['img', 'svg']);
@@ -164,10 +169,7 @@ export function parseHtmlDocument(html: string): HtmlElementNode {
 	return root;
 }
 
-export function visitHtmlElements(
-	root: HtmlElementNode,
-	visitor: (element: HtmlElementNode) => void,
-): void {
+export function visitHtmlElements(root: HtmlElementNode, visitor: (element: HtmlElementNode) => void): void {
 	for (const child of root.children) {
 		if (child.kind !== 'element') continue;
 		visitHtmlElement(child, visitor);
@@ -176,6 +178,7 @@ export function visitHtmlElements(
 
 export function shouldExtractElementContent(element: HtmlElementNode): boolean {
 	if (shouldSkipWrapperContentExtraction(element)) return false;
+	if (element.attributes.slot != null) return shouldExtractSlottedElementContent(element);
 	if (translatableContentTags.has(element.tag)) return true;
 	if (element.tag === 'div') {
 		if (hasTranslatableContentAncestor(element.parent)) return false;
@@ -186,8 +189,6 @@ export function shouldExtractElementContent(element: HtmlElementNode): boolean {
 	const classList = getClassList(element);
 	if (classList.includes('setting__hint') || classList.includes('token-popup__hint')) return true;
 	if (hasTranslatableContentAncestor(element.parent)) return false;
-	if (element.attributes.slot != null) return true;
-
 	return true;
 }
 
@@ -214,7 +215,10 @@ export function collectElementContentPattern(element: HtmlElementNode): HtmlCont
 	return {
 		text: text,
 		slots: segments
-			.filter((segment): segment is Extract<(typeof segments)[number], { readonly kind: 'slot' }> => segment.kind === 'slot')
+			.filter(
+				(segment): segment is Extract<(typeof segments)[number], { readonly kind: 'slot' }> =>
+					segment.kind === 'slot',
+			)
 			.map(segment => ({ name: segment.name, node: segment.node })),
 		preserves: collectPreservedSegments(segments),
 	};
@@ -324,9 +328,7 @@ export function getContentRangeKey(start: number, end: number): string {
 }
 
 export function getClassList(element: HtmlElementNode): string[] {
-	return (element.attributes.class ?? '')
-		.split(/\s+/u)
-		.filter(Boolean);
+	return (element.attributes.class ?? '').split(/\s+/u).filter(Boolean);
 }
 
 function hasTranslatableContentAncestor(element: HtmlElementNode | undefined): boolean {
@@ -354,6 +356,19 @@ function shouldSkipWrapperContentExtraction(element: HtmlElementNode): boolean {
 	);
 	if (meaningfulChildren.length === 0) return false;
 
+	// If the container only contributes structure and its visible copy lives inside
+	// nested elements (for example <a><header><span>...</span></header><progress /></a>),
+	// localizing the parent would flatten that structure into plain text.
+	if (
+		meaningfulChildren.some(
+			child =>
+				(!translatableContentTags.has(child.tag) && child.tag !== 'span' && !child.tag.includes('-')) ||
+				child.tag === 'progress',
+		)
+	) {
+		return true;
+	}
+
 	return meaningfulChildren.every(
 		child => child.tag.includes('-') || translatableContentTags.has(child.tag) || child.tag === 'span',
 	);
@@ -361,6 +376,15 @@ function shouldSkipWrapperContentExtraction(element: HtmlElementNode): boolean {
 
 function hasMeaningfulDirectTextChild(element: HtmlElementNode): boolean {
 	return element.children.some(child => child.kind === 'text' && normalizeWhitespace(child.raw).length !== 0);
+}
+
+function shouldExtractSlottedElementContent(element: HtmlElementNode): boolean {
+	if (hasMeaningfulDirectTextChild(element)) return true;
+	if (translatableContentTags.has(element.tag)) return false;
+	if (element.tag === 'span') return false;
+	if (element.tag === 'div') return false;
+
+	return true;
 }
 
 function visitHtmlElement(element: HtmlElementNode, visitor: (element: HtmlElementNode) => void): void {
@@ -469,11 +493,6 @@ function collectPatternSegments(
 			continue;
 		}
 
-		if (node.tag === 'br') {
-			segments.push({ kind: 'text', value: ' ' });
-			continue;
-		}
-
 		if (shouldRepresentElementAsSlot(node, parent)) {
 			state.slotIndex++;
 			segments.push({
@@ -514,7 +533,12 @@ function shouldRepresentElementAsSlot(element: HtmlElementNode, parent: HtmlElem
 	if (!slotOnlyTags.has(element.tag)) return false;
 	if (element.tag === 'i' && isDecorativeElement(element)) return false;
 	if (element.tag === 'a' && getVisibleElementText(element).length === 0) return false;
-	if (element.tag !== 'select' && element.tag !== 'input' && element.tag !== 'textarea' && getVisibleElementText(element).length === 0) {
+	if (
+		element.tag !== 'select' &&
+		element.tag !== 'input' &&
+		element.tag !== 'textarea' &&
+		getVisibleElementText(element).length === 0
+	) {
 		return false;
 	}
 
@@ -523,11 +547,15 @@ function shouldRepresentElementAsSlot(element: HtmlElementNode, parent: HtmlElem
 }
 
 function shouldPreserveAsDynamicSlot(element: HtmlElementNode): boolean {
-	return element.attributes['data-setting-preview'] != null || element.attributes['data-setting-preview-type'] != null;
+	return (
+		element.attributes['data-setting-preview'] != null || element.attributes['data-setting-preview-type'] != null
+	);
 }
 
 function shouldPreserveAsStructuralNode(element: HtmlElementNode): boolean {
+	if (element.attributes.slot != null) return true;
 	if (getVisibleElementText(element).length !== 0) return false;
+	if (voidTags.has(element.tag)) return true;
 	if (element.tag.includes('-')) return true;
 	if (element.attributes.id != null) return true;
 

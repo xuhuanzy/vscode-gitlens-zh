@@ -27,9 +27,8 @@ export function createWebviewsDomainContext(rootDir?: string): {
 	readonly settingsTemplateFile: string;
 	readonly runtimeBuildDir: string;
 	readonly settingsBuildFile: string;
-	readonly localizedShellSourceDir: string;
-	readonly localizedSettingsShellSourceFile: string;
-	readonly localizedRuntimeBundleSourceDir: string;
+	readonly localizedSettingsShellBuildFile: string;
+	readonly localizedDynamicSourceDir: string;
 } {
 	const workspace = createI18nWorkspaceContext(rootDir);
 	const domain = createDomainContext(workspace, {
@@ -37,16 +36,21 @@ export function createWebviewsDomainContext(rootDir?: string): {
 		artifactId: 'webviews',
 		pendingReportName: 'webviews-pending.json',
 	});
-
-	const localizedShellSourceDir = path.join(domain.rootDir, 'src', 'i18n', 'webviews', domain.locale);
+	const localizedDynamicSourceDir = path.join(domain.rootDir, '.work', 'i18n', 'webviews-sources', domain.locale);
 
 	return {
 		...domain,
 		settingsTemplateFile: path.join(domain.rootDir, 'src', 'webviews', 'apps', 'settings', 'settings.html'),
 		runtimeBuildDir: path.join(domain.rootDir, 'dist', 'webviews'),
 		settingsBuildFile: path.join(domain.rootDir, 'dist', 'webviews', 'settings.html'),
-		localizedShellSourceDir: localizedShellSourceDir,
-		localizedSettingsShellSourceFile: path.join(localizedShellSourceDir, 'settings.html'),
-		localizedRuntimeBundleSourceDir: localizedShellSourceDir,
+		localizedSettingsShellBuildFile: path.join(
+			domain.rootDir,
+			'dist',
+			'webviews',
+			'i18n',
+			domain.locale,
+			'settings.html',
+		),
+		localizedDynamicSourceDir: localizedDynamicSourceDir,
 	};
 }

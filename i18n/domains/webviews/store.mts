@@ -21,7 +21,10 @@ export function loadWebviewsCatalog(context: WebviewsDomainContext) {
 	return loadCatalog(context, createEmptyWebviewsCatalogFile());
 }
 
-export function saveWebviewsCatalog(context: WebviewsDomainContext, catalog: ReturnType<typeof createEmptyWebviewsCatalogFile>): void {
+export function saveWebviewsCatalog(
+	context: WebviewsDomainContext,
+	catalog: ReturnType<typeof createEmptyWebviewsCatalogFile>,
+): void {
 	saveCatalog(context, catalog);
 }
 
@@ -29,7 +32,10 @@ export function loadWebviewsWorkset(context: WebviewsDomainContext) {
 	return loadWorkset(context, createEmptyWebviewsWorksetFile());
 }
 
-export function saveWebviewsWorkset(context: WebviewsDomainContext, workset: ReturnType<typeof createEmptyWebviewsWorksetFile>): void {
+export function saveWebviewsWorkset(
+	context: WebviewsDomainContext,
+	workset: ReturnType<typeof createEmptyWebviewsWorksetFile>,
+): void {
 	saveWorkset(context, workset);
 }
 
@@ -37,35 +43,66 @@ export function loadSettingsBuildHtml(context: WebviewsDomainContext): string {
 	return fs.readFileSync(context.settingsBuildFile, 'utf8');
 }
 
+export function loadSettingsExtractionHtml(context: WebviewsDomainContext): string {
+	try {
+		return loadSettingsBuildHtml(context);
+	} catch {
+		return loadSettingsTemplateHtml(context);
+	}
+}
+
+function loadSettingsTemplateHtml(context: WebviewsDomainContext): string {
+	const template = fs.readFileSync(context.settingsTemplateFile, 'utf8');
+	return template.replace(
+		/<%=\s*require\('html-loader\?\{"esModule":false\}!([^']+)'\)\s*%>/gu,
+		(_match: string, request: string) => {
+			const partial = request.startsWith('./') ? request.slice(2) : request;
+			return fs.readFileSync(path.join(path.dirname(context.settingsTemplateFile), partial), 'utf8');
+		},
+	);
+}
+
+export function loadSourceTargetContents(context: WebviewsDomainContext, relativeFile: string): string | undefined {
+	try {
+		return fs.readFileSync(path.join(context.rootDir, ...relativeFile.split('/')), 'utf8');
+	} catch {
+		return undefined;
+	}
+}
+
 export function saveLocalizedSettingsShell(context: WebviewsDomainContext, html: string): void {
-	writeTextFile(context.localizedSettingsShellSourceFile, html);
+	writeTextFile(context.localizedSettingsShellBuildFile, html);
 }
 
 export function loadLocalizedSettingsShell(context: WebviewsDomainContext): string | undefined {
 	try {
-		return fs.readFileSync(context.localizedSettingsShellSourceFile, 'utf8');
+		return fs.readFileSync(context.localizedSettingsShellBuildFile, 'utf8');
 	} catch {
 		return undefined;
 	}
 }
 
-export function saveLocalizedRuntimeBundle(
+export function saveLocalizedDynamicSource(
 	context: WebviewsDomainContext,
-	bundle: string,
+	relativeFile: string,
 	contents: string,
 ): void {
-	writeTextFile(path.join(context.localizedRuntimeBundleSourceDir, `${bundle}.json`), contents);
+	writeTextFile(path.join(context.localizedDynamicSourceDir, ...relativeFile.split('/')), contents);
 }
 
-export function loadLocalizedRuntimeBundle(
-	context: WebviewsDomainContext,
-	bundle: string,
-): string | undefined {
+export function loadLocalizedDynamicSource(context: WebviewsDomainContext, relativeFile: string): string | undefined {
 	try {
-		return fs.readFileSync(path.join(context.localizedRuntimeBundleSourceDir, `${bundle}.json`), 'utf8');
+		return fs.readFileSync(path.join(context.localizedDynamicSourceDir, ...relativeFile.split('/')), 'utf8');
 	} catch {
 		return undefined;
 	}
+}
+
+export function deleteLocalizedDynamicSource(context: WebviewsDomainContext, relativeFile: string): void {
+	const filePath = path.join(context.localizedDynamicSourceDir, ...relativeFile.split('/'));
+	try {
+		fs.rmSync(filePath, { force: true });
+	} catch {}
 }
 
 export { loadAuthorityBundle, readJsonFile, saveAuthorityBundle, savePendingReport };

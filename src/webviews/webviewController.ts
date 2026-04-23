@@ -30,10 +30,10 @@ import type {
 } from '../constants.views.js';
 import type { Container } from '../container.js';
 import {
+	getAvailableLocalizedWebviewScriptUri,
 	getAvailableLocalizedWebviewShellUri,
 	getCurrentWebviewLocale,
-	getWebviewRuntimeLocalizationPayload,
-	injectWebviewRuntimeLocalization,
+	getWebviewLocalizedScriptBundle,
 } from '../i18n/webviews.js';
 import { getSubscriptionNextPaidPlanId } from '../plus/gk/utils/subscription.utils.js';
 import { executeCommand, executeCoreCommand } from '../system/-webview/command.js';
@@ -745,22 +745,30 @@ export class WebviewController<
 			this.descriptor.fileName,
 		);
 		const uri = localizedUri ?? Uri.joinPath(webRootUri, this.descriptor.fileName);
+		const localizedScriptBundle = getWebviewLocalizedScriptBundle(this.descriptor.fileName);
+		const localizedScriptUri =
+			localizedScriptBundle == null
+				? undefined
+				: await getAvailableLocalizedWebviewScriptUri(this.getRootUri(), locale, localizedScriptBundle);
 
-		const [bytes, bootstrap, head, body, endOfBody, localization] = await Promise.all([
+		const [bytes, bootstrap, head, body, endOfBody] = await Promise.all([
 			workspace.fs.readFile(uri),
 			this.provider.includeBootstrap?.(true),
 			this.provider.includeHead?.(),
 			this.provider.includeBody?.(),
 			this.provider.includeEndOfBody?.(),
-			getWebviewRuntimeLocalizationPayload(this.getRootUri(), locale, this.descriptor.fileName),
 		]);
 
 		const sw = maybeStopWatch(scope, { log: { onlyExit: true, level: 'debug' } });
 		const serialized = this.serializeIpcData(bootstrap);
 		sw?.stop({ message: `\u2022 serialized bootstrap; length=${serialized.length}` });
 
+		const htmlTemplate = localizedScriptUri
+			? replaceLocalizedWebviewScriptReference(strFromU8(bytes), localizedScriptBundle!, locale)
+			: strFromU8(bytes);
+
 		const html = replaceWebviewHtmlTokens(
-			injectWebviewRuntimeLocalization(strFromU8(bytes), this._cspNonce, locale, localization),
+			htmlTemplate,
 			this.id,
 			this.instanceId,
 			webview.cspSource,
@@ -1057,6 +1065,12 @@ export function replaceWebviewHtmlTokens<SerializedState>(
 				return '';
 		}
 	});
+}
+
+export function replaceLocalizedWebviewScriptReference(html: string, bundle: string, locale: string): string {
+	const escapedBundle = bundle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	const sourcePattern = new RegExp(`(src=["'])#\\{root\\}/dist/webviews/${escapedBundle}\\.js(["'])`, 'g');
+	return html.replace(sourcePattern, `$1#{root}/dist/webviews/i18n/${locale}/${bundle}.js$2`);
 }
 
 export function resetContextKeys(

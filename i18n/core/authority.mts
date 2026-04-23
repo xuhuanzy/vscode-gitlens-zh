@@ -43,9 +43,11 @@ export function resolveOccurrenceTranslation(
 		occurrence.output == null
 			? undefined
 			: lookupOverride(
-					entry => entry.selector.kind === 'output' && outputReferenceId(entry.selector.output) === outputReferenceId(occurrence.output!),
+					entry =>
+						entry.selector.kind === 'output' &&
+						outputReferenceId(entry.selector.output) === outputReferenceId(occurrence.output!),
 					bundle.overrides.entries,
-			  );
+				);
 	if (outputOverride != null) {
 		return {
 			pattern: clonePattern(outputOverride.translationPattern),
@@ -142,7 +144,13 @@ export function syncWorkset(
 		const nextRecord = createMessageRecord(previous.id, sourcePattern, toTranslationPattern(previous) ?? null);
 		const sourceChanged = previous.sourceHash !== sourceHash;
 		const previousHasTranslation = hasTranslation(previous);
-		const nextStatus = sourceChanged ? (previousHasTranslation ? 'needsReview' : 'pending') : previousHasTranslation ? previous.status : 'pending';
+		const nextStatus = sourceChanged
+			? previousHasTranslation
+				? 'needsReview'
+				: 'pending'
+			: previousHasTranslation
+				? previous.status
+				: 'pending';
 
 		entries.push({
 			...nextRecord,
@@ -181,7 +189,13 @@ export function promoteApprovedEntries(
 
 		promoted.push(entry.id);
 		const existing = updatedMessages.find(message => message.id === entry.id);
-		const { sourceHash: _sourceHash, occurrenceIds: _occurrenceIds, status: _status, note: _note, ...messageRecord } = entry;
+		const {
+			sourceHash: _sourceHash,
+			occurrenceIds: _occurrenceIds,
+			status: _status,
+			note: _note,
+			...messageRecord
+		} = entry;
 		const nextMessage = cloneMessageRecord(messageRecord as AuthorityMessageEntry);
 
 		if (existing == null) {

@@ -1,11 +1,11 @@
-import type { CatalogIssue, CatalogReconciliationEntry, I18nDomain, SourceCatalogFile, SourceOccurrence } from './model.mts';
-import {
-	cloneOutputReference,
-	cloneSourceReference,
-	nowIso,
-	outputReferenceId,
-	stableStringify,
+import type {
+	CatalogIssue,
+	CatalogReconciliationEntry,
+	I18nDomain,
+	SourceCatalogFile,
+	SourceOccurrence,
 } from './model.mts';
+import { cloneOutputReference, cloneSourceReference, nowIso, outputReferenceId, stableStringify } from './model.mts';
 
 export function reconcileCatalog(
 	previousCatalog: SourceCatalogFile,
@@ -104,7 +104,9 @@ export function reconcileCatalog(
 	};
 }
 
-function summarize(entries: readonly CatalogReconciliationEntry[]): Record<CatalogReconciliationEntry['change'], number> {
+function summarize(
+	entries: readonly CatalogReconciliationEntry[],
+): Record<CatalogReconciliationEntry['change'], number> {
 	const summary: Record<CatalogReconciliationEntry['change'], number> = {
 		added: 0,
 		changed: 0,

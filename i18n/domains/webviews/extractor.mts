@@ -23,7 +23,11 @@ import {
 	visitHtmlElements,
 	type HtmlElementNode,
 } from './html.mts';
-import { buildSyntheticHtmlTemplateFragment, buildSyntheticTextTemplateFragment } from './template.mts';
+import {
+	buildSyntheticHtmlTemplateFragment,
+	buildSyntheticTextTemplateFragment,
+	getSyntheticHtmlTemplateSlotContext,
+} from './template.mts';
 
 export interface WebviewsExtractionResult {
 	readonly occurrences: SourceOccurrence[];
@@ -246,7 +250,12 @@ function extractImperativeLocalizationMatches(
 	const text = getStaticStringValue(sourceArgument);
 	if (text == null) {
 		issues.push({
-			reference: createSourceReference(target.file, target.source, sourceArgument.getStart(sourceFile), sourceArgument.getEnd()),
+			reference: createSourceReference(
+				target.file,
+				target.source,
+				sourceArgument.getStart(sourceFile),
+				sourceArgument.getEnd(),
+			),
 			output: createRuntimeOutputReference(target.bundle, `deferred.${helperName}`),
 			reason: `deferred ${helperName}: source text must be a static string literal`,
 		});
@@ -344,7 +353,10 @@ function createDeferredIssue(
 ): CatalogIssue {
 	return {
 		reference: reference,
-		output: createRuntimeOutputReference(target.bundle, `deferred.${sanitizeKeySegment(context).replaceAll('.', '-')}`),
+		output: createRuntimeOutputReference(
+			target.bundle,
+			`deferred.${sanitizeKeySegment(context).replaceAll('.', '-')}`,
+		),
 		reason: reason,
 	};
 }
@@ -404,10 +416,7 @@ export function extractHtmlMatches(html: string): MatchDefinition[] {
 	return matches;
 }
 
-function extractJsxTextMatch(
-	node: ts.JsxText,
-	sourceFile: ts.SourceFile,
-): MatchDefinition | undefined {
+function extractJsxTextMatch(node: ts.JsxText, sourceFile: ts.SourceFile): MatchDefinition | undefined {
 	const text = normalizeJsxText(node.getText(sourceFile));
 	if (!isTranslatableSourceText(text)) return undefined;
 
@@ -422,10 +431,7 @@ function extractJsxTextMatch(
 	};
 }
 
-function extractJsxAttributeMatch(
-	node: ts.JsxAttribute,
-	sourceFile: ts.SourceFile,
-): MatchDefinition | undefined {
+function extractJsxAttributeMatch(node: ts.JsxAttribute, sourceFile: ts.SourceFile): MatchDefinition | undefined {
 	const attribute = node.name.text;
 	if (!translatableAttributes.has(attribute)) return undefined;
 
@@ -516,7 +522,11 @@ function extractImperativeDisplayMatch(
 	if (!shouldExtractImperativeDisplayNode(node, sourceFile)) return undefined;
 
 	const source = getImperativeDisplaySource(node, sourceFile);
-	if (source == null || !isTranslatableSourceText(source.text) || !looksLikeImperativeDisplayText(source.text, node)) {
+	if (
+		source == null ||
+		!isTranslatableSourceText(source.text) ||
+		!looksLikeImperativeDisplayText(source.text, node)
+	) {
 		return undefined;
 	}
 
@@ -551,6 +561,8 @@ function shouldExtractImperativeDisplayNode(
 	sourceFile: ts.SourceFile,
 ): boolean {
 	if (ts.isTaggedTemplateExpression(node.parent) && node.parent.template === node) return false;
+	if (ts.isJsxAttribute(node.parent)) return false;
+	if (ts.isJsxExpression(node.parent) && ts.isJsxAttribute(node.parent.parent)) return false;
 	if (ts.isPropertyAssignment(node.parent)) {
 		const propertyName = getPropertyName(node.parent.name);
 		if (propertyName != null && translatablePropertyNames.has(propertyName)) return false;
@@ -562,6 +574,7 @@ function shouldExtractImperativeDisplayNode(
 
 	return (
 		hasHtmlTemplateAncestor(node, sourceFile) ||
+		hasRenderedJsxExpressionAncestor(node) ||
 		hasImperativeDisplayContextAncestor(node, sourceFile)
 	);
 }
@@ -578,17 +591,24 @@ function hasHtmlTemplateAncestor(node: ts.Node, sourceFile: ts.SourceFile): bool
 	return false;
 }
 
+function hasRenderedJsxExpressionAncestor(node: ts.Node): boolean {
+	for (let current = node.parent; current != null; current = current.parent) {
+		if (ts.isJsxAttribute(current)) return false;
+		if (ts.isJsxExpression(current)) {
+			return !ts.isJsxAttribute(current.parent);
+		}
+		if (ts.isSourceFile(current)) break;
+	}
+
+	return false;
+}
+
 function isImperativeDisplayPropertyValue(parent: ts.Node | undefined): boolean {
 	if (!ts.isPropertyAssignment(parent)) return false;
 
 	const propertyName = getPropertyName(parent.name);
 	return (
-		propertyName === 'label' ||
-		propertyName === 'message' ||
-		propertyName === 'title' ||
-		propertyName === 'tooltip' ||
-		propertyName === 'content' ||
-		propertyName === 'type'
+		propertyName === 'label' || propertyName === 'message' || propertyName === 'title' || propertyName === 'tooltip'
 	);
 }
 
@@ -597,7 +617,9 @@ function hasImperativeDisplayContextAncestor(node: ts.Node, sourceFile: ts.Sourc
 
 	for (let child: ts.Node = node, current = node.parent; current != null; child = current, current = current.parent) {
 		if (isImperativeDisplayPropertyValue(current)) return true;
-		if (ts.isArrayLiteralExpression(current) || ts.isVariableDeclaration(current)) return true;
+		if (ts.isVariableDeclaration(current) && current.initializer === child) {
+			return variableDeclarationFlowsToDisplay(current, sourceFile);
+		}
 		if (withinDisplayProducer) {
 			if (isImperativeDisplayCallArgument(current, child)) return true;
 			if (isImperativeDisplayAssignment(current, child)) return true;
@@ -651,7 +673,19 @@ function bodyContainsHtmlTemplate(node: ts.Node, sourceFile: ts.SourceFile): boo
 }
 
 function isImperativeDisplayCallArgument(current: ts.Node, child: ts.Node): boolean {
-	return ts.isCallExpression(current) && current.arguments.some(argument => argument === child);
+	if (!ts.isCallExpression(current)) return false;
+
+	const expression = current.expression;
+	if (ts.isPropertyAccessExpression(expression)) {
+		const method = expression.name.text;
+		return (
+			(method === 'setAttribute' || method === 'toggleAttribute') &&
+			current.arguments[1] === child &&
+			getStaticStringValue(current.arguments[0] as ts.Expression) != null
+		);
+	}
+
+	return false;
 }
 
 function isImperativeDisplayAssignment(current: ts.Node, child: ts.Node): boolean {
@@ -676,7 +710,196 @@ function isDisplayAssignmentTarget(node: ts.Node): boolean {
 }
 
 function looksLikeDisplayAssignmentTargetName(name: string): boolean {
-	return /(label|message|text|title|tooltip)$/iu.test(name);
+	return /^(?:label|message|title|tooltip|placeholder|ariaLabel)$/iu.test(name);
+}
+
+function variableDeclarationFlowsToDisplay(node: ts.VariableDeclaration, sourceFile: ts.SourceFile): boolean {
+	if (!ts.isIdentifier(node.name)) return false;
+	if (node.initializer == null) return false;
+
+	const scopeRoot = getVariableUsageScope(node);
+	if (scopeRoot == null) return false;
+
+	const usageContexts = collectVariableUsageDisplayContexts(node.name.text, scopeRoot, sourceFile, node.end);
+	if (usageContexts.length === 0) return false;
+
+	return usageContexts.every(context => context.kind === 'display');
+}
+
+function collectVariableUsageDisplayContexts(
+	name: string,
+	scopeRoot: ts.Node,
+	sourceFile: ts.SourceFile,
+	declarationEnd: number,
+): Array<{ readonly kind: 'display' | 'non-display'; readonly node: ts.Identifier }> {
+	const usages: Array<{ readonly kind: 'display' | 'non-display'; readonly node: ts.Identifier }> = [];
+
+	const visit = (node: ts.Node): void => {
+		if (node.getEnd() <= declarationEnd) return;
+		if (ts.isIdentifier(node) && node.text === name && isVariableUsageIdentifier(node)) {
+			usages.push({
+				kind: identifierFlowsToDisplay(node, sourceFile) ? 'display' : 'non-display',
+				node: node,
+			});
+		}
+
+		ts.forEachChild(node, visit);
+	};
+
+	ts.forEachChild(scopeRoot, visit);
+
+	return usages;
+}
+
+function getVariableUsageScope(node: ts.VariableDeclaration): ts.Node | undefined {
+	for (let current = node.parent; current != null; current = current.parent) {
+		if (
+			ts.isBlock(current) ||
+			ts.isCaseClause(current) ||
+			ts.isCatchClause(current) ||
+			ts.isDefaultClause(current) ||
+			ts.isForInStatement(current) ||
+			ts.isForOfStatement(current) ||
+			ts.isForStatement(current) ||
+			ts.isModuleBlock(current) ||
+			ts.isSourceFile(current)
+		) {
+			return current;
+		}
+	}
+
+	return undefined;
+}
+
+function isVariableUsageIdentifier(node: ts.Identifier): boolean {
+	const parent = node.parent;
+	if (parent == null) return false;
+	if (ts.isVariableDeclaration(parent) && parent.name === node) return false;
+	if (ts.isParameter(parent) && parent.name === node) return false;
+	if (
+		ts.isBinaryExpression(parent) &&
+		parent.left === node &&
+		parent.operatorToken.kind === ts.SyntaxKind.EqualsToken
+	) {
+		return false;
+	}
+	if (ts.isPropertyAccessExpression(parent) && parent.name === node) return false;
+	if (ts.isPropertyAssignment(parent) && parent.name === node) return false;
+	if (ts.isShorthandPropertyAssignment(parent) && parent.name === node) return false;
+	if (ts.isBindingElement(parent) && parent.name === node) return false;
+	if (ts.isImportClause(parent) || ts.isImportSpecifier(parent) || ts.isNamespaceImport(parent)) return false;
+	if (ts.isExportSpecifier(parent)) return false;
+
+	return true;
+}
+
+function identifierFlowsToDisplay(node: ts.Identifier, sourceFile: ts.SourceFile): boolean {
+	let current: ts.Node = node;
+	let parent = node.parent;
+
+	while (parent != null) {
+		if (ts.isParenthesizedExpression(parent) || ts.isAsExpression(parent) || ts.isNonNullExpression(parent)) {
+			current = parent;
+			parent = parent.parent;
+			continue;
+		}
+
+		if (ts.isPropertyAccessExpression(parent) && parent.expression === current) {
+			return false;
+		}
+
+		if (ts.isCallExpression(parent) && parent.expression === current) {
+			return false;
+		}
+
+		if (ts.isTaggedTemplateExpression(parent) && parent.tag === current) {
+			return false;
+		}
+
+		if (ts.isTemplateSpan(parent) && parent.expression === current) {
+			const templateContext = templateSpanDisplayContext(parent);
+			if (templateContext != null) return templateContext;
+
+			current = parent.parent;
+			parent = current.parent;
+			continue;
+		}
+
+		if (ts.isJsxExpression(parent) && parent.expression === current) {
+			return jsxExpressionDisplayContext(parent);
+		}
+
+		if (ts.isJsxAttribute(parent)) {
+			return translatableAttributes.has(parent.name.text);
+		}
+
+		if (
+			ts.isBinaryExpression(parent) &&
+			parent.right === current &&
+			parent.operatorToken.kind === ts.SyntaxKind.EqualsToken
+		) {
+			return isDisplayAssignmentTarget(parent.left);
+		}
+
+		if (ts.isPropertyAssignment(parent) && parent.initializer === current) {
+			return isImperativeDisplayPropertyValue(parent);
+		}
+
+		if (ts.isConditionalExpression(parent)) {
+			if (parent.whenTrue === current || parent.whenFalse === current) {
+				current = parent;
+				parent = parent.parent;
+				continue;
+			}
+
+			return false;
+		}
+
+		if (
+			ts.isBinaryExpression(parent) &&
+			(parent.operatorToken.kind === ts.SyntaxKind.BarBarToken ||
+				parent.operatorToken.kind === ts.SyntaxKind.AmpersandAmpersandToken ||
+				parent.operatorToken.kind === ts.SyntaxKind.QuestionQuestionToken)
+		) {
+			current = parent;
+			parent = parent.parent;
+			continue;
+		}
+
+		return false;
+	}
+
+	return false;
+}
+
+function templateSpanDisplayContext(span: ts.TemplateSpan): boolean | undefined {
+	const template = span.parent;
+	const templateParent = template.parent;
+	if (!ts.isTaggedTemplateExpression(templateParent) || templateParent.template !== template) {
+		return undefined;
+	}
+
+	if (!isLitTemplateTag(templateParent.tag) || !ts.isTemplateExpression(template)) {
+		return false;
+	}
+
+	const slotIndex = template.templateSpans.indexOf(span);
+	if (slotIndex === -1) return false;
+
+	const slotContext = getSyntheticHtmlTemplateSlotContext(template, slotIndex);
+	if (slotContext == null) return false;
+	if (slotContext.kind === 'text') return true;
+
+	return slotContext.attribute != null && translatableAttributes.has(slotContext.attribute);
+}
+
+function jsxExpressionDisplayContext(node: ts.JsxExpression): boolean {
+	const parent = node.parent;
+	if (ts.isJsxAttribute(parent)) {
+		return translatableAttributes.has(parent.name.text);
+	}
+
+	return !ts.isJsxAttribute(parent);
 }
 
 function isFunctionLike(node: ts.Node): boolean {
@@ -721,10 +944,7 @@ function getFunctionLikeName(node: ts.Node): string | undefined {
 	return undefined;
 }
 
-function looksLikeImperativeDisplayText(
-	text: string,
-	node: ts.StringLiteralLike | ts.TemplateExpression,
-): boolean {
+function looksLikeImperativeDisplayText(text: string, node: ts.StringLiteralLike | ts.TemplateExpression): boolean {
 	const trimmed = text.trim();
 	if (standaloneDisplayWords.has(trimmed)) return true;
 	if (trimmed.length === 0) return false;
@@ -743,11 +963,7 @@ function looksLikeImperativeDisplayText(
 	return false;
 }
 
-function scanDeferredJsxNodes(
-	target: RuntimeSourceTarget,
-	sourceFile: ts.SourceFile,
-	issues: CatalogIssue[],
-): void {
+function scanDeferredJsxNodes(target: RuntimeSourceTarget, sourceFile: ts.SourceFile, issues: CatalogIssue[]): void {
 	const visit = (node: ts.Node): void => {
 		if (ts.isJsxText(node)) {
 			const text = normalizeJsxText(node.getText(sourceFile));
@@ -865,8 +1081,3 @@ function getScriptKind(syntax: RuntimeSourceTarget['syntax']): ts.ScriptKind {
 			return ts.ScriptKind.TS;
 	}
 }
-
-
-
-
-

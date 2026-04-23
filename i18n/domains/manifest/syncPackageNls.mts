@@ -5,7 +5,9 @@ const result = syncManifestI18n({
 });
 
 writeWorkflowReadme(result.context);
-console.log(`Synchronized package manifest i18n: ${result.occurrenceCount} occurrences, ${result.worksetCount} workset entries`);
+console.log(
+	`Synchronized package manifest i18n: ${result.occurrenceCount} occurrences, ${result.worksetCount} workset entries`,
+);
 
 function readOption(name: string): string | undefined {
 	const index = process.argv.indexOf(name);

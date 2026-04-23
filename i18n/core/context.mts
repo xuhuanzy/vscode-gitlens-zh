@@ -30,7 +30,10 @@ export interface DomainContext extends I18nWorkspaceContext {
 
 const defaultRootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 
-export function createI18nWorkspaceContext(rootDir: string = defaultRootDir, locale: I18nLocale = 'zh-cn'): I18nWorkspaceContext {
+export function createI18nWorkspaceContext(
+	rootDir: string = defaultRootDir,
+	locale: I18nLocale = 'zh-cn',
+): I18nWorkspaceContext {
 	const i18nDir = path.join(rootDir, 'i18n');
 	const authorityDir = path.join(i18nDir, 'authority');
 	const authorityLocaleDir = path.join(authorityDir, locale);
@@ -70,6 +73,9 @@ export function createDomainContext(
 		artifactId: options.artifactId,
 		catalogFile: path.join(workspace.catalogDir, `${options.artifactId}.catalog.json`),
 		worksetFile: path.join(workspace.worksetDir, `${options.artifactId}.${workspace.locale}.json`),
-		pendingReportFile: path.join(workspace.reportDir, options.pendingReportName ?? `${options.artifactId}-pending.json`),
+		pendingReportFile: path.join(
+			workspace.reportDir,
+			options.pendingReportName ?? `${options.artifactId}-pending.json`,
+		),
 	};
 }

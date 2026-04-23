@@ -64,7 +64,9 @@ function testPromotionWorkflow(): void {
 						views: {
 							explorer: [{ id: 'fixture.view', name: 'History', contextualTitle: 'History' }],
 						},
-						viewsWelcome: [{ view: 'fixture.view', contents: '[Open](command:fixture.open)', when: 'view == fixture' }],
+						viewsWelcome: [
+							{ view: 'fixture.view', contents: '[Open](command:fixture.open)', when: 'view == fixture' },
+						],
 						walkthroughs: [
 							{
 								id: 'welcome',
@@ -93,11 +95,14 @@ function testPromotionWorkflow(): void {
 		assert.deepEqual(Array.isArray(workset.entries[0].occurrenceIds), true);
 
 		const commandTitleOccurrence = catalog.occurrences.find(
-			occurrence => occurrence.output?.kind === 'manifest-key' && occurrence.output.key === 'contributes.commands.fixture.open.title',
+			occurrence =>
+				occurrence.output?.kind === 'manifest-key' &&
+				occurrence.output.key === 'contributes.commands.fixture.open.title',
 		);
 		const commandCategoryOccurrence = catalog.occurrences.find(
 			occurrence =>
-				occurrence.output?.kind === 'manifest-key' && occurrence.output.key === 'contributes.commands.fixture.open.category',
+				occurrence.output?.kind === 'manifest-key' &&
+				occurrence.output.key === 'contributes.commands.fixture.open.category',
 		);
 		assert.notEqual(commandTitleOccurrence, undefined);
 		assert.notEqual(commandCategoryOccurrence, undefined);
@@ -119,7 +124,7 @@ function testPromotionWorkflow(): void {
 							...entry,
 							status: 'approved',
 							translation: 'GitLens 中文',
-					  }
+						}
 					: entry,
 			),
 		});
@@ -138,7 +143,10 @@ function testPromotionWorkflow(): void {
 		assert.equal(englishPackageNls['extension.displayName'], 'Fixture Git UI');
 
 		const authority = loadAuthorityBundle(context);
-		assert.equal(authority.messages.entries.some(entry => entry.translation === 'GitLens 中文'), true);
+		assert.equal(
+			authority.messages.entries.some(entry => entry.translation === 'GitLens 中文'),
+			true,
+		);
 
 		const resyncResult = syncManifestI18n({ rootDir });
 		assert.equal(resyncResult.occurrenceCount, syncResult.occurrenceCount);
@@ -190,14 +198,8 @@ function testDuplicateViewsWelcomeKeys(): void {
 			Record<string, unknown>
 		>;
 		const selector = `when-${shortHash('view == fixture')}`;
-		assert.equal(
-			welcomes[0].contents,
-			`%contributes.viewsWelcome.fixture.view.${selector}.slot-1.contents%`,
-		);
-		assert.equal(
-			welcomes[1].contents,
-			`%contributes.viewsWelcome.fixture.view.${selector}.slot-2.contents%`,
-		);
+		assert.equal(welcomes[0].contents, `%contributes.viewsWelcome.fixture.view.${selector}.slot-1.contents%`);
+		assert.equal(welcomes[1].contents, `%contributes.viewsWelcome.fixture.view.${selector}.slot-2.contents%`);
 
 		const englishPackageNls = loadEnglishPackageNls(context);
 		assert.equal(
@@ -263,14 +265,29 @@ function testOverridesDoNotRemainPending(): void {
 		});
 
 		const report = createPendingReport({ rootDir });
-		assert.equal(report.items.some(item => item.occurrenceIds.some(id => titleEntry!.occurrenceIds.includes(id))), false);
-		assert.equal(report.items.every(item => 'sourceText' in item), false);
-		assert.equal(report.items.every(item => 'scope' in item), false);
-		assert.equal(report.items.every(item => 'occurrences' in item), false);
+		assert.equal(
+			report.items.some(item => item.occurrenceIds.some(id => titleEntry!.occurrenceIds.includes(id))),
+			false,
+		);
+		assert.equal(
+			report.items.every(item => 'sourceText' in item),
+			false,
+		);
+		assert.equal(
+			report.items.every(item => 'scope' in item),
+			false,
+		);
+		assert.equal(
+			report.items.every(item => 'occurrences' in item),
+			false,
+		);
 		assert.equal(fs.existsSync(context.pendingReportFile), true);
 
 		const reportedWorkset = loadManifestWorkset(context);
-		assert.equal(reportedWorkset.entries.some(entry => entry.id === titleEntry!.id), false);
+		assert.equal(
+			reportedWorkset.entries.some(entry => entry.id === titleEntry!.id),
+			false,
+		);
 
 		const generateResult = generateManifestLocalizedOutputs({ rootDir });
 		assert.equal(generateResult.localizedKeys, 1);

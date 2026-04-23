@@ -25,6 +25,12 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import webpack from 'webpack';
 import WebpackRequireFromPlugin from 'webpack-require-from';
 
+import {
+	createLocalizedWebviewConfig,
+	GenerateLocalizedSettingsShellPlugin,
+	getLocalizedWebviewEntries,
+} from './i18n/domains/webviews/webpack.mjs';
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -487,7 +493,25 @@ function getWebviewsConfigs(mode, env) {
 		webviews = Object.fromEntries(Object.entries(webviews).filter(([key]) => chosen.includes(key)));
 	}
 
-	return [getWebviewConfig(webviews, {}, mode, env)];
+	const configs = [getWebviewConfig(webviews, {}, mode, env)];
+	const localizedEntries = getLocalizedWebviewEntries({ rootDir: __dirname, webviews: webviews, locale: 'zh-cn' });
+	if (Object.keys(localizedEntries).length !== 0) {
+		configs.push(
+			createLocalizedWebviewConfig({
+				rootDir: __dirname,
+				webviews: localizedEntries,
+				locale: 'zh-cn',
+				config: getWebviewConfig(localizedEntries, {}, mode, env),
+				excludePlugin: plugin =>
+					plugin instanceof HtmlPlugin ||
+					plugin instanceof ESLintLitePlugin ||
+					plugin instanceof ForkTsCheckerPlugin ||
+					plugin instanceof GenerateLocalizedSettingsShellPlugin,
+			}),
+		);
+	}
+
+	return configs;
 }
 
 /**
@@ -597,6 +621,9 @@ function getWebviewConfig(webviews, overrides, mode, env) {
 	if ('composer' in webviews) {
 		plugins.push(new CompileComposerTemplatesPlugin());
 	}
+	if ('settings' in webviews) {
+		plugins.push(new GenerateLocalizedSettingsShellPlugin({ rootDir: __dirname, WebpackError: WebpackError }));
+	}
 
 	let name = '';
 	let filePrefix = '';
@@ -680,7 +707,12 @@ function getWebviewConfig(webviews, overrides, mode, env) {
 			publicPath: '#{root}/dist/webviews/',
 			// If building a subset of webviews, don't clean; otherwise clean everything except media and codicon.ttf
 			// These assets are copied by webviews:common which runs in parallel
-			clean: env.webviews ? false : { keep: asset => asset.startsWith('media/') || asset === 'codicon.ttf' },
+			clean: env.webviews
+				? false
+				: {
+						keep: asset =>
+							asset.startsWith('media/') || asset.startsWith('i18n/') || asset === 'codicon.ttf',
+					},
 		},
 		experiments: { outputModule: true },
 		optimization: {
@@ -741,7 +773,11 @@ function getWebviewConfig(webviews, overrides, mode, env) {
 				},
 				{
 					exclude: /\.d\.ts$/,
-					include: [path.join(__dirname, 'src'), path.join(__dirname, 'packages')],
+					include: [
+						path.join(__dirname, 'src'),
+						path.join(__dirname, 'packages'),
+						path.join(__dirname, '.work', 'i18n', 'webviews-sources'),
+					],
 					test: /\.tsx?$/,
 					use: [
 						env.esbuild
