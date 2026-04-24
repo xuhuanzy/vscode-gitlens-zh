@@ -88,7 +88,7 @@ The system SHALL treat localized package or UI outputs as regenerable artifacts 
 
 - **WHEN** the localization pipeline runs for a supported static HTML webview shell
 - **THEN** it rewrites the localized HTML artifact from the catalog and resolved translations rather than maintaining a second hand-edited locale HTML source file
-- **AND** the generated shell artifact is emitted under `src/i18n` rather than beside the upstream source template
+- **AND** the generated shell artifact is emitted through the canonical `dist/webviews` build output rather than beside the upstream source template
 
 #### Scenario: Runtime dynamic localization output is regenerated
 

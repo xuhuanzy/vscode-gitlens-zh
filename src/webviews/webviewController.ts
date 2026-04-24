@@ -29,12 +29,6 @@ import type {
 	WebviewViewTypes,
 } from '../constants.views.js';
 import type { Container } from '../container.js';
-import {
-	getAvailableLocalizedWebviewScriptUri,
-	getAvailableLocalizedWebviewShellUri,
-	getCurrentWebviewLocale,
-	getWebviewLocalizedScriptBundle,
-} from '../i18n/webviews.js';
 import { getSubscriptionNextPaidPlanId } from '../plus/gk/utils/subscription.utils.js';
 import { executeCommand, executeCoreCommand } from '../system/-webview/command.js';
 import {
@@ -738,18 +732,7 @@ export class WebviewController<
 		const scope = getScopedLogger();
 
 		const webRootUri = this.getWebRootUri();
-		const locale = getCurrentWebviewLocale();
-		const localizedUri = await getAvailableLocalizedWebviewShellUri(
-			this.getRootUri(),
-			locale,
-			this.descriptor.fileName,
-		);
-		const uri = localizedUri ?? Uri.joinPath(webRootUri, this.descriptor.fileName);
-		const localizedScriptBundle = getWebviewLocalizedScriptBundle(this.descriptor.fileName);
-		const localizedScriptUri =
-			localizedScriptBundle == null
-				? undefined
-				: await getAvailableLocalizedWebviewScriptUri(this.getRootUri(), locale, localizedScriptBundle);
+		const uri = Uri.joinPath(webRootUri, this.descriptor.fileName);
 
 		const [bytes, bootstrap, head, body, endOfBody] = await Promise.all([
 			workspace.fs.readFile(uri),
@@ -763,12 +746,8 @@ export class WebviewController<
 		const serialized = this.serializeIpcData(bootstrap);
 		sw?.stop({ message: `\u2022 serialized bootstrap; length=${serialized.length}` });
 
-		const htmlTemplate = localizedScriptUri
-			? replaceLocalizedWebviewScriptReference(strFromU8(bytes), localizedScriptBundle!, locale)
-			: strFromU8(bytes);
-
 		const html = replaceWebviewHtmlTokens(
-			htmlTemplate,
+			strFromU8(bytes),
 			this.id,
 			this.instanceId,
 			webview.cspSource,
@@ -1065,12 +1044,6 @@ export function replaceWebviewHtmlTokens<SerializedState>(
 				return '';
 		}
 	});
-}
-
-export function replaceLocalizedWebviewScriptReference(html: string, bundle: string, locale: string): string {
-	const escapedBundle = bundle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-	const sourcePattern = new RegExp(`(src=["'])#\\{root\\}/dist/webviews/${escapedBundle}\\.js(["'])`, 'g');
-	return html.replace(sourcePattern, `$1#{root}/dist/webviews/i18n/${locale}/${bundle}.js$2`);
 }
 
 export function resetContextKeys(

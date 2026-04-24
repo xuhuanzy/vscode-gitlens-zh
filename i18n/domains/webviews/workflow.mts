@@ -21,7 +21,6 @@ import {
 	deleteLocalizedDynamicSource,
 	loadAuthorityBundle,
 	loadSettingsBuildHtml,
-	loadSettingsExtractionHtml,
 	loadSourceTargetContents,
 	loadWebviewsCatalog,
 	loadWebviewsWorkset,
@@ -45,15 +44,6 @@ interface DeferredRuntimeTarget {
 	readonly reason: string;
 	readonly directories: readonly string[];
 }
-
-const localizedDynamicArtifactBundles = new Set<DynamicSourceTarget['bundle']>([
-	'welcome',
-	'rebase',
-	'home',
-	'commitDetails',
-	'timeline',
-	'graph',
-]);
 
 const supportedDynamicSourceTargets: readonly DynamicSourceTarget[] = [
 	{
@@ -127,7 +117,7 @@ export function syncWebviewsI18n(options: WorkflowOptions = {}): {
 		{
 			kind: 'html',
 			file: 'dist/webviews/settings.html',
-			html: loadSettingsExtractionHtml(context),
+			html: loadSettingsBuildHtml(context),
 			shell: 'settings',
 		},
 		...loadDynamicExtractionTargets(context),
@@ -196,8 +186,7 @@ export function generateWebviewsLocalizedDynamicSources(options: WorkflowOptions
 	readonly translatedCount: number;
 	readonly unresolvedCount: number;
 } {
-	const syncResult = syncWebviewsI18n(options);
-	const context = syncResult.context;
+	const context = ensureControlledWebviewFiles(options);
 	const dynamicSources = generateWebviewsLocalizedDynamicSourcesCore(context);
 
 	return {
@@ -212,8 +201,7 @@ export function generateWebviewsLocalizedSettingsShell(options: WorkflowOptions 
 	readonly translatedCount: number;
 	readonly unresolvedCount: number;
 } {
-	const syncResult = syncWebviewsI18n(options);
-	const context = syncResult.context;
+	const context = ensureControlledWebviewFiles(options);
 	const settingsShell = generateWebviewsLocalizedSettingsShellCore(context);
 
 	return {
@@ -265,11 +253,6 @@ function generateWebviewsLocalizedDynamicSourcesCore(context: WebviewsDomainCont
 			.filter((file, index, files) => files.indexOf(file) === index)
 			.sort((left, right) => left.localeCompare(right));
 		for (const file of targetFiles) {
-			if (!localizedDynamicArtifactBundles.has(target.bundle)) {
-				deleteLocalizedDynamicSource(context, file);
-				continue;
-			}
-
 			const source = loadSourceTargetContents(context, file);
 			if (source == null) {
 				deleteLocalizedDynamicSource(context, file);

@@ -1,38 +1,16 @@
-# webviews-localization Specification
+## ADDED Requirements
 
-## Purpose
+### Requirement: Supported webviews load localized canonical artifacts without runtime script selection
 
-TBD - created by archiving change add-webviews-localization-domain. Update Purpose after archive.
+The system SHALL deliver supported localized webviews through the standard `dist/webviews` artifact paths used by the extension runtime.
 
-## Requirements
+#### Scenario: Dynamic webview uses the standard script path
 
-### Requirement: Webviews domain extracts translatable UI text from supported source kinds
+- **WHEN** a supported dynamic webview such as `graph` is rendered on this branch
+- **THEN** its HTML references `#{root}/dist/webviews/graph.js`
+- **AND** it does not require `WebviewController` to rewrite that script reference to `dist/webviews/i18n/<locale>/graph.js`
 
-The system SHALL extract translatable webview UI text from supported webview source kinds using source-aware extraction rules rather than runtime DOM inspection.
-
-#### Scenario: Static HTML and partial content is extracted
-
-- **WHEN** a supported webview contains user-visible text in a static HTML shell or HTML partial
-- **THEN** the webviews domain extracts the text into the shared i18n catalog
-- **AND** it preserves enough source reference detail to regenerate the localized shell artifact later
-
-#### Scenario: Lit template content is extracted
-
-- **WHEN** a supported webview contains user-visible text in a Lit template
-- **THEN** the webviews domain extracts the text and allowed translatable attributes into the shared i18n workflow
-- **AND** it does not require the page to be rewritten around manual per-call-site translation plumbing just to become extractable
-
-#### Scenario: JSX/TSX and mixed-renderer positions remain explicitly deferred
-
-- **WHEN** a webview source position falls inside a JSX/TSX subtree or other mixed-renderer boundary that is not yet supported by the current rollout
-- **THEN** the workflow reports that position as deferred for follow-up instead of silently treating it as localized
-- **AND** the current change does not require widening page-level i18n plumbing just to force coverage of that unsupported position
-
-#### Scenario: Unsupported webview source remains deferred
-
-- **WHEN** a webview source position is not yet covered by a supported extractor
-- **THEN** the workflow leaves that source deferred instead of silently pretending it is localized
-- **AND** the deferred position can be reported for later follow-up
+## MODIFIED Requirements
 
 ### Requirement: Webviews localized outputs are emitted as derived runtime artifacts keyed by supported webview targets
 
@@ -84,12 +62,10 @@ The system SHALL localize supported static webview shell content, including `lan
 - **THEN** the generated artifact is published under `dist/webviews`
 - **AND** `src/webviews/**` continues to hold the upstream-oriented English source template rather than locale-specific duplicates
 
-### Requirement: Supported webviews load localized canonical artifacts without runtime script selection
+## REMOVED Requirements
 
-The system SHALL deliver supported localized webviews through the standard `dist/webviews` artifact paths used by the extension runtime.
+### Requirement: Webview runtime localization is injected through shared infrastructure
 
-#### Scenario: Dynamic webview uses the standard script path
+**Reason**: Supported dynamic webviews are now localized at build time and published as canonical branch artifacts, so runtime localization bundle injection and locale-specific dynamic script selection are no longer part of the supported webview contract.
 
-- **WHEN** a supported dynamic webview such as `graph` is rendered on this branch
-- **THEN** its HTML references `#{root}/dist/webviews/graph.js`
-- **AND** it does not require `WebviewController` to rewrite that script reference to `dist/webviews/i18n/<locale>/graph.js`
+**Migration**: Use the generated localized `dist/webviews` artifacts. Keep translation authority and generated source overlays in the i18n workflow, but remove runtime paths that inject dynamic localization payloads or rewrite supported dynamic webview script references to `dist/webviews/i18n/<locale>`.

@@ -8,7 +8,7 @@ TBD - created by archiving change unify-i18n-message-model. Update Purpose after
 
 ### Requirement: Branch localization tooling is isolated to dedicated i18n directories
 
-The system SHALL place extraction, reporting, reconciliation, and generation tooling under `./i18n`, and runtime localization support under `./src/i18n`.
+The system SHALL place extraction, reporting, reconciliation, and generation tooling under `./i18n`. Runtime localization support MAY be implemented under `./src/i18n` only when application runtime code still consumes branch-localization helpers directly.
 
 #### Scenario: New extraction workflow is added
 
@@ -19,6 +19,11 @@ The system SHALL place extraction, reporting, reconciliation, and generation too
 
 - **WHEN** a runtime localization helper is required by extension or webview code
 - **THEN** it is implemented under `./src/i18n`
+
+#### Scenario: Runtime support is no longer needed
+
+- **WHEN** a localization domain publishes branch-localized runtime artifacts through canonical build outputs without runtime helper lookup
+- **THEN** the implementation does not keep unused `./src/i18n` modules solely as historical placeholders
 
 ### Requirement: Branch localization workflow does not depend on contributions generation
 
@@ -97,7 +102,7 @@ The branch localization workflow SHALL treat files under `i18n/reports` as deriv
 
 ### Requirement: Workflow preserves a path for future unsupported message sources
 
-The branch localization workflow SHALL preserve a discovery path for unsupported or newly introduced message sources so later phases can classify them without silently remaining untranslated. The workflow structure itself MUST separate shared i18n core infrastructure from per-domain adapters so future domains can be added without re-centering the workflow around the manifest implementation. When a domain such as `webviews` is introduced, the workflow MUST allow staged rollout by source kind and page family, so supported sources enter the normal catalog/report/generation path while unsupported sources remain explicitly deferred. Generated runtime-facing localization artifacts for webviews MUST remain under `src/i18n` rather than being hand-maintained beside upstream source templates under `src/webviews`.
+The branch localization workflow SHALL preserve a discovery path for unsupported or newly introduced message sources so later phases can classify them without silently remaining untranslated. The workflow structure itself MUST separate shared i18n core infrastructure from per-domain adapters so future domains can be added without re-centering the workflow around the manifest implementation. When a domain such as `webviews` is introduced, the workflow MUST allow staged rollout by source kind and page family, so supported sources enter the normal catalog/report/generation path while unsupported sources remain explicitly deferred. Generated runtime-facing localization artifacts for webviews MUST be emitted as canonical build outputs rather than being hand-maintained beside upstream source templates under `src/webviews`.
 
 #### Scenario: New runtime-generated message is encountered
 
@@ -124,7 +129,7 @@ The branch localization workflow SHALL preserve a discovery path for unsupported
 #### Scenario: Localized webview shell artifact is generated
 
 - **WHEN** the workflow emits a localized static webview shell
-- **THEN** the generated artifact lives under `src/i18n`
+- **THEN** the generated artifact is published through the canonical `dist/webviews` build output
 - **AND** the workflow does not introduce locale-specific HTML source files under `src/webviews`
 
 ### Requirement: Branch localization workflow uses controlled data files as the only default translation sources

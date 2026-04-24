@@ -228,6 +228,8 @@ function testLocalizedWebpackWatchIgnoresGeneratedArtifacts(): void {
 			excludePlugin: () => false,
 		});
 
+		assert.equal(config.output?.path, path.join(rootDir, 'dist', 'webviews'));
+		assert.equal(config.output?.publicPath, '#{root}/dist/webviews/');
 		assert.ok(Array.isArray(config.watchOptions?.ignored));
 		assert.deepEqual(config.watchOptions!.ignored, [
 			'**/node_modules/**',
@@ -272,11 +274,7 @@ function testWriteTextFileSkipsUnchangedWrites(): void {
 function testDynamicSourceGenerationDoesNotRequireBuiltSettingsShell(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-dynamic-clean-dist-'));
 	try {
-		writeTextFile(
-			rootDir,
-			'src/webviews/apps/settings/settings.html',
-			'<!doctype html><html lang="en"><body></body></html>\n',
-		);
+		writeDefaultSettingsShell(rootDir);
 		writeWelcomeFixture(rootDir, {
 			welcomeTs: [
 				"import { html } from 'lit';",
@@ -303,6 +301,7 @@ function testDynamicSourceGenerationDoesNotRequireBuiltSettingsShell(): void {
 		});
 		promoteWebviewsAuthority({ rootDir });
 
+		fs.rmSync(path.join(rootDir, 'dist', 'webviews', 'settings.html'), { force: true });
 		const generateResult = generateWebviewsLocalizedDynamicSources({ rootDir });
 		assert.equal(generateResult.translatedCount >= 1, true);
 		assert.equal(

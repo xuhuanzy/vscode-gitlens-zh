@@ -27,12 +27,18 @@ export function getLocalizedWebviewEntries(options) {
 			options.locale,
 			...localizedEntry.split('/'),
 		);
-		if (!fs.existsSync(absoluteEntry)) continue;
-
 		localized[name] = { ...config, entry: absoluteEntry };
 	}
 
 	return localized;
+}
+
+/**
+ * @param {string} name
+ * @returns {boolean}
+ */
+export function isLocalizedDynamicWebview(name) {
+	return getLocalizedWebviewEntry(name) != null;
 }
 
 /**
@@ -41,6 +47,7 @@ export function getLocalizedWebviewEntries(options) {
  *   webviews: WebviewEntries;
  *   locale: string;
  *   config: import('webpack').Configuration;
+ *   dependencies?: string[];
  *   excludePlugin: (plugin: unknown) => boolean;
  * }} options
  */
@@ -52,12 +59,12 @@ export function createLocalizedWebviewConfig(options) {
 	return {
 		...options.config,
 		name: `webviews:i18n:${options.locale}`,
-		context: options.rootDir,
+		dependencies: options.dependencies,
 		entry: Object.fromEntries(Object.entries(options.webviews).map(([name, { entry }]) => [name, entry])),
 		output: {
 			...options.config.output,
-			path: path.join(options.rootDir, 'dist', 'webviews', 'i18n', options.locale),
-			publicPath: `#{root}/dist/webviews/i18n/${options.locale}/`,
+			path: path.join(options.rootDir, 'dist', 'webviews'),
+			publicPath: '#{root}/dist/webviews/',
 			clean: false,
 		},
 		watchOptions: {

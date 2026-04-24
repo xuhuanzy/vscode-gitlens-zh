@@ -511,8 +511,18 @@ function getWebviewsConfigs(mode, env) {
 		webviews = Object.fromEntries(Object.entries(webviews).filter(([key]) => chosen.includes(key)));
 	}
 
-	const configs = [getWebviewConfig(webviews, {}, mode, env)];
 	const localizedEntries = getLocalizedWebviewEntries({ rootDir: __dirname, webviews: webviews, locale: 'zh-cn' });
+	const webviewEntries = Object.fromEntries(
+		Object.entries(webviews).filter(([key]) => localizedEntries[key] == null),
+	);
+
+	const configs = [];
+	const webviewConfig =
+		Object.keys(webviewEntries).length === 0 ? undefined : getWebviewConfig(webviewEntries, {}, mode, env);
+	if (webviewConfig != null) {
+		configs.push(webviewConfig);
+	}
+
 	if (Object.keys(localizedEntries).length !== 0) {
 		configs.push(
 			createLocalizedWebviewConfig({
@@ -520,8 +530,8 @@ function getWebviewsConfigs(mode, env) {
 				webviews: localizedEntries,
 				locale: 'zh-cn',
 				config: getWebviewConfig(localizedEntries, {}, mode, env),
+				dependencies: webviewConfig?.name != null ? [String(webviewConfig.name)] : undefined,
 				excludePlugin: plugin =>
-					plugin instanceof HtmlPlugin ||
 					plugin instanceof ESLintLitePlugin ||
 					plugin instanceof ForkTsCheckerPlugin ||
 					plugin instanceof GenerateLocalizedSettingsShellPlugin,
@@ -558,11 +568,6 @@ function getWebviewsCommonConfig(mode, env) {
 						'codicon.ttf',
 					),
 					to: path.posix.join(__dirname.replace(/\\/g, '/'), 'dist', 'webviews'),
-				},
-				{
-					from: path.posix.join(__dirname.replace(/\\/g, '/'), 'src', 'i18n', 'webviews'),
-					to: path.posix.join(__dirname.replace(/\\/g, '/'), 'dist', 'webviews', 'i18n'),
-					noErrorOnMissing: true,
 				},
 			],
 		}),
@@ -728,8 +733,7 @@ function getWebviewConfig(webviews, overrides, mode, env) {
 			clean: env.webviews
 				? false
 				: {
-						keep: asset =>
-							asset.startsWith('media/') || asset.startsWith('i18n/') || asset === 'codicon.ttf',
+						keep: asset => asset.startsWith('media/') || asset === 'codicon.ttf',
 					},
 		},
 		experiments: { outputModule: true },

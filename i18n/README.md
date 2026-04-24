@@ -4,7 +4,7 @@
 
 - `i18n/core` 负责通用 occurrence、reference、output reference、authority、workset、report 模型
 - `i18n/domains/manifest` 负责 `package.json` / `package.nls*` 的提取、对账与生成
-- `i18n/domains/webviews` 当前覆盖 `settings` 静态 HTML shell 的端到端提取/生成，以及 `settings` / `welcome` / `rebase` / `home` / `commitDetails` / `timeline` 的运行时消息 bundle 生成；controller 会在底层注入 DOM 本地化 runtime，`graph`、`patchDetails` 与其他 mixed-renderer 或后续页面族仍通过 deferred issues 显式保留在后续范围
+- `i18n/domains/webviews` 当前覆盖 `settings` 静态 HTML shell 的端到端提取/生成，以及 `welcome` / `rebase` / `home` / `commitDetails` / `timeline` / `graph` 的构建期本地化源码派生；本分支将本地化 webview 产物直接发布为 canonical `dist/webviews` 运行时产物，`patchDetails` 与其他 mixed-renderer 或后续页面族仍通过 deferred issues 显式保留在后续范围
 - `i18n/domains/runtimeDynamic` 负责 formatter / quickpicks 这类扩展宿主动态 UI 文案的只读源码提取、对账、报告与 `.work` 本地化源码产物生成；webpack 构建期 loader 会在不修改 `src/**` 调用点的前提下将这些产物注入扩展 bundle
 
 `i18n/authority/zh-cn/overrides.json` 统一承载 `occurrence` / `anchor` / `scope` / `output` 四类覆盖规则。
@@ -27,8 +27,9 @@
 - `i18n/catalog/webviews.catalog.json` 保留 webviews domain 的 occurrence、source reference 与 runtime output reference
 - `i18n/worksets/webviews.zh-cn.json` 保留 webviews 翻译工作状态与 `occurrenceIds`
 - `i18n/reports/webviews-pending.json` 是 webviews 域的派生进度视图
-- `src/i18n/webviews/zh-cn/settings.html` 是由 workflow 生成的本地化静态壳页真源，运行时优先从 `src/i18n/webviews` 读取，构建产物回退到 `dist/webviews/i18n`
-- `.work/i18n/webviews-sources/zh-cn/src/webviews/apps/welcome/**` 是由 workflow 基于上游英文源码 AST 派生的本地化动态源码真源，webpack 会再将其编译为 `dist/webviews/i18n/zh-cn/welcome.js`
+- `dist/webviews/settings.html` 是构建后由 workflow 覆盖写入的本地化静态壳页运行时产物；构建流程会先产出英文 shell，再由本地化 workflow 覆盖同一个 canonical 运行时路径
+- `--dynamic-sources-only` 与 `--settings-shell-only` 只根据既有 catalog / authority 生成对应运行时产物，不重跑全量 sync，避免构建过程刷新翻译根源数据
+- `.work/i18n/webviews-sources/zh-cn/src/webviews/apps/welcome/**` 是由 workflow 基于上游英文源码 AST 派生的本地化动态源码中间产物，webpack 会再将其编译为 canonical `dist/webviews/welcome.js`
 - `patchDetails` 与其余尚未接入的 mixed-renderer / follow-up 页面当前不会生成本地化脚本产物，而是通过 catalog reconciliation 中的 deferred issues 暴露后续范围
 
 常用命令：

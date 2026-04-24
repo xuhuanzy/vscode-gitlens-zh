@@ -56,25 +56,6 @@ export function loadSettingsBuildHtml(context: WebviewsDomainContext): string {
 	return fs.readFileSync(context.settingsBuildFile, 'utf8');
 }
 
-export function loadSettingsExtractionHtml(context: WebviewsDomainContext): string {
-	try {
-		return loadSettingsBuildHtml(context);
-	} catch {
-		return loadSettingsTemplateHtml(context);
-	}
-}
-
-function loadSettingsTemplateHtml(context: WebviewsDomainContext): string {
-	const template = fs.readFileSync(context.settingsTemplateFile, 'utf8');
-	return template.replace(
-		/<%=\s*require\('html-loader\?\{"esModule":false\}!([^']+)'\)\s*%>/gu,
-		(_match: string, request: string) => {
-			const partial = request.startsWith('./') ? request.slice(2) : request;
-			return fs.readFileSync(path.join(path.dirname(context.settingsTemplateFile), partial), 'utf8');
-		},
-	);
-}
-
 export function loadSourceTargetContents(context: WebviewsDomainContext, relativeFile: string): string | undefined {
 	try {
 		return fs.readFileSync(path.join(context.rootDir, ...relativeFile.split('/')), 'utf8');
@@ -84,12 +65,12 @@ export function loadSourceTargetContents(context: WebviewsDomainContext, relativ
 }
 
 export function saveLocalizedSettingsShell(context: WebviewsDomainContext, html: string): void {
-	writeTextFile(context.localizedSettingsShellBuildFile, html);
+	writeTextFile(context.settingsBuildFile, html);
 }
 
 export function loadLocalizedSettingsShell(context: WebviewsDomainContext): string | undefined {
 	try {
-		return fs.readFileSync(context.localizedSettingsShellBuildFile, 'utf8');
+		return fs.readFileSync(context.settingsBuildFile, 'utf8');
 	} catch {
 		return undefined;
 	}

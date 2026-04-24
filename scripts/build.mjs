@@ -2,6 +2,8 @@
 import { spawn } from 'child_process';
 import { parseArgs } from 'node:util';
 
+import { isLocalizedDynamicWebview } from '../i18n/domains/webviews/webpack.mjs';
+
 // Parse arguments
 const { values } = parseArgs({
 	args: process.argv.slice(2),
@@ -28,11 +30,23 @@ const env = {
 };
 
 const shouldBuildWebviews =
-	Boolean(build?.includes('webviews')) || Boolean(webviews?.length) || (build == null && target == null);
-const localizedDynamicWebviews = new Set(['welcome', 'rebase', 'home', 'commitDetails', 'timeline', 'graph']);
+	Boolean(build?.includes('webviews')) || Boolean(webviews?.length) || build == null;
+const regularWebviews = webviews?.filter(webview => !isLocalizedDynamicWebview(webview));
 const shouldBuildLocalizedWebviews =
 	shouldBuildWebviews &&
-	(webviews == null || webviews.length === 0 || webviews.some(webview => localizedDynamicWebviews.has(webview)));
+	(webviews == null || webviews.length === 0 || webviews.some(webview => isLocalizedDynamicWebview(webview)));
+const shouldBuildRegularWebviews =
+	shouldBuildWebviews && (webviews == null || regularWebviews == null || regularWebviews.length !== 0);
+
+function appendRegularWebviewConfigName() {
+	if (!shouldBuildRegularWebviews) return;
+
+	if (regularWebviews?.length === 1) {
+		cmd += ` --config-name webviews:${regularWebviews[0]}`;
+	} else {
+		cmd += ` --config-name webviews`;
+	}
+}
 
 // Build webpack command
 let cmd = `webpack`;
@@ -54,11 +68,7 @@ if (build?.length || webviews?.length) {
 	if (build?.includes('webviews') || webviews?.length) {
 		cmd += ` --config-name webviews:common`;
 
-		if (webviews?.length === 1) {
-			cmd += ` --config-name webviews:${webviews[0]}`;
-		} else {
-			cmd += ` --config-name webviews`;
-		}
+		appendRegularWebviewConfigName();
 
 		if (shouldBuildLocalizedWebviews) {
 			cmd += ` --config-name webviews:i18n:zh-cn`;
@@ -79,11 +89,7 @@ if (build?.length || webviews?.length) {
 
 	cmd += ` --config-name webviews:common`;
 
-	if (webviews?.length === 1) {
-		cmd += ` --config-name webviews:${webviews[0]}`;
-	} else {
-		cmd += ` --config-name webviews`;
-	}
+	appendRegularWebviewConfigName();
 
 	if (shouldBuildLocalizedWebviews) {
 		cmd += ` --config-name webviews:i18n:zh-cn`;
