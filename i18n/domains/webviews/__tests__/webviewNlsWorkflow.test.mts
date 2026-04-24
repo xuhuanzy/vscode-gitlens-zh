@@ -32,6 +32,8 @@ function run(): void {
 	testLocalizedWebpackWatchIgnoresGeneratedArtifacts();
 	testWriteTextFileSkipsUnchangedWrites();
 	testSupportedDynamicBundlesGenerateLocalizedSources();
+	testRebaseShortcutFooterIsNotExtracted();
+	testLaunchpadGrammarHelpersAreNotExtracted();
 	testWelcomeLocalizedSourceRewritesImportsBackToSourceTree();
 	testGraphBundleGeneratesLocalizedSource();
 	testWelcomeWorkflowPreservesTemplateArgumentSeparators();
@@ -387,6 +389,136 @@ function testSupportedDynamicBundlesGenerateLocalizedSources(): void {
 		assert.equal(
 			loadLocalizedDynamicSource(context, 'src/webviews/apps/plus/timeline/timeline.ts')?.includes(
 				'在指定时间段内未找到提交',
+			),
+			true,
+		);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testRebaseShortcutFooterIsNotExtracted(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-rebase-shortcuts-'));
+	try {
+		writeDefaultSettingsShell(rootDir);
+		writeTextFile(
+			rootDir,
+			'src/webviews/apps/rebase/rebase.ts',
+			[
+				"import { html } from 'lit';",
+				'export function renderFooter() {',
+				'\treturn html`<footer>',
+				'\t\t<div class="shortcuts">',
+				'\t\t\t<code-icon icon="keyboard"></code-icon>',
+				'\t\t\t<span class="shortcut"><kbd class="word">p</kbd><span>ick</span></span>',
+				'\t\t\t<span class="shortcut"><kbd class="word">r</kbd><span>eword</span></span>',
+				'\t\t\t<span class="shortcut"><kbd class="word">e</kbd><span>dit</span></span>',
+				'\t\t\t<span class="shortcut"><kbd class="word">s</kbd><span>quash</span></span>',
+				'\t\t\t<span class="shortcut"><kbd class="word">f</kbd><span>ixup</span></span>',
+				'\t\t\t<span class="shortcut"><kbd class="word">d</kbd><span>rop</span></span>',
+				'\t\t\t<span class="shortcut"><kbd>alt</kbd> <kbd>↑↓</kbd><span class="label">move</span></span>',
+				'\t\t\t<span class="shortcut"><kbd>/</kbd><span class="label">search</span></span>',
+				'\t\t</div>',
+				'\t\t<p>Ready to rebase</p>',
+				'\t</footer>`;',
+				'}',
+				'',
+			].join('\n'),
+		);
+
+		syncWebviewsI18n({ rootDir });
+		const context = createWebviewsDomainContext(rootDir);
+		const catalog = loadWebviewsCatalog(context);
+		const workset = loadWebviewsWorkset(context);
+		const blockedSources = new Set(['ick', 'eword', 'dit', 'quash', 'ixup', 'rop', 'move', 'search']);
+
+		assert.equal(workset.entries.some(entry => entry.source === 'Ready to rebase'), true);
+		assert.equal(workset.entries.some(entry => blockedSources.has(entry.source)), false);
+		assert.equal(catalog.occurrences.some(occurrence => blockedSources.has(occurrence.sourceText)), false);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testLaunchpadGrammarHelpersAreNotExtracted(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-launchpad-grammar-'));
+	try {
+		writeDefaultSettingsShell(rootDir);
+		writeTextFile(
+			rootDir,
+			'src/webviews/apps/plus/home/components/launchpad.ts',
+			[
+				"import { html } from 'lit';",
+				"const pluralize = (label: string, count: number): string => `${count} ${label}${count === 1 ? '' : 's'}`;",
+				'export function renderLaunchpad(total: number, summary: { count: number }) {',
+				'\tconst messages = [',
+				"\t\t{ count: summary.count, message: `${summary.count > 1 ? 'need' : 'needs'} reviewers` },",
+				"\t\t{ count: summary.count, message: `${summary.count > 1 ? 'have' : 'has'} failed CI checks` },",
+				"\t\t{ count: summary.count, message: `${summary.count > 1 ? 'have' : 'has'} conflicts` },",
+				'\t];',
+				'\treturn html`',
+				'\t\t<section>',
+				"\t\t\t<span>${pluralize('pull request', total)} ${messages[0].message}</span>",
+				"\t\t\t<span>${pluralize('pull request', total)} ${total > 1 ? 'are' : 'is'} blocked (${messages.map(m => `${m.count} ${m.message}`).join(', ')})</span>",
+				"\t\t\t<span>${pluralize('pull request', total)} ${total > 1 ? 'require' : 'requires'} follow-up</span>",
+				"\t\t\t<span>${pluralize('pull request', total)} ${total > 1 ? 'need' : 'needs'} your review</span>",
+				'\t\t</section>`;',
+				'}',
+				'',
+			].join('\n'),
+		);
+
+		syncWebviewsI18n({ rootDir });
+		const context = createWebviewsDomainContext(rootDir);
+		const catalog = loadWebviewsCatalog(context);
+		const workset = loadWebviewsWorkset(context);
+		const grammarHelperSources = new Set(['are', 'has', 'have', 'is', 'need', 'needs', 'require', 'requires']);
+		const expectedSources = new Set([
+			'${slot1} reviewers',
+			'${slot1} failed CI checks',
+			'${slot1} conflicts',
+			'${slot1} ${slot2} blocked (${slot3})',
+			'${slot1} ${slot2} follow-up',
+			'${slot1} ${slot2} your review',
+		]);
+
+		assert.equal(workset.entries.some(entry => grammarHelperSources.has(entry.source)), false);
+		assert.equal(catalog.occurrences.some(occurrence => grammarHelperSources.has(occurrence.sourceText)), false);
+		for (const source of expectedSources) {
+			assert.equal(
+				catalog.occurrences.some(occurrence => occurrence.sourceText === source),
+				true,
+				`expected Launchpad source to be extracted: ${source}`,
+			);
+		}
+
+		approveTranslations(context, {
+			'${slot1} reviewers': '需要审查者',
+			'${slot1} failed CI checks': 'CI 检查未通过',
+			'${slot1} conflicts': '存在冲突',
+			'${slot1} ${slot2}': '${slot2}（${slot1}）',
+			'${slot1} ${slot2} blocked (${slot3})': '${slot1} 已阻塞（${slot3}）',
+			'${slot1} ${slot2} follow-up': '${slot1} 需要后续跟进',
+			'${slot1} ${slot2} your review': '${slot1} 需要你审查',
+		});
+		promoteWebviewsAuthority({ rootDir });
+		generateWebviewsLocalizedDynamicSources({ rootDir });
+
+		const localizedLaunchpad = loadLocalizedDynamicSource(
+			context,
+			'src/webviews/apps/plus/home/components/launchpad.ts',
+		);
+		assert.notEqual(localizedLaunchpad, undefined);
+		assert.equal(localizedLaunchpad!.includes("summary.count > 1 ? \"\" : \"\""), false);
+		assert.equal(localizedLaunchpad!.includes("total > 1 ? \"\" : \"\""), false);
+		assert.equal(localizedLaunchpad!.includes('message: `需要审查者`'), true);
+		assert.equal(localizedLaunchpad!.includes('message: `CI 检查未通过`'), true);
+		assert.equal(localizedLaunchpad!.includes('message: `存在冲突`'), true);
+		assert.equal(localizedLaunchpad!.includes("${pluralize('pull request', total)} 需要后续跟进"), true);
+		assert.equal(localizedLaunchpad!.includes("${pluralize('pull request', total)} 需要你审查"), true);
+		assert.equal(
+			localizedLaunchpad!.includes(
+				"${pluralize('pull request', total)} 已阻塞（${messages.map(m => `${m.message}（${m.count}）`).join(', ')}）",
 			),
 			true,
 		);

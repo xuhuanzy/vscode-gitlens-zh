@@ -76,7 +76,6 @@ const translatableAttributes = new Set([
 const translatablePropertyNames = new Set(['title']);
 const localizationHelperNames = new Set(['localizeWebviewText', 'localizeWebviewTemplate']);
 const litTemplateTagNames = new Set(['html']);
-const standaloneDisplayWords = new Set(['are', 'has', 'have', 'is', 'need', 'needs', 'require', 'requires']);
 
 export function extractSupportedWebviewOccurrences(targets: readonly ExtractionTarget[]): WebviewsExtractionResult {
 	const occurrences: SourceOccurrence[] = [];
@@ -944,7 +943,6 @@ function getFunctionLikeName(node: ts.Node): string | undefined {
 
 function looksLikeImperativeDisplayText(text: string, node: ts.StringLiteralLike | ts.TemplateExpression): boolean {
 	const trimmed = text.trim();
-	if (standaloneDisplayWords.has(trimmed)) return true;
 	if (trimmed.length === 0) return false;
 	if (/^\[[A-Z][A-Z0-9_-]*\]\s/u.test(trimmed)) return false;
 	if (/^@[\w-]+\s+can only be used on\b/u.test(trimmed)) return false;

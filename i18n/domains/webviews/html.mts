@@ -202,7 +202,7 @@ export function shouldSkipLocalizationSubtree(element: HtmlElementNode): boolean
 	if (element.attributes['data-setting-preview-type'] != null) return true;
 
 	const classList = getClassList(element);
-	return classList.includes('section__preview');
+	return classList.includes('section__preview') || classList.includes('shortcut');
 }
 
 export function collectElementContentPattern(element: HtmlElementNode): HtmlContentPattern | undefined {

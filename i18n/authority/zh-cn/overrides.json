@@ -3,6 +3,29 @@
 	"version": 2,
 	"kind": "overrides",
 	"locale": "zh-cn",
-	"updatedAt": "1970-01-01T00:00:00.000Z",
-	"entries": []
+	"updatedAt": "2026-04-24T10:02:39.486Z",
+	"entries": [
+		{
+			"selector": {
+				"kind": "occurrence",
+				"occurrenceId": "webviews:webviews.settings.settings.html-1-body-scrollable-div-container-div-content__area-section-commits-view-div-section__collapsible-div-section__group-div-section__content-div-settings-div-setting-div-setting__input-label-1.text.23a21c9571#text"
+			},
+			"translationPattern": {
+				"kind": "literal",
+				"text": "显示"
+			},
+			"updatedAt": "2026-04-24T10:02:39.486Z"
+		},
+		{
+			"selector": {
+				"kind": "occurrence",
+				"occurrenceId": "webviews:webviews.settings.settings.html-1-body-scrollable-div-container-div-content__area-section-repositories-view-div-section__collapsible-div-section__group-div-section__content-div-settings-div-settings-div-setting-div-setting__input-label-1.text.cebb9a6565#text"
+			},
+			"translationPattern": {
+				"kind": "literal",
+				"text": "显示"
+			},
+			"updatedAt": "2026-04-24T09:57:24.252Z"
+		}
+	]
 }

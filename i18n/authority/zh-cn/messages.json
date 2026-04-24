@@ -3,7 +3,7 @@
 	"version": 2,
 	"kind": "messages",
 	"locale": "zh-cn",
-	"updatedAt": "2026-04-24T07:40:01.473Z",
+	"updatedAt": "2026-04-24T09:04:35.890Z",
 	"entries": [
 		{
 			"id": "message.000d1a29b2365349f8762064ef86edc1f548f435002395035bdc26f6c87754fc",
@@ -180,12 +180,6 @@
 			"kind": "literal",
 			"source": "Copy Link to Code",
 			"translation": "复制代码链接"
-		},
-		{
-			"id": "message.02f90ebc133ec52fe0c23b39c02dc04641ac2ffa39939fc1fa04ab997da8dbe0",
-			"kind": "literal",
-			"source": "require",
-			"translation": ""
 		},
 		{
 			"id": "message.02ff4b0d4d38e623eb622842584a764161d9f82bc303d7de5f307e2bbbf97390",
@@ -1189,13 +1183,6 @@
 			"translation": "在当前行末尾添加不显眼的追溯注解"
 		},
 		{
-			"id": "message.14736739512ee2829d60b01443f096b19bcd99adac91ac64f1227650bde1ada0",
-			"kind": "template",
-			"source": "${slot1} search",
-			"translation": "${slot1} 搜索",
-			"slots": ["slot1"]
-		},
-		{
 			"id": "message.14bf256b1d28b929d587ff5e5da971eb9b9e92ea74abcdfc4b633e38e3f2359e",
 			"kind": "literal",
 			"source": "Learn about Launchpad...",
@@ -1220,12 +1207,6 @@
 			"kind": "literal",
 			"source": "Choose a branch or tag…",
 			"translation": "选择分支或标签…"
-		},
-		{
-			"id": "message.151b79e665e734993ebfb49e6cccf9076558313c899789b3d096212332ef4979",
-			"kind": "literal",
-			"source": "move",
-			"translation": "移动"
 		},
 		{
 			"id": "message.15234177f337ef539806f1c88c990477642a6fbb57b9eb057b1dc0ad27f54212",
@@ -2186,7 +2167,7 @@
 			"id": "message.2463e49bb7e37bca438ff198bcc543101addf79053c22c7adfe6eb71f984480c",
 			"kind": "template",
 			"source": "${slot1} conflicts",
-			"translation": "${slot1} 存在冲突",
+			"translation": "存在冲突",
 			"slots": ["slot1"]
 		},
 		{
@@ -2395,12 +2376,6 @@
 			"kind": "literal",
 			"source": "Hold shift to compare with working tree",
 			"translation": "按住 Shift 以与工作树比较"
-		},
-		{
-			"id": "message.2777ff9f49428a3976ff2cc3f08fcdad758bfd250c4e5bad9f019b84b4f0901b",
-			"kind": "literal",
-			"source": "ixup",
-			"translation": "ixup"
 		},
 		{
 			"id": "message.2779aa730ffd6001b872e5176328fc7092d2f08655988dfd927c394cafed2faf",
@@ -2992,12 +2967,6 @@
 			"slots": ["slot1"]
 		},
 		{
-			"id": "message.3253a132cf725a0e2ad755a445768daf9913d1bf5ead47a1ed3147297be323e6",
-			"kind": "literal",
-			"source": "rop",
-			"translation": "rop"
-		},
-		{
 			"id": "message.3254415c3c8471a3c5e8d298dc65634f203631fe74ed1f55f6133af88c402a70",
 			"kind": "literal",
 			"source": "Unable to detect conflicts.",
@@ -3236,12 +3205,6 @@
 			"kind": "literal",
 			"source": "Group into GitLens View",
 			"translation": "编组到 GitLens 视图"
-		},
-		{
-			"id": "message.35c5d04d2d339c6264075064640840ba7fde892cb6c26a8e2533f92fa3b59c4d",
-			"kind": "literal",
-			"source": "ick",
-			"translation": "ick"
 		},
 		{
 			"id": "message.361b7d39f9ddd4c4bba495a744d9390ee1ad930665af8a8ef3f026393b140f6d",
@@ -3834,12 +3797,6 @@
 			"kind": "literal",
 			"source": "Previous Change",
 			"translation": "上一个更改"
-		},
-		{
-			"id": "message.408baf405223e83bc4f57cefb8a3a92fc71c48942e8d2a803988fda2717c894a",
-			"kind": "literal",
-			"source": "has",
-			"translation": "has"
 		},
 		{
 			"id": "message.4090a4d16de39e74902596c096b36f999070cd7952aa68670fe82f21b67f0205",
@@ -4584,12 +4541,6 @@
 			"translation": "指定是否在 _提交图_ 中显示分支上的关联 Issue。需要连接到受支持的 Issue 服务（例如 GitHub）"
 		},
 		{
-			"id": "message.4d4ed7695275229542e80c703d71be0a1f39ed1d711cd48bd66d0ab0611d7dc3",
-			"kind": "literal",
-			"source": "search",
-			"translation": "搜索"
-		},
-		{
 			"id": "message.4d5b0fe9218e843dd57cc3c46b569c44618bc69e8b7826f13fe39d83bc154406",
 			"kind": "template",
 			"source": "${slot1}, ${slot2}, ${slot3}",
@@ -5071,13 +5022,6 @@
 			"translation": "当前分支"
 		},
 		{
-			"id": "message.53d73efa17fd6209a34e1a9a559dc6e9dd95393d574dd0e205ca5165326e2cdf",
-			"kind": "template",
-			"source": "${slot1} eword",
-			"translation": "${slot1} eword",
-			"slots": ["slot1"]
-		},
-		{
 			"id": "message.53f1389b6ec05bf80392c6ea60157565b9b9cb4b86c936da6430fbd1a7d8c607",
 			"kind": "literal",
 			"source": "Copy Remote Commit URLs",
@@ -5435,7 +5379,7 @@
 			"id": "message.58da97fabbcbed72df611189ba13dff86217d419e7b53c89670388731cd7e059",
 			"kind": "template",
 			"source": "${slot1} ${slot2} follow-up",
-			"translation": "${slot1} ${slot2} 需要后续跟进",
+			"translation": "${slot1} 需要后续跟进",
 			"slots": ["slot1", "slot2"]
 		},
 		{
@@ -5652,7 +5596,7 @@
 			"id": "message.5c33bea87ebdd2c2757a6c83ba6b5f08ca5d70586cace63d2ed821e1cb550ba9",
 			"kind": "template",
 			"source": "${slot1} ${slot2} blocked (${slot3})",
-			"translation": "${slot1} ${slot2} 已阻塞（${slot3}）",
+			"translation": "${slot1} 已阻塞（${slot3}）",
 			"slots": ["slot1", "slot2", "slot3"]
 		},
 		{
@@ -7231,7 +7175,7 @@
 			"id": "message.7657e66177b1ce73452db7263a83f73076f21813351c7428b87e3e035eedc667",
 			"kind": "template",
 			"source": "${slot1} ${slot2} your review",
-			"translation": "${slot1} ${slot2} 需要你审查",
+			"translation": "${slot1} 需要你审查",
 			"slots": ["slot1", "slot2"]
 		},
 		{
@@ -11866,12 +11810,6 @@
 			"translation": "当前分支"
 		},
 		{
-			"id": "message.c705f47114e0d99b737a81c3f29775f7f2a25bc24737070bd957c5ddf050afe0",
-			"kind": "literal",
-			"source": "dit",
-			"translation": "dit"
-		},
-		{
 			"id": "message.c71e1da97316dd0eede14835a744b7a1deac2f8cebd7eb22b78f0e223168a068",
 			"kind": "literal",
 			"source": "Show File History View",
@@ -12193,12 +12131,6 @@
 			"translation": "为拉取请求打开工作树"
 		},
 		{
-			"id": "message.cc859dc4d5a2fb59c66a8de0c83b47459e60c7360e5dd0404c112c61a67b46f1",
-			"kind": "literal",
-			"source": "is",
-			"translation": "is"
-		},
-		{
 			"id": "message.ccc02f4405c221e7e6662bd46dd01ea8387e432c829a8f88e63ad872e2272f90",
 			"kind": "literal",
 			"source": "Displays files as a list",
@@ -12244,7 +12176,7 @@
 			"id": "message.cd8c967db7564104af4a36a4bd2feb56131946f2fc945f986200e85533c8dcf6",
 			"kind": "template",
 			"source": "${slot1} reviewers",
-			"translation": "${slot1} 需要审查者",
+			"translation": "需要审查者",
 			"slots": ["slot1"]
 		},
 		{
@@ -12252,13 +12184,6 @@
 			"kind": "literal",
 			"source": "Hide Commits View",
 			"translation": "隐藏提交视图"
-		},
-		{
-			"id": "message.cdb2096a3c6a5c479bcf91b2acfcd93d1d673a4d1270f3fcee3b606ddf772d5d",
-			"kind": "template",
-			"source": "${slot1} ${slot2} move",
-			"translation": "${slot1} ${slot2} 移动",
-			"slots": ["slot1", "slot2"]
 		},
 		{
 			"id": "message.cdc752fb0392c144379772b569300dd1b095b320d8fdd05b81a9f35c0839a4dc",
@@ -12417,12 +12342,6 @@
 			"kind": "literal",
 			"source": "Selects the working changes (WIP) row when there are uncommitted changes, otherwise selects the HEAD row",
 			"translation": "存在未提交更改时选择工作区更改（WIP）行，否则选择 HEAD 行"
-		},
-		{
-			"id": "message.d01f0e49f0b8341b56fe9eaab7f911b7e90cd37a481a165a12b8008169926fb9",
-			"kind": "literal",
-			"source": "have",
-			"translation": "have"
 		},
 		{
 			"id": "message.d029c6d1dfc3e0e14b9e71c909b7f8739922cd2d1104ad53e6ee5b9cb0e52e70",
@@ -13078,12 +12997,6 @@
 			"slots": []
 		},
 		{
-			"id": "message.dc2f0279a7d5bc3f16954869a31f3027b681c3bd9952bd7629fcfb27d63e3238",
-			"kind": "literal",
-			"source": "are",
-			"translation": "are"
-		},
-		{
 			"id": "message.dc3fccad2d8d6d369773e20c31b0ef59be01d626b09f0d992c3bce0b6e36bb89",
 			"kind": "literal",
 			"source": "Restore Changes (Checkout)",
@@ -13148,12 +13061,6 @@
 			"kind": "literal",
 			"source": "Sorts repositories by last fetched date in descending order",
 			"translation": "按上次获取日期降序排序仓库"
-		},
-		{
-			"id": "message.dd04c3e822f5d1e2d0e1dcd5ef3b242b500a2e03d20865d3d94863c3017ebd7f",
-			"kind": "literal",
-			"source": "quash",
-			"translation": "quash"
 		},
 		{
 			"id": "message.dd11fee96c4b2deacdf535e9c3e1ae1a06d90e1624425d904298ff07d742f6e0",
@@ -13426,7 +13333,7 @@
 			"id": "message.e1ec0e0be39cb86db7dddb5614280d923e874037eeda6e6e9162749272574810",
 			"kind": "template",
 			"source": "${slot1} failed CI checks",
-			"translation": "${slot1} CI 检查失败",
+			"translation": "CI 检查未通过",
 			"slots": ["slot1"]
 		},
 		{
@@ -14654,12 +14561,6 @@
 			"translation": "浏览修订中的仓库"
 		},
 		{
-			"id": "message.f69a760662d33766b3bd6fdb0c143fad4cc3c992bc51aa2e6515e4d7a0e61d9f",
-			"kind": "literal",
-			"source": "need",
-			"translation": "need"
-		},
-		{
 			"id": "message.f706d79056abb7ce346dda9cb9028f28054fca918953a85fa9e46d1a726749cd",
 			"kind": "template",
 			"source": "Add an ${slot1} command",
@@ -14810,12 +14711,6 @@
 			"translation": "根据 `#gitlens.views.tags.files.threshold#` 的值以及各嵌套层级中的文件数量，在 `tree` 或 `list` 之间自动切换文件显示方式",
 			"format": "markdown",
 			"slots": []
-		},
-		{
-			"id": "message.f95f75058f2eb42e1a0b8fac43b3429cfdae19043704799126cf0552b5857877",
-			"kind": "literal",
-			"source": "Show a comparison of the",
-			"translation": "显示"
 		},
 		{
 			"id": "message.f971bba90c22d6b00e78424bd41a9ff3627b48fced0eff15cc3c3471bfe09cac",
