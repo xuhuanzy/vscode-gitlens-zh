@@ -38,6 +38,8 @@ export type MessagePattern =
 			slots: string[];
 	  };
 
+type MessagePatternOfKind<TKind extends MessagePattern['kind']> = Extract<MessagePattern, { kind: TKind }>;
+
 export interface MessageCaseRecord<TTranslation extends MessageTranslation = string> {
 	readonly source: string;
 	readonly translation: TTranslation;
@@ -123,10 +125,8 @@ export interface SourceOccurrence {
 	readonly scope: string;
 	readonly anchor: string;
 	readonly slot: string;
-	readonly businessId?: string;
 	readonly authorityId: string;
 	readonly pattern: MessagePattern;
-	readonly patternFingerprint: string;
 	readonly sourceText: string;
 	readonly sourceHash: string;
 	readonly reference: SourceReference;
@@ -157,15 +157,20 @@ export interface CatalogReconciliationEntry {
 
 export interface SourceCatalogFile {
 	readonly $schema: string;
-	readonly version: 2;
+	readonly version: 3;
 	readonly domain: I18nDomain;
 	readonly generatedAt: string;
 	readonly deferredDomains: I18nDomain[];
 	readonly occurrences: SourceOccurrence[];
-	readonly reconciliation: {
-		readonly entries: CatalogReconciliationEntry[];
-		readonly summary: Record<ReconciliationChange, number>;
-	};
+}
+
+export interface ReconciliationReportFile {
+	readonly $schema: string;
+	readonly version: 1;
+	readonly domain: I18nDomain;
+	readonly generatedAt: string;
+	readonly entries: CatalogReconciliationEntry[];
+	readonly summary: Record<ReconciliationChange, number>;
 }
 
 export type AuthorityMessageEntry = BilingualMessageRecord<string>;
@@ -330,7 +335,12 @@ export function createMessageRecord(
 				source: sourcePattern.text,
 				translation: translationPattern?.text ?? null,
 			};
-		case 'template':
+		case 'template': {
+			const compatibleTranslationPattern = translationPattern as
+				| MessagePatternOfKind<'template'>
+				| null
+				| undefined;
+
 			return {
 				id: id,
 				kind: sourcePattern.kind,
@@ -338,33 +348,43 @@ export function createMessageRecord(
 				translation: translationPattern?.text ?? null,
 				slots: [...sourcePattern.slots],
 			};
-		case 'rich':
+		}
+		case 'rich': {
+			const compatibleTranslationPattern = translationPattern as MessagePatternOfKind<'rich'> | null | undefined;
+
 			return {
 				id: id,
 				kind: sourcePattern.kind,
 				source: sourcePattern.text,
-				translation: translationPattern?.text ?? null,
+				translation: compatibleTranslationPattern?.text ?? null,
 				format: sourcePattern.format,
 				slots: [...sourcePattern.slots],
 			};
+		}
 		case 'plural':
-		case 'select':
+		case 'select': {
+			const compatibleTranslationPattern = translationPattern as
+				| MessagePatternOfKind<'plural' | 'select'>
+				| null
+				| undefined;
+
 			return {
 				id: id,
 				kind: sourcePattern.kind,
 				source: sourcePattern.text,
-				translation: translationPattern?.text ?? null,
+				translation: compatibleTranslationPattern?.text ?? null,
 				selector: sourcePattern.selector,
 				cases: Object.fromEntries(
 					Object.entries(sourcePattern.cases).map(([key, source]) => [
 						key,
 						{
 							source: source,
-							translation: translationPattern?.cases[key] ?? null,
+							translation: compatibleTranslationPattern?.cases[key] ?? null,
 						},
 					]),
 				),
 			};
+		}
 	}
 }
 
@@ -566,23 +586,33 @@ function assertCompatibleMessagePatterns(
 	switch (sourcePattern.kind) {
 		case 'literal':
 			return;
-		case 'template':
-			assertStringArraysMatch(sourcePattern.slots, translationPattern.slots, 'template slots');
+		case 'template': {
+			const compatibleTranslationPattern = translationPattern as MessagePatternOfKind<'template'>;
+
+			assertStringArraysMatch(sourcePattern.slots, compatibleTranslationPattern.slots, 'template slots');
 			return;
-		case 'rich':
-			if (sourcePattern.format !== translationPattern.format) {
-				throw new Error(`Mismatched rich formats: ${sourcePattern.format} !== ${translationPattern.format}`);
+		}
+		case 'rich': {
+			const compatibleTranslationPattern = translationPattern as MessagePatternOfKind<'rich'>;
+
+			if (sourcePattern.format !== compatibleTranslationPattern.format) {
+				throw new Error(
+					`Mismatched rich formats: ${sourcePattern.format} !== ${compatibleTranslationPattern.format}`,
+				);
 			}
-			assertStringArraysMatch(sourcePattern.slots, translationPattern.slots, 'rich slots');
+			assertStringArraysMatch(sourcePattern.slots, compatibleTranslationPattern.slots, 'rich slots');
 			return;
+		}
 		case 'plural':
 		case 'select': {
-			if (sourcePattern.selector !== translationPattern.selector) {
+			const compatibleTranslationPattern = translationPattern as MessagePatternOfKind<'plural' | 'select'>;
+
+			if (sourcePattern.selector !== compatibleTranslationPattern.selector) {
 				throw new Error(`Mismatched ${sourcePattern.kind} selectors`);
 			}
 			assertStringArraysMatch(
 				Object.keys(sourcePattern.cases),
-				Object.keys(translationPattern.cases),
+				Object.keys(compatibleTranslationPattern.cases),
 				`${sourcePattern.kind} cases`,
 			);
 			return;

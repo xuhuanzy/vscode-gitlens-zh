@@ -3,7 +3,7 @@
 	"version": 2,
 	"kind": "messages",
 	"locale": "zh-cn",
-	"updatedAt": "2026-04-23T16:03:21.487Z",
+	"updatedAt": "2026-04-24T07:40:01.473Z",
 	"entries": [
 		{
 			"id": "message.000d1a29b2365349f8762064ef86edc1f548f435002395035bdc26f6c87754fc",
@@ -54,7 +54,7 @@
 			"id": "message.0110ed5d31e27daf4089cf61ff0d1532e1e2d8d358eb63c4f8d85c4ed13bfcef",
 			"kind": "literal",
 			"source": "Show Account on Home",
-			"translation": "显示主页中的账户"
+			"translation": "在主页中显示账户"
 		},
 		{
 			"id": "message.011204ed1717611a2908aa64b3c3e40504ed35bb8da6b1985ed44bc1103d28b6",
@@ -127,13 +127,13 @@
 			"id": "message.02486351dc164cd2cc8a49a9b3eeb3ae338498de27f5eb3874b6497868bb7e94",
 			"kind": "literal",
 			"source": "Loading...",
-			"translation": "获取全部"
+			"translation": "加载中..."
 		},
 		{
 			"id": "message.024f36ba51b625530cc20debd598134d7aceb8a3f880904d581eaa252663c5d0",
 			"kind": "template",
 			"source": "Your current branch ${slot1} has ${slot2} been merged into its merge target ${slot3}.",
-			"translation": "你当前的分支 ${slot1}${slot2}已合并到其合并目标 ${slot3}。",
+			"translation": "你当前的分支 ${slot1} ${slot2}被合并到其合并目标 ${slot3}。",
 			"slots": ["slot1", "slot2", "slot3"]
 		},
 		{
@@ -167,13 +167,13 @@
 			"id": "message.02ca20ab7bc5a3fa02c00a88b131d053b2cdf160b132e79932076002b54992d8",
 			"kind": "literal",
 			"source": "Specifies when to trigger hovers when showing blame annotations",
-			"translation": "指定在显示 Blame 注解时何时触发悬停"
+			"translation": "指定在显示追溯注解时何时触发悬停"
 		},
 		{
 			"id": "message.02d27d2aed35335a1b14b9b8a56357f99d4d1c82b2077a565eabfa9d47489e79",
 			"kind": "literal",
 			"source": "Unable to open any repositories as Git blocked them as potentially unsafe, due to the folder(s) not being owned by the current user.",
-			"translation": "由于这些文件夹不归当前用户所有，Git 将它们阻止为潜在不安全仓库，因此无法打开任何仓库。"
+			"translation": "由于这些文件夹不归当前用户所有，Git 将其视为潜在不安全仓库并阻止访问，因此无法打开任何仓库。"
 		},
 		{
 			"id": "message.02f169e6eadc4d68d7017c2e2ab7a9ca0ef607a1c273c9d64ffbf34fab84b4fb",
@@ -227,7 +227,7 @@
 			"id": "message.03a5bf02f494ef8bd5665ea9dc7c2aff835ab55b2b632ed3a48d989bc96c0632",
 			"kind": "literal",
 			"source": "Open File at Revision from Remote",
-			"translation": "打开远程上的修订文件"
+			"translation": "从远程打开该修订中的文件"
 		},
 		{
 			"id": "message.03a632a4c3dd85724503a89a69f2b4cd8fbd60d3eec738fe1b0946b9d424fd6f",
@@ -259,12 +259,6 @@
 			"kind": "literal",
 			"source": "Choose contributors to include commits from",
 			"translation": "选择要包含其提交的贡献者"
-		},
-		{
-			"id": "message.04f5aedcec3c78696bf26d19a6c2f19de2b3761ddfebafa668f9ed5b8dda7af7",
-			"kind": "literal",
-			"source": "eword",
-			"translation": "将 ${slot1} 发布（push）到 ${slot2}"
 		},
 		{
 			"id": "message.050e48560390cab2561d8c4f84fe2eecc9a75e20ca2183dd4abe58f0ee2aa061",
@@ -352,7 +346,7 @@
 			"id": "message.066246fcb420587de1734acd283a5f12243295bb2fe018d8d178467889988fea",
 			"kind": "template",
 			"source": "${slot1} rop",
-			"translation": "编排提交... ${slot1}（预览）${slot2}",
+			"translation": "${slot1} rop",
 			"slots": ["slot1"]
 		},
 		{
@@ -389,7 +383,7 @@
 			"id": "message.0731b8256284c172e19f21235bb1fe15686d42bef8f034cc357178fdf9a4e722",
 			"kind": "literal",
 			"source": "Zoom Out [Alt] Reset Zoom",
-			"translation": "${slot1} ${slot2} 需要后续跟进"
+			"translation": "缩小 [Alt] 重置缩放"
 		},
 		{
 			"id": "message.074111fc1198e36e56d2936839fd0083212c7b2a7afa18f6269f4a867ec64eec",
@@ -443,7 +437,7 @@
 			"id": "message.079a8cf418c1a6b401403c95a71fe27cd2c486a992f7b321a253ccac9f8b3547",
 			"kind": "literal",
 			"source": "Adds a Git blame annotation about the current line to the status bar",
-			"translation": "在状态栏中添加当前行的 Git Blame 注解"
+			"translation": "在状态栏中添加当前行的 Git 追溯注解"
 		},
 		{
 			"id": "message.07a8b5963f4ea0afad52e20ae0050b257859ff7200ef137a9389ece20223be28",
@@ -622,7 +616,7 @@
 			"id": "message.0a027fe3231e168dead05aaa77dde16d89aa49442215aa0dea1bc1bbd8022674",
 			"kind": "template",
 			"source": "Use the GitLens: Toggle File Blame Annotations ${slot1} command to turn the annotations on or off",
-			"translation": "使用 GitLens: 切换文件 Blame 注解 ${slot1} 命令来开启或关闭这些注解",
+			"translation": "使用 GitLens: 切换文件追溯注解 ${slot1} 命令来开启或关闭这些注解",
 			"slots": ["slot1"]
 		},
 		{
@@ -684,7 +678,7 @@
 			"id": "message.0ad0318164417c2f2a6a83fe0228d6aecf0e7e944aef222bbdc8c3c5badef501",
 			"kind": "literal",
 			"source": "Open Commit Composer &amp; Recompose using AI",
-			"translation": "${slot1} ${slot2} 已阻塞（${slot3}）"
+			"translation": "打开提交编排器并使用 AI 重新编排"
 		},
 		{
 			"id": "message.0ad768d5bfdca2e8e90cc8313e90ab8fbbccfe8510383d8dd51d12f197749d7f",
@@ -739,7 +733,7 @@
 			"id": "message.0c2a28b1c32add72d2b19ec272e3426975c08df7192bba88ce7757812698090e",
 			"kind": "literal",
 			"source": "lines in the text editor",
-			"translation": "${slot1} ${slot2} 需要你审查"
+			"translation": "文本编辑器中的行"
 		},
 		{
 			"id": "message.0c66a95e630638dca5dccb76ed6ee905a81a3ff960bc8c97f866bfe2f16a0317",
@@ -758,7 +752,7 @@
 			"id": "message.0c824acda37b64a347522632fcc6285fbc525a07d44e5d86a4323eaf417c15bc",
 			"kind": "template",
 			"source": "Commit is on ${slot1} ${slot2}",
-			"translation": "此提交位于 ${slot1} 个${slot2}",
+			"translation": "此提交位于 ${slot1} 个 ${slot2} 上",
 			"slots": ["slot1", "slot2"]
 		},
 		{
@@ -930,7 +924,7 @@
 			"id": "message.0fd36dfc37d17adaa312aee9885256154fcedac7a05714d4ce8aa5f967e6bcb6",
 			"kind": "template",
 			"source": "You're using ${slot1} edition. Track code changes and see who made them with features like in-editor blame annotations, hovers, CodeLens, and more—completely free.",
-			"translation": "你当前使用的是 ${slot1} 版本。借助编辑器内 Blame 注解、悬停提示、CodeLens 等功能来跟踪代码更改并查看修改者，而且完全免费。",
+			"translation": "你当前使用的是 ${slot1} 版本。借助编辑器内追溯注解、悬停提示、CodeLens 等功能来跟踪代码更改并查看修改者，而且完全免费。",
 			"slots": ["slot1"]
 		},
 		{
@@ -1030,7 +1024,7 @@
 			"id": "message.11fe9fe1eab144d172c9b3616c0abbb4221e9f227891c4f6451f3a5071d0c208",
 			"kind": "literal",
 			"source": "Checking remaining commits for conflicts...",
-			"translation": "重试"
+			"translation": "正在检查剩余提交是否存在冲突..."
 		},
 		{
 			"id": "message.120afbfc52622bf691d8ca4c7acac4719b1163a83743359099367df0f05263b2",
@@ -1079,7 +1073,7 @@
 			"id": "message.12855c0adc876fb0283d8f2b5253e14b53dd4bad9ea3e2f4da27a1a841ab2598",
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, explore, and manage Git branches",
-			"translation": "添加${slot1}，用于可视化、浏览和管理 Git 分支",
+			"translation": "添加一个 ${slot1}，用于可视化、浏览和管理 Git 分支",
 			"slots": ["slot1"]
 		},
 		{
@@ -1186,19 +1180,19 @@
 			"id": "message.1460611304aefdd8214f9abf42018b3016489fc48ce9dc7196ad992d3890bbbb",
 			"kind": "literal",
 			"source": "Status Bar Blame",
-			"translation": "状态栏 Blame"
+			"translation": "状态栏追溯注解"
 		},
 		{
 			"id": "message.1465b4b428392ff84f8b5d42f9ad4059be6f05494bb573308e0704de9cfef374",
 			"kind": "literal",
 			"source": "Adds an unobtrusive blame annotation at the end of the current line",
-			"translation": "在当前行末尾添加不显眼的 Blame 注解"
+			"translation": "在当前行末尾添加不显眼的追溯注解"
 		},
 		{
 			"id": "message.14736739512ee2829d60b01443f096b19bcd99adac91ac64f1227650bde1ada0",
 			"kind": "template",
 			"source": "${slot1} search",
-			"translation": "开始处理一个 Issue",
+			"translation": "${slot1} 搜索",
 			"slots": ["slot1"]
 		},
 		{
@@ -1231,7 +1225,7 @@
 			"id": "message.151b79e665e734993ebfb49e6cccf9076558313c899789b3d096212332ef4979",
 			"kind": "literal",
 			"source": "move",
-			"translation": "${slot1} 可合并"
+			"translation": "移动"
 		},
 		{
 			"id": "message.15234177f337ef539806f1c88c990477642a6fbb57b9eb057b1dc0ad27f54212",
@@ -1289,13 +1283,13 @@
 			"id": "message.15dc8ba68d1d97b8039d66d96ee4da293ad33c6e474aa0f44e30db2671613eba",
 			"kind": "literal",
 			"source": "Learn the Why Behind Every Line with Inline Blame",
-			"translation": "借助行内 Blame 了解每一行背后的原因"
+			"translation": "借助行内追溯了解每一行背后的原因"
 		},
 		{
 			"id": "message.15e5723d8ae7e36df96f0255cdba3b451dc3428bb63d2526cf13d12b5a87eb68",
 			"kind": "rich",
 			"source": "Thanks for installing GitLens and trying out GitLens Pro.\n\nYou're using **GitLens Community** edition.\nTrack code changes and see who made them with features like in-editor blame annotations, hovers, CodeLens, and more—completely free.\n\n**Unlock more powerful tools — Try GitLens Pro again** free for another 14 days.\n\n[Reactivate GitLens Pro Trial](command:gitlens.walkthrough.plus.reactivate)\n\nWith GitLens Pro, you can accelerate PR reviews, visualize code history in-depth, and enhance collaboration across your team. It's the perfect upgrade to streamline your VS Code workflow.",
-			"translation": "感谢你安装 GitLens 并试用 GitLens Pro。\n\n你当前使用的是 **GitLens Community** 版本。\n借助编辑器内 Blame 注解、悬停、CodeLens 等功能来跟踪代码更改并查看修改者，而且完全免费。\n\n**解锁更强大的工具 - 再次免费试用 GitLens Pro 14 天**\n\n[重新激活 GitLens Pro 试用](command:gitlens.walkthrough.plus.reactivate)\n\n通过 GitLens Pro，你可以加速拉取请求审查、更深入地可视化代码历史，并增强团队协作。它是精简 VS Code 工作流的理想升级。",
+			"translation": "感谢你安装 GitLens 并试用 GitLens Pro。\n\n你当前使用的是 **GitLens Community** 版本。\n借助编辑器内追溯注解、悬停、CodeLens 等功能来跟踪代码更改并查看修改者，而且完全免费。\n\n**解锁更强大的工具 - 再次免费试用 GitLens Pro 14 天**\n\n[重新激活 GitLens Pro 试用](command:gitlens.walkthrough.plus.reactivate)\n\n通过 GitLens Pro，你可以加速拉取请求审查、更深入地可视化代码历史，并增强团队协作。它是精简 VS Code 工作流的理想升级。",
 			"format": "markdown",
 			"slots": []
 		},
@@ -1532,7 +1526,7 @@
 			"id": "message.1aab36fe82ae722594b44f8558422baadd85b10650df9531e52f2b1652b74e55",
 			"kind": "literal",
 			"source": "Use autolinks to linkify external references, like Jira issues or Zendesk tickets, in commit messages.",
-			"translation": "使用自动链接在提交消息中将 Jira issue 或 Zendesk ticket 等外部引用转换为链接。"
+			"translation": "使用自动链接在提交消息中将 Jira issues 或 Zendesk tickets 等外部引用转换为链接。"
 		},
 		{
 			"id": "message.1ab107a735d4bffb459d13230956d11764377ebcb7cd5b0091bc34ed505bb53f",
@@ -1556,7 +1550,7 @@
 			"id": "message.1af744461f4c1b19385d5bce7102d16a215f204da9e0ea2c14a736b1bc2405a6",
 			"kind": "template",
 			"source": "${slot1} &mdash; visualize the evolution of a file and quickly identify when the most impactful changes were made and by whom. Quickly see unmerged changes in files or folders, when slicing by branch.",
-			"translation": "强制推送${slot1}",
+			"translation": "${slot1} &mdash; 可视化文件的演变，并快速识别最有影响的更改是在何时、由谁完成的。按分支切片时，还可快速查看文件或文件夹中尚未合并的更改。",
 			"slots": ["slot1"]
 		},
 		{
@@ -1918,7 +1912,7 @@
 			"id": "message.2018df31d9111ed7f42e815ac7542a4130dcb13c7695e15ae382ac255199b9be",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Patch Details_ view. Only applies when `#gitlens.views.patchDetails.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _补丁详情_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.patchDetails.files.layout#` 设置为 `tree` or `auto` 时适用",
+			"translation": "指定是否在 _补丁详情_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.patchDetails.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -2080,7 +2074,7 @@
 			"id": "message.2324c72ba24bbc29bae4f209eb2043ca274fe0f37178430631ddec82d5dc465c",
 			"kind": "literal",
 			"source": "Smaller delays will provide a better experience but will have a greater performance impact Also applies to inline blame annotations",
-			"translation": "较小的延迟可带来更好的体验，但也会带来更大的性能影响。也适用于行内 Blame 注解"
+			"translation": "较小的延迟可带来更好的体验，但也会带来更大的性能影响。也适用于行内追溯注解"
 		},
 		{
 			"id": "message.2349e4042832321e4b3a09717713ddff79c5147b99f5ed283b6fddacf69d7c51",
@@ -2161,7 +2155,7 @@
 			"id": "message.24197758e6f28f74aff43cff3ffc9b1ee70d39fb323ab49382eafa7ac8fb8642",
 			"kind": "template",
 			"source": "You're now on the ${slot1} edition. Track code changes and see who made them with features like in-editor blame annotations, hovers, CodeLens, and more—completely free.",
-			"translation": "你现在使用的是 ${slot1} 版本。借助编辑器内 Blame 注解、悬停提示、CodeLens 等功能来跟踪代码更改并查看修改者，而且完全免费。",
+			"translation": "你现在使用的是 ${slot1} 版本。借助编辑器内追溯注解、悬停提示、CodeLens 等功能来跟踪代码更改并查看修改者，而且完全免费。",
 			"slots": ["slot1"]
 		},
 		{
@@ -2192,7 +2186,7 @@
 			"id": "message.2463e49bb7e37bca438ff198bcc543101addf79053c22c7adfe6eb71f984480c",
 			"kind": "template",
 			"source": "${slot1} conflicts",
-			"translation": "${slot1}存在冲突",
+			"translation": "${slot1} 存在冲突",
 			"slots": ["slot1"]
 		},
 		{
@@ -2280,7 +2274,7 @@
 			"id": "message.26639687dad7dfe61c4a4174e85d54b958c714f585ac7151ee99e46a9afd08ff",
 			"kind": "literal",
 			"source": "Supercharge Git within VS Code — Visualize code authorship at a glance via Git blame annotations and CodeLens, seamlessly navigate and explore Git repositories, gain valuable insights via rich visualizations and powerful comparison commands, and so much more",
-			"translation": "在 VS Code 中强化 Git 体验 - 通过 Git blame 注解和 CodeLens 一目了然地查看代码作者信息，无缝导航并探索 Git 仓库，借助丰富的可视化和强大的比较命令获得有价值的洞察，等等"
+			"translation": "在 VS Code 中强化 Git 体验 - 通过 Git 追溯注解和 CodeLens 一目了然地查看代码作者信息，无缝导航并探索 Git 仓库，借助丰富的可视化和强大的比较命令获得有价值的洞察，等等"
 		},
 		{
 			"id": "message.266c395eb5bdcc55ea276aa5a83537e2a4dfc5c7d1bc530aeb70be815e4f8d83",
@@ -2304,7 +2298,7 @@
 			"id": "message.2679f754ffd884496c31367ccef3791a617f3a53b67d0f517c2db0d5a57958c7",
 			"kind": "rich",
 			"source": "Specifies the format of the file blame annotations. See [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens) in the GitLens docs. Date formatting is controlled by the `#gitlens.blame.dateFormat#` setting",
-			"translation": "指定文件 Blame 注解的格式。请参阅 GitLens 文档中的 [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens)。日期格式由 `#gitlens.blame.dateFormat#` 设置控制",
+			"translation": "指定文件追溯注解的格式。请参阅 GitLens 文档中的 [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens)。日期格式由 `#gitlens.blame.dateFormat#` 设置控制",
 			"format": "markdown",
 			"slots": []
 		},
@@ -2332,7 +2326,7 @@
 			"id": "message.26b3013f88c8f8f4be4323bbd3050a886522caf25d75ded90c7b7114e7d2489b",
 			"kind": "literal",
 			"source": "Specifies the blame alignment in the status bar",
-			"translation": "指定状态栏中 Blame 的对齐方式"
+			"translation": "指定状态栏中追溯信息的对齐方式"
 		},
 		{
 			"id": "message.26ca50f3af33589552d19c2b89ba16fd35dc370ec6f236ac066379ce1964a8c5",
@@ -2387,7 +2381,7 @@
 			"id": "message.2723c8592f8f2ca030d083dc6dc96b95408ac840bf44a4117e6256b0b14285b3",
 			"kind": "literal",
 			"source": "Fetch All",
-			"translation": "获取全部"
+			"translation": "全部抓取"
 		},
 		{
 			"id": "message.27477adb834a3649aa91f1fc22083d8e593762be190760efd5abb85756c5555a",
@@ -2418,7 +2412,7 @@
 			"id": "message.277b8fd1826fbffaa646faee5be9df4546eed73d711b3bf52aafebf64a503cf5",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Contributors_ view. Only applies when `#gitlens.views.contributors.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _贡献者_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.contributors.files.layout#` 设置为 `tree` or `auto` 时适用",
+			"translation": "指定是否在 _贡献者_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.contributors.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -2599,7 +2593,7 @@
 			"id": "message.2a37a653fa469d0debf9ed05b4f11f9e5ec28a47e409ea4142de1ffba89df033",
 			"kind": "literal",
 			"source": "Connect hosting services like GitHub and issue trackers like Jira to track progress and take action on PRs and issues related to your branches.",
-			"translation": "连接 GitHub 等托管服务以及 Jira 等 Issue 跟踪器，以跟踪进度并对与你的分支相关的 PR 和 Issue 采取操作。"
+			"translation": "连接 GitHub 等托管服务以及 Jira 等 Issue 跟踪器，以跟踪进度，并处理与你的分支相关的 PR 和 Issue。"
 		},
 		{
 			"id": "message.2a6bcdc9f73bbb61948827e78369d5e9955633aaaabbafbbafaa74f52eb8eb0b",
@@ -2740,7 +2734,7 @@
 			"id": "message.2d121ebd62e5e5147109e598cf5483c90c138b53ccb8b05de858697d6c80b601",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Branches_ view. Only applies when `#gitlens.views.branches.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _分支_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.branches.files.layout#` 设置为 `tree` or `auto` 时适用",
+			"translation": "指定是否在 _分支_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.branches.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -2773,13 +2767,13 @@
 			"id": "message.2e09718113937abcbaa29e32be592ed38010486f7b8957bb5020f6e4aeebf0e6",
 			"kind": "literal",
 			"source": "Specifies the font weight of the file blame annotations",
-			"translation": "指定文件 Blame 注解的字体粗细"
+			"translation": "指定文件追溯注解的字体粗细"
 		},
 		{
 			"id": "message.2e0e971281c38cae3e98280c44d705023fa74ec91902891b717f772239d1cf89",
 			"kind": "literal",
 			"source": "Specifies whether to provide blame information in the status bar",
-			"translation": "指定是否在状态栏中提供 Blame 信息"
+			"translation": "指定是否在状态栏中提供追溯信息"
 		},
 		{
 			"id": "message.2e1e6b5507881fa9f5ea68265496011f452f295e7fe3095fa02c25a98fc86c10",
@@ -2811,7 +2805,7 @@
 			"id": "message.2ef9f069998bd062ca46b02d2a37a7ed86e19226dea272c05131e3dd15d93bd5",
 			"kind": "template",
 			"source": "Create ${slot1}",
-			"translation": "创建${slot1}",
+			"translation": "创建 ${slot1}",
 			"slots": ["slot1"]
 		},
 		{
@@ -2831,7 +2825,7 @@
 			"id": "message.2f9029929d373c63fe37c27cf3e281887ded569fea8fcce522ac519c776c9e74",
 			"kind": "literal",
 			"source": "Specifies whether to compact (deduplicate) matching adjacent file blame annotations",
-			"translation": "指定是否压缩（去重）相邻且匹配的文件 Blame 注解"
+			"translation": "指定是否压缩（去重）相邻且匹配的文件追溯注解"
 		},
 		{
 			"id": "message.2f917d54bd2eed0e812c04e40b87a686aae3abb02c38fe5c103e281d04a9c599",
@@ -2881,7 +2875,7 @@
 			"id": "message.3080fe0e95f3864be4a82a40bb6913da6dd438d2f3e36f517c6c6f49a8058587",
 			"kind": "template",
 			"source": "For more options, open the ${slot1} and search for ${slot2}",
-			"translation": "如需更多选项，请打开${slot1}并搜索${slot2}",
+			"translation": "如需更多选项，请打开 ${slot1} 并搜索 ${slot2}",
 			"slots": ["slot1", "slot2"]
 		},
 		{
@@ -2988,7 +2982,7 @@
 			"id": "message.320e1ea1605e5d61b717fdb03978a65f245ca8d7d244bd53402f7ba489261813",
 			"kind": "literal",
 			"source": "The GitLens Community edition lets you track code changes and see who made them with inline blame annotations, hovers, and more—completely free.",
-			"translation": "GitLens Community 版本可让你借助行内 Blame 注解、悬停提示等功能跟踪代码更改并查看修改者，而且完全免费。"
+			"translation": "GitLens Community 版本可让你借助行内追溯注解、悬停提示等功能跟踪代码更改并查看修改者，而且完全免费。"
 		},
 		{
 			"id": "message.321c274633fa4cc076d9c11fb0cc9cf265e9af17c0837e37f0b99eddb2819e6c",
@@ -3168,13 +3162,13 @@
 			"id": "message.350e22a2c8ce52254af03c54277cc16c824769ae03cd8e0b39c9da5794750ce3",
 			"kind": "literal",
 			"source": "Specifies how the current git user's name is displayed in blame annotations, hovers, and other UI elements",
-			"translation": "指定当前 git 用户名在 Blame 注解、悬停提示及其他 UI 元素中的显示方式"
+			"translation": "指定当前 git 用户名在追溯注解、悬停提示及其他 UI 元素中的显示方式"
 		},
 		{
 			"id": "message.350e4dba0f8cd8d86824d9a51e2e43de0099231393934b3c6ef9d3f362d52bfa",
 			"kind": "literal",
 			"source": "toggles the file blame",
-			"translation": "切换文件 Blame"
+			"translation": "切换文件追溯"
 		},
 		{
 			"id": "message.350f2b485b8b64dcff431c54432c8c79582cfd9dbef3e4993090f6ff8582cf1c",
@@ -3192,7 +3186,7 @@
 			"id": "message.3529ecafa5445b34b17ca462779f97a8dc658c6a779f23dedd927c11983f0def",
 			"kind": "literal",
 			"source": "Specifies the font style of the file blame annotations",
-			"translation": "指定文件 Blame 注解的字体样式"
+			"translation": "指定文件追溯注解的字体样式"
 		},
 		{
 			"id": "message.352ea3242eaf058cca687ba22081486af3ff7aba0d3074a65837e577d9998eb8",
@@ -3333,7 +3327,7 @@
 			"id": "message.37bb9190ff5f76699a6bfee494bd97e7f24df2e5fa36c6e7971087f15a673532",
 			"kind": "literal",
 			"source": "Specifies the font family of the file blame annotations",
-			"translation": "指定文件 Blame 注解的字体族"
+			"translation": "指定文件追溯注解的字体族"
 		},
 		{
 			"id": "message.37eb86f12a5ad1a55a54690a6975c51a3ffcfcb0d8062a0ac88244a6b2cc4766",
@@ -3468,7 +3462,7 @@
 			"id": "message.39b35a4e4f1ca08931f510a76cfeedf02a8a6bd4b054a17728ed42db130944de",
 			"kind": "template",
 			"source": "GitLens won't bind any keyboard shortcuts. Configure your own via the ${slot1} editor",
-			"translation": "GitLens 不会绑定任何键盘快捷方式。请通过${slot1}编辑器自行配置",
+			"translation": "GitLens 不会绑定任何键盘快捷方式。请通过 ${slot1} 编辑器自行配置",
 			"slots": ["slot1"]
 		},
 		{
@@ -3569,7 +3563,7 @@
 			"id": "message.3be48a0ed76c21572582c4fe05072c0411307831d9dad705fee55fbff1d16282",
 			"kind": "template",
 			"source": "No Conflicts Detected This rebase should complete without conflicts. ${slot1}",
-			"translation": "未检测到冲突 此次 rebase 应可在无冲突的情况下完成。${slot1}",
+			"translation": "未检测到冲突。此次变基应可在无冲突的情况下完成。${slot1}",
 			"slots": ["slot1"]
 		},
 		{
@@ -3644,14 +3638,14 @@
 			"id": "message.3d69049865ff0fe73abc3fbb461b9bc3a23faab446e51eb7ea08044b428ee7da",
 			"kind": "template",
 			"source": "Adds a ${slot1}, hidden by default, to visualize, navigate, and explore contributors",
-			"translation": "添加一个默认隐藏的${slot1}，用于可视化、导航和浏览贡献者",
+			"translation": "添加一个默认隐藏的 ${slot1}，用于可视化、导航和浏览贡献者",
 			"slots": ["slot1"]
 		},
 		{
 			"id": "message.3d7d78aadef9be43f4d47ba2fc8fa611aec671b973cbbf9f8024597c88ee12de",
 			"kind": "literal",
 			"source": "Connect to see PRs and Issue here",
-			"translation": "连接集成以在此查看 PR 和 Issue"
+			"translation": "连接后即可在此查看 PR 和 Issue"
 		},
 		{
 			"id": "message.3db27577ec26e48c420d7837b3f707e8da27044182b8ef86e7a4fd3468ee8479",
@@ -3689,7 +3683,7 @@
 			"id": "message.3dea557c4b8902751811ae550871c99d6084362a1821dc3164ceaa81f96bf5b0",
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, explore, and manage Git stashes",
-			"translation": "添加${slot1}，用于可视化、浏览和管理 Git 贮藏",
+			"translation": "添加一个 ${slot1}，用于可视化、浏览和管理 Git 贮藏",
 			"slots": ["slot1"]
 		},
 		{
@@ -3715,14 +3709,14 @@
 			"id": "message.3e68894c57af79602aeef5dccaa78a5fc9a6940ca7888427e64303deeb8e88bd",
 			"kind": "template",
 			"source": "Add an ${slot1} submenu",
-			"translation": "添加${slot1}子菜单",
+			"translation": "添加 ${slot1} 子菜单",
 			"slots": ["slot1"]
 		},
 		{
 			"id": "message.3e7cd87c123282f4fb58d21cc639ddb766eb14ee6795e053c7d0f566ec849efa",
 			"kind": "template",
 			"source": "Home: _onRpcReady phase \"${slot1}\" timed out after ${slot2}ms",
-			"translation": "Home：_onRpcReady 阶段“${slot1}”在 ${slot2}ms 后超时",
+			"translation": "主页：_onRpcReady 阶段“${slot1}”在 ${slot2}ms 后超时",
 			"slots": ["slot1", "slot2"]
 		},
 		{
@@ -3779,7 +3773,7 @@
 			"id": "message.3fc0c4387565042fff0cf21424613a9eab36d261e94e449f1b20a42c88dea032",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Cloud Patches_ view. Only applies when `#gitlens.views.drafts.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _云补丁_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.drafts.files.layout#` 设置为 `tree` or `auto` 时适用",
+			"translation": "指定是否在 _云补丁_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.drafts.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -3806,7 +3800,7 @@
 			"id": "message.3fe8c8c56e9a93e934bc052fef0f43c05129b85f4e824c0b133d80ebe9e1b402",
 			"kind": "template",
 			"source": "Add to the ${slot1} submenu",
-			"translation": "添加到${slot1}子菜单",
+			"translation": "添加到 ${slot1} 子菜单",
 			"slots": ["slot1"]
 		},
 		{
@@ -3845,7 +3839,7 @@
 			"id": "message.408baf405223e83bc4f57cefb8a3a92fc71c48942e8d2a803988fda2717c894a",
 			"kind": "literal",
 			"source": "has",
-			"translation": ""
+			"translation": "has"
 		},
 		{
 			"id": "message.4090a4d16de39e74902596c096b36f999070cd7952aa68670fe82f21b67f0205",
@@ -3863,7 +3857,7 @@
 			"id": "message.40fc1c92abdbd49b2a8e149e244b296bde21cef205122cd4bc599aa4066c5605",
 			"kind": "literal",
 			"source": "Specifies the font size of the inline blame annotation",
-			"translation": "指定行内 Blame 注解的字体大小"
+			"translation": "指定行内追溯注解的字体大小"
 		},
 		{
 			"id": "message.4105d19b6dc106bdd02322054626eddb085a052f0ef85a75ad0a342f4e416998",
@@ -4038,7 +4032,7 @@
 			"id": "message.438cbe10f6f2fa72afdc2f4c01bfcb0c3a00dce8995cbc0458f37eb23da35584",
 			"kind": "literal",
 			"source": "Jump to Status Bar Blame settings",
-			"translation": "跳转到状态栏 Blame 设置"
+			"translation": "跳转到状态栏追溯注解设置"
 		},
 		{
 			"id": "message.43b08f74fae8bfea3d514eb4096f19f8114fe91c9b324d69a31d894d5747e08d",
@@ -4134,7 +4128,7 @@
 			"id": "message.4595c0a3192bcab40a0ae876cb669e3a9681a4c49be9df07e8913358e7974e61",
 			"kind": "template",
 			"source": "Chorded shortcuts that start with ${slot1} (${slot2} on macOS). Better for non-English keyboard layouts",
-			"translation": "以${slot1}开头的和弦快捷方式（在 macOS 上为${slot2}）。更适合非英语键盘布局",
+			"translation": "以 ${slot1} 开头的和弦快捷方式（在 macOS 上为 ${slot2}）。更适合非英语键盘布局",
 			"slots": ["slot1", "slot2"]
 		},
 		{
@@ -4159,7 +4153,7 @@
 			"id": "message.45ce4aeda1ed6404bbb68b628a3a00809f2e0597ec3f6c584f98a36b71a5f84a",
 			"kind": "literal",
 			"source": "Specifies where the heatmap indicators will be shown in the file blame annotations",
-			"translation": "指定文件 Blame 注解中的热度图指示器显示位置"
+			"translation": "指定文件追溯注解中的热度图指示器显示位置"
 		},
 		{
 			"id": "message.45d50d8658b37f80f943840c7f48d8de945648fbdbc3894ea6c09fe11305358a",
@@ -4356,7 +4350,7 @@
 			"id": "message.49253aa687e00b67868a27043afb4b872fa6820fa4be815c710efb808d19869a",
 			"kind": "literal",
 			"source": "Specifies the font weight of the inline blame annotation",
-			"translation": "指定行内 Blame 注解的字体粗细"
+			"translation": "指定行内追溯注解的字体粗细"
 		},
 		{
 			"id": "message.49273d0966b2a599ff50693f705502af06a14afb803b5459b73fa9662d1fb0f6",
@@ -4374,7 +4368,7 @@
 			"id": "message.497fb0f101754d1dc647372197bc4b5290ee35c776fa870419be0c69fed08259",
 			"kind": "template",
 			"source": "Search for ${slot1} in the ${slot2} editor to see the shortcuts and to customize them further",
-			"translation": "在${slot2}编辑器中搜索${slot1}，以查看这些快捷方式并进一步自定义",
+			"translation": "在 ${slot2} 编辑器中搜索 ${slot1}，以查看这些快捷方式并进一步自定义",
 			"slots": ["slot1", "slot2"]
 		},
 		{
@@ -4505,7 +4499,7 @@
 			"id": "message.4bf42f5a82e467695f7d76da08b11362af9fc47546b99d80e5e4e87a541e64c0",
 			"kind": "template",
 			"source": "For more options, open the ${slot1} and search for ${slot2} or ${slot3}",
-			"translation": "如需更多选项，请打开${slot1}并搜索${slot2}或${slot3}",
+			"translation": "如需更多选项，请打开 ${slot1} 并搜索 ${slot2} 或 ${slot3}",
 			"slots": ["slot1", "slot2", "slot3"]
 		},
 		{
@@ -4664,7 +4658,7 @@
 			"id": "message.4e4470cfad5602eaa7b553e0b732c254cdcf8898efcaf759436cd0f196b2af3b",
 			"kind": "literal",
 			"source": "Toggle File Blame",
-			"translation": "切换文件 Blame"
+			"translation": "切换文件追溯"
 		},
 		{
 			"id": "message.4e6229924a06d0a8e3cffdf803deff11335f48d7534932819015a1d8939f9f7a",
@@ -4694,7 +4688,7 @@
 			"id": "message.4ee3fe608fc2879073738b95acd01731b25caf870de039cf469ed3cc334eff0f",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _File History_ view. Only applies when `#gitlens.views.fileHistory.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _文件历史_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.fileHistory.files.layout#` 设置为 `tree` or `auto` 时适用",
+			"translation": "指定是否在 _文件历史_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.fileHistory.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -4870,7 +4864,7 @@
 			"id": "message.518492cef5b491ab168a4a042bb13fc647ec7fd74ab907333aa7eff0ced59aae",
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, explore, and manage a Git repository",
-			"translation": "添加一个${slot1}，用于可视化、浏览和管理 Git 仓库",
+			"translation": "添加一个 ${slot1}，用于可视化、浏览和管理 Git 仓库",
 			"slots": ["slot1"]
 		},
 		{
@@ -4944,7 +4938,7 @@
 			"id": "message.5220807e8c602f15013cf3eaf8844a92b8480458ae7d4ef31f95d9f58d651a90",
 			"kind": "literal",
 			"source": "Specifies the font family of the inline blame annotation",
-			"translation": "指定行内 Blame 注解的字体族"
+			"translation": "指定行内追溯注解的字体族"
 		},
 		{
 			"id": "message.523f1aef1cbfd29387c1b03fcc2a15ea68d3a9c431cf17949e5ceaa624dcb373",
@@ -5247,7 +5241,7 @@
 			"id": "message.560d23568144ffa0ca7defecbddc0ca51cf55dd4ee5b11cea008f10c8932e986",
 			"kind": "template",
 			"source": "Once your trial ends, you'll return to ${slot1} — where you can still leverage features like in-editor blame annotations, hovers, CodeLens, and more.",
-			"translation": "试用结束后，你将回到 ${slot1}，但依然可以继续使用编辑器内 Blame 注解、悬停提示、CodeLens 等功能。",
+			"translation": "试用结束后，你将回到 ${slot1}，但依然可以继续使用编辑器内追溯注解、悬停提示、CodeLens 等功能。",
 			"slots": ["slot1"]
 		},
 		{
@@ -5344,7 +5338,7 @@
 			"id": "message.57cd957cf31e39d3bc97e6e508272ca3b6a1fde414f7ceb09a50a8f5f31dd7b8",
 			"kind": "template",
 			"source": "Branch ${slot1}Merged Locally into Merge Target",
-			"translation": "分支${slot1}已在本地合并到合并目标",
+			"translation": "分支 ${slot1} 已在本地合并到合并目标",
 			"slots": ["slot1"]
 		},
 		{
@@ -5399,7 +5393,7 @@
 			"id": "message.5860a8dc60cc1b7a3ec8e567d2dddc437b1f5defc4c6ecd3f2fc03bd5ce800e0",
 			"kind": "template",
 			"source": "Use the ${slot1} command to toggle Zen mode",
-			"translation": "使用${slot1}命令来切换禅模式",
+			"translation": "使用 ${slot1} 命令来切换禅模式",
 			"slots": ["slot1"]
 		},
 		{
@@ -5412,7 +5406,7 @@
 			"id": "message.58a2f652c92388d7be6ca9421d21c3da657e391831c6cb0f03021538796164f5",
 			"kind": "rich",
 			"source": "Specifies the format (in markdown) of hover shown over the blame information in the status bar. See [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens) in the GitLens docs",
-			"translation": "指定状态栏中 Blame 信息悬停提示的格式（Markdown）。请参阅 GitLens 文档中的 [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens)",
+			"translation": "指定状态栏中追溯信息悬停提示的格式（Markdown）。请参阅 GitLens 文档中的 [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens)",
 			"format": "markdown",
 			"slots": []
 		},
@@ -5441,7 +5435,7 @@
 			"id": "message.58da97fabbcbed72df611189ba13dff86217d419e7b53c89670388731cd7e059",
 			"kind": "template",
 			"source": "${slot1} ${slot2} follow-up",
-			"translation": "${slot2}${slot1} 需要后续跟进",
+			"translation": "${slot1} ${slot2} 需要后续跟进",
 			"slots": ["slot1", "slot2"]
 		},
 		{
@@ -5454,7 +5448,7 @@
 			"id": "message.5908f7ca0955ff3f10566a926bd143d92dd64dcc38db34c0cbc667ea6c4d22f7",
 			"kind": "template",
 			"source": "Your current branch ${slot1} has ${slot2} been merged into its merge target's local branch ${slot3}.",
-			"translation": "你当前的分支 ${slot1}${slot2}已合并到其合并目标的本地分支 ${slot3}。",
+			"translation": "你当前的分支 ${slot1} ${slot2}已被合并到其合并目标的本地分支 ${slot3}。",
 			"slots": ["slot1", "slot2", "slot3"]
 		},
 		{
@@ -5658,7 +5652,7 @@
 			"id": "message.5c33bea87ebdd2c2757a6c83ba6b5f08ca5d70586cace63d2ed821e1cb550ba9",
 			"kind": "template",
 			"source": "${slot1} ${slot2} blocked (${slot3})",
-			"translation": "${slot2}${slot1} 已阻塞（${slot3}）",
+			"translation": "${slot1} ${slot2} 已阻塞（${slot3}）",
 			"slots": ["slot1", "slot2", "slot3"]
 		},
 		{
@@ -5821,7 +5815,7 @@
 			"id": "message.5f0da027366ba5b4190f68992af53da3a31915b548c06f14a02376ffd40fdca6",
 			"kind": "template",
 			"source": "Add a ${slot1} submenu",
-			"translation": "添加${slot1}子菜单",
+			"translation": "添加 ${slot1} 子菜单",
 			"slots": ["slot1"]
 		},
 		{
@@ -5936,12 +5930,6 @@
 			"translation": "指定是否在视图中的比较结果上显示 _Contributors_ 分区"
 		},
 		{
-			"id": "message.6103a661540c5b1c1c34021909bd6949e696cc846620025fa31ef8e5c71db231",
-			"kind": "literal",
-			"source": "Comparison of the",
-			"translation": "比较"
-		},
-		{
 			"id": "message.611d0897d4992af79e65b346b8a912056a4f9236aaeea26be6d2b0c2aff1a4b5",
 			"kind": "literal",
 			"source": "Git Command Palette",
@@ -6023,7 +6011,7 @@
 			"id": "message.622f0a5a4a9b7d59c2154dbb658ee5934665c15062ca3794d041ef26bb632c39",
 			"kind": "template",
 			"source": "${slot1} added",
-			"translation": "${slot1}已添加",
+			"translation": "${slot1} 已添加",
 			"slots": ["slot1"]
 		},
 		{
@@ -6042,7 +6030,7 @@
 			"id": "message.6278c093b3b132a898052a4059d52006063cb2d1d0503e9dcc702b4e74fea6cf",
 			"kind": "literal",
 			"source": "Show associated issues on branches",
-			"translation": "在分支上显示关联议题"
+			"translation": "在分支上显示关联的 Issue"
 		},
 		{
 			"id": "message.62b02dc15ac449479e3cf5ec6107b20de28d7406b3856a3e2a041f981111e4ca",
@@ -6080,7 +6068,7 @@
 			"id": "message.641c727a366762fcb861d56659e227b5a6e6d9260a6ec4ac4269d5ad4876db82",
 			"kind": "literal",
 			"source": "Adds on-demand blame annotations for the whole file",
-			"translation": "按需为整个文件添加 Blame 注解"
+			"translation": "按需为整个文件添加追溯注解"
 		},
 		{
 			"id": "message.6421b569e642973816b86d5faee62d75dcfde51cbf2eaac4b5440d53d23509b3",
@@ -6130,7 +6118,7 @@
 			"id": "message.647a0c5884824a118ab81a6d688c59ab317b3012d31fdf70348e0af219d48b7a",
 			"kind": "literal",
 			"source": "Learn about Home View",
-			"translation": "了解主页 视图"
+			"translation": "了解主页视图"
 		},
 		{
 			"id": "message.64ce775252af7ec7886130951f2dd2e5010f6049ab028364b1e02fd8f61020e0",
@@ -6219,7 +6207,7 @@
 			"id": "message.6662e54f5616da58d3af4f13f60c90f7556d9dab6fedc1b5c25bd8365d915e92",
 			"kind": "literal",
 			"source": "Requires a connection to a supported issue service (e.g. GitHub)",
-			"translation": "需要连接到受支持的议题服务（例如 GitHub）"
+			"translation": "需要连接到受支持的 Issue 服务（例如 GitHub）"
 		},
 		{
 			"id": "message.667200dbabd1be0055f01423318b1ff0aea78fca3447122dfc8e5ce581b36388",
@@ -6325,7 +6313,7 @@
 			"id": "message.677a6a93685cb9a877133d1359bbc10a5c48c2cc21c95681b37773ca9429729a",
 			"kind": "template",
 			"source": "Use the ${slot1} command to quickly switch the active mode",
-			"translation": "使用${slot1}命令快速切换当前活动模式",
+			"translation": "使用 ${slot1} 命令快速切换当前活动模式",
 			"slots": ["slot1"]
 		},
 		{
@@ -6338,7 +6326,7 @@
 			"id": "message.67c4fa44d8dc95338f9f8bb8e79f50651f98ad4021cc0a9560a4218e7aa30ba2",
 			"kind": "literal",
 			"source": "Specifies whether to provide information about the Pull Request (if any) that introduced the commit in the inline blame annotation. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在行内 Blame 注解中提供引入该提交的拉取请求（如果有）信息。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在行内追溯注解中提供引入该提交的拉取请求（如果有）信息。需要连接到受支持的远程服务（例如 GitHub）"
 		},
 		{
 			"id": "message.67e84317b584f778b9bb4e2982016dc8c7b6955fea327873b101d5d9d7ffbbe9",
@@ -6388,7 +6376,7 @@
 			"id": "message.686defda7c9902a38dadfcffa3d6b3a61571251ef4aeeab9386da67fe9a12ec6",
 			"kind": "rich",
 			"source": "Specifies the time (in milliseconds) to wait before re-blaming an unsaved document after an edit but before it is saved. Use 0 to specify an infinite wait. Only applies if the file is under the `#gitlens.advanced.sizeThresholdAfterEdit#`",
-			"translation": "指定未保存文档在编辑后、保存前重新执行 blame 前的等待时间（毫秒）。使用 0 表示无限等待。仅当文件大小低于 `#gitlens.advanced.sizeThresholdAfterEdit#` 时适用",
+			"translation": "指定未保存文档在编辑后、保存前重新执行追溯的等待时间（毫秒）。使用 0 表示无限等待。仅当文件大小低于 `#gitlens.advanced.sizeThresholdAfterEdit#` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -6535,7 +6523,7 @@
 			"id": "message.6adc8059dbfc03a860b47fe1fc0ae9a9bab2271ea12d498238fe86f4d464e8e6",
 			"kind": "template",
 			"source": "Add ${slot1} and ${slot2} commands",
-			"translation": "添加${slot1}和${slot2}命令",
+			"translation": "添加 ${slot1} 和 ${slot2} 命令",
 			"slots": ["slot1", "slot2"]
 		},
 		{
@@ -6608,13 +6596,7 @@
 			"id": "message.6ba21980ad791836a94e44eac1448fb8cff52ee9fbeef6fe3fa9cbb74eafce82",
 			"kind": "literal",
 			"source": "Adds detailed blame information accessible via hovers",
-			"translation": "添加可通过悬停提示访问的详细 Blame 信息"
-		},
-		{
-			"id": "message.6ba31352d6c47717381f2c3d1f90dd65e0f31d20c13a0652a406dd921e57a21a",
-			"kind": "literal",
-			"source": "requires",
-			"translation": ""
+			"translation": "添加可通过悬停提示访问的详细追溯信息"
 		},
 		{
 			"id": "message.6bb6c4bd12934ced5b22390b1bfbe370b5f5cdbe046ee8693fdcef43cf9d818d",
@@ -6632,7 +6614,7 @@
 			"id": "message.6bc282c6ba465aa3792fa695a2f9c284952c24a0ffd4642744c1823ac6744aaf",
 			"kind": "literal",
 			"source": "Home: Failed to fetch initial context",
-			"translation": "Home：获取初始上下文失败"
+			"translation": "主页：获取初始上下文失败"
 		},
 		{
 			"id": "message.6c021f539736682e3bec82c93b8fc502ca7c491a478d5ec978408f6932505200",
@@ -6752,13 +6734,13 @@
 			"id": "message.6e27a064447b6f51c863f6bcfd47182a755327cde52e08be1d12ecbd5e5082f7",
 			"kind": "literal",
 			"source": "Configure Inline Blame",
-			"translation": "配置行内 Blame"
+			"translation": "配置行内追溯"
 		},
 		{
 			"id": "message.6e560eeb3e998b273771881a0c4cc1303ee7bf61c9bda1b02e5abff49e33fa98",
 			"kind": "rich",
 			"source": "Specifies the format of the blame information in the status bar. See [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens) in the GitLens docs. Date formatting is controlled by the `#gitlens.statusBar.dateFormat#` setting",
-			"translation": "指定状态栏中 Blame 信息的格式。请参阅 GitLens 文档中的 [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens)。日期格式由 `#gitlens.statusBar.dateFormat#` 设置控制",
+			"translation": "指定状态栏中追溯信息的格式。请参阅 GitLens 文档中的 [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens)。日期格式由 `#gitlens.statusBar.dateFormat#` 设置控制",
 			"format": "markdown",
 			"slots": []
 		},
@@ -6919,7 +6901,7 @@
 			"id": "message.71771dce58f6797c00077f1c9745b5e640b859cf9d0aeda43f69ca0689fff0a4",
 			"kind": "literal",
 			"source": "Hide Date Column",
-			"translation": "隐藏日期 列"
+			"translation": "隐藏日期列"
 		},
 		{
 			"id": "message.71895d3a45e838faebad9de0d693db8cb1debfd9a91f285f0f22303ff1f8ddf5",
@@ -6931,7 +6913,7 @@
 			"id": "message.71958e1c95def6a8eb9f989953772a692e04386351f2546d4db51c5b656c6c39",
 			"kind": "rich",
 			"source": "The Community Edition lets you:\n\n- View blame annotations and commit details inline\n- Explore file revision history for any repo\n\nUpgrade to **GitLens Pro** (Free 14-Day Trial) to access everything above plus advanced visualization, collaboration, and built-in AI tools that work right inside VS Code.\n\n$(sparkle) Pro gives you full access to:\n\n**- Commit Graph:** visualize every branch and commit relationship\n**- Visual File History:** see how a file has evolved with a graph of what changed and when\n**- Launchpad & Worktrees:** manage PRs and branches in one hub\n**- GitKraken AI: ** writes commits, PRs & changelogs for you.\n\n[Get Started with GitLens Pro](command:gitlens.walkthrough.plus.signUp)\n\nor [sign in](command:gitlens.walkthrough.plus.login)",
-			"translation": "Community 版本可让你：\n\n- 直接在编辑器中查看 Blame 注解和提交详情\n- 探索任意仓库的文件修订历史\n\n升级到 **GitLens Pro**（免费试用 14 天），即可在上述功能之外，获得可直接在 VS Code 中使用的高级可视化、协作能力和内置 AI 工具。\n\n$(sparkle) Pro 将让你完整访问：\n\n**- 提交图：** 可视化每个分支与提交之间的关系\n**- 可视文件历史：** 通过图表查看文件何时、如何演进\n**- Launchpad 和 Worktrees：** 在一个中心管理 PR 和分支\n**- GitKraken AI：** 为你编写提交、PR 和更改日志\n\n[开始使用 GitLens Pro](command:gitlens.walkthrough.plus.signUp)\n\n或[登录](command:gitlens.walkthrough.plus.login)",
+			"translation": "Community 版本可让你：\n\n- 直接在编辑器中查看追溯注解和提交详情\n- 探索任意仓库的文件修订历史\n\n升级到 **GitLens Pro**（免费试用 14 天），即可在上述功能之外，获得可直接在 VS Code 中使用的高级可视化、协作能力和内置 AI 工具。\n\n$(sparkle) Pro 将让你完整访问：\n\n**- 提交图：** 可视化每个分支与提交之间的关系\n**- 可视文件历史：** 通过图表查看文件何时、如何演进\n**- Launchpad 和 Worktrees：** 在一个中心管理 PR 和分支\n**- GitKraken AI：** 为你编写提交、PR 和更改日志\n\n[开始使用 GitLens Pro](command:gitlens.walkthrough.plus.signUp)\n\n或[登录](command:gitlens.walkthrough.plus.login)",
 			"format": "markdown",
 			"slots": []
 		},
@@ -6966,7 +6948,7 @@
 			"id": "message.71ec0bafe61381ce0179f9719e7dc06a6ec288f870b47b95206b66b97fe621d3",
 			"kind": "literal",
 			"source": "Add blame details",
-			"translation": "添加 Blame 详情"
+			"translation": "添加追溯详情"
 		},
 		{
 			"id": "message.721ce730b177a88d461db06bca268ea7886f6efbbba0ce75a141916e854f9b14",
@@ -7011,7 +6993,7 @@
 			"id": "message.72cf49e819363082522920521f8ffe557fe19b0b4c74a71ba4faa96423d47d5b",
 			"kind": "literal",
 			"source": "Streamlined workflows &mdash; start work from issues, pull request reviews",
-			"translation": "流畅工作流 &mdash; 从 Issue 开始工作、处理拉取请求评审"
+			"translation": "精简工作流 &mdash; 从 Issue 开始工作、处理拉取请求评审"
 		},
 		{
 			"id": "message.72dd54f6fbad60740c98269d61b3713a0a791c3d2f5034dc251ed5fd4debfcb8",
@@ -7036,7 +7018,7 @@
 			"id": "message.7317ad06b6ec761a58dafd23bd2e6da7fa212dc71d2c355009982be41328de29",
 			"kind": "literal",
 			"source": "Avoids clearing the previous blame information when changing lines to reduce status bar \"flashing\"",
-			"translation": "在切换行时避免清除之前的 Blame 信息，以减少状态栏“闪烁”"
+			"translation": "在切换行时避免清除之前的追溯信息，以减少状态栏“闪烁”"
 		},
 		{
 			"id": "message.734d7de0d7bc9148d8cb04306e029c8b50aaa3aeec417acb35ebed357174534e",
@@ -7061,7 +7043,7 @@
 			"id": "message.736f059742b241d8270b81da0235049f656818f2efe43d75399cc369684eaae5",
 			"kind": "rich",
 			"source": "Specifies whether to provide an inline blame annotation for the current line, by default. Use the `Toggle Line Blame Annotations` command (`gitlens.toggleLineBlame`) to toggle the annotations on and off for the current window",
-			"translation": "指定默认是否为当前行提供行内 Blame 注解。可使用 `Toggle Line Blame Annotations` 命令（`gitlens.toggleLineBlame`）在当前窗口中切换该注解的开关",
+			"translation": "指定默认是否为当前行提供行内追溯注解。可使用 `Toggle Line Blame Annotations` 命令（`gitlens.toggleLineBlame`）在当前窗口中切换该注解的开关",
 			"format": "markdown",
 			"slots": []
 		},
@@ -7075,7 +7057,7 @@
 			"id": "message.739107353a22b78d5b2f4d6c2fb650697b25038671ac5b8490c373909a471f69",
 			"kind": "rich",
 			"source": "Specifies the format of the inline blame annotation. See [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens) in the GitLens docs. Date formatting is controlled by the `#gitlens.currentLine.dateFormat#` setting",
-			"translation": "指定行内 Blame 注解的格式。请参阅 GitLens 文档中的 [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens)。日期格式由 `#gitlens.currentLine.dateFormat#` 设置控制",
+			"translation": "指定行内追溯注解的格式。请参阅 GitLens 文档中的 [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens)。日期格式由 `#gitlens.currentLine.dateFormat#` 设置控制",
 			"format": "markdown",
 			"slots": []
 		},
@@ -7162,7 +7144,7 @@
 			"id": "message.751bcd828583aff0d66c327b989aac2585e9ce714ec8dcb07f33be4d4eca1fcc",
 			"kind": "rich",
 			"source": "Thanks for starting your **GitLens Pro** trial.\n\nComplete this walkthrough to experience enhanced PR review tools, deeper code history visualizations, and streamlined collaboration to help boost your productivity.\n\n[Continue the Walkthrough](command:gitlens.walkthrough.openWalkthrough)\n\nOnce your trial ends, you'll return to **GitLens Community** — where you can still leverage features like in-editor blame annotations, hovers, CodeLens, and more. [Upgrade to GitLens Pro](command:gitlens.walkthrough.plus.upgrade) today to continue enjoying the full experience.\n\n[Upgrade to GitLens Pro](command:gitlens.walkthrough.plus.upgrade)",
-			"translation": "感谢你开始试用 **GitLens Pro**。\n\n完成此引导后，你将体验到增强的拉取请求审查工具、更深入的代码历史可视化以及更流畅的协作方式，从而帮助提升工作效率。\n\n[继续引导](command:gitlens.walkthrough.openWalkthrough)\n\n试用结束后，你将回到 **GitLens Community**，但依然可以继续使用编辑器内 Blame 注解、悬停、CodeLens 等功能。[立即升级到 GitLens Pro](command:gitlens.walkthrough.plus.upgrade)，继续享受完整体验。\n\n[升级到 GitLens Pro](command:gitlens.walkthrough.plus.upgrade)",
+			"translation": "感谢你开始试用 **GitLens Pro**。\n\n完成此引导后，你将体验到增强的拉取请求审查工具、更深入的代码历史可视化以及更流畅的协作方式，从而帮助提升工作效率。\n\n[继续引导](command:gitlens.walkthrough.openWalkthrough)\n\n试用结束后，你将回到 **GitLens Community**，但依然可以继续使用编辑器内追溯注解、悬停、CodeLens 等功能。[立即升级到 GitLens Pro](command:gitlens.walkthrough.plus.upgrade)，继续享受完整体验。\n\n[升级到 GitLens Pro](command:gitlens.walkthrough.plus.upgrade)",
 			"format": "markdown",
 			"slots": []
 		},
@@ -7207,7 +7189,7 @@
 			"id": "message.75cf507353fa579127cc5aedbe0a1f5bd3b83bfc252e926f970566118bebf082",
 			"kind": "literal",
 			"source": "Specifies the timeout (in seconds) for Git commands. Use 0 to disable the timeout. Some long-running operations like merge, rebase, and revert always have the timeout disabled",
-			"translation": "指定 Git 命令的超时时间（秒）。使用 0 表示禁用超时。某些长时间运行的操作（如 merge、rebase 和 revert）始终禁用超时"
+			"translation": "指定 Git 命令的超时时间（秒）。使用 0 表示禁用超时。某些长时间运行的操作（如 merge、变基和 revert）始终禁用超时"
 		},
 		{
 			"id": "message.75d03375b3eb59c91e49e7cbf4e9719302de193e17a316699a613c225441af96",
@@ -7249,7 +7231,7 @@
 			"id": "message.7657e66177b1ce73452db7263a83f73076f21813351c7428b87e3e035eedc667",
 			"kind": "template",
 			"source": "${slot1} ${slot2} your review",
-			"translation": "${slot2}${slot1} 需要你审查",
+			"translation": "${slot1} ${slot2} 需要你审查",
 			"slots": ["slot1", "slot2"]
 		},
 		{
@@ -7517,7 +7499,7 @@
 			"id": "message.79bec0a085c286748ef1a9b8df88a5cae0ca8848576e24e64d39b96a90d53d4e",
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, explore, and manage Git tags",
-			"translation": "添加一个${slot1}，用于可视化、浏览和管理 Git 标签",
+			"translation": "添加一个 ${slot1}，用于可视化、浏览和管理 Git 标签",
 			"slots": ["slot1"]
 		},
 		{
@@ -7580,7 +7562,7 @@
 			"id": "message.7b8d86b0ab95f580241edbbffd9e14348e175ffaf45893575f49fe71b8999e22",
 			"kind": "template",
 			"source": "For advanced customizations, refer to the ${slot1} and edit your ${slot2}",
-			"translation": "如需高级自定义，请参阅${slot1}并编辑你的${slot2}",
+			"translation": "如需高级自定义，请参阅 ${slot1} 并编辑你的 ${slot2}",
 			"slots": ["slot1", "slot2"]
 		},
 		{
@@ -7649,7 +7631,7 @@
 			"id": "message.7d0676a5abb17cbda0776ab321593d784e9711091e38f1281e2d300274085861",
 			"kind": "literal",
 			"source": "Specifies whether to provide a _commit details_ hover for all lines when showing blame annotations",
-			"translation": "指定是否在显示 Blame 注解时为所有行提供 _提交详情_ 悬停提示"
+			"translation": "指定是否在显示追溯注解时为所有行提供 _提交详情_ 悬停提示"
 		},
 		{
 			"id": "message.7d067b234c0499881dcbf6ac1279d270cd3f905bd8c4f5cd1b76df2b24f0d62e",
@@ -7785,7 +7767,7 @@
 			"id": "message.7f21522d2bc5c4d7cd8f538e37b1e44673756ba6f94fe56549f72aa77823a7d6",
 			"kind": "literal",
 			"source": "Toggle Line Blame",
-			"translation": "切换行 Blame"
+			"translation": "切换行追溯"
 		},
 		{
 			"id": "message.7f581e5346c094dd319c738f37dd4a80ff47a567597c5180276a94164fc7e6f1",
@@ -7855,7 +7837,7 @@
 			"id": "message.806030a5ffe293188e58d7e7945263b2836b150b2f45f5170f335cc9e014a08e",
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, explore, and manage Git remotes and remote branches",
-			"translation": "添加一个${slot1}，用于可视化、浏览和管理 Git 远程与远程分支",
+			"translation": "添加一个 ${slot1}，用于可视化、浏览和管理 Git 远程与远程分支",
 			"slots": ["slot1"]
 		},
 		{
@@ -8113,7 +8095,7 @@
 			"id": "message.84ee49268992adfc4c2db52fc43870843abae0cdad51ec79bbead6df8609e1ad",
 			"kind": "literal",
 			"source": "Show Line History View",
-			"translation": "显示行历史 视图"
+			"translation": "显示行历史视图"
 		},
 		{
 			"id": "message.84fa0816a2e2e881809c16bd2ffeea4b7a03a0079812d44f11fdc9ad1aef0954",
@@ -8204,12 +8186,6 @@
 			"translation": "隐藏标签视图"
 		},
 		{
-			"id": "message.86d53537dafd3b539fac20c356388cd5ee9fdf07ad9a967108626d9a9163e306",
-			"kind": "literal",
-			"source": "needs",
-			"translation": ""
-		},
-		{
 			"id": "message.86eb418cf7bc3c13fdbf363829838a8b184569d77d836bbb2789254e2f465d33",
 			"kind": "literal",
 			"source": "gitlens.views",
@@ -8234,7 +8210,7 @@
 			"id": "message.88160394dcdf9c9c458df577408ed7cb4041fcfcb0c14603cc9b149491d5125b",
 			"kind": "literal",
 			"source": "Displays the user's name followed by \"(you)\", e.g. \"Jane Doe (you)\"",
-			"translation": "显示用户名称并附加“(you)”，例如“Jane Doe (you)”"
+			"translation": "显示用户名称并附加“（你）”，例如“Jane Doe（你）”"
 		},
 		{
 			"id": "message.881ba1f8b97a9942e732a77a0898544433dc22c375129a01922ecc4e312a5765",
@@ -8252,13 +8228,13 @@
 			"id": "message.886beeaefe25a59966e1ca811115e84f2228f1bfe182e4437cb498b6852ad6c0",
 			"kind": "literal",
 			"source": "Specifies the font style of the inline blame annotation",
-			"translation": "指定行内 Blame 注解的字体样式"
+			"translation": "指定行内追溯注解的字体样式"
 		},
 		{
 			"id": "message.889976d869dc859dd026e23431559688a59d0734c674677c0c4a738c0f2e87da",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images in the file blame annotations",
-			"translation": "指定是否在文件 Blame 注解中显示头像图像"
+			"translation": "指定是否在文件追溯注解中显示头像图像"
 		},
 		{
 			"id": "message.88ad4922f352990164e51ddce112abec1a948fb34696f1b05d7c4181bf54f599",
@@ -8376,7 +8352,7 @@
 			"id": "message.8a2592b3e0ddece2fee7e86321d13e4b278841bfb744a0767d5415b3e7949a21",
 			"kind": "template",
 			"source": "Your ${slot1} will be securely stored in your organization's self-hosted storage",
-			"translation": "你的${slot1}将安全地存储在你组织的自托管存储中",
+			"translation": "你的 ${slot1} 将安全地存储在你组织的自托管存储中",
 			"slots": ["slot1"]
 		},
 		{
@@ -8563,7 +8539,7 @@
 			"id": "message.8d28cb362f8910ce8bca5cb1cc5b9407eab45de01d79190bdff1c235d0650a28",
 			"kind": "literal",
 			"source": "Show Visual File History View",
-			"translation": "显示可视文件历史 视图"
+			"translation": "显示可视文件历史视图"
 		},
 		{
 			"id": "message.8d73b41b9f93303da065f39fa1c7318a7a26af7bae3fe83f9506f4ffb718e83e",
@@ -8735,7 +8711,7 @@
 			"id": "message.9043da045f88fed18070e7be26c795826affc02ad2721896437f8f7dfd4fe6c5",
 			"kind": "template",
 			"source": "Push ${slot1}",
-			"translation": "推送${slot1}",
+			"translation": "推送 ${slot1}",
 			"slots": ["slot1"]
 		},
 		{
@@ -8780,7 +8756,7 @@
 			"id": "message.90ef2083f28025e94dc625998c76564793a52ff05da90dd929f5d865e78b5e72",
 			"kind": "literal",
 			"source": "Adds a heatmap indicator on the right edge of the file blame annotations",
-			"translation": "在文件 Blame 注解右侧边缘添加热度图指示器"
+			"translation": "在文件追溯注解右侧边缘添加热度图指示器"
 		},
 		{
 			"id": "message.910cd453c9de0756b1028e7804c7546cf0d86b2ce2483f005e958a9ae67a335f",
@@ -8798,7 +8774,7 @@
 			"id": "message.917e8239d2461b05d04bd14d940cda9eddffc35a2bcedc952909fc9c70d08285",
 			"kind": "rich",
 			"source": "Specifies how to format absolute dates (e.g. using the `${date}` token) in the blame information in the status bar, when not specified `#gitlens.defaultDateFormat#` is used. Use `full`, `long`, `medium`, `short`, or a custom format, e.g. `MMMM Do, YYYY h:mma`, similar to [Moment.js formats](https://momentjs.com/docs/#/displaying/format/)",
-			"translation": "指定状态栏 Blame 信息中绝对日期（例如使用 `${date}` token）的格式；未指定时使用 `#gitlens.defaultDateFormat#`。可使用 `full`、`long`、`medium`、`short` 或自定义格式，例如 `MMMM Do, YYYY h:mma`，其写法类似于 [Moment.js 格式](https://momentjs.com/docs/#/displaying/format/)",
+			"translation": "指定状态栏追溯信息中绝对日期（例如使用 `${date}` token）的格式；未指定时使用 `#gitlens.defaultDateFormat#`。可使用 `full`、`long`、`medium`、`short` 或自定义格式，例如 `MMMM Do, YYYY h:mma`，其写法类似于 [Moment.js 格式](https://momentjs.com/docs/#/displaying/format/)",
 			"format": "markdown",
 			"slots": ["date"]
 		},
@@ -9002,7 +8978,7 @@
 			"id": "message.95210315c0db68b348823ea863724bd1eb121f3bdc40bee58d7b7d60bb07ec1f",
 			"kind": "literal",
 			"source": "Specifies the command to be executed when the blame status bar item is clicked",
-			"translation": "指定点击Blame 状态栏项时执行的命令"
+			"translation": "指定点击追溯状态栏项时执行的命令"
 		},
 		{
 			"id": "message.953fcd227922b54dff917f14d42f53eb9a42802087e9a6488a970f9055e86951",
@@ -9066,13 +9042,13 @@
 			"id": "message.95b647bbbf7c986a12bd16e81b783194a2c5c183eeaa9067fe036d1aa3f90193",
 			"kind": "literal",
 			"source": "Specifies whether file blame annotations will be separated by a small gap",
-			"translation": "指定文件 Blame 注解之间是否用小间隔分隔"
+			"translation": "指定文件追溯注解之间是否用小间隔分隔"
 		},
 		{
 			"id": "message.95b9eba75e7cda618c78d44049f1731d1cf0aacf39db46c453ed3fea46c133c8",
 			"kind": "literal",
 			"source": "Compacts (deduplicates) matching adjacent blame annotations",
-			"translation": "压缩（去重）相邻且相同的 Blame 注解"
+			"translation": "压缩（去重）相邻且相同的追溯注解"
 		},
 		{
 			"id": "message.95c112a92be31b9899f9a6b67a0645b21c6eb2d2c4f70628d4d1533c83fda44c",
@@ -9096,7 +9072,7 @@
 			"id": "message.9683b4411d5ad17dec2c31822ea66f09736b7bd02157aa2f4d576f473a29b6ec",
 			"kind": "literal",
 			"source": "Adds a heatmap indicator on the left edge of the file blame annotations",
-			"translation": "在文件 Blame 注解左侧边缘添加热度图指示器"
+			"translation": "在文件追溯注解左侧边缘添加热度图指示器"
 		},
 		{
 			"id": "message.969ee5d28618824a36efb110f285f7e0c668510540c7610e28c22a3a938554e1",
@@ -9185,7 +9161,7 @@
 			"id": "message.97d554d2cd0c653b9868375c78b15f0013f058d494243c4561e1b65a7c9eeda4",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Commits_ view. Only applies when `#gitlens.views.commits.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _提交_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.commits.files.layout#` 设置为 `tree` or `auto` 时适用",
+			"translation": "指定是否在 _提交_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.commits.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -9352,7 +9328,7 @@
 			"id": "message.9a297cd96a9d39a253d8923f090bc14529b4720eb58deab7f8b6ac2b114c0252",
 			"kind": "template",
 			"source": "Force Push ${slot1}",
-			"translation": "强制推送${slot1}",
+			"translation": "强制推送 ${slot1}",
 			"slots": ["slot1"]
 		},
 		{
@@ -9470,7 +9446,7 @@
 			"id": "message.9bc2969e0047b0c5a79f54c14d7ca8a190f53275d3e7ebb4e03ac92b890f9fe8",
 			"kind": "template",
 			"source": "For more options or to add your own custom modes, open the ${slot1} and search for ${slot2}",
-			"translation": "如需更多选项，或添加你自己的自定义模式，请打开${slot1}并搜索${slot2}",
+			"translation": "如需更多选项，或添加你自己的自定义模式，请打开 ${slot1} 并搜索 ${slot2}",
 			"slots": ["slot1", "slot2"]
 		},
 		{
@@ -9544,7 +9520,7 @@
 			"id": "message.9d4f335228583fa4145e35ed0d63da110c982670182bd39462d7cbfd41525ece",
 			"kind": "literal",
 			"source": "Specifies whether to automatically open the _Interactive Rebase Editor_ when a paused rebase is detected",
-			"translation": "指定在检测到暂停的 rebase 时是否自动打开 _交互式变基编辑器_"
+			"translation": "指定在检测到暂停的变基时是否自动打开 _交互式变基编辑器_"
 		},
 		{
 			"id": "message.9d52d4e87766915cf8f2e5609732c868b3448b3350184bd81e9d6a9a4cbe4295",
@@ -9784,7 +9760,7 @@
 			"id": "message.a0dc39782c215c3b7ed06dc86e400cc6734f999cbb98f6446cea0e95dc42e204",
 			"kind": "literal",
 			"source": "Toggles file blame",
-			"translation": "切换文件 Blame"
+			"translation": "切换文件追溯"
 		},
 		{
 			"id": "message.a0ea6706fa2528bcaecc3e64cd9d87c299d962be452b452430b1893142de2690",
@@ -9884,7 +9860,7 @@
 			"id": "message.a2a98ececc08643744067caf160da4e936445e7475cdfaba4b6271d8dbdef3c2",
 			"kind": "literal",
 			"source": "Specifies the maximum document size (in lines) allowed to be re-blamed after an edit while still unsaved. Use 0 to specify no maximum",
-			"translation": "指定文档在编辑后且仍未保存时允许重新执行 blame 的最大大小（行数）。使用 0 表示不设上限"
+			"translation": "指定文档在编辑后且仍未保存时允许重新执行追溯的最大大小（行数）。使用 0 表示不设上限"
 		},
 		{
 			"id": "message.a30d070c47626216ab00578f1e5a9e3a62bb4376ddaee46f8b3eeacc20d912f9",
@@ -9946,7 +9922,7 @@
 			"id": "message.a3ea22430ed3845ca25b10f0f3a324e3b3aebb24dc021d39ac2ea2b751e86bb7",
 			"kind": "literal",
 			"source": "Toggles file blame annotations",
-			"translation": "切换文件 Blame 注解"
+			"translation": "切换文件追溯注解"
 		},
 		{
 			"id": "message.a4163ccd6e924de6b9e95fe15737929b2dd847dea275215b81586489d76388a4",
@@ -9966,7 +9942,7 @@
 			"id": "message.a48653924be145e4516bfb3dc77b893cd95c3c13af09f1a6e665e4791b5aee88",
 			"kind": "literal",
 			"source": "Specifies whether to provide a heatmap indicator in the file blame annotations",
-			"translation": "指定是否在文件 Blame 注解中提供热度图指示器"
+			"translation": "指定是否在文件追溯注解中提供热度图指示器"
 		},
 		{
 			"id": "message.a4cb415908a3a22e0364c88ff513daf38f58e7372fa1dcc25e2ff6ce72eb8ead",
@@ -10003,7 +9979,7 @@
 			"id": "message.a5354cb4f2c32105dce10c69612014f6b5ee104f18296751da24ee8ef0a55431",
 			"kind": "template",
 			"source": "Use ${slot1} key to dismiss the active file annotations",
-			"translation": "使用${slot1}键关闭当前活动的文件注解",
+			"translation": "使用 ${slot1} 键关闭当前活动的文件注解",
 			"slots": ["slot1"]
 		},
 		{
@@ -10016,7 +9992,7 @@
 			"id": "message.a564d0442ab6fc1cf659437921b9cbbe92e0b843df30c8c6509f321ff85ab32a",
 			"kind": "literal",
 			"source": "Show Date Column",
-			"translation": "显示日期 列"
+			"translation": "显示日期列"
 		},
 		{
 			"id": "message.a5717debc72c8adea51e37aa99ddb5bab659c76e91e699a0e09d46afe2d92483",
@@ -10138,7 +10114,7 @@
 			"id": "message.a6e72f77ec3b23eb22e403f0684477eaa598b3cc69279732644638976677fdda",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Stashes_ view. Only applies when `#gitlens.views.stashes.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _贮藏_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.stashes.files.layout#` 设置为 `tree` or `auto` 时适用",
+			"translation": "指定是否在 _贮藏_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.stashes.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -10223,7 +10199,7 @@
 			"id": "message.a891e3d687caac0e08f9f8b28aabf668f678dfc8bfdf73f11a48371b4ceabce4",
 			"kind": "template",
 			"source": "Home initialization timed out in phase: ${slot1}",
-			"translation": "Home 初始化在阶段 ${slot1} 时超时",
+			"translation": "主页初始化在阶段 ${slot1} 时超时",
 			"slots": ["slot1"]
 		},
 		{
@@ -10254,7 +10230,7 @@
 			"id": "message.a8e2b9487317428eb7bb3a88d1812fc0a75c0c3b4490e04d4f40248804cbbee7",
 			"kind": "rich",
 			"source": "Specifies how to format absolute dates (e.g. using the `${date}` token) in file blame annotations, when not specified `#gitlens.defaultDateFormat#` is used. Use `full`, `long`, `medium`, `short`, or a custom format, e.g. `MMMM Do, YYYY h:mma`, similar to [Moment.js formats](https://momentjs.com/docs/#/displaying/format/)",
-			"translation": "指定文件 Blame 注解中绝对日期（例如使用 `${date}` token）的格式；未指定时使用 `#gitlens.defaultDateFormat#`。可使用 `full`、`long`、`medium`、`short` 或自定义格式，例如 `MMMM Do, YYYY h:mma`，其写法类似于 [Moment.js 格式](https://momentjs.com/docs/#/displaying/format/)",
+			"translation": "指定文件追溯注解中绝对日期（例如使用 `${date}` token）的格式；未指定时使用 `#gitlens.defaultDateFormat#`。可使用 `full`、`long`、`medium`、`short` 或自定义格式，例如 `MMMM Do, YYYY h:mma`，其写法类似于 [Moment.js 格式](https://momentjs.com/docs/#/displaying/format/)",
 			"format": "markdown",
 			"slots": ["date"]
 		},
@@ -10373,7 +10349,7 @@
 			"id": "message.aa8dd446acc1ed55d0b9f88bb3165b98f6fbb1e6bd8e08798eaf3ef7690a5157",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Launchpad_ view. Only applies when `#gitlens.views.launchpad.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _Launchpad_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.launchpad.files.layout#` 设置为 `tree` or `auto` 时适用",
+			"translation": "指定是否在 _Launchpad_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.launchpad.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -10418,7 +10394,7 @@
 			"id": "message.ab4bafed6248986d6347f7db2ce803656210c0517d4109798aad3fe6bd56d060",
 			"kind": "template",
 			"source": "Connect to ${slot1} View pull requests and issues in Home, Commit Graph, Launchpad, autolinks, and more",
-			"translation": "连接到 ${slot1}，在 Home、Commit Graph、Launchpad、自动链接等位置查看拉取请求和 Issue",
+			"translation": "连接到 ${slot1} 后，可在主页、Commit Graph、Launchpad、自动链接等位置查看拉取请求和 Issue",
 			"slots": ["slot1"]
 		},
 		{
@@ -10479,7 +10455,7 @@
 			"id": "message.ac42a4eda1fcb1498b1020f32ca505b129781269227f9363201c73635ad566b6",
 			"kind": "template",
 			"source": "Home initialization aborted during phase: ${slot1}",
-			"translation": "Home 初始化在阶段 ${slot1} 时已中止",
+			"translation": "主页初始化在阶段 ${slot1} 时已中止",
 			"slots": ["slot1"]
 		},
 		{
@@ -10517,7 +10493,7 @@
 			"id": "message.ad43d68f596ded098dd89d3d1232f9a14671a235aab93ded0fd8dd179bffc4e2",
 			"kind": "literal",
 			"source": "Specifies the font size of the file blame annotations",
-			"translation": "指定文件 Blame 注解的字体大小"
+			"translation": "指定文件追溯注解的字体大小"
 		},
 		{
 			"id": "message.ad46e3f4806fea6f4c647f4bc9e7c91fcc6daab1108f11d71ae3e488d9755ffe",
@@ -10537,7 +10513,7 @@
 			"id": "message.adb13e7f826bbeef17b8fa11bae96a6932e3aa70857ab5e7f71b16d810415a35",
 			"kind": "template",
 			"source": "${slot1} command",
-			"translation": "${slot1}命令",
+			"translation": "${slot1} 命令",
 			"slots": ["slot1"]
 		},
 		{
@@ -10631,7 +10607,7 @@
 			"id": "message.af455a03abf7fe08a7edae1c81d7af5a624cc34dc06b8c28149a5d34e2f53917",
 			"kind": "literal",
 			"source": "Specifies whether to avoid clearing the previous blame information when changing lines to reduce status bar \"flashing\"",
-			"translation": "指定在切换行时是否避免清除先前的 Blame 信息，以减少状态栏“闪烁”"
+			"translation": "指定在切换行时是否避免清除先前的追溯信息，以减少状态栏“闪烁”"
 		},
 		{
 			"id": "message.af68470455a16bf95fdf0455835cb4459b3e51b31e98baf86482276b0ba6ab72",
@@ -10816,7 +10792,7 @@
 			"id": "message.b2dd44df53e21eafb5a58cf6c136c06e1fc7c0fe60033780286280e38aae104b",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Repositories_ view. Only applies when `#gitlens.views.repositories.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _仓库_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.repositories.files.layout#` 设置为 `tree` or `auto` 时适用",
+			"translation": "指定是否在 _仓库_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.repositories.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -10848,7 +10824,7 @@
 			"id": "message.b32e6759cd081964c9391896fd185ab689d3f1d5de7a9455c45bfd8d4a33a983",
 			"kind": "template",
 			"source": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"Fetch All\" href= ${slot1} > class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"Visualize Repo History\" href= ${slot2} > class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"Open in Commit Graph\" href= ${slot3} >",
-			"translation": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"获取全部\" href= ${slot1} > class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"可视化仓库历史\" href= ${slot2} > class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"在提交图中打开\" href= ${slot3} >",
+			"translation": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"全部抓取\" href= ${slot1} > class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"可视化仓库历史\" href= ${slot2} > class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"在提交图中打开\" href= ${slot3} >",
 			"slots": ["slot1", "slot2", "slot3"]
 		},
 		{
@@ -10880,7 +10856,7 @@
 			"id": "message.b378729580b197f0937e4c568896538438f242bc6c62481a728d0637e596b8a9",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Search & Compare_ view. Only applies when `#gitlens.views.searchAndCompare.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _搜索与比较_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.searchAndCompare.files.layout#` 设置为 `tree` or `auto` 时适用",
+			"translation": "指定是否在 _搜索与比较_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.searchAndCompare.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -10919,7 +10895,7 @@
 			"id": "message.b48101a983e3046d29e938fb026055510a087541802ec10e16a59d55907f5306",
 			"kind": "literal",
 			"source": "GitHub Issues",
-			"translation": "GitHub Issue"
+			"translation": "GitHub Issues"
 		},
 		{
 			"id": "message.b49f09aae2bfa1d441ef819c7311e133a05779c24e41b1ed5aa834a5392a028e",
@@ -10957,7 +10933,7 @@
 			"id": "message.b535725b903d558d205dbdaa63c82d13ae27daa131a2ba69283d6bf7f807d50f",
 			"kind": "rich",
 			"source": "Specifies how to format absolute dates (e.g. using the `${date}` token) for the inline blame annotation, when not specified `#gitlens.defaultDateFormat#` is used. Use `full`, `long`, `medium`, `short`, or a custom format, e.g. `MMMM Do, YYYY h:mma`, similar to [Moment.js formats](https://momentjs.com/docs/#/displaying/format/)",
-			"translation": "指定行内 Blame 注解中绝对日期（例如使用 `${date}` token）的格式；未指定时使用 `#gitlens.defaultDateFormat#`。可使用 `full`、`long`、`medium`、`short` 或自定义格式，例如 `MMMM Do, YYYY h:mma`，其写法类似于 [Moment.js 格式](https://momentjs.com/docs/#/displaying/format/)",
+			"translation": "指定行内追溯注解中绝对日期（例如使用 `${date}` token）的格式；未指定时使用 `#gitlens.defaultDateFormat#`。可使用 `full`、`long`、`medium`、`short` 或自定义格式，例如 `MMMM Do, YYYY h:mma`，其写法类似于 [Moment.js 格式](https://momentjs.com/docs/#/displaying/format/)",
 			"format": "markdown",
 			"slots": ["date"]
 		},
@@ -10977,7 +10953,7 @@
 			"id": "message.b5d7f2e0cc378286421f1912fd715236a8f6e9b7f4a9e1b8860c29bf8ed1a7e9",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Tags_ view. Only applies when `#gitlens.views.tags.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _标签_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.tags.files.layout#` 设置为 `tree` or `auto` 时适用",
+			"translation": "指定是否在 _标签_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.tags.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -11005,7 +10981,7 @@
 			"id": "message.b632f00417a0f5322f690dba6904b727f4b19525c841be8b01ffde37140edc2f",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Remotes_ view. Only applies when `#gitlens.views.remotes.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _远程_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.remotes.files.layout#` 设置为 `tree` or `auto` 时适用",
+			"translation": "指定是否在 _远程_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.remotes.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -11050,14 +11026,14 @@
 			"id": "message.b6f1ac3f95f355b30ebfc96271e4a86be100c0cad070ac0849bc45f16f5f6ea5",
 			"kind": "template",
 			"source": "Potential Conflicts Detected This rebase will cause conflicts in ${slot1}: ${slot2} ${slot3}",
-			"translation": "检测到潜在冲突 此次 rebase 将在 ${slot1} 中产生冲突：${slot2} ${slot3}",
+			"translation": "检测到潜在冲突。此次变基将在 ${slot1} 中产生冲突：${slot2} ${slot3}",
 			"slots": ["slot1", "slot2", "slot3"]
 		},
 		{
 			"id": "message.b7249a8dde1c8958cd93d6a7443f1ef8daea45f9c036a05edcdceb586fe8d466",
 			"kind": "literal",
 			"source": "GitLens: Toggle Line Blame Annotations",
-			"translation": "GitLens: 切换行 Blame 注解"
+			"translation": "GitLens: 切换行追溯注解"
 		},
 		{
 			"id": "message.b7331496fccd3de054a138a94b8a54ea99bf29146faf3b0227bc0de417558653",
@@ -11210,7 +11186,7 @@
 			"id": "message.b98ca43cd543214960db7bf409368cd294b84991fc2a030d5bd81fb634d389e7",
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, explore, and manage Git commits",
-			"translation": "添加一个${slot1}，用于可视化、浏览和管理 Git 提交",
+			"translation": "添加一个 ${slot1}，用于可视化、浏览和管理 Git 提交",
 			"slots": ["slot1"]
 		},
 		{
@@ -11271,7 +11247,7 @@
 			"id": "message.bae4caa8f5d10fc447a2d3f42d98c0f0ce765925e7a9ddda4fed5955d8f44127",
 			"kind": "template",
 			"source": "Add a ${slot1} command",
-			"translation": "添加一个${slot1}命令",
+			"translation": "添加一个 ${slot1} 命令",
 			"slots": ["slot1"]
 		},
 		{
@@ -11285,7 +11261,7 @@
 			"id": "message.bafc6f47970473217a1463e7d12f7acbb25d055f14e870b38c78eaedd626bbb4",
 			"kind": "literal",
 			"source": "Specifies whether to provide any hovers when showing blame annotations",
-			"translation": "指定在显示 Blame 注解时是否提供任何悬停提示"
+			"translation": "指定在显示追溯注解时是否提供任何悬停提示"
 		},
 		{
 			"id": "message.bb0a8e3389754e55a311b765e2167b47112f716e8389f97a2f6ecedef44a2e9f",
@@ -11405,13 +11381,13 @@
 			"id": "message.bcf27724ab768c3622f12e16a2fe844c5b3d8a472ef047c8821f6ad569e92fc6",
 			"kind": "literal",
 			"source": "GitLens: Toggle File Blame Annotations",
-			"translation": "GitLens: 切换文件 Blame 注解"
+			"translation": "GitLens: 切换文件追溯注解"
 		},
 		{
 			"id": "message.bd6a7a05b3d024e782bb99ab35cfbb0dbc31c1e62e77e45a5650a09ac376c738",
 			"kind": "template",
 			"source": "Adds a ${slot1}, hidden by default, to visualize, navigate, and explore the revision history of the selected lines of current file",
-			"translation": "添加一个默认隐藏的${slot1}，用于可视化、导航和浏览当前文件所选行的修订历史",
+			"translation": "添加一个默认隐藏的 ${slot1}，用于可视化、导航和浏览当前文件所选行的修订历史",
 			"slots": ["slot1"]
 		},
 		{
@@ -11436,7 +11412,7 @@
 			"id": "message.be0ab0a3e8623781874859ed0b5901e394ad5488eb5a4b33afad086506fc4c59",
 			"kind": "template",
 			"source": "Use the ${slot1} command to toggle Review mode",
-			"translation": "使用${slot1}命令来切换审阅模式",
+			"translation": "使用 ${slot1} 命令来切换审阅模式",
 			"slots": ["slot1"]
 		},
 		{
@@ -11524,7 +11500,7 @@
 			"id": "message.bfa8893a5c3e816c78160a8f68bc90c8bf52305464b0b4e6eaa3003e15864ab2",
 			"kind": "literal",
 			"source": "Show Home View",
-			"translation": "显示主页 视图"
+			"translation": "显示主页视图"
 		},
 		{
 			"id": "message.c05b20966b3f0cf9a424fb818e1e90cb0e82c540069c27c3c96f978b60441c3e",
@@ -11611,7 +11587,7 @@
 			"id": "message.c171efceb1ec7413de7278b27bfc014e4547af69c13934bbcf4dfe319ec2a6ea",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Worktrees_ view. Only applies when `#gitlens.views.worktrees.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _工作树_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.worktrees.files.layout#` 设置为 `tree` or `auto` 时适用",
+			"translation": "指定是否在 _工作树_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.worktrees.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -11684,7 +11660,7 @@
 			"id": "message.c28133e3600bb47d4db409d2cfaed870dec07dc880c009aef4f5173732b333d9",
 			"kind": "literal",
 			"source": "Jump to File Blame settings",
-			"translation": "跳转到文件 Blame 设置"
+			"translation": "跳转到文件追溯设置"
 		},
 		{
 			"id": "message.c2a0a8c94617a329c0acb37498e77c9cf502c386b88e65bec513f60883c067a4",
@@ -11710,7 +11686,7 @@
 			"id": "message.c30f6783051a8744a548c268484bf9f7dc9b6aa7df2a0e2713366ac23eeee0a4",
 			"kind": "template",
 			"source": "Connect hosting services like ${slot1} and issue trackers like ${slot2} to track progress and take action on PRs and issues related to your branches.",
-			"translation": "连接 ${slot1} 等托管服务以及 ${slot2} 等 Issue 跟踪器，以跟踪进度并对与你的分支相关的 PR 和 Issue 采取操作。",
+			"translation": "连接 ${slot1} 等托管服务以及 ${slot2} 等 Issue 跟踪器，以跟踪进度，并处理与你的分支相关的 PR 和 Issue。",
 			"slots": ["slot1", "slot2"]
 		},
 		{
@@ -11905,7 +11881,7 @@
 			"id": "message.c71ea29dc51fca1dd461be587888c6d47d8ede25b934585aa700fca7847d03b2",
 			"kind": "template",
 			"source": "Add ${slot1} commands",
-			"translation": "添加${slot1}命令",
+			"translation": "添加 ${slot1} 命令",
 			"slots": ["slot1"]
 		},
 		{
@@ -11925,7 +11901,7 @@
 			"id": "message.c783998edfdc8e3a357f4138574edaa9d2f279d329ea7a655e34ed2afb91853d",
 			"kind": "template",
 			"source": "Advantages of GitLens Pro Upgrade to Pro ${slot1} Unlimited cloud integrations Smart AI features &mdash; 250K tokens/week Powerful tools &mdash; Commit Graph, Visual History, & Git Worktrees for private repos Streamlined workflows &mdash; start work from issues, pull request reviews Upgrade to Advanced ${slot2} Self-hosted integrations Advanced AI features &mdash; 1M tokens/week",
-			"translation": "GitLens Pro 的优势 升级到 Pro ${slot1} 无限云集成 智能 AI 功能 &mdash; 250K tokens/week 强大工具 &mdash; 适用于私有仓库的提交图、可视历史和 Git 工作树 精简工作流 &mdash; 从 issue、拉取请求评审开始工作 升级到 Advanced ${slot2} 自托管集成 高级 AI 功能 &mdash; 1M tokens/week",
+			"translation": "GitLens Pro 的优势 升级到 Pro ${slot1} 无限云集成 智能 AI 功能 &mdash; 每周 25 万 tokens 强大工具 &mdash; 适用于私有仓库的提交图、可视历史和 Git 工作树 精简工作流 &mdash; 从 Issue 和拉取请求评审开始工作 升级到 Advanced ${slot2} 自托管集成 高级 AI 功能 &mdash; 每周 100 万 tokens",
 			"slots": ["slot1", "slot2"]
 		},
 		{
@@ -12028,7 +12004,7 @@
 			"id": "message.c9610441bd6f539216690a297952ed37bea24294169345fed31b939b8bdb71b0",
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, navigate, and explore the revision history of the current file, a specified file or folder, or just the selected lines of the current file",
-			"translation": "添加一个${slot1}，用于可视化、导航和浏览当前文件、指定文件或文件夹，或仅当前文件所选行的修订历史",
+			"translation": "添加一个 ${slot1}，用于可视化、导航和浏览当前文件、指定文件或文件夹，或仅当前文件所选行的修订历史",
 			"slots": ["slot1"]
 		},
 		{
@@ -12150,7 +12126,7 @@
 			"id": "message.cbad0b25308039cd3ff1ade6c1ab2a2d3090b907753130c2f9f9a472855cbfc4",
 			"kind": "literal",
 			"source": "Specifies how the file blame annotations will be toggled",
-			"translation": "指定如何切换文件 Blame 注解"
+			"translation": "指定如何切换文件追溯注解"
 		},
 		{
 			"id": "message.cbb8a7d507eb985e68a7384300999fd2820b963ff039d428f3a99dd72237f2f0",
@@ -12175,7 +12151,7 @@
 			"id": "message.cbec4b682635e31ad3cba8c0d056e3ed4ed519af14eeacdecfd8461e6a39604f",
 			"kind": "template",
 			"source": "Pull ${slot1}",
-			"translation": "拉取${slot1}",
+			"translation": "拉取 ${slot1}",
 			"slots": ["slot1"]
 		},
 		{
@@ -12189,7 +12165,7 @@
 			"id": "message.cc1d9797879387582177356cd03f115ed5a53355caa2a6e1e825b928a9beff16",
 			"kind": "template",
 			"source": "Adds a ${slot1} to see rich details for a commit",
-			"translation": "添加一个${slot1}，以查看某个提交的丰富详情",
+			"translation": "添加一个 ${slot1}，以查看某个提交的丰富详情",
 			"slots": ["slot1"]
 		},
 		{
@@ -12220,7 +12196,7 @@
 			"id": "message.cc859dc4d5a2fb59c66a8de0c83b47459e60c7360e5dd0404c112c61a67b46f1",
 			"kind": "literal",
 			"source": "is",
-			"translation": ""
+			"translation": "is"
 		},
 		{
 			"id": "message.ccc02f4405c221e7e6662bd46dd01ea8387e432c829a8f88e63ad872e2272f90",
@@ -12262,13 +12238,13 @@
 			"id": "message.cd8873bad71df3922623cf50705e2b3a730dc3e77973443f3858f71581aa3f27",
 			"kind": "literal",
 			"source": "Files larger than the threshold will only be recomputed when saved Also applies to inline blame annotations",
-			"translation": "大于该阈值的文件只会在保存时重新计算。此设置也适用于行内 Blame 注解"
+			"translation": "大于该阈值的文件只会在保存时重新计算。此设置也适用于行内追溯注解"
 		},
 		{
 			"id": "message.cd8c967db7564104af4a36a4bd2feb56131946f2fc945f986200e85533c8dcf6",
 			"kind": "template",
 			"source": "${slot1} reviewers",
-			"translation": "${slot1}需要审查者",
+			"translation": "${slot1} 需要审查者",
 			"slots": ["slot1"]
 		},
 		{
@@ -12313,7 +12289,7 @@
 			"id": "message.cdf3cb7f3572d04b49cbc8185fbdf63165b7cae00d3ca84b41f2305195936189",
 			"kind": "rich",
 			"source": "Thanks for installing GitLens and trying out GitLens Pro.\n\nYou're now on the **GitLens Community** edition.\nTrack code changes and see who made them with features like in-editor blame annotations, hovers, CodeLens, and more—completely free.\n\nLearn more about the [difference between GitLens Community vs. Pro](command:gitlens.walkthrough.openCommunityVsPro).\n\n**Unlock more powerful tools with GitLens Pro**\n\n[Upgrade to GitLens Pro](command:gitlens.walkthrough.plus.upgrade)\n\nWith GitLens Pro, you can accelerate PR reviews, visualize code history in-depth, and enhance collaboration across your team. It's the perfect upgrade to streamline your VS Code workflow.",
-			"translation": "感谢你安装 GitLens 并试用 GitLens Pro。\n\n你现在使用的是 **GitLens Community** 版本。\n借助编辑器内 Blame 注解、悬停、CodeLens 等功能来跟踪代码更改并查看修改者，而且完全免费。\n\n进一步了解 [GitLens Community 与 Pro 的区别](command:gitlens.walkthrough.openCommunityVsPro)。\n\n**通过 GitLens Pro 解锁更强大的工具**\n\n[升级到 GitLens Pro](command:gitlens.walkthrough.plus.upgrade)\n\n通过 GitLens Pro，你可以加速拉取请求审查、更深入地可视化代码历史，并增强团队协作。它是精简 VS Code 工作流的理想升级。",
+			"translation": "感谢你安装 GitLens 并试用 GitLens Pro。\n\n你现在使用的是 **GitLens Community** 版本。\n借助编辑器内追溯注解、悬停、CodeLens 等功能来跟踪代码更改并查看修改者，而且完全免费。\n\n进一步了解 [GitLens Community 与 Pro 的区别](command:gitlens.walkthrough.openCommunityVsPro)。\n\n**通过 GitLens Pro 解锁更强大的工具**\n\n[升级到 GitLens Pro](command:gitlens.walkthrough.plus.upgrade)\n\n通过 GitLens Pro，你可以加速拉取请求审查、更深入地可视化代码历史，并增强团队协作。它是精简 VS Code 工作流的理想升级。",
 			"format": "markdown",
 			"slots": []
 		},
@@ -12389,7 +12365,7 @@
 			"id": "message.cf4a078a1de9c3d321b025e524e252a891d69ce02772fd290b660b394c204548",
 			"kind": "template",
 			"source": "This ${slot1} is not currently visible in the Commit Graph.",
-			"translation": "此${slot1}当前在提交图中不可见。",
+			"translation": "此 ${slot1} 当前在提交图中不可见。",
 			"slots": ["slot1"]
 		},
 		{
@@ -12446,7 +12422,7 @@
 			"id": "message.d01f0e49f0b8341b56fe9eaab7f911b7e90cd37a481a165a12b8008169926fb9",
 			"kind": "literal",
 			"source": "have",
-			"translation": ""
+			"translation": "have"
 		},
 		{
 			"id": "message.d029c6d1dfc3e0e14b9e71c909b7f8739922cd2d1104ad53e6ee5b9cb0e52e70",
@@ -12549,7 +12525,7 @@
 			"id": "message.d256247fa7f13fded15ae0ae7d2c0f6d35bd2f9737ac1b0a5d56c6165c14bf7d",
 			"kind": "template",
 			"source": "Use the ${slot1} command to override this setting for the current window",
-			"translation": "使用${slot1}命令可为当前窗口覆盖此设置",
+			"translation": "使用 ${slot1} 命令可为当前窗口覆盖此设置",
 			"slots": ["slot1"]
 		},
 		{
@@ -12634,13 +12610,13 @@
 			"id": "message.d3ba0beeb6bac9b3b4588a9d002da5ce4a75c9e27bf6f88645182fa633ac0e0f",
 			"kind": "literal",
 			"source": "Inline Blame",
-			"translation": "行内 Blame"
+			"translation": "行内追溯"
 		},
 		{
 			"id": "message.d3cc4c2adca833fd4c05486b7d19928a44a2e8a284e6a9a0d23e4157959a680f",
 			"kind": "template",
 			"source": "Adds a ${slot1} to search and explore commit histories by message, author, files, id, etc, or visualize comparisons between branches, tags, commits, and more",
-			"translation": "添加一个${slot1}，用于按消息、作者、文件、ID 等搜索和浏览提交历史，或可视化分支、标签、提交等之间的比较",
+			"translation": "添加一个 ${slot1}，用于按消息、作者、文件、ID 等搜索和浏览提交历史，或可视化分支、标签、提交等之间的比较",
 			"slots": ["slot1"]
 		},
 		{
@@ -13047,13 +13023,13 @@
 			"id": "message.db8e3d7f621e1acb4bedccd65252203964a673556e9f8707b0505e08f5aa7f84",
 			"kind": "literal",
 			"source": "File Blame",
-			"translation": "文件 Blame"
+			"translation": "文件追溯"
 		},
 		{
 			"id": "message.dba903d7c83dbd6e2c9752da3424064931818353fc4763de551261e1fa6bfb17",
 			"kind": "template",
 			"source": "Adds a ${slot1}, hidden by default, to visualize, explore, and manage Git repositories",
-			"translation": "添加一个默认隐藏的${slot1}，用于可视化、浏览和管理 Git 仓库",
+			"translation": "添加一个默认隐藏的 ${slot1}，用于可视化、浏览和管理 Git 仓库",
 			"slots": ["slot1"]
 		},
 		{
@@ -13105,7 +13081,7 @@
 			"id": "message.dc2f0279a7d5bc3f16954869a31f3027b681c3bd9952bd7629fcfb27d63e3238",
 			"kind": "literal",
 			"source": "are",
-			"translation": ""
+			"translation": "are"
 		},
 		{
 			"id": "message.dc3fccad2d8d6d369773e20c31b0ef59be01d626b09f0d992c3bce0b6e36bb89",
@@ -13211,7 +13187,7 @@
 			"id": "message.dd81502aef07f5563080bed9a8076e02d61cd7fea4d98c1b18c2782fbcd919df",
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, explore, and manage Git worktrees",
-			"translation": "添加一个${slot1}，用于可视化、浏览和管理 Git 工作树",
+			"translation": "添加一个 ${slot1}，用于可视化、浏览和管理 Git 工作树",
 			"slots": ["slot1"]
 		},
 		{
@@ -13450,7 +13426,7 @@
 			"id": "message.e1ec0e0be39cb86db7dddb5614280d923e874037eeda6e6e9162749272574810",
 			"kind": "template",
 			"source": "${slot1} failed CI checks",
-			"translation": "${slot1}CI 检查失败",
+			"translation": "${slot1} CI 检查失败",
 			"slots": ["slot1"]
 		},
 		{
@@ -13773,7 +13749,7 @@
 			"id": "message.e6fc8a3677ca87d3e85c853c44a076a91315d0f31f2329aa58abd15a11ec8692",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Cloud Workspaces_ view. Only applies when `#gitlens.views.workspaces.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _云工作区_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.workspaces.files.layout#` 设置为 `tree` or `auto` 时适用",
+			"translation": "指定是否在 _云工作区_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.workspaces.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -13830,7 +13806,7 @@
 			"id": "message.e8323e24e1de457ae427cdee280707a915a2deb5f9b577ec941b2eaf1ef8b3dc",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Pull Request_ view. Only applies when `#gitlens.views.pullRequest.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _拉取请求_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.pullRequest.files.layout#` 设置为 `tree` or `auto` 时适用",
+			"translation": "指定是否在 _拉取请求_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.pullRequest.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -13857,7 +13833,7 @@
 			"id": "message.e8bd55e3c8429b86859684e766278b836c3e2e3d4a267af48b912c7ef4676c65",
 			"kind": "rich",
 			"source": "See who changed a line, when and why — without leaving your editor. Hover over blame annotations to:\n\n- View previous file revisions\n\n- Open related PRs\n\n- Jump to commits in the Graph\n\n- Compare with previous versions\n\n[Configure Inline Blame](command:gitlens.showSettingsPage!current-line)",
-			"translation": "无需离开编辑器，即可查看是谁在何时、为何修改了某一行。将鼠标悬停在 Blame 注解上即可：\n\n- 查看之前的文件修订\n\n- 打开关联的 PR\n\n- 跳转到图表中的提交\n\n- 与先前版本进行比较\n\n[配置行内 Blame](command:gitlens.showSettingsPage!current-line)",
+			"translation": "无需离开编辑器，即可查看是谁在何时、为何修改了某一行。将鼠标悬停在追溯注解上即可：\n\n- 查看之前的文件修订\n\n- 打开关联的 PR\n\n- 跳转到图表中的提交\n\n- 与先前版本进行比较\n\n[配置行内追溯](command:gitlens.showSettingsPage!current-line)",
 			"format": "markdown",
 			"slots": []
 		},
@@ -13883,7 +13859,7 @@
 			"id": "message.e948d8af7e3e581fcefb5920580d43b4b1e929d365f6f498917b1c466794652b",
 			"kind": "rich",
 			"source": "Specifies the uncommitted changes format of the inline blame annotation. See [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens) in the GitLens docs. Date formatting is controlled by the `#gitlens.currentLine.dateFormat#` setting.\n\n**NOTE**: Setting this to an empty string will disable inline blame annotations for uncommitted changes.",
-			"translation": "指定行内 Blame 注解中未提交更改的格式。请参阅 GitLens 文档中的 [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens)。日期格式由 `#gitlens.currentLine.dateFormat#` 设置控制。\n\n**注意：** 将其设置为空字符串会禁用未提交更改的行内 Blame 注解。",
+			"translation": "指定行内追溯注解中未提交更改的格式。请参阅 GitLens 文档中的 [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens)。日期格式由 `#gitlens.currentLine.dateFormat#` 设置控制。\n\n**注意：** 将其设置为空字符串会禁用未提交更改的行内追溯注解。",
 			"format": "markdown",
 			"slots": []
 		},
@@ -14137,13 +14113,13 @@
 			"id": "message.ed38e6c7773cbd5b20caba354948696a5e0309a967721046a563174f1d9760f0",
 			"kind": "literal",
 			"source": "Open Blame Prior to Change",
-			"translation": "打开更改前的 Blame"
+			"translation": "打开更改前的追溯"
 		},
 		{
 			"id": "message.ed41c13e81563b807246f54c19eddf093063b01eb55b0cef72390be00eeda165",
 			"kind": "literal",
 			"source": "toggles the file blame (default)",
-			"translation": "切换文件 Blame（默认）"
+			"translation": "切换文件追溯（默认）"
 		},
 		{
 			"id": "message.ed4c1ddf7011c18d9ad10c0cdbc317ddbf62ddc2b06e5859cf4622655affaeab",
@@ -14173,7 +14149,7 @@
 			"id": "message.ede3c81b4a54808f31f456d9f569fe963380cc2224555d6546329e88d493fc67",
 			"kind": "literal",
 			"source": "Jump to Inline Blame settings",
-			"translation": "跳转到行内 Blame 设置"
+			"translation": "跳转到行内追溯设置"
 		},
 		{
 			"id": "message.ede9d62c705397cfa6778ef740365f5255422a64d34cf02ef72de42847071a72",
@@ -14324,7 +14300,7 @@
 			"id": "message.f10ce45e4b551b4905e2183226ae9632c4c7ebb2e9753ca4be76ac3a96f3495e",
 			"kind": "template",
 			"source": "${slot1} changed",
-			"translation": "${slot1}已更改",
+			"translation": "${slot1} 已更改",
 			"slots": ["slot1"]
 		},
 		{
@@ -14447,7 +14423,7 @@
 			"id": "message.f27f31bb407d0b5722fadac18f191fe889783598558790cb10c02c9552a595a4",
 			"kind": "template",
 			"source": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"Fetch All\" href= ${slot1} >",
-			"translation": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"获取全部\" href= ${slot1} >",
+			"translation": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"全部抓取\" href= ${slot1} >",
 			"slots": ["slot1"]
 		},
 		{
@@ -14478,7 +14454,7 @@
 			"id": "message.f2e1343391a55fd9da2fb44e75a1d39058664fb7d2e5c120c55350ed1856ade5",
 			"kind": "literal",
 			"source": "Specifies whether to ignore whitespace when comparing revisions during blame operations",
-			"translation": "指定在 blame 操作中比较修订时是否忽略空白字符"
+			"translation": "指定在追溯操作中比较修订时是否忽略空白字符"
 		},
 		{
 			"id": "message.f33061c835a836b93de89d768804f28fda94c12401d6d5f18e5ca2040c26d929",
@@ -14592,7 +14568,7 @@
 			"id": "message.f4dc8bee4bcbeaa8f8a21ccfbf2122a0cf58d19d46ccbb79baa8965899b03184",
 			"kind": "template",
 			"source": "Branch ${slot1}Merged into Merge Target",
-			"translation": "分支${slot1}已合并到合并目标",
+			"translation": "分支 ${slot1} 已合并到合并目标",
 			"slots": ["slot1"]
 		},
 		{
@@ -14681,13 +14657,13 @@
 			"id": "message.f69a760662d33766b3bd6fdb0c143fad4cc3c992bc51aa2e6515e4d7a0e61d9f",
 			"kind": "literal",
 			"source": "need",
-			"translation": ""
+			"translation": "need"
 		},
 		{
 			"id": "message.f706d79056abb7ce346dda9cb9028f28054fca918953a85fa9e46d1a726749cd",
 			"kind": "template",
 			"source": "Add an ${slot1} command",
-			"translation": "添加一个${slot1}命令",
+			"translation": "添加一个 ${slot1} 命令",
 			"slots": ["slot1"]
 		},
 		{
@@ -14700,7 +14676,7 @@
 			"id": "message.f720d08d3df2349e0adf706a520405a5f18fe31b154e4de5d1dd02710a3798fb",
 			"kind": "template",
 			"source": "Explain Changes in this ${slot1}",
-			"translation": "解释此${slot1}中的更改",
+			"translation": "解释此 ${slot1} 中的更改",
 			"slots": ["slot1"]
 		},
 		{
@@ -14863,7 +14839,7 @@
 			"id": "message.fa1798d96fdaf2c0fd7a15e2f3e68aaeb89c5d99ae9841d5d6829ff0aa56c84c",
 			"kind": "literal",
 			"source": "Home: Failed to refetch repositories state",
-			"translation": "Home：重新获取仓库状态失败"
+			"translation": "主页：重新获取仓库状态失败"
 		},
 		{
 			"id": "message.fa3ec7fcdd6a6e2fb23f63bfaec70304886ba17e28f6f4a0de6b45e40020d1de",
@@ -14993,7 +14969,7 @@
 			"id": "message.fc5e210e3e13d4075f2014be52a2e03d16bbd4db63d827dd610e069cd88c4e88",
 			"kind": "literal",
 			"source": "Customize on-demand blame, changes, or heatmap annotations for the whole file",
-			"translation": "自定义整个文件的按需 Blame、更改或热度图注解"
+			"translation": "自定义整个文件的按需追溯、更改或热度图注解"
 		},
 		{
 			"id": "message.fcc77c0faca9bfb057158c758e31223a6bd8f1175267f1ac7fc35ebed071d66b",
@@ -15017,7 +14993,7 @@
 			"id": "message.fd16d001813334be0ff1c7e21009de82c67c8a691f34a74652bcfc6e4143283e",
 			"kind": "literal",
 			"source": "Hover over blame annotations to:",
-			"translation": "将鼠标悬停在 Blame 注解上即可："
+			"translation": "将鼠标悬停在追溯注解上即可："
 		},
 		{
 			"id": "message.fd214b790a6b1cf050c594dc03a155025f46cd8b63dcb2b5b2474adee6a9e9b4",
@@ -15041,7 +15017,7 @@
 			"id": "message.fd9403017902558118a6d6feeb431190ba09f78beb3998e1f1a2cd3adad5855f",
 			"kind": "rich",
 			"source": "Specifies whether the inline blame annotation can be scrolled into view when it is outside the viewport. **NOTE**: Setting this to `false` will inhibit the hovers from showing over the annotation; Set `#gitlens.hovers.currentLine.over#` to `line` to enable the hovers to show anywhere over the line.",
-			"translation": "指定当行内 Blame 注解位于视口外时是否可滚动到视图中。**注意：** 将其设为 `false` 会阻止悬停提示在注解上显示；将 `#gitlens.hovers.currentLine.over#` 设为 `line` 可启用悬停提示在整行任意位置显示。",
+			"translation": "指定当行内追溯注解位于视口外时是否可滚动到视图中。**注意：** 将其设为 `false` 会阻止悬停提示在注解上显示；将 `#gitlens.hovers.currentLine.over#` 设为 `line` 可启用悬停提示在整行任意位置显示。",
 			"format": "markdown",
 			"slots": []
 		},
@@ -15076,7 +15052,7 @@
 			"id": "message.fe5d8d68a95e617f0a26aefb9a292a418b203f2e663c9fd337be0b77b48f3123",
 			"kind": "literal",
 			"source": "Specifies whether to provide a _changes (diff)_ hover for all lines when showing blame annotations",
-			"translation": "指定在显示 Blame 注解时是否为所有行提供 _changes (diff)_ 悬停提示"
+			"translation": "指定在显示追溯注解时是否为所有行提供 _changes (diff)_ 悬停提示"
 		},
 		{
 			"id": "message.fe6d075b88cfd27a571d943b18b9ba2e75bae1880605cb15ad0dafed6ae4c537",
@@ -15100,7 +15076,7 @@
 			"id": "message.feb805119951d7fa92457a0866fb2041f9a3f37d2ff552d3bd6c880a975913d2",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Commit Details_ view. Only applies when `#gitlens.views.commitDetails.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _提交详情_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.commitDetails.files.layout#` 设置为 `tree` or `auto` 时适用",
+			"translation": "指定是否在 _提交详情_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.commitDetails.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},

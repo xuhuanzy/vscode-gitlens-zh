@@ -1,24 +1,41 @@
 {
 	"$schema": "http://json-schema.org/draft-07/schema#",
-	"title": "Source Catalog",
+	"title": "Catalog Reconciliation Report",
 	"type": "object",
 	"additionalProperties": false,
-	"required": ["$schema", "version", "domain", "generatedAt", "deferredDomains", "occurrences", "reconciliation"],
+	"required": ["$schema", "version", "domain", "generatedAt", "entries", "summary"],
 	"properties": {
 		"$schema": { "type": "string" },
-		"version": { "const": 3 },
+		"version": { "const": 1 },
 		"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "runtimeCensus"] },
 		"generatedAt": { "type": "string", "format": "date-time" },
-		"deferredDomains": {
+		"entries": {
 			"type": "array",
-			"items": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "runtimeCensus"] }
+			"items": { "$ref": "#/definitions/reconciliationEntry" }
 		},
-		"occurrences": {
-			"type": "array",
-			"items": { "$ref": "#/definitions/occurrence" }
+		"summary": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["added", "changed", "moved", "removed", "ambiguous"],
+			"properties": {
+				"added": { "type": "integer", "minimum": 0 },
+				"changed": { "type": "integer", "minimum": 0 },
+				"moved": { "type": "integer", "minimum": 0 },
+				"removed": { "type": "integer", "minimum": 0 },
+				"ambiguous": { "type": "integer", "minimum": 0 }
+			}
 		}
 	},
 	"definitions": {
+		"position": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["line", "column"],
+			"properties": {
+				"line": { "type": "integer", "minimum": 1 },
+				"column": { "type": "integer", "minimum": 1 }
+			}
+		},
 		"sourceReference": {
 			"anyOf": [
 				{
@@ -52,15 +69,6 @@
 				}
 			]
 		},
-		"position": {
-			"type": "object",
-			"additionalProperties": false,
-			"required": ["line", "column"],
-			"properties": {
-				"line": { "type": "integer", "minimum": 1 },
-				"column": { "type": "integer", "minimum": 1 }
-			}
-		},
 		"outputReference": {
 			"anyOf": [
 				{
@@ -84,33 +92,20 @@
 				}
 			]
 		},
-		"occurrence": {
+		"reconciliationEntry": {
 			"type": "object",
 			"additionalProperties": false,
-			"required": [
-				"id",
-				"domain",
-				"scope",
-				"anchor",
-				"slot",
-				"authorityId",
-				"pattern",
-				"sourceText",
-				"sourceHash",
-				"reference"
-			],
+			"required": ["occurrenceId", "change"],
 			"properties": {
-				"id": { "type": "string" },
-				"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "runtimeCensus"] },
-				"scope": { "type": "string" },
+				"occurrenceId": { "type": "string" },
+				"change": { "enum": ["added", "changed", "moved", "removed", "ambiguous"] },
 				"anchor": { "type": "string" },
-				"slot": { "type": "string" },
-				"authorityId": { "type": "string" },
-				"pattern": { "$ref": "./messagePattern.schema.json" },
-				"sourceText": { "type": "string" },
-				"sourceHash": { "type": "string" },
-				"reference": { "$ref": "#/definitions/sourceReference" },
-				"output": { "$ref": "#/definitions/outputReference" }
+				"previousReference": { "$ref": "#/definitions/sourceReference" },
+				"currentReference": { "$ref": "#/definitions/sourceReference" },
+				"previousSourceHash": { "type": "string" },
+				"currentSourceHash": { "type": "string" },
+				"output": { "$ref": "#/definitions/outputReference" },
+				"reason": { "type": "string" }
 			}
 		}
 	}

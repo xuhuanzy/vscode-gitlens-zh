@@ -4,7 +4,6 @@ import {
 	createContentHash,
 	createJsonSourceReference,
 	createOccurrenceId,
-	createPatternFingerprint,
 	parseMessagePattern,
 	sanitizeKeySegment,
 	shortHash,
@@ -22,7 +21,6 @@ interface OccurrenceInput {
 	readonly slot: string;
 	readonly pathSegments: JsonPathSegment[];
 	readonly sourceText: string;
-	readonly businessId?: string;
 }
 
 interface ResolvedSource {
@@ -70,7 +68,6 @@ export function extractManifestOccurrences(
 			key: `badges.${identity}.description`,
 			slot: 'description',
 			pathSegments: ['badges', index, 'description'],
-			businessId: identity,
 		});
 	}
 
@@ -142,7 +139,6 @@ function extractMcpLabels(
 			key: `contributes.mcpServerDefinitionProviders.${sanitizeKeySegment(record.id)}.label`,
 			slot: 'label',
 			pathSegments: ['contributes', 'mcpServerDefinitionProviders', index, 'label'],
-			businessId: record.id,
 		});
 	}
 }
@@ -162,7 +158,6 @@ function extractConfiguration(
 				key: `contributes.configuration.${sanitizeKeySegment(section.id)}.title`,
 				slot: 'title',
 				pathSegments: ['contributes', 'configuration', sectionIndex, 'title'],
-				businessId: section.id,
 			});
 		}
 
@@ -176,7 +171,6 @@ function extractConfiguration(
 					key: `contributes.configuration.${sanitizeKeySegment(settingKey)}.${field}`,
 					slot: field,
 					pathSegments: ['contributes', 'configuration', sectionIndex, 'properties', settingKey, field],
-					businessId: settingKey,
 				});
 			}
 
@@ -196,7 +190,6 @@ function extractConfiguration(
 						'enumDescriptions',
 						enumIndex,
 					],
-					businessId: settingKey,
 				});
 			}
 		}
@@ -220,7 +213,6 @@ function extractCommands(
 			key: `contributes.commands.${commandId}.title`,
 			slot: 'title',
 			pathSegments: ['contributes', 'commands', index, 'title'],
-			businessId: command.command,
 		});
 		addIfString(resolvePotentialToken(command.category, englishNls), {
 			scope: 'manifest.command',
@@ -228,7 +220,6 @@ function extractCommands(
 			key: `contributes.commands.${commandId}.category`,
 			slot: 'category',
 			pathSegments: ['contributes', 'commands', index, 'category'],
-			businessId: command.command,
 		});
 	}
 }
@@ -249,7 +240,6 @@ function extractSubmenus(
 			key: `contributes.submenus.${sanitizeKeySegment(submenu.id)}.label`,
 			slot: 'label',
 			pathSegments: ['contributes', 'submenus', index, 'label'],
-			businessId: submenu.id,
 		});
 	}
 }
@@ -272,7 +262,6 @@ function extractViewsContainers(
 				key: `contributes.viewsContainers.${sanitizeKeySegment(location)}.${sanitizeKeySegment(container.id)}.title`,
 				slot: 'title',
 				pathSegments: ['contributes', 'viewsContainers', location, index, 'title'],
-				businessId: container.id,
 			});
 		}
 	}
@@ -297,7 +286,6 @@ function extractViews(
 				key: `${keyPrefix}.name`,
 				slot: 'name',
 				pathSegments: ['contributes', 'views', containerId, index, 'name'],
-				businessId: view.id,
 			});
 			addIfString(resolvePotentialToken(view.contextualTitle, englishNls), {
 				scope: 'manifest.view',
@@ -305,7 +293,6 @@ function extractViews(
 				key: `${keyPrefix}.contextualTitle`,
 				slot: 'contextualTitle',
 				pathSegments: ['contributes', 'views', containerId, index, 'contextualTitle'],
-				businessId: view.id,
 			});
 		}
 	}
@@ -343,7 +330,6 @@ function extractViewsWelcome(
 			key: `contributes.viewsWelcome.${sanitizeKeySegment(welcome.view)}.${selector}.contents`,
 			slot: slot,
 			pathSegments: ['contributes', 'viewsWelcome', index, 'contents'],
-			businessId: welcome.view,
 		});
 	}
 }
@@ -365,7 +351,6 @@ function extractWalkthroughs(
 			key: `contributes.walkthroughs.${walkthroughId}.title`,
 			slot: 'title',
 			pathSegments: ['contributes', 'walkthroughs', walkthroughIndex, 'title'],
-			businessId: walkthrough.id,
 		});
 		addIfString(resolvePotentialToken(walkthrough.description, englishNls), {
 			scope: 'manifest.walkthrough',
@@ -373,7 +358,6 @@ function extractWalkthroughs(
 			key: `contributes.walkthroughs.${walkthroughId}.description`,
 			slot: 'description',
 			pathSegments: ['contributes', 'walkthroughs', walkthroughIndex, 'description'],
-			businessId: walkthrough.id,
 		});
 
 		const steps = asArray(walkthrough.steps);
@@ -386,7 +370,6 @@ function extractWalkthroughs(
 				key: `contributes.walkthroughs.${walkthroughId}.steps.${stepId}.title`,
 				slot: 'title',
 				pathSegments: ['contributes', 'walkthroughs', walkthroughIndex, 'steps', stepIndex, 'title'],
-				businessId: `${walkthrough.id}:${stepId}`,
 			});
 			addIfString(resolvePotentialToken(step.description, englishNls), {
 				scope: 'manifest.walkthrough.step',
@@ -394,7 +377,6 @@ function extractWalkthroughs(
 				key: `contributes.walkthroughs.${walkthroughId}.steps.${stepId}.description`,
 				slot: 'description',
 				pathSegments: ['contributes', 'walkthroughs', walkthroughIndex, 'steps', stepIndex, 'description'],
-				businessId: `${walkthrough.id}:${stepId}`,
 			});
 		}
 	}
@@ -408,10 +390,8 @@ function createOccurrence(input: OccurrenceInput): SourceOccurrence {
 		scope: input.scope,
 		anchor: input.anchor,
 		slot: input.slot,
-		businessId: input.businessId,
 		authorityId: createAuthorityId(pattern),
 		pattern: pattern,
-		patternFingerprint: createPatternFingerprint(pattern),
 		sourceText: input.sourceText,
 		sourceHash: createContentHash(input.sourceText),
 		reference: createJsonSourceReference('package.json', input.pathSegments),

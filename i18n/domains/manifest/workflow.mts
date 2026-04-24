@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import type { PendingReportFile } from '../../core/model.mts';
 import { nowIso, outputReferenceId, stableStringify } from '../../core/model.mts';
 import { promoteApprovedEntries, resolveOccurrenceTranslation, syncWorkset } from '../../core/authority.mts';
-import { reconcileCatalog } from '../../core/reconcile.mts';
+import { createReconciliationReport, reconcileCatalog } from '../../core/reconcile.mts';
 import { ensureAuthorityFiles, ensureDomainFiles } from '../../core/store.mts';
 import { writeI18nWorkflowReadme } from '../../workflowReadme.mts';
 
@@ -25,6 +25,7 @@ import {
 	saveLocalizedPackageNls,
 	saveManifest,
 	saveManifestCatalog,
+	saveManifestReconciliationReport,
 	saveManifestWorkset,
 	savePendingReport,
 } from './store.mts';
@@ -53,14 +54,15 @@ export function syncManifestI18n(options: WorkflowOptions = {}): {
 	const bundle = loadAuthorityBundle(context);
 	const previousWorkset = loadManifestWorkset(context);
 	const extraction = extractManifestOccurrences(manifest, englishNls);
-	const catalog = reconcileCatalog(previousCatalog, extraction.occurrences, extraction.issues, {
+	const catalog = reconcileCatalog(previousCatalog, extraction.occurrences);
+	const reconciliation = createReconciliationReport(previousCatalog, catalog, extraction.issues, {
 		domain: 'manifest',
-		schemaPath: '../schemas/sourceCatalog.schema.json',
-		deferredDomains: ['webviews', 'quickpicks', 'formatter', 'runtimeCensus'],
+		schemaPath: '../schemas/reconciliationReport.schema.json',
 	});
 	const workset = syncWorkset(previousWorkset, catalog.occurrences, bundle);
 
 	saveManifestCatalog(context, catalog);
+	saveManifestReconciliationReport(context, reconciliation);
 	saveManifestWorkset(context, workset);
 
 	return {

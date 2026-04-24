@@ -11,6 +11,7 @@ import {
 	loadLocalizedPackageNls,
 	loadManifest,
 	loadManifestCatalog,
+	loadManifestReconciliationReport,
 	loadManifestWorkset,
 	saveAuthorityBundle,
 	saveManifestWorkset,
@@ -188,8 +189,8 @@ function testDuplicateViewsWelcomeKeys(): void {
 
 		syncManifestI18n({ rootDir });
 		const context = createManifestDomainContext(rootDir);
-		const catalog = loadManifestCatalog(context);
-		assert.equal(catalog.reconciliation.summary.ambiguous, 0);
+		const reconciliation = loadManifestReconciliationReport(context);
+		assert.equal(reconciliation.summary.ambiguous, 0);
 
 		generateManifestLocalizedOutputs({ rootDir });
 

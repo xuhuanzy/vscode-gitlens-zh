@@ -2,6 +2,7 @@ import type { ManifestDomainContext } from './context.mts';
 
 import {
 	createEmptyCatalogFile,
+	createEmptyReconciliationReportFile,
 	createEmptyWorksetFile,
 	loadAuthorityBundle,
 	loadCatalog,
@@ -13,6 +14,7 @@ import {
 	saveWorkset,
 	writeJsonFile,
 } from '../../core/store.mts';
+import type { ReconciliationReportFile } from '../../core/model.mts';
 
 export function loadManifest(context: ManifestDomainContext): Record<string, unknown> {
 	return readJsonFile<Record<string, unknown>>(context.manifestFile, {});
@@ -49,6 +51,17 @@ export function saveManifestCatalog(
 	saveCatalog(context, catalog);
 }
 
+export function loadManifestReconciliationReport(context: ManifestDomainContext): ReconciliationReportFile {
+	return readJsonFile(context.reconciliationReportFile, createEmptyManifestReconciliationReportFile());
+}
+
+export function saveManifestReconciliationReport(
+	context: ManifestDomainContext,
+	report: ReconciliationReportFile,
+): void {
+	writeJsonFile(context.reconciliationReportFile, report);
+}
+
 export function loadManifestWorkset(context: ManifestDomainContext) {
 	return loadWorkset(context, createEmptyManifestWorksetFile());
 }
@@ -67,6 +80,13 @@ export function createEmptyManifestCatalogFile() {
 		schemaPath: '../schemas/sourceCatalog.schema.json',
 		domain: 'manifest',
 		deferredDomains: ['webviews', 'quickpicks', 'formatter', 'runtimeCensus'],
+	});
+}
+
+export function createEmptyManifestReconciliationReportFile(): ReconciliationReportFile {
+	return createEmptyReconciliationReportFile({
+		schemaPath: '../schemas/reconciliationReport.schema.json',
+		domain: 'manifest',
 	});
 }
 

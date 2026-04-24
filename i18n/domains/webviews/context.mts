@@ -22,6 +22,7 @@ export function createWebviewsDomainContext(rootDir?: string): {
 	readonly domain: 'webviews';
 	readonly artifactId: 'webviews';
 	readonly catalogFile: string;
+	readonly reconciliationReportFile: string;
 	readonly worksetFile: string;
 	readonly pendingReportFile: string;
 	readonly settingsTemplateFile: string;

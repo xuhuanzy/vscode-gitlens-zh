@@ -60,6 +60,15 @@ export function createLocalizedWebviewConfig(options) {
 			publicPath: `#{root}/dist/webviews/i18n/${options.locale}/`,
 			clean: false,
 		},
+		watchOptions: {
+			...(options.config.watchOptions ?? {}),
+			ignored: addIgnoredPaths(options.config.watchOptions?.ignored, [
+				path.join(options.rootDir, '.work', 'i18n', 'webviews-sources'),
+				path.join(options.rootDir, 'i18n', 'catalog'),
+				path.join(options.rootDir, 'i18n', 'worksets'),
+				path.join(options.rootDir, 'i18n', 'reports'),
+			]),
+		},
 		plugins: plugins,
 		resolve: {
 			...options.config.resolve,
@@ -100,7 +109,10 @@ export class GenerateLocalizedDynamicSourcesPlugin {
 	constructor(options) {
 		this.rootDir = options.rootDir;
 		this.locale = options.locale;
-		this.pathsToWatch = [path.join(this.rootDir, 'src', 'webviews', 'apps'), path.join(this.rootDir, 'i18n')];
+		this.pathsToWatch = [
+			path.join(this.rootDir, 'src', 'webviews', 'apps'),
+			path.join(this.rootDir, 'i18n', 'authority'),
+		];
 	}
 
 	/**
@@ -139,6 +151,18 @@ export class GenerateLocalizedDynamicSourcesPlugin {
 			}
 		});
 	}
+}
+
+/**
+ * @param {import('webpack').WatchOptions['ignored']} ignored
+ * @param {string[]} paths
+ * @returns {import('webpack').WatchOptions['ignored']}
+ */
+function addIgnoredPaths(ignored, paths) {
+	const normalizedPaths = paths.map(value => value.replaceAll('\\', '/'));
+	if (ignored == null) return normalizedPaths;
+	if (Array.isArray(ignored)) return [...ignored, ...normalizedPaths];
+	return [ignored, ...normalizedPaths];
 }
 
 export class GenerateLocalizedSettingsShellPlugin {

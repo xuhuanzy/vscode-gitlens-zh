@@ -2,6 +2,7 @@ import type {
 	CatalogIssue,
 	CatalogReconciliationEntry,
 	I18nDomain,
+	ReconciliationReportFile,
 	SourceCatalogFile,
 	SourceOccurrence,
 } from './model.mts';
@@ -10,18 +11,31 @@ import { cloneOutputReference, cloneSourceReference, nowIso, outputReferenceId, 
 export function reconcileCatalog(
 	previousCatalog: SourceCatalogFile,
 	currentOccurrences: readonly SourceOccurrence[],
+): SourceCatalogFile {
+	return {
+		$schema: previousCatalog.$schema,
+		version: 3,
+		domain: previousCatalog.domain,
+		generatedAt: nowIso(),
+		deferredDomains: [...previousCatalog.deferredDomains],
+		occurrences: [...currentOccurrences].sort(compareOccurrences),
+	};
+}
+
+export function createReconciliationReport(
+	previousCatalog: SourceCatalogFile,
+	currentCatalog: SourceCatalogFile,
 	issues: readonly CatalogIssue[],
 	options: {
 		readonly domain: I18nDomain;
 		readonly schemaPath: string;
-		readonly deferredDomains: readonly I18nDomain[];
 	},
-): SourceCatalogFile {
+): ReconciliationReportFile {
 	const previousById = new Map(previousCatalog.occurrences.map(occurrence => [occurrence.id, occurrence]));
-	const currentById = new Map(currentOccurrences.map(occurrence => [occurrence.id, occurrence]));
+	const currentById = new Map(currentCatalog.occurrences.map(occurrence => [occurrence.id, occurrence]));
 	const entries: CatalogReconciliationEntry[] = [];
 
-	for (const occurrence of currentOccurrences) {
+	for (const occurrence of currentCatalog.occurrences) {
 		const previous = previousById.get(occurrence.id);
 		if (previous == null) {
 			entries.push({
@@ -92,15 +106,11 @@ export function reconcileCatalog(
 
 	return {
 		$schema: options.schemaPath,
-		version: 2,
+		version: 1,
 		domain: options.domain,
 		generatedAt: nowIso(),
-		deferredDomains: [...options.deferredDomains],
-		occurrences: [...currentOccurrences].sort(compareOccurrences),
-		reconciliation: {
-			entries: entries.sort((left, right) => left.occurrenceId.localeCompare(right.occurrenceId)),
-			summary: summarize(entries),
-		},
+		entries: entries.sort((left, right) => left.occurrenceId.localeCompare(right.occurrenceId)),
+		summary: summarize(entries),
 	};
 }
 

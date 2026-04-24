@@ -24,6 +24,7 @@ export interface DomainContext extends I18nWorkspaceContext {
 	readonly domain: I18nDomain;
 	readonly artifactId: string;
 	readonly catalogFile: string;
+	readonly reconciliationReportFile: string;
 	readonly worksetFile: string;
 	readonly pendingReportFile: string;
 }
@@ -72,6 +73,7 @@ export function createDomainContext(
 		domain: options.domain,
 		artifactId: options.artifactId,
 		catalogFile: path.join(workspace.catalogDir, `${options.artifactId}.catalog.json`),
+		reconciliationReportFile: path.join(workspace.reportDir, `${options.artifactId}-reconciliation.json`),
 		worksetFile: path.join(workspace.worksetDir, `${options.artifactId}.${workspace.locale}.json`),
 		pendingReportFile: path.join(
 			workspace.reportDir,

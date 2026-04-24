@@ -3,6 +3,50 @@
 	"version": 2,
 	"locale": "zh-cn",
 	"domain": "webviews",
-	"generatedAt": "2026-04-23T16:04:07.648Z",
-	"entries": []
+	"generatedAt": "2026-04-24T07:40:47.011Z",
+	"entries": [
+		{
+			"id": "message.04f5aedcec3c78696bf26d19a6c2f19de2b3761ddfebafa668f9ed5b8dda7af7",
+			"kind": "literal",
+			"source": "eword",
+			"translation": null,
+			"sourceHash": "97c05c0db52bfeb9e7b6dd16f1610b5e4dc98c459a9385708a3ac5b576d17beb",
+			"occurrenceIds": [
+				"webviews:webviews.rebase.rebase.lit-template-31-footer-1-div-shortcuts-span-shortcut-span-1.text.e5ab6ed7f9#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.6103a661540c5b1c1c34021909bd6949e696cc846620025fa31ef8e5c71db231",
+			"kind": "literal",
+			"source": "Comparison of the",
+			"translation": null,
+			"sourceHash": "0385cce8a6c56314295fe7ae6587ad16081e408646a7845b5c91869135ff7a88",
+			"occurrenceIds": [
+				"webviews:webviews.settings.settings.html-1-body-scrollable-div-container-div-content__area-section-repositories-view-div-section__collapsible-div-section__group-div-section__content-div-settings-div-settings-div-setting-div-setting__input-label-1.text.cebb9a6565#text"
+			],
+			"status": "pending"
+		},
+		{
+			"id": "message.6ba31352d6c47717381f2c3d1f90dd65e0f31d20c13a0652a406dd921e57a21a",
+			"kind": "literal",
+			"source": "requires",
+			"translation": null,
+			"sourceHash": "b9014eaab626647d8cbb266e1e87c18be0ddd847def16bfbd4e25f7097555d88",
+			"occurrenceIds": ["webviews:webviews.home.home.imperative-display-319-73.text.427ef767cf#text"],
+			"status": "pending"
+		},
+		{
+			"id": "message.86d53537dafd3b539fac20c356388cd5ee9fdf07ad9a967108626d9a9163e306",
+			"kind": "literal",
+			"source": "needs",
+			"translation": null,
+			"sourceHash": "266d1c70a4cbe7cdb557b609eb9051660b1d446549a2b16d680ff8ecde11bccc",
+			"occurrenceIds": [
+				"webviews:webviews.home.home.imperative-display-255-72.text.d369224aa2#text",
+				"webviews:webviews.home.home.imperative-display-344-70.text.5b7837fd2a#text"
+			],
+			"status": "pending"
+		}
+	]
 }

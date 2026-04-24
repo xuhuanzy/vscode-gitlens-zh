@@ -22,3 +22,6 @@ tsconfig*.tsbuildinfo
 *.code-workspace
 localdev*.instructions.md
 *.log
+
+
+i18n/reports/*.json

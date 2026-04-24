@@ -8,6 +8,7 @@ import type {
 	AuthorityEntryKind,
 	I18nDomain,
 	PendingReportFile,
+	ReconciliationReportFile,
 	SourceCatalogFile,
 	TranslationWorksetFile,
 } from './model.mts';
@@ -92,20 +93,30 @@ export function createEmptyCatalogFile(options: {
 }): SourceCatalogFile {
 	return {
 		$schema: options.schemaPath,
-		version: 2,
+		version: 3,
 		domain: options.domain,
 		generatedAt: new Date(0).toISOString(),
 		deferredDomains: [...(options.deferredDomains ?? [])],
 		occurrences: [],
-		reconciliation: {
-			entries: [],
-			summary: {
-				added: 0,
-				changed: 0,
-				moved: 0,
-				removed: 0,
-				ambiguous: 0,
-			},
+	};
+}
+
+export function createEmptyReconciliationReportFile(options: {
+	readonly schemaPath: string;
+	readonly domain: I18nDomain;
+}): ReconciliationReportFile {
+	return {
+		$schema: options.schemaPath,
+		version: 1,
+		domain: options.domain,
+		generatedAt: new Date(0).toISOString(),
+		entries: [],
+		summary: {
+			added: 0,
+			changed: 0,
+			moved: 0,
+			removed: 0,
+			ambiguous: 0,
 		},
 	};
 }
@@ -148,12 +159,14 @@ export function readJsonFile<T>(filePath: string, fallback: T): T {
 }
 
 export function writeJsonFile(filePath: string, value: unknown): void {
-	fs.mkdirSync(path.dirname(filePath), { recursive: true });
-	fs.writeFileSync(filePath, `${JSON.stringify(value, undefined, '\t')}\n`, 'utf8');
+	writeTextFile(filePath, `${JSON.stringify(value, undefined, '\t')}\n`);
 }
 
 export function writeTextFile(filePath: string, content: string): void {
 	fs.mkdirSync(path.dirname(filePath), { recursive: true });
+	try {
+		if (fs.readFileSync(filePath, 'utf8') === content) return;
+	} catch {}
 	fs.writeFileSync(filePath, content, 'utf8');
 }
 

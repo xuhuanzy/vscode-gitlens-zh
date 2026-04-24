@@ -5,6 +5,7 @@ import type { WebviewsDomainContext } from './context.mts';
 
 import {
 	createEmptyCatalogFile,
+	createEmptyReconciliationReportFile,
 	createEmptyWorksetFile,
 	loadAuthorityBundle,
 	loadCatalog,
@@ -16,6 +17,7 @@ import {
 	saveWorkset,
 	writeTextFile,
 } from '../../core/store.mts';
+import type { ReconciliationReportFile } from '../../core/model.mts';
 
 export function loadWebviewsCatalog(context: WebviewsDomainContext) {
 	return loadCatalog(context, createEmptyWebviewsCatalogFile());
@@ -26,6 +28,17 @@ export function saveWebviewsCatalog(
 	catalog: ReturnType<typeof createEmptyWebviewsCatalogFile>,
 ): void {
 	saveCatalog(context, catalog);
+}
+
+export function loadWebviewsReconciliationReport(context: WebviewsDomainContext): ReconciliationReportFile {
+	return readJsonFile(context.reconciliationReportFile, createEmptyWebviewsReconciliationReportFile());
+}
+
+export function saveWebviewsReconciliationReport(
+	context: WebviewsDomainContext,
+	report: ReconciliationReportFile,
+): void {
+	writeTextFile(context.reconciliationReportFile, `${JSON.stringify(report, undefined, '\t')}\n`);
 }
 
 export function loadWebviewsWorkset(context: WebviewsDomainContext) {
@@ -112,6 +125,13 @@ export function createEmptyWebviewsCatalogFile() {
 		schemaPath: '../schemas/sourceCatalog.schema.json',
 		domain: 'webviews',
 		deferredDomains: ['quickpicks', 'formatter', 'runtimeCensus'],
+	});
+}
+
+export function createEmptyWebviewsReconciliationReportFile(): ReconciliationReportFile {
+	return createEmptyReconciliationReportFile({
+		schemaPath: '../schemas/reconciliationReport.schema.json',
+		domain: 'webviews',
 	});
 }
 

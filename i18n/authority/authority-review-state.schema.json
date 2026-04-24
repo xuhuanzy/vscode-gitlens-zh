@@ -1,0 +1,32 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Authority Message Review State",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["$schema", "version", "kind", "locale", "updatedAt", "entries"],
+	"properties": {
+		"$schema": { "type": "string" },
+		"version": { "const": 1 },
+		"kind": { "const": "authorityMessageReviewState" },
+		"locale": { "type": "string", "minLength": 1 },
+		"updatedAt": { "type": "string", "format": "date-time" },
+		"entries": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/entry" }
+		}
+	},
+	"definitions": {
+		"entry": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["id", "fingerprint", "reviewedAt", "decision"],
+			"properties": {
+				"id": { "type": "string" },
+				"fingerprint": { "type": "string", "minLength": 1 },
+				"reviewedAt": { "type": "string", "format": "date-time" },
+				"decision": { "const": "approved" },
+				"note": { "type": "string" }
+			}
+		}
+	}
+}

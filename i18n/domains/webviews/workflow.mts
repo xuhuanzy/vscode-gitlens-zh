@@ -7,7 +7,7 @@ import * as ts from 'typescript';
 import type { PendingReportFile } from '../../core/model.mts';
 import { nowIso } from '../../core/model.mts';
 import { promoteApprovedEntries, resolveOccurrenceTranslation, syncWorkset } from '../../core/authority.mts';
-import { reconcileCatalog } from '../../core/reconcile.mts';
+import { createReconciliationReport, reconcileCatalog } from '../../core/reconcile.mts';
 import { ensureAuthorityFiles, ensureDomainFiles } from '../../core/store.mts';
 import { writeI18nWorkflowReadme } from '../../workflowReadme.mts';
 
@@ -16,6 +16,7 @@ import { extractSupportedWebviewOccurrences } from './extractor.mts';
 import { generateLocalizedSettingsShell, generateLocalizedSourceFile } from './generator.mts';
 import {
 	createEmptyWebviewsCatalogFile,
+	createEmptyWebviewsReconciliationReportFile,
 	createEmptyWebviewsWorksetFile,
 	deleteLocalizedDynamicSource,
 	loadAuthorityBundle,
@@ -29,6 +30,7 @@ import {
 	saveLocalizedSettingsShell,
 	savePendingReport,
 	saveWebviewsCatalog,
+	saveWebviewsReconciliationReport,
 	saveWebviewsWorkset,
 } from './store.mts';
 
@@ -130,14 +132,15 @@ export function syncWebviewsI18n(options: WorkflowOptions = {}): {
 		},
 		...loadDynamicExtractionTargets(context),
 	]);
-	const catalog = reconcileCatalog(previousCatalog, extraction.occurrences, extraction.issues, {
+	const catalog = reconcileCatalog(previousCatalog, extraction.occurrences);
+	const reconciliation = createReconciliationReport(previousCatalog, catalog, extraction.issues, {
 		domain: 'webviews',
-		schemaPath: '../schemas/sourceCatalog.schema.json',
-		deferredDomains: ['quickpicks', 'formatter', 'runtimeCensus'],
+		schemaPath: '../schemas/reconciliationReport.schema.json',
 	});
 	const workset = syncWorkset(previousWorkset, catalog.occurrences, bundle);
 
 	saveWebviewsCatalog(context, catalog);
+	saveWebviewsReconciliationReport(context, reconciliation);
 	saveWebviewsWorkset(context, workset);
 
 	return {
@@ -404,6 +407,10 @@ export function ensureControlledWebviewFiles(options: WorkflowOptions = {}): Web
 			},
 			items: [],
 		});
+	}
+
+	if (!fs.existsSync(context.reconciliationReportFile)) {
+		saveWebviewsReconciliationReport(context, createEmptyWebviewsReconciliationReportFile());
 	}
 
 	return context;

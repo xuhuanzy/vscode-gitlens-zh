@@ -3,9 +3,11 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
+import { writeTextFile as writeStoreTextFile } from '../../../core/store.mts';
 import { createWebviewsDomainContext } from '../context.mts';
 import {
 	loadWebviewsCatalog,
+	loadWebviewsReconciliationReport,
 	loadWebviewsWorkset,
 	loadLocalizedDynamicSource,
 	loadLocalizedSettingsShell,
@@ -19,6 +21,7 @@ import {
 	promoteWebviewsAuthority,
 	syncWebviewsI18n,
 } from '../workflow.mts';
+import { createLocalizedWebviewConfig, GenerateLocalizedDynamicSourcesPlugin } from '../webpack.mjs';
 
 run();
 
@@ -26,6 +29,8 @@ function run(): void {
 	testSettingsWorkflow();
 	testWelcomeLocalizedSourceWorkflow();
 	testDynamicSourceGenerationDoesNotRequireBuiltSettingsShell();
+	testLocalizedWebpackWatchIgnoresGeneratedArtifacts();
+	testWriteTextFileSkipsUnchangedWrites();
 	testSupportedDynamicBundlesGenerateLocalizedSources();
 	testWelcomeLocalizedSourceRewritesImportsBackToSourceTree();
 	testGraphBundleGeneratesLocalizedSource();
@@ -180,6 +185,79 @@ function testWelcomeLocalizedSourceWorkflow(): void {
 		);
 		assert.notEqual(localizedWelcomeParts, undefined);
 		assert.equal(localizedWelcomeParts!.includes('${doneCount}/${allCount} 个步骤已完成'), true);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testLocalizedWebpackWatchIgnoresGeneratedArtifacts(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-watch-config-'));
+	try {
+		const config = createLocalizedWebviewConfig({
+			rootDir: rootDir,
+			webviews: {
+				commitDetails: {
+					entry: path.join(
+						rootDir,
+						'.work',
+						'i18n',
+						'webviews-sources',
+						'zh-cn',
+						'src',
+						'webviews',
+						'apps',
+						'commitDetails',
+						'commitDetails.ts',
+					),
+				},
+			},
+			locale: 'zh-cn',
+			config: {
+				watchOptions: {
+					ignored: ['**/node_modules/**'],
+				},
+				plugins: [],
+				resolve: {},
+			},
+			excludePlugin: () => false,
+		});
+
+		assert.ok(Array.isArray(config.watchOptions?.ignored));
+		assert.deepEqual(config.watchOptions!.ignored, [
+			'**/node_modules/**',
+			path.join(rootDir, '.work', 'i18n', 'webviews-sources').replaceAll('\\', '/'),
+			path.join(rootDir, 'i18n', 'catalog').replaceAll('\\', '/'),
+			path.join(rootDir, 'i18n', 'worksets').replaceAll('\\', '/'),
+			path.join(rootDir, 'i18n', 'reports').replaceAll('\\', '/'),
+		]);
+
+		const generator = config.plugins?.find(plugin => plugin instanceof GenerateLocalizedDynamicSourcesPlugin) as
+			| GenerateLocalizedDynamicSourcesPlugin
+			| undefined;
+		if (generator == null) {
+			throw new Error('expected GenerateLocalizedDynamicSourcesPlugin to be present');
+		}
+		assert.deepEqual(generator.pathsToWatch, [
+			path.join(rootDir, 'src', 'webviews', 'apps'),
+			path.join(rootDir, 'i18n', 'authority'),
+		]);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testWriteTextFileSkipsUnchangedWrites(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-write-text-file-'));
+	try {
+		const filePath = path.join(rootDir, 'sample.txt');
+		writeStoreTextFile(filePath, 'same content\n');
+		const before = fs.statSync(filePath, { bigint: true }).mtimeNs;
+
+		sleep(1100);
+		writeStoreTextFile(filePath, 'same content\n');
+		const after = fs.statSync(filePath, { bigint: true }).mtimeNs;
+
+		assert.equal(after, before);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}
@@ -679,7 +757,8 @@ function testDeferredRuntimeBoundariesAreReported(): void {
 
 		const context = createWebviewsDomainContext(rootDir);
 		const catalog = loadWebviewsCatalog(context);
-		const reasons = catalog.reconciliation.entries
+		const reconciliation = loadWebviewsReconciliationReport(context);
+		const reasons = reconciliation.entries
 			.map(entry => entry.reason)
 			.filter((reason): reason is string => reason != null);
 		assert.equal(
@@ -1063,4 +1142,8 @@ function approveTranslations(
 			return translation == null ? entry : { ...entry, status: 'approved', translation: translation };
 		}),
 	});
+}
+
+function sleep(milliseconds: number): void {
+	Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, milliseconds);
 }
