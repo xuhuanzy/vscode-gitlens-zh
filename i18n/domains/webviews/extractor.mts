@@ -380,7 +380,7 @@ export function extractHtmlMatches(html: string): MatchDefinition[] {
 
 	if (shouldExtractRootContent(root)) {
 		const pattern = collectElementContentPattern(root);
-		if (pattern != null) {
+		if (pattern != null && !isPureStructuralTemplateText(pattern.text.trim())) {
 			matches.push({
 				kind: 'text',
 				start: root.openTagEnd,
@@ -400,6 +400,7 @@ export function extractHtmlMatches(html: string): MatchDefinition[] {
 
 		const pattern = collectElementContentPattern(element);
 		if (pattern == null) return;
+		if (isPureStructuralTemplateText(pattern.text.trim())) return;
 
 		matches.push({
 			kind: 'text',
@@ -985,8 +986,53 @@ function looksLikeImperativeDisplayText(text: string, node: ts.StringLiteralLike
 }
 
 function isPureStructuralTemplateText(text: string): boolean {
-	return text === '${slot1}\n[${slot2}] ${slot3}' || text === '${slot1} (${slot2})';
+	const withoutSlots = text.replace(/\$\{slot\d+\}/gu, '');
+	if (!/\$\{slot\d+\}/u.test(text)) return false;
+	if (withoutSlots.length === 0) return true;
+	if (/^[\s\p{P}\p{S}]+$/u.test(withoutSlots)) return true;
+
+	const words = [...withoutSlots.matchAll(/\p{L}+/gu)].map(match => match[0].toLowerCase());
+	if (words.length === 0) return false;
+	if (words.every(word => structuralGlueWords.has(word))) {
+		const withoutGlueWords = withoutSlots.replace(/\p{L}+/gu, '');
+		return /^[\s\p{P}\p{S}]*$/u.test(withoutGlueWords);
+	}
+
+	return false;
 }
+
+const structuralGlueWords = new Set([
+	'a',
+	'an',
+	'and',
+	'are',
+	'at',
+	'be',
+	'been',
+	'being',
+	'by',
+	'for',
+	'from',
+	'had',
+	'has',
+	'have',
+	'in',
+	'is',
+	'more',
+	'need',
+	'needs',
+	'of',
+	'on',
+	'or',
+	'other',
+	'require',
+	'requires',
+	'the',
+	'to',
+	'was',
+	'were',
+	'with',
+]);
 
 function scanDeferredJsxNodes(target: RuntimeSourceTarget, sourceFile: ts.SourceFile, issues: CatalogIssue[]): void {
 	const visit = (node: ts.Node): void => {

@@ -2,7 +2,7 @@
 	"$schema": "../schemas/translationWorkset.schema.json",
 	"version": 2,
 	"locale": "zh-cn",
-	"domain": "webviews",
-	"generatedAt": "2026-04-24T20:03:10.389Z",
+	"domain": "formatter",
+	"generatedAt": "2026-04-24T19:32:41.482Z",
 	"entries": []
 }

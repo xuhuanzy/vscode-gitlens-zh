@@ -3,6 +3,152 @@
 	"version": 2,
 	"kind": "terms",
 	"locale": "zh-cn",
-	"entries": [],
-	"updatedAt": "1970-01-01T00:00:00.000Z"
+	"entries": [
+		{
+			"source": " Before",
+			"translation": "之前",
+			"updatedAt": "2026-04-24T16:00:00.000Z"
+		},
+		{
+			"source": " excluding worktrees / submodules",
+			"translation": " 不包括工作树 / 子模块",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": " in New Window",
+			"translation": "（在新窗口中）",
+			"updatedAt": "2026-04-24T16:00:00.000Z"
+		},
+		{
+			"source": "All Repositories",
+			"translation": "所有仓库",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "Load more",
+			"translation": "加载更多",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "Merge",
+			"translation": "合并",
+			"updatedAt": "2026-04-24T19:24:00.000Z"
+		},
+		{
+			"source": "No files changed",
+			"translation": "没有文件更改",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "Offline",
+			"translation": "离线",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "Open Blame Prior to this Change",
+			"translation": "打开此更改之前的追溯",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "Open Directory Compare",
+			"translation": "打开目录比较",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "Open Directory Compare with Working Tree",
+			"translation": "打开与工作树比较的目录比较",
+			"updatedAt": "2026-04-24T18:05:11.563Z"
+		},
+		{
+			"source": "Reset",
+			"translation": "重置",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "Restore",
+			"translation": "恢复",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "Reveal in Side Bar",
+			"translation": "在侧边栏中显示",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "Searching for a Pull Request (if any) that introduced this commit...",
+			"translation": "正在搜索引入此提交的拉取请求（如果有）...",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "Show More Actions",
+			"translation": "显示更多操作",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "Show Team Actions",
+			"translation": "显示团队操作",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "Try again",
+			"translation": "重试",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "Uncommitted",
+			"translation": "未提交",
+			"updatedAt": "2026-04-24T19:24:00.000Z"
+		},
+		{
+			"source": "Upgrading to GitLens Pro is required to use this feature",
+			"translation": "需要升级到 GitLens Pro 才能使用此功能",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "Working Tree",
+			"translation": "工作树",
+			"updatedAt": "2026-04-24T18:05:11.563Z"
+		},
+		{
+			"source": "You",
+			"translation": "你",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "You must verify your email before you can continue",
+			"translation": "你必须先验证电子邮件才能继续",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "aka checkout",
+			"translation": "也称为 checkout",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "branch",
+			"translation": "分支",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "commit",
+			"translation": "提交",
+			"updatedAt": "2026-04-24T16:00:00.000Z"
+		},
+		{
+			"source": "remote",
+			"translation": "远程",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		},
+		{
+			"source": "stash",
+			"translation": "贮藏",
+			"updatedAt": "2026-04-24T16:00:00.000Z"
+		},
+		{
+			"source": "tag",
+			"translation": "标签",
+			"updatedAt": "2026-04-24T14:00:00.000Z"
+		}
+	],
+	"updatedAt": "2026-04-24T19:24:00.000Z"
 }

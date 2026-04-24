@@ -393,13 +393,13 @@ export function cloneMessageRecord<TRecord extends WorksetMessageRecord>(record:
 }
 
 export function hasTranslation(record: WorksetMessageRecord): record is AuthorityMessageEntry {
-	if (record.translation == null) return false;
+	if (!isNonEmptyTranslation(record.translation)) return false;
 
 	if (record.kind !== 'plural' && record.kind !== 'select') {
 		return true;
 	}
 
-	return Object.values(record.cases).every(entry => entry.translation != null);
+	return Object.values(record.cases).every(entry => isNonEmptyTranslation(entry.translation));
 }
 
 export function toTranslationPattern(record: WorksetMessageRecord): MessagePattern | undefined {
@@ -632,6 +632,10 @@ function assertStringArraysMatch(left: readonly string[], right: readonly string
 			throw new Error(`Mismatched ${label}`);
 		}
 	}
+}
+
+function isNonEmptyTranslation(translation: string | null): translation is string {
+	return translation != null && translation.length !== 0;
 }
 
 function sortKeys(value: unknown): unknown {

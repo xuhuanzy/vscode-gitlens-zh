@@ -2,42 +2,9 @@
 	"$schema": "../schemas/sourceCatalog.schema.json",
 	"version": 3,
 	"domain": "webviews",
-	"generatedAt": "2026-04-24T12:19:40.562Z",
+	"generatedAt": "2026-04-24T20:03:10.344Z",
 	"deferredDomains": ["quickpicks", "formatter", "runtimeCensus"],
 	"occurrences": [
-		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-115-31.text.a1f65db5b5#text",
-			"domain": "webviews",
-			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-115-31.text.a1f65db5b5",
-			"slot": "text",
-			"authorityId": "message.509edefa8c6f28297ea9a5cee55ba61f9fed44d70033b53935c5668abfef6e04",
-			"pattern": {
-				"kind": "template",
-				"text": "${slot1} ${slot2}:",
-				"slots": ["slot1", "slot2"]
-			},
-			"sourceText": "${slot1} ${slot2}:",
-			"sourceHash": "f2d43027a21c2fa2d3593e20d8c4f4ba167943eb421c8b6b93a0967a173a2a71",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/commit/signature-details.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 115,
-					"column": 31
-				},
-				"end": {
-					"line": 115,
-					"column": 64
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-115-31.text.a1f65db5b5"
-			}
-		},
 		{
 			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-117-12.text.25e4b43997#text",
 			"domain": "webviews",
@@ -2607,39 +2574,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-48-10.text.25704126a9#text",
-			"domain": "webviews",
-			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-48-10.text.25704126a9",
-			"slot": "text",
-			"authorityId": "message.4c3bde477f12f97e934453d73c19594bb6ee6d3e804ccbfc032d901cce793801",
-			"pattern": {
-				"kind": "template",
-				"text": "${slot1} ${slot2} is ${slot3}",
-				"slots": ["slot1", "slot2", "slot3"]
-			},
-			"sourceText": "${slot1} ${slot2} is ${slot3}",
-			"sourceHash": "85d299a6a238e29f566b4d669817a8792418504c932def24dcc17e0de0109265",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/rich/pr-icon.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 48,
-					"column": 10
-				},
-				"end": {
-					"line": 48,
-					"column": 72
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-48-10.text.25704126a9"
-			}
-		},
-		{
 			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-48-13.text.552baf4114#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
@@ -3181,39 +3115,6 @@
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
 				"key": "commitDetails.imperative-display-597-22.text.ab43041837"
-			}
-		},
-		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-72-32.text.e078484929#text",
-			"domain": "webviews",
-			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-72-32.text.e078484929",
-			"slot": "text",
-			"authorityId": "message.8e449568bd9a1d72a00cd78205de84ed736a2aa8ed3e20609b476db5d1df404c",
-			"pattern": {
-				"kind": "template",
-				"text": " ${slot1}",
-				"slots": ["slot1"]
-			},
-			"sourceText": " ${slot1}",
-			"sourceHash": "a6a3a77c8375e8a2794617db068683d74bf6a4e07573361cc14054b1429d7a4d",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/ref-name.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 72,
-					"column": 32
-				},
-				"end": {
-					"line": 72,
-					"column": 47
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-72-32.text.e078484929"
 			}
 		},
 		{
@@ -6761,39 +6662,6 @@
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
 				"key": "commitDetails.lit-template-2-root.text.e0fbd96384"
-			}
-		},
-		{
-			"id": "webviews:webviews.commitDetails.commitDetails.lit-template-2-span-__GL_I18N_SLOT_slot1__.text.908696f533#text",
-			"domain": "webviews",
-			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.lit-template-2-span-__GL_I18N_SLOT_slot1__.text.908696f533",
-			"slot": "text",
-			"authorityId": "message.50253a765126548dee902acfca21a2e5375e5b5d972ab3cd7b351ac4ce5d4187",
-			"pattern": {
-				"kind": "template",
-				"text": "${slot1} of ${slot2} ${slot3}",
-				"slots": ["slot1", "slot2", "slot3"]
-			},
-			"sourceText": "${slot1} of ${slot2} ${slot3}",
-			"sourceHash": "4b8cb90e0657ce88079d47667b5eb6cc7cd34e99fa10648885994f40389dc6a6",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/search/search-box.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 319,
-					"column": 20
-				},
-				"end": {
-					"line": 322,
-					"column": 6
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "commitDetails",
-				"key": "commitDetails.lit-template-2-span-__GL_I18N_SLOT_slot1__.text.908696f533"
 			}
 		},
 		{
@@ -13118,39 +12986,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.lit-template-20-root.text.ee1af5f197#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.lit-template-20-root.text.ee1af5f197",
-			"slot": "text",
-			"authorityId": "message.3b726c385d4df703892e3cfd3708ad1a44a129b2d93030e1d6826af943608f4c",
-			"pattern": {
-				"kind": "template",
-				"text": "on ${slot1}",
-				"slots": ["slot1"]
-			},
-			"sourceText": "on ${slot1}",
-			"sourceHash": "e30daed036cfeee178fb1dcc9355d8efd6c92553a02296cf49f0cb65d7e899c4",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/actions/gitActionsButtons.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 264,
-					"column": 50
-				},
-				"end": {
-					"line": 264,
-					"column": 89
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.lit-template-20-root.text.ee1af5f197"
-			}
-		},
-		{
 			"id": "webviews:webviews.graph.graph.lit-template-3-gl-button-jump-to-ref-span-1.text.3fb1eed258#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
@@ -13378,39 +13213,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.lit-template-5-root.text.abb3f8a66e#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.lit-template-5-root.text.abb3f8a66e",
-			"slot": "text",
-			"authorityId": "message.3b726c385d4df703892e3cfd3708ad1a44a129b2d93030e1d6826af943608f4c",
-			"pattern": {
-				"kind": "template",
-				"text": "on ${slot1}",
-				"slots": ["slot1"]
-			},
-			"sourceText": "on ${slot1}",
-			"sourceHash": "e30daed036cfeee178fb1dcc9355d8efd6c92553a02296cf49f0cb65d7e899c4",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/actions/gitActionsButtons.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 97,
-					"column": 47
-				},
-				"end": {
-					"line": 97,
-					"column": 86
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.lit-template-5-root.text.abb3f8a66e"
-			}
-		},
-		{
 			"id": "webviews:webviews.graph.graph.lit-template-6-gl-popover-mcp-tooltip-div-mcp-tooltip__content-a-1.text.6104c4866d#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
@@ -13538,39 +13340,6 @@
 				"kind": "runtime-key",
 				"bundle": "graph",
 				"key": "graph.lit-template-6-root.text.ae194661f1"
-			}
-		},
-		{
-			"id": "webviews:webviews.graph.graph.lit-template-8-root.text.165ff7d02e#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.lit-template-8-root.text.165ff7d02e",
-			"slot": "text",
-			"authorityId": "message.c87fb3a6c99a3128077d1cdc1abaa480a2626ee5f424f91d244334922f13b868",
-			"pattern": {
-				"kind": "template",
-				"text": "${slot1} is",
-				"slots": ["slot1"]
-			},
-			"sourceText": "${slot1} is",
-			"sourceHash": "8c42db24c225a5f17011c9c91bb54ca214cd8fbbdf693297dbcd2ee0a5c093f3",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/actions/gitActionsButtons.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 170,
-					"column": 14
-				},
-				"end": {
-					"line": 170,
-					"column": 70
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.lit-template-8-root.text.165ff7d02e"
 			}
 		},
 		{
@@ -13801,39 +13570,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.lit-template-9-root.text.44cb56fb48#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.lit-template-9-root.text.44cb56fb48",
-			"slot": "text",
-			"authorityId": "message.3b726c385d4df703892e3cfd3708ad1a44a129b2d93030e1d6826af943608f4c",
-			"pattern": {
-				"kind": "template",
-				"text": "on ${slot1}",
-				"slots": ["slot1"]
-			},
-			"sourceText": "on ${slot1}",
-			"sourceHash": "e30daed036cfeee178fb1dcc9355d8efd6c92553a02296cf49f0cb65d7e899c4",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/actions/gitActionsButtons.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 176,
-					"column": 64
-				},
-				"end": {
-					"line": 176,
-					"column": 103
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.lit-template-9-root.text.44cb56fb48"
-			}
-		},
-		{
 			"id": "webviews:webviews.home.home.imperative-display-1033-31.text.816406be88#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
@@ -14023,39 +13759,6 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.imperative-display-114-34.text.d29abffa56"
-			}
-		},
-		{
-			"id": "webviews:webviews.home.home.imperative-display-115-31.text.c6df223231#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-115-31.text.c6df223231",
-			"slot": "text",
-			"authorityId": "message.509edefa8c6f28297ea9a5cee55ba61f9fed44d70033b53935c5668abfef6e04",
-			"pattern": {
-				"kind": "template",
-				"text": "${slot1} ${slot2}:",
-				"slots": ["slot1", "slot2"]
-			},
-			"sourceText": "${slot1} ${slot2}:",
-			"sourceHash": "f2d43027a21c2fa2d3593e20d8c4f4ba167943eb421c8b6b93a0967a173a2a71",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/commit/signature-details.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 115,
-					"column": 31
-				},
-				"end": {
-					"line": 115,
-					"column": 64
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.imperative-display-115-31.text.c6df223231"
 			}
 		},
 		{
@@ -14796,39 +14499,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.imperative-display-225-43.text.3a9416cc46#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-225-43.text.3a9416cc46",
-			"slot": "text",
-			"authorityId": "message.0a106910e33673cd8703ecf4807425cbc7076fd40405fd2e9f95de56cc562e4d",
-			"pattern": {
-				"kind": "template",
-				"text": "${slot1} and ",
-				"slots": ["slot1"]
-			},
-			"sourceText": "${slot1} and ",
-			"sourceHash": "6739cb963b9ef0a7d16d902ad19c910db7e8f6cfaa5d2026d552e6a7d0e296fc",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/shared/components/feature-gate-plus-state.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 225,
-					"column": 43
-				},
-				"end": {
-					"line": 225,
-					"column": 84
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.imperative-display-225-43.text.3a9416cc46"
-			}
-		},
-		{
 			"id": "webviews:webviews.home.home.imperative-display-23-9.text.02fecb2680#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
@@ -14858,39 +14528,6 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.imperative-display-23-9.text.02fecb2680"
-			}
-		},
-		{
-			"id": "webviews:webviews.home.home.imperative-display-244-42.text.55db317372#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-244-42.text.55db317372",
-			"slot": "text",
-			"authorityId": "message.48fdfc492609a171a4d51e953a48936910a3c937daf07f402a91e84931b1a2c8",
-			"pattern": {
-				"kind": "template",
-				"text": "${slot1} on",
-				"slots": ["slot1"]
-			},
-			"sourceText": "${slot1} on",
-			"sourceHash": "302b724dd0e92aecfb0dda279cd60108275dd3d6f65af43967cf6d9242d0a4a9",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/shared/components/feature-gate-plus-state.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 244,
-					"column": 42
-				},
-				"end": {
-					"line": 244,
-					"column": 81
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.imperative-display-244-42.text.55db317372"
 			}
 		},
 		{
@@ -15086,72 +14723,6 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.imperative-display-274-71.text.a9a215f356"
-			}
-		},
-		{
-			"id": "webviews:webviews.home.home.imperative-display-275-41.text.e1e9678a93#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-275-41.text.e1e9678a93",
-			"slot": "text",
-			"authorityId": "message.48fdfc492609a171a4d51e953a48936910a3c937daf07f402a91e84931b1a2c8",
-			"pattern": {
-				"kind": "template",
-				"text": "${slot1} on",
-				"slots": ["slot1"]
-			},
-			"sourceText": "${slot1} on",
-			"sourceHash": "302b724dd0e92aecfb0dda279cd60108275dd3d6f65af43967cf6d9242d0a4a9",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/shared/components/feature-gate-plus-state.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 275,
-					"column": 41
-				},
-				"end": {
-					"line": 275,
-					"column": 80
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.imperative-display-275-41.text.e1e9678a93"
-			}
-		},
-		{
-			"id": "webviews:webviews.home.home.imperative-display-293-32.text.098c901536#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-293-32.text.098c901536",
-			"slot": "text",
-			"authorityId": "message.4717b7f3e97f8b6a9ae7391531e82eba00ff236beeb9bf1651962039af6bd6a6",
-			"pattern": {
-				"kind": "template",
-				"text": "${slot1} ${slot2}",
-				"slots": ["slot1", "slot2"]
-			},
-			"sourceText": "${slot1} ${slot2}",
-			"sourceHash": "79c861b983e519f06bf08cf6a72be98b93e657a6018e160bf9fcee963b020f80",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/home/components/launchpad.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 293,
-					"column": 32
-				},
-				"end": {
-					"line": 293,
-					"column": 57
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.imperative-display-293-32.text.098c901536"
 			}
 		},
 		{
@@ -16379,39 +15950,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.imperative-display-48-10.text.7143d9e071#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-48-10.text.7143d9e071",
-			"slot": "text",
-			"authorityId": "message.4c3bde477f12f97e934453d73c19594bb6ee6d3e804ccbfc032d901cce793801",
-			"pattern": {
-				"kind": "template",
-				"text": "${slot1} ${slot2} is ${slot3}",
-				"slots": ["slot1", "slot2", "slot3"]
-			},
-			"sourceText": "${slot1} ${slot2} is ${slot3}",
-			"sourceHash": "85d299a6a238e29f566b4d669817a8792418504c932def24dcc17e0de0109265",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/rich/pr-icon.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 48,
-					"column": 10
-				},
-				"end": {
-					"line": 48,
-					"column": 72
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.imperative-display-48-10.text.7143d9e071"
-			}
-		},
-		{
 			"id": "webviews:webviews.home.home.imperative-display-495-36.text.f0d81f5aeb#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
@@ -16922,39 +16460,6 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.imperative-display-604-69.text.568d92453a"
-			}
-		},
-		{
-			"id": "webviews:webviews.home.home.imperative-display-72-32.text.0d07180109#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-72-32.text.0d07180109",
-			"slot": "text",
-			"authorityId": "message.8e449568bd9a1d72a00cd78205de84ed736a2aa8ed3e20609b476db5d1df404c",
-			"pattern": {
-				"kind": "template",
-				"text": " ${slot1}",
-				"slots": ["slot1"]
-			},
-			"sourceText": " ${slot1}",
-			"sourceHash": "a6a3a77c8375e8a2794617db068683d74bf6a4e07573361cc14054b1429d7a4d",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/ref-name.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 72,
-					"column": 32
-				},
-				"end": {
-					"line": 72,
-					"column": 47
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.imperative-display-72-32.text.0d07180109"
 			}
 		},
 		{
@@ -21648,39 +21153,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.lit-template-2-span-__GL_I18N_SLOT_slot1__.text.820af6434d#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.lit-template-2-span-__GL_I18N_SLOT_slot1__.text.820af6434d",
-			"slot": "text",
-			"authorityId": "message.50253a765126548dee902acfca21a2e5375e5b5d972ab3cd7b351ac4ce5d4187",
-			"pattern": {
-				"kind": "template",
-				"text": "${slot1} of ${slot2} ${slot3}",
-				"slots": ["slot1", "slot2", "slot3"]
-			},
-			"sourceText": "${slot1} of ${slot2} ${slot3}",
-			"sourceHash": "4b8cb90e0657ce88079d47667b5eb6cc7cd34e99fa10648885994f40389dc6a6",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/search/search-box.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 319,
-					"column": 20
-				},
-				"end": {
-					"line": 322,
-					"column": 6
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.lit-template-2-span-__GL_I18N_SLOT_slot1__.text.820af6434d"
-			}
-		},
-		{
 			"id": "webviews:webviews.home.home.lit-template-2-ul-menu-li-1-a-launchpad-action-span-1.text.122e180aec#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
@@ -21806,39 +21278,6 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.lit-template-20-div-account-status-button-container-1-span-button-suffix-a-1.text.2d48477e5d"
-			}
-		},
-		{
-			"id": "webviews:webviews.home.home.lit-template-20-div-account-status-button-container-1-span-button-suffix.text.d649226f94#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.lit-template-20-div-account-status-button-container-1-span-button-suffix.text.d649226f94",
-			"slot": "text",
-			"authorityId": "message.73c2b48d68990f2a402ad5d2f789d8d31e94709e0d59b5a73268c587057e9903",
-			"pattern": {
-				"kind": "template",
-				"text": "or ${slot1}",
-				"slots": ["slot1"]
-			},
-			"sourceText": "or ${slot1}",
-			"sourceHash": "60aa3050338f2d8158e5167a06113056059475849a0b3ada0dabe168ce624afd",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/shared/components/account-chip.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 628,
-					"column": 16
-				},
-				"end": {
-					"line": 653,
-					"column": 12
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.lit-template-20-div-account-status-button-container-1-span-button-suffix.text.d649226f94"
 			}
 		},
 		{
@@ -21969,39 +21408,6 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.lit-template-20-div-actions-gl-button-1.text.125d05831a"
-			}
-		},
-		{
-			"id": "webviews:webviews.home.home.lit-template-20-root.text.ab41e57143#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.lit-template-20-root.text.ab41e57143",
-			"slot": "text",
-			"authorityId": "message.826a78c20cf5092fee06422b6e2a0fc45b0e87660cc67d570cc85c592cf10f5e",
-			"pattern": {
-				"kind": "template",
-				"text": "from ${slot1}",
-				"slots": ["slot1"]
-			},
-			"sourceText": "from ${slot1}",
-			"sourceHash": "6f37b56cd376c1a07947bda476b63ac50761e45ffcf6f8f5099bfe4e911410d7",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/home/components/active-work.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 479,
-					"column": 36
-				},
-				"end": {
-					"line": 479,
-					"column": 77
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.lit-template-20-root.text.ab41e57143"
 			}
 		},
 		{
@@ -22166,39 +21572,6 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.lit-template-21-p-1.text.ed9138e38b"
-			}
-		},
-		{
-			"id": "webviews:webviews.home.home.lit-template-21-root.text.f18c812ad2#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.lit-template-21-root.text.f18c812ad2",
-			"slot": "text",
-			"authorityId": "message.5395a702d6208b95c1ab8588585499b7d8e13b6e0e28dde66be746745eb69e79",
-			"pattern": {
-				"kind": "template",
-				"text": "to ${slot1}",
-				"slots": ["slot1"]
-			},
-			"sourceText": "to ${slot1}",
-			"sourceHash": "d6fd73be55b95085c24a725fce55877ae0d20561c9c932c2e7e650d9a5951c21",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/home/components/active-work.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 491,
-					"column": 42
-				},
-				"end": {
-					"line": 491,
-					"column": 81
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.lit-template-21-root.text.f18c812ad2"
 			}
 		},
 		{
@@ -22620,39 +21993,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.lit-template-23-root.text.54dac28c5d#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.lit-template-23-root.text.54dac28c5d",
-			"slot": "text",
-			"authorityId": "message.826a78c20cf5092fee06422b6e2a0fc45b0e87660cc67d570cc85c592cf10f5e",
-			"pattern": {
-				"kind": "template",
-				"text": "from ${slot1}",
-				"slots": ["slot1"]
-			},
-			"sourceText": "from ${slot1}",
-			"sourceHash": "6f37b56cd376c1a07947bda476b63ac50761e45ffcf6f8f5099bfe4e911410d7",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/home/components/active-work.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 516,
-					"column": 36
-				},
-				"end": {
-					"line": 516,
-					"column": 77
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.lit-template-23-root.text.54dac28c5d"
-			}
-		},
-		{
 			"id": "webviews:webviews.home.home.lit-template-23-span-integration__actions-gl-button-1-aria-label.aria-label.0196a1df9d#aria-label",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
@@ -23009,39 +22349,6 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.lit-template-24-span-integration__content-span-integration__title.text.3ada16cab1"
-			}
-		},
-		{
-			"id": "webviews:webviews.home.home.lit-template-25-root.text.7e36dc946d#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.lit-template-25-root.text.7e36dc946d",
-			"slot": "text",
-			"authorityId": "message.5395a702d6208b95c1ab8588585499b7d8e13b6e0e28dde66be746745eb69e79",
-			"pattern": {
-				"kind": "template",
-				"text": "to ${slot1}",
-				"slots": ["slot1"]
-			},
-			"sourceText": "to ${slot1}",
-			"sourceHash": "d6fd73be55b95085c24a725fce55877ae0d20561c9c932c2e7e650d9a5951c21",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/home/components/active-work.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 541,
-					"column": 36
-				},
-				"end": {
-					"line": 541,
-					"column": 75
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.lit-template-25-root.text.7e36dc946d"
 			}
 		},
 		{
@@ -23727,39 +23034,6 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.lit-template-3-p-actions-row-span-1-a-1.text.0d4c8bb3ee"
-			}
-		},
-		{
-			"id": "webviews:webviews.home.home.lit-template-3-p-actions-row-span-1.text.4947b29dbc#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.lit-template-3-p-actions-row-span-1.text.4947b29dbc",
-			"slot": "text",
-			"authorityId": "message.73c2b48d68990f2a402ad5d2f789d8d31e94709e0d59b5a73268c587057e9903",
-			"pattern": {
-				"kind": "template",
-				"text": "or ${slot1}",
-				"slots": ["slot1"]
-			},
-			"sourceText": "or ${slot1}",
-			"sourceHash": "60aa3050338f2d8158e5167a06113056059475849a0b3ada0dabe168ce624afd",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/shared/components/feature-gate-plus-state.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 169,
-					"column": 16
-				},
-				"end": {
-					"line": 191,
-					"column": 11
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.lit-template-3-p-actions-row-span-1.text.4947b29dbc"
 			}
 		},
 		{
@@ -26514,39 +25788,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.lit-template-7-root.text.ab966b1666#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.lit-template-7-root.text.ab966b1666",
-			"slot": "text",
-			"authorityId": "message.8104d858bb5d90d927a9a0d560efacce01aaa6c58792afdff73f671d494fd4ec",
-			"pattern": {
-				"kind": "template",
-				"text": "${slot1} is ${slot2} ${slot3}",
-				"slots": ["slot1", "slot2", "slot3"]
-			},
-			"sourceText": "${slot1} is ${slot2} ${slot3}",
-			"sourceHash": "7880520d9807f8112f8d2e56e0db16a517fb2d52edfc7e1cc1a6df6ef18bbbd6",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/home/components/branch-card.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 655,
-					"column": 19
-				},
-				"end": {
-					"line": 656,
-					"column": 73
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.lit-template-7-root.text.ab966b1666"
-			}
-		},
-		{
 			"id": "webviews:webviews.home.home.lit-template-7-span-1.text.9681432aa9#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
@@ -26901,39 +26142,6 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.lit-template-8-p-actions-row-span-1-a-1.text.517b80be8b"
-			}
-		},
-		{
-			"id": "webviews:webviews.home.home.lit-template-8-p-actions-row-span-1.text.ca0020d871#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.lit-template-8-p-actions-row-span-1.text.ca0020d871",
-			"slot": "text",
-			"authorityId": "message.73c2b48d68990f2a402ad5d2f789d8d31e94709e0d59b5a73268c587057e9903",
-			"pattern": {
-				"kind": "template",
-				"text": "or ${slot1}",
-				"slots": ["slot1"]
-			},
-			"sourceText": "or ${slot1}",
-			"sourceHash": "60aa3050338f2d8158e5167a06113056059475849a0b3ada0dabe168ce624afd",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/shared/components/feature-gate-plus-state.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 258,
-					"column": 14
-				},
-				"end": {
-					"line": 283,
-					"column": 4
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.lit-template-8-p-actions-row-span-1.text.ca0020d871"
 			}
 		},
 		{
@@ -28074,39 +27282,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-196-21.text.d231eb525b#text",
-			"domain": "webviews",
-			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-196-21.text.d231eb525b",
-			"slot": "text",
-			"authorityId": "message.4d5b0fe9218e843dd57cc3c46b569c44618bc69e8b7826f13fe39d83bc154406",
-			"pattern": {
-				"kind": "template",
-				"text": "${slot1}, ${slot2}, ${slot3}",
-				"slots": ["slot1", "slot2", "slot3"]
-			},
-			"sourceText": "${slot1}, ${slot2}, ${slot3}",
-			"sourceHash": "72d8f1a2a589c8ddf6a9efc8f9e0586e114d678bbe327b813adb5bb7291560f8",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/rebase/components/rebase-entry.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 196,
-					"column": 21
-				},
-				"end": {
-					"line": 196,
-					"column": 68
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "rebase",
-				"key": "rebase.imperative-display-196-21.text.d231eb525b"
-			}
-		},
-		{
 			"id": "webviews:webviews.rebase.rebase.imperative-display-2008-16.text.89dc071717#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
@@ -28264,39 +27439,6 @@
 				"kind": "runtime-key",
 				"bundle": "rebase",
 				"key": "rebase.imperative-display-261-75.text.bdfa555169"
-			}
-		},
-		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-283-31.text.8f7a8c5825#text",
-			"domain": "webviews",
-			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-283-31.text.8f7a8c5825",
-			"slot": "text",
-			"authorityId": "message.4717b7f3e97f8b6a9ae7391531e82eba00ff236beeb9bf1651962039af6bd6a6",
-			"pattern": {
-				"kind": "template",
-				"text": "${slot1} ${slot2}",
-				"slots": ["slot1", "slot2"]
-			},
-			"sourceText": "${slot1} ${slot2}",
-			"sourceHash": "79c861b983e519f06bf08cf6a72be98b93e657a6018e160bf9fcee963b020f80",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/rebase/components/rebase-entry.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 283,
-					"column": 31
-				},
-				"end": {
-					"line": 283,
-					"column": 53
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "rebase",
-				"key": "rebase.imperative-display-283-31.text.8f7a8c5825"
 			}
 		},
 		{
@@ -56353,39 +55495,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.timeline.timeline.imperative-display-862-26.text.402499144c#text",
-			"domain": "webviews",
-			"scope": "webviews.timeline.runtime",
-			"anchor": "webviews.timeline.timeline.imperative-display-862-26.text.402499144c",
-			"slot": "text",
-			"authorityId": "message.543b41c59ba42a15ccaf168888ac4ff42812c3843509b42c4d47e72217b8de9e",
-			"pattern": {
-				"kind": "template",
-				"text": ", ${slot1}",
-				"slots": ["slot1"]
-			},
-			"sourceText": ", ${slot1}",
-			"sourceHash": "be0a0a01ace7c51aa5f967630bffe1bd1ac295ad25a641991521f4c8f32ea6b0",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/timeline/components/chart.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 862,
-					"column": 26
-				},
-				"end": {
-					"line": 862,
-					"column": 47
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "timeline",
-				"key": "timeline.imperative-display-862-26.text.402499144c"
-			}
-		},
-		{
 			"id": "webviews:webviews.timeline.timeline.imperative-property-title-362-11.text.611811e18b#text",
 			"domain": "webviews",
 			"scope": "webviews.timeline.runtime",
@@ -58319,39 +57428,6 @@
 				"kind": "runtime-key",
 				"bundle": "welcome",
 				"key": "welcome.lit-template-1-p-3-a-1.text.fe9d618660"
-			}
-		},
-		{
-			"id": "webviews:webviews.welcome.welcome.lit-template-1-p-3.text.25adeb3a37#text",
-			"domain": "webviews",
-			"scope": "webviews.welcome.runtime",
-			"anchor": "webviews.welcome.welcome.lit-template-1-p-3.text.25adeb3a37",
-			"slot": "text",
-			"authorityId": "message.73c2b48d68990f2a402ad5d2f789d8d31e94709e0d59b5a73268c587057e9903",
-			"pattern": {
-				"kind": "template",
-				"text": "or ${slot1}",
-				"slots": ["slot1"]
-			},
-			"sourceText": "or ${slot1}",
-			"sourceHash": "60aa3050338f2d8158e5167a06113056059475849a0b3ada0dabe168ce624afd",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/welcome/components/welcome-page.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 31,
-					"column": 13
-				},
-				"end": {
-					"line": 55,
-					"column": 4
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "welcome",
-				"key": "welcome.lit-template-1-p-3.text.25adeb3a37"
 			}
 		},
 		{

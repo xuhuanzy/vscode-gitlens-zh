@@ -30,6 +30,7 @@ import {
 	GenerateLocalizedSettingsShellPlugin,
 	getLocalizedWebviewEntries,
 } from './i18n/domains/webviews/webpack.mjs';
+import { GenerateLocalizedRuntimeDynamicSourcesPlugin } from './i18n/domains/runtimeDynamic/webpack.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -240,6 +241,7 @@ function getExtensionConfig(target, mode, env) {
 			DEBUG: debug || mode === 'development',
 			'process.env.NODE_ENV': JSON.stringify(mode === 'production' ? 'production' : 'development'),
 		}),
+		new GenerateLocalizedRuntimeDynamicSourcesPlugin({ rootDir: __dirname, locale: 'zh-cn' }),
 	];
 
 	if (env.quick !== 'turbo') {
@@ -376,6 +378,22 @@ function getExtensionConfig(target, mode, env) {
 		externals: { vscode: 'commonjs vscode' },
 		module: {
 			rules: [
+				{
+					enforce: 'pre',
+					exclude: /\.d\.ts$/,
+					include: [path.join(__dirname, 'src'), path.join(__dirname, 'packages')],
+					test: /\.tsx?$/,
+					use: {
+						loader: path.join(
+							__dirname,
+							'i18n',
+							'domains',
+							'runtimeDynamic',
+							'localizedRuntimeDynamicSourceLoader.cjs',
+						),
+						options: { rootDir: __dirname, locale: 'zh-cn' },
+					},
+				},
 				{
 					exclude: /\.d\.ts$/,
 					include: [path.join(__dirname, 'src'), path.join(__dirname, 'packages')],

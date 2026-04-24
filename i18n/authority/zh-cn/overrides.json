@@ -3,8 +3,99 @@
 	"version": 2,
 	"kind": "overrides",
 	"locale": "zh-cn",
-	"updatedAt": "2026-04-24T10:02:39.486Z",
+	"updatedAt": "2026-04-24T18:05:11.563Z",
 	"entries": [
+		{
+			"selector": {
+				"kind": "occurrence",
+				"occurrenceId": "webviews:webviews.home.home.imperative-display-255-17.text.236db107e2#text"
+			},
+			"translationPattern": {
+				"kind": "template",
+				"text": "需要审查者",
+				"slots": []
+			},
+			"updatedAt": "2026-04-24T18:05:11.563Z",
+			"note": "Drops English agreement helper from Launchpad generated display text."
+		},
+		{
+			"selector": {
+				"kind": "occurrence",
+				"occurrenceId": "webviews:webviews.home.home.imperative-display-261-17.text.e56472643b#text"
+			},
+			"translationPattern": {
+				"kind": "template",
+				"text": "CI 检查未通过",
+				"slots": []
+			},
+			"updatedAt": "2026-04-24T18:05:11.563Z",
+			"note": "Drops English agreement helper from Launchpad generated display text."
+		},
+		{
+			"selector": {
+				"kind": "occurrence",
+				"occurrenceId": "webviews:webviews.home.home.imperative-display-267-17.text.44e0e56343#text"
+			},
+			"translationPattern": {
+				"kind": "template",
+				"text": "存在冲突",
+				"slots": []
+			},
+			"updatedAt": "2026-04-24T18:05:11.563Z",
+			"note": "Drops English agreement helper from Launchpad generated display text."
+		},
+		{
+			"selector": {
+				"kind": "occurrence",
+				"occurrenceId": "webviews:webviews.home.home.lit-template-12-li-1-a-launchpad-action-span-1.text.f8f37e5489#text"
+			},
+			"translationPattern": {
+				"kind": "template",
+				"text": "${slot1} 已阻塞（${slot3}）",
+				"slots": ["slot1", "slot3"]
+			},
+			"updatedAt": "2026-04-24T18:05:11.563Z",
+			"note": "Drops English agreement helper from Launchpad generated display text."
+		},
+		{
+			"selector": {
+				"kind": "occurrence",
+				"occurrenceId": "webviews:webviews.home.home.lit-template-13-li-1-a-launchpad-action-span-1.text.ebb9304efb#text"
+			},
+			"translationPattern": {
+				"kind": "template",
+				"text": "${slot1} 需要后续跟进",
+				"slots": ["slot1"]
+			},
+			"updatedAt": "2026-04-24T18:05:11.563Z",
+			"note": "Drops English agreement helper from Launchpad generated display text."
+		},
+		{
+			"selector": {
+				"kind": "occurrence",
+				"occurrenceId": "webviews:webviews.home.home.lit-template-14-li-1-a-launchpad-action-span-1.text.6137fd4da2#text"
+			},
+			"translationPattern": {
+				"kind": "template",
+				"text": "${slot1} 需要你审查",
+				"slots": ["slot1"]
+			},
+			"updatedAt": "2026-04-24T18:05:11.563Z",
+			"note": "Drops English agreement helper from Launchpad generated display text."
+		},
+		{
+			"selector": {
+				"kind": "occurrence",
+				"occurrenceId": "webviews:webviews.rebase.rebase.lit-template-12-gl-popover-1-div-indicator-span-indicator__content.text.e9ad6e715b#text"
+			},
+			"translationPattern": {
+				"kind": "template",
+				"text": "检测到 ${slot1} 个冲突${slot3}",
+				"slots": ["slot1", "slot3"]
+			},
+			"updatedAt": "2026-04-24T18:05:11.563Z",
+			"note": "Drops English plural suffix helper from Rebase generated display text."
+		},
 		{
 			"selector": {
 				"kind": "occurrence",

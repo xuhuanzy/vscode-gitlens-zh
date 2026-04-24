@@ -2,7 +2,7 @@
 	"$schema": "../schemas/sourceCatalog.schema.json",
 	"version": 3,
 	"domain": "manifest",
-	"generatedAt": "2026-04-23T18:48:48.247Z",
+	"generatedAt": "2026-04-24T19:14:02.742Z",
 	"deferredDomains": ["webviews", "quickpicks", "formatter", "runtimeCensus"],
 	"occurrences": [
 		{

@@ -1,0 +1,1004 @@
+{
+	"$schema": "../schemas/sourceCatalog.schema.json",
+	"version": 3,
+	"domain": "formatter",
+	"generatedAt": "2026-04-24T19:32:41.479Z",
+	"deferredDomains": ["quickpicks", "runtimeCensus"],
+	"occurrences": [
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.html-title-788-17.html-title.a3b3efa810#html-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.html-title-788-17.html-title.a3b3efa810",
+			"slot": "html-title",
+			"authorityId": "message.f4cf694708d8031795f6580eaef5b5146c13c20637f55ecf1b1a2fddc2b19e88",
+			"pattern": {
+				"kind": "literal",
+				"text": "Inspect Commit Details"
+			},
+			"sourceText": "Inspect Commit Details",
+			"sourceHash": "2ab1c2c2263d2452721391e03882f66ae481c3bf0fa75e01fa1e7b4268dce658",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 788,
+					"column": 17
+				},
+				"end": {
+					"line": 788,
+					"column": 39
+				},
+				"attribute": "html-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.html-title-788-17.html-title.a3b3efa810"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-label-531-42.markdown-label.4e4c724d4b#markdown-label",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-label-531-42.markdown-label.4e4c724d4b",
+			"slot": "markdown-label",
+			"authorityId": "message.935afa5ab0fe23a0d9000a5add4292a27a5e3a10aec500a6d0b02c483f121ae9",
+			"pattern": {
+				"kind": "literal",
+				"text": "Explain"
+			},
+			"sourceText": "Explain",
+			"sourceHash": "3b61e4e9365235501dca9ed55c630b3e3950ca45b6cdc908c8d2f37880c71c57",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 531,
+					"column": 42
+				},
+				"end": {
+					"line": 531,
+					"column": 49
+				},
+				"attribute": "markdown-label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-label-531-42.markdown-label.4e4c724d4b"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-label-598-41.markdown-label.89a6cd371e#markdown-label",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-label-598-41.markdown-label.89a6cd371e",
+			"slot": "markdown-label",
+			"authorityId": "message.935afa5ab0fe23a0d9000a5add4292a27a5e3a10aec500a6d0b02c483f121ae9",
+			"pattern": {
+				"kind": "literal",
+				"text": "Explain"
+			},
+			"sourceText": "Explain",
+			"sourceHash": "3b61e4e9365235501dca9ed55c630b3e3950ca45b6cdc908c8d2f37880c71c57",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 598,
+					"column": 41
+				},
+				"end": {
+					"line": 598,
+					"column": 48
+				},
+				"attribute": "markdown-label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-label-598-41.markdown-label.89a6cd371e"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-label-636-39.markdown-label.436a1469e6#markdown-label",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-label-636-39.markdown-label.436a1469e6",
+			"slot": "markdown-label",
+			"authorityId": "message.a6689afaab2112a44797c8805a3425ab9026b732f05fde5fa504b95f78b38948",
+			"pattern": {
+				"kind": "template",
+				"text": "Connect to ${slot1}${slot2}",
+				"slots": ["slot1", "slot2"]
+			},
+			"sourceText": "Connect to ${slot1}${slot2}",
+			"sourceHash": "08d13f606e709a213001d4f0c4e09d6c89ec8b19daa36194d6b8e277f8f5f37a",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 636,
+					"column": 39
+				},
+				"end": {
+					"line": 638,
+					"column": 6
+				},
+				"attribute": "markdown-label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-label-636-39.markdown-label.436a1469e6"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-503-9.markdown-title.ae419dcd98#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-503-9.markdown-title.ae419dcd98",
+			"slot": "markdown-title",
+			"authorityId": "message.f4cf694708d8031795f6580eaef5b5146c13c20637f55ecf1b1a2fddc2b19e88",
+			"pattern": {
+				"kind": "literal",
+				"text": "Inspect Commit Details"
+			},
+			"sourceText": "Inspect Commit Details",
+			"sourceHash": "2ab1c2c2263d2452721391e03882f66ae481c3bf0fa75e01fa1e7b4268dce658",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 503,
+					"column": 9
+				},
+				"end": {
+					"line": 503,
+					"column": 31
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-503-9.markdown-title.ae419dcd98"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-511-10.markdown-title.ed1bc19594#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-511-10.markdown-title.ed1bc19594",
+			"slot": "markdown-title",
+			"authorityId": "message.d014145f4266fec16d56c80f90b4cbbdbe6ac4d4dfe6ee4d68dddaf4c9788698",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open Changes with Previous Revision"
+			},
+			"sourceText": "Open Changes with Previous Revision",
+			"sourceHash": "c60c3dc5475a8b906aee28f4361e78b3d1640b277945af74215b2042cf7277fc",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 511,
+					"column": 10
+				},
+				"end": {
+					"line": 511,
+					"column": 45
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-511-10.markdown-title.ed1bc19594"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-518-9.markdown-title.2d8d64d240#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-518-9.markdown-title.2d8d64d240",
+			"slot": "markdown-title",
+			"authorityId": "message.f66032f54421f14dc06b04416fe4aff2614019ebae1c69289b8bce5acd3ab0db",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open Blame Prior to this Change"
+			},
+			"sourceText": "Open Blame Prior to this Change",
+			"sourceHash": "9e4116610217e843f6670f6138262e9db6426ae63ace83829d7616e33842e63e",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 518,
+					"column": 9
+				},
+				"end": {
+					"line": 518,
+					"column": 40
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-518-9.markdown-title.2d8d64d240"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-527-9.markdown-title.afd9fadb44#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-527-9.markdown-title.afd9fadb44",
+			"slot": "markdown-title",
+			"authorityId": "message.f4cf694708d8031795f6580eaef5b5146c13c20637f55ecf1b1a2fddc2b19e88",
+			"pattern": {
+				"kind": "literal",
+				"text": "Inspect Commit Details"
+			},
+			"sourceText": "Inspect Commit Details",
+			"sourceHash": "2ab1c2c2263d2452721391e03882f66ae481c3bf0fa75e01fa1e7b4268dce658",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 527,
+					"column": 9
+				},
+				"end": {
+					"line": 527,
+					"column": 31
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-527-9.markdown-title.afd9fadb44"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-535-10.markdown-title.dd74ece805#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-535-10.markdown-title.dd74ece805",
+			"slot": "markdown-title",
+			"authorityId": "message.163cc07e109dc2af2e1bfbf1fa7428948cb23840f2d05f53d75c2b12e4806d71",
+			"pattern": {
+				"kind": "literal",
+				"text": "Explain Changes"
+			},
+			"sourceText": "Explain Changes",
+			"sourceHash": "37eab1bad9102331d4736fdfbb708105e475a26d932f4083b5fdbb7e6a906b79",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 535,
+					"column": 10
+				},
+				"end": {
+					"line": 535,
+					"column": 25
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-535-10.markdown-title.dd74ece805"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-545-7.markdown-title.a74c5660e4#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-545-7.markdown-title.a74c5660e4",
+			"slot": "markdown-title",
+			"authorityId": "message.f4cf694708d8031795f6580eaef5b5146c13c20637f55ecf1b1a2fddc2b19e88",
+			"pattern": {
+				"kind": "literal",
+				"text": "Inspect Commit Details"
+			},
+			"sourceText": "Inspect Commit Details",
+			"sourceHash": "2ab1c2c2263d2452721391e03882f66ae481c3bf0fa75e01fa1e7b4268dce658",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 545,
+					"column": 7
+				},
+				"end": {
+					"line": 545,
+					"column": 29
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-545-7.markdown-title.a74c5660e4"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-550-7.markdown-title.b898301130#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-550-7.markdown-title.b898301130",
+			"slot": "markdown-title",
+			"authorityId": "message.8aedd87459c253cba9acca1570af5009fc3f94a1033c7240820c63d39b34cb7d",
+			"pattern": {
+				"kind": "literal",
+				"text": "Copy SHA"
+			},
+			"sourceText": "Copy SHA",
+			"sourceHash": "393bcc8807df5cddd6cff38809055603ae8031b9b4c512da74bbb51190a5ea53",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 550,
+					"column": 7
+				},
+				"end": {
+					"line": 550,
+					"column": 15
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-550-7.markdown-title.b898301130"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-556-7.markdown-title.fee8041247#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-556-7.markdown-title.fee8041247",
+			"slot": "markdown-title",
+			"authorityId": "message.d014145f4266fec16d56c80f90b4cbbdbe6ac4d4dfe6ee4d68dddaf4c9788698",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open Changes with Previous Revision"
+			},
+			"sourceText": "Open Changes with Previous Revision",
+			"sourceHash": "c60c3dc5475a8b906aee28f4361e78b3d1640b277945af74215b2042cf7277fc",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 556,
+					"column": 7
+				},
+				"end": {
+					"line": 556,
+					"column": 42
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-556-7.markdown-title.fee8041247"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-570-8.markdown-title.8460f8e60d#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-570-8.markdown-title.8460f8e60d",
+			"slot": "markdown-title",
+			"authorityId": "message.f66032f54421f14dc06b04416fe4aff2614019ebae1c69289b8bce5acd3ab0db",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open Blame Prior to this Change"
+			},
+			"sourceText": "Open Blame Prior to this Change",
+			"sourceHash": "9e4116610217e843f6670f6138262e9db6426ae63ace83829d7616e33842e63e",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 570,
+					"column": 8
+				},
+				"end": {
+					"line": 570,
+					"column": 39
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-570-8.markdown-title.8460f8e60d"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-576-7.markdown-title.3d4dc5e1e5#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-576-7.markdown-title.3d4dc5e1e5",
+			"slot": "markdown-title",
+			"authorityId": "message.4f0ad7ac11e7cbb54daa94e2a36eb4fc4f0705d33f788430f6129f66c6bc56b7",
+			"pattern": {
+				"kind": "literal",
+				"text": "Reveal in Side Bar"
+			},
+			"sourceText": "Reveal in Side Bar",
+			"sourceHash": "cb416dd5d62377b7547b70cfe11474f282bc7fb3ea47d29e1ead5a1d5c7baaf8",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 576,
+					"column": 7
+				},
+				"end": {
+					"line": 576,
+					"column": 25
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-576-7.markdown-title.3d4dc5e1e5"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-583-8.markdown-title.3388811e0d#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-583-8.markdown-title.3388811e0d",
+			"slot": "markdown-title",
+			"authorityId": "message.5f8c7672d765d412b98f17c0bf0072bac625d04538d27cd3e80f31192d71a026",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open in Commit Graph"
+			},
+			"sourceText": "Open in Commit Graph",
+			"sourceHash": "0353e5ffa51ae6e129900d023e67cf6f487dee0784b15186cd81ceeaef3fa261",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 583,
+					"column": 8
+				},
+				"end": {
+					"line": 583,
+					"column": 28
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-583-8.markdown-title.3388811e0d"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-594-8.markdown-title.ae9b845f8e#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-594-8.markdown-title.ae9b845f8e",
+			"slot": "markdown-title",
+			"authorityId": "message.1a3c4892d3a60bc685e9e1523524cb3c9c348d706757a5138035d2c0de488eb2",
+			"pattern": {
+				"kind": "template",
+				"text": "Open Commit on ${slot1}",
+				"slots": ["slot1"]
+			},
+			"sourceText": "Open Commit on ${slot1}",
+			"sourceHash": "4f59bf6e6f91eb28d3d8c4892859cf33d3ebf5b656f7b24a9aedc8cd9b6a6c15",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 594,
+					"column": 8
+				},
+				"end": {
+					"line": 594,
+					"column": 74
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-594-8.markdown-title.ae9b845f8e"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-605-9.markdown-title.1d03ca01d1#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-605-9.markdown-title.1d03ca01d1",
+			"slot": "markdown-title",
+			"authorityId": "message.163cc07e109dc2af2e1bfbf1fa7428948cb23840f2d05f53d75c2b12e4806d71",
+			"pattern": {
+				"kind": "literal",
+				"text": "Explain Changes"
+			},
+			"sourceText": "Explain Changes",
+			"sourceHash": "37eab1bad9102331d4736fdfbb708105e475a26d932f4083b5fdbb7e6a906b79",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 605,
+					"column": 9
+				},
+				"end": {
+					"line": 605,
+					"column": 24
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-605-9.markdown-title.1d03ca01d1"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-626-9.markdown-title.cb4ab9bc02#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-626-9.markdown-title.cb4ab9bc02",
+			"slot": "markdown-title",
+			"authorityId": "message.aabd4b5dc3ccfc4a2f65368ff4b820f7851365bca0fee05196fa677b9279bd42",
+			"pattern": {
+				"kind": "literal",
+				"text": "Searching for a Pull Request (if any) that introduced this commit..."
+			},
+			"sourceText": "Searching for a Pull Request (if any) that introduced this commit...",
+			"sourceHash": "26d8fe90a04eab7be86fdd0216da544edbfc3e3e7931446df5989819f082e223",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 626,
+					"column": 9
+				},
+				"end": {
+					"line": 626,
+					"column": 77
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-626-9.markdown-title.cb4ab9bc02"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-638-94.markdown-title.d9a50a9857#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-638-94.markdown-title.d9a50a9857",
+			"slot": "markdown-title",
+			"authorityId": "message.963720a690a54449cccb982af29f9db113ce1a6fb7dc6d22b21c860b939e88ae",
+			"pattern": {
+				"kind": "template",
+				"text": "Connect to ${slot1} to enable the display of the Pull Request (if any) that introduced this commit",
+				"slots": ["slot1"]
+			},
+			"sourceText": "Connect to ${slot1} to enable the display of the Pull Request (if any) that introduced this commit",
+			"sourceHash": "f32fe134c172ca64743d7e70480150e29c0dddc8cf0cea3772f3ea51f0b215ca",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 638,
+					"column": 94
+				},
+				"end": {
+					"line": 640,
+					"column": 85
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-638-94.markdown-title.d9a50a9857"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-661-8.markdown-title.d3d82bd8f7#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-661-8.markdown-title.d3d82bd8f7",
+			"slot": "markdown-title",
+			"authorityId": "message.7088452ddd033fc7013e498df6cee02cdd27d62746b8f7e7bc2b1c2c394a8452",
+			"pattern": {
+				"kind": "literal",
+				"text": "Show Team Actions"
+			},
+			"sourceText": "Show Team Actions",
+			"sourceHash": "319d46e85a46d9438168dfdd93c5a40c7c5c974a0ee9eaa8f4bf6b18e5b206f0",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 661,
+					"column": 8
+				},
+				"end": {
+					"line": 661,
+					"column": 25
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-661-8.markdown-title.d3d82bd8f7"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-672-7.markdown-title.8a3ba1f9a5#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-672-7.markdown-title.8a3ba1f9a5",
+			"slot": "markdown-title",
+			"authorityId": "message.1c939a732794b6d273059d07fb98d2b5536ea56484e899bb693543cdac108fa5",
+			"pattern": {
+				"kind": "literal",
+				"text": "Show More Actions"
+			},
+			"sourceText": "Show More Actions",
+			"sourceHash": "91b5f2ebac5d6015744824e48d97182396dc25f4a32e492e50e6ccecbde390f9",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 672,
+					"column": 7
+				},
+				"end": {
+					"line": 672,
+					"column": 24
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-672-7.markdown-title.8a3ba1f9a5"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-781-10.markdown-title.d6618d3848#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-781-10.markdown-title.d6618d3848",
+			"slot": "markdown-title",
+			"authorityId": "message.f4cf694708d8031795f6580eaef5b5146c13c20637f55ecf1b1a2fddc2b19e88",
+			"pattern": {
+				"kind": "literal",
+				"text": "Inspect Commit Details"
+			},
+			"sourceText": "Inspect Commit Details",
+			"sourceHash": "2ab1c2c2263d2452721391e03882f66ae481c3bf0fa75e01fa1e7b4268dce658",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 781,
+					"column": 10
+				},
+				"end": {
+					"line": 781,
+					"column": 32
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-781-10.markdown-title.d6618d3848"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-910-84.markdown-title.a7125d7637#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-910-84.markdown-title.a7125d7637",
+			"slot": "markdown-title",
+			"authorityId": "message.5e28828152d091b3d7aff8788ec8b4d49bdda85f4612cc850bba05dacc5ecfb7",
+			"pattern": {
+				"kind": "template",
+				"text": "Open Pull Request \\#${slot1} on ${slot2}",
+				"slots": ["slot1", "slot2"]
+			},
+			"sourceText": "Open Pull Request \\#${slot1} on ${slot2}",
+			"sourceHash": "ba44e9e833373efaf07853403b13ca1de3d61a8fb4f59a1b67311884afdcb8ae",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 910,
+					"column": 84
+				},
+				"end": {
+					"line": 912,
+					"column": 31
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-910-84.markdown-title.a7125d7637"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-931-106.markdown-title.b7a34b7bdc#markdown-title",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-931-106.markdown-title.b7a34b7bdc",
+			"slot": "markdown-title",
+			"authorityId": "message.aabd4b5dc3ccfc4a2f65368ff4b820f7851365bca0fee05196fa677b9279bd42",
+			"pattern": {
+				"kind": "literal",
+				"text": "Searching for a Pull Request (if any) that introduced this commit..."
+			},
+			"sourceText": "Searching for a Pull Request (if any) that introduced this commit...",
+			"sourceHash": "26d8fe90a04eab7be86fdd0216da544edbfc3e3e7931446df5989819f082e223",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 931,
+					"column": 106
+				},
+				"end": {
+					"line": 931,
+					"column": 174
+				},
+				"attribute": "markdown-title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.markdown-title-931-106.markdown-title.b7a34b7bdc"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.string-281-29.formatAuthor-argument-1.dc9184064f#formatAuthor-argument-1",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.string-281-29.formatAuthor-argument-1.dc9184064f",
+			"slot": "formatAuthor-argument-1",
+			"authorityId": "message.95fbac7a1762de486526e6da421a7e1942ae7fe8524fbbd4dbe20f6203080668",
+			"pattern": {
+				"kind": "literal",
+				"text": "You"
+			},
+			"sourceText": "You",
+			"sourceHash": "08b041935798fbf6fd6ff51099ffedb140a475889986d14f5559ff8e7fc571dd",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 281,
+					"column": 29
+				},
+				"end": {
+					"line": 281,
+					"column": 34
+				},
+				"attribute": "formatAuthor-argument-1"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.string-281-29.formatAuthor-argument-1.dc9184064f"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.string-291-29.formatAuthor-argument-1.40b5ae78dd#formatAuthor-argument-1",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.string-291-29.formatAuthor-argument-1.40b5ae78dd",
+			"slot": "formatAuthor-argument-1",
+			"authorityId": "message.95fbac7a1762de486526e6da421a7e1942ae7fe8524fbbd4dbe20f6203080668",
+			"pattern": {
+				"kind": "literal",
+				"text": "You"
+			},
+			"sourceText": "You",
+			"sourceHash": "08b041935798fbf6fd6ff51099ffedb140a475889986d14f5559ff8e7fc571dd",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 291,
+					"column": 29
+				},
+				"end": {
+					"line": 291,
+					"column": 34
+				},
+				"attribute": "formatAuthor-argument-1"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.string-291-29.formatAuthor-argument-1.40b5ae78dd"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.string-382-17.statusText.723245124a#statusText",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.string-382-17.statusText.723245124a",
+			"slot": "statusText",
+			"authorityId": "message.c805dd54373b830302c2390790c43278ceab65a778861f3a3c47de7f1a294232",
+			"pattern": {
+				"kind": "literal",
+				"text": "Offline"
+			},
+			"sourceText": "Offline",
+			"sourceHash": "a1794783aab72d205dc532b1170d1be63ebdce8816b57c21acb451c15dab969a",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 382,
+					"column": 17
+				},
+				"end": {
+					"line": 382,
+					"column": 26
+				},
+				"attribute": "statusText"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.string-382-17.statusText.723245124a"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.string-769-65.working.4232268d62#working",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.string-769-65.working.4232268d62",
+			"slot": "working",
+			"authorityId": "message.d5c9aea0ec719010eee014fb4f05579084a08ca1ef3b9b1430be602873c2e78e",
+			"pattern": {
+				"kind": "literal",
+				"text": "Working Tree"
+			},
+			"sourceText": "Working Tree",
+			"sourceHash": "bd85643c93f3f3707df4f4fa2c08c44fb91782136477b9a33ee49a42bcb9fc41",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 769,
+					"column": 65
+				},
+				"end": {
+					"line": 769,
+					"column": 79
+				},
+				"attribute": "working"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.string-769-65.working.4232268d62"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.string-970-19.tooltip.d3a75c9ca5#tooltip",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.string-970-19.tooltip.d3a75c9ca5",
+			"slot": "tooltip",
+			"authorityId": "message.562c40f53dd3ad36239e66cd20e583dbe1beb6777f374f11cf0892620b0ff910",
+			"pattern": {
+				"kind": "literal",
+				"text": "Signed\nClick to verify signature in Commit Details"
+			},
+			"sourceText": "Signed\nClick to verify signature in Commit Details",
+			"sourceHash": "a04872fbb6e75c1559c7b9cf41c1f1bd7f82651095019a4cf01c77c2628a3346",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 970,
+					"column": 19
+				},
+				"end": {
+					"line": 970,
+					"column": 72
+				},
+				"attribute": "tooltip"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.string-970-19.tooltip.d3a75c9ca5"
+			}
+		},
+		{
+			"id": "formatter:formatter.commitFormatter.commitFormatter.template-809-18.message.14a6c0ec29#message",
+			"domain": "formatter",
+			"scope": "formatter.commitFormatter",
+			"anchor": "formatter.commitFormatter.commitFormatter.template-809-18.message.14a6c0ec29",
+			"slot": "message",
+			"authorityId": "message.0aa2488893351e8d7268d90d6dd3142cf627c331a30eca7a6ee93b80c7e67bfd",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} changes",
+				"slots": ["slot1"]
+			},
+			"sourceText": "${slot1} changes",
+			"sourceHash": "787d2fcab90f517b9c163cc5063db6a47b9a90fd3cc3d282eaefc6d28366efb4",
+			"reference": {
+				"kind": "source",
+				"file": "src/git/formatters/commitFormatter.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 809,
+					"column": 18
+				},
+				"end": {
+					"line": 809,
+					"column": 87
+				},
+				"attribute": "message"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "formatter",
+				"key": "commitFormatter.template-809-18.message.14a6c0ec29"
+			}
+		}
+	]
+}

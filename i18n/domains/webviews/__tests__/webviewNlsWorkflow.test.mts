@@ -33,6 +33,7 @@ function run(): void {
 	testWriteTextFileSkipsUnchangedWrites();
 	testSupportedDynamicBundlesGenerateLocalizedSources();
 	testRebaseShortcutFooterIsNotExtracted();
+	testStructuralSlotOnlyTemplatesAreNotExtracted();
 	testLaunchpadGrammarHelpersAreNotExtracted();
 	testWelcomeLocalizedSourceRewritesImportsBackToSourceTree();
 	testGraphBundleGeneratesLocalizedSource();
@@ -435,9 +436,98 @@ function testRebaseShortcutFooterIsNotExtracted(): void {
 		const workset = loadWebviewsWorkset(context);
 		const blockedSources = new Set(['ick', 'eword', 'dit', 'quash', 'ixup', 'rop', 'move', 'search']);
 
-		assert.equal(workset.entries.some(entry => entry.source === 'Ready to rebase'), true);
-		assert.equal(workset.entries.some(entry => blockedSources.has(entry.source)), false);
-		assert.equal(catalog.occurrences.some(occurrence => blockedSources.has(occurrence.sourceText)), false);
+		assert.equal(
+			workset.entries.some(entry => entry.source === 'Ready to rebase'),
+			true,
+		);
+		assert.equal(
+			workset.entries.some(entry => blockedSources.has(entry.source)),
+			false,
+		);
+		assert.equal(
+			catalog.occurrences.some(occurrence => blockedSources.has(occurrence.sourceText)),
+			false,
+		);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testStructuralSlotOnlyTemplatesAreNotExtracted(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-structural-templates-'));
+	try {
+		writeDefaultSettingsShell(rootDir);
+		writeTextFile(
+			rootDir,
+			'src/webviews/apps/rebase/components/rebase-entry.ts',
+			[
+				"import { html } from 'lit';",
+				'export function renderEntry(action: string, message: string, sha: string) {',
+				'\tconst ariaLabel = `${action}, ${message}, ${sha}`;',
+				'\treturn html`<div aria-label=${ariaLabel}><span>Ready to rebase</span></div>`;',
+				'}',
+				'',
+			].join('\n'),
+		);
+		writeTextFile(
+			rootDir,
+			'src/webviews/apps/shared/components/search/search-box.ts',
+			[
+				"import { html } from 'lit';",
+				'export function renderCount(step: number, total: number, label: string) {',
+				'\treturn html`<span><span>${step}</span> of <span>${total}</span><span> ${label}</span></span>`;',
+				'}',
+				'',
+			].join('\n'),
+		);
+		writeTextFile(
+			rootDir,
+			'src/webviews/apps/plus/home/components/user-chip.ts',
+			[
+				"import { html } from 'lit';",
+				'export function renderUser(name: string, status: string) {',
+				'\treturn html`<span><strong>${name}</strong> (${status})</span>`;',
+				'}',
+				'',
+			].join('\n'),
+		);
+		writeTextFile(
+			rootDir,
+			'src/webviews/apps/plus/graph/components/branch-label.ts',
+			[
+				"import { html } from 'lit';",
+				'export function renderBranchLabel(name: string, status: string, branch: string, remote: string) {',
+				'\treturn html`<div><span>${name} ${status}</span><span>${branch} is</span><span>on ${remote}</span></div>`;',
+				'}',
+				'',
+			].join('\n'),
+		);
+
+		syncWebviewsI18n({ rootDir });
+		const context = createWebviewsDomainContext(rootDir);
+		const catalog = loadWebviewsCatalog(context);
+		const workset = loadWebviewsWorkset(context);
+		const blockedSources = new Set([
+			'${slot1}, ${slot2}, ${slot3}',
+			'${slot1} of ${slot2} ${slot3}',
+			'**${slot1}** (${slot2})',
+			'${slot1} ${slot2}',
+			'${slot1} is',
+			'on ${slot1}',
+		]);
+
+		assert.equal(
+			workset.entries.some(entry => blockedSources.has(entry.source)),
+			false,
+		);
+		assert.equal(
+			catalog.occurrences.some(occurrence => blockedSources.has(occurrence.sourceText)),
+			false,
+		);
+		assert.equal(
+			workset.entries.some(entry => entry.source === 'Ready to rebase'),
+			true,
+		);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}
@@ -484,9 +574,24 @@ function testLaunchpadGrammarHelpersAreNotExtracted(): void {
 			'${slot1} ${slot2} follow-up',
 			'${slot1} ${slot2} your review',
 		]);
+		const blockedStructuralSources = new Set(['${slot1} ${slot2}']);
 
-		assert.equal(workset.entries.some(entry => grammarHelperSources.has(entry.source)), false);
-		assert.equal(catalog.occurrences.some(occurrence => grammarHelperSources.has(occurrence.sourceText)), false);
+		assert.equal(
+			workset.entries.some(entry => grammarHelperSources.has(entry.source)),
+			false,
+		);
+		assert.equal(
+			catalog.occurrences.some(occurrence => grammarHelperSources.has(occurrence.sourceText)),
+			false,
+		);
+		assert.equal(
+			workset.entries.some(entry => blockedStructuralSources.has(entry.source)),
+			false,
+		);
+		assert.equal(
+			catalog.occurrences.some(occurrence => blockedStructuralSources.has(occurrence.sourceText)),
+			false,
+		);
 		for (const source of expectedSources) {
 			assert.equal(
 				catalog.occurrences.some(occurrence => occurrence.sourceText === source),
@@ -499,7 +604,6 @@ function testLaunchpadGrammarHelpersAreNotExtracted(): void {
 			'${slot1} reviewers': '需要审查者',
 			'${slot1} failed CI checks': 'CI 检查未通过',
 			'${slot1} conflicts': '存在冲突',
-			'${slot1} ${slot2}': '${slot2}（${slot1}）',
 			'${slot1} ${slot2} blocked (${slot3})': '${slot1} 已阻塞（${slot3}）',
 			'${slot1} ${slot2} follow-up': '${slot1} 需要后续跟进',
 			'${slot1} ${slot2} your review': '${slot1} 需要你审查',
@@ -512,8 +616,8 @@ function testLaunchpadGrammarHelpersAreNotExtracted(): void {
 			'src/webviews/apps/plus/home/components/launchpad.ts',
 		);
 		assert.notEqual(localizedLaunchpad, undefined);
-		assert.equal(localizedLaunchpad!.includes("summary.count > 1 ? \"\" : \"\""), false);
-		assert.equal(localizedLaunchpad!.includes("total > 1 ? \"\" : \"\""), false);
+		assert.equal(localizedLaunchpad!.includes('summary.count > 1 ? "" : ""'), false);
+		assert.equal(localizedLaunchpad!.includes('total > 1 ? "" : ""'), false);
 		assert.equal(localizedLaunchpad!.includes('message: `需要审查者`'), true);
 		assert.equal(localizedLaunchpad!.includes('message: `CI 检查未通过`'), true);
 		assert.equal(localizedLaunchpad!.includes('message: `存在冲突`'), true);
@@ -521,7 +625,7 @@ function testLaunchpadGrammarHelpersAreNotExtracted(): void {
 		assert.equal(localizedLaunchpad!.includes("${pluralize('pull request', total)} 需要你审查"), true);
 		assert.equal(
 			localizedLaunchpad!.includes(
-				"${pluralize('pull request', total)} 已阻塞（${messages.map(m => `${m.message}（${m.count}）`).join(', ')}）",
+				"${pluralize('pull request', total)} 已阻塞（${messages.map(m => `${m.count} ${m.message}`).join(', ')}）",
 			),
 			true,
 		);
@@ -933,7 +1037,7 @@ function testSearchInputPlaceholderGetterIsLocalized(): void {
 			'src/webviews/apps/shared/components/search/search-input.ts',
 		);
 		assert.notEqual(localizedSearchInput, undefined);
-		assert.equal(localizedSearchInput!.includes("return this.filter ? \"筛选\" : \"搜索\";"), true);
+		assert.equal(localizedSearchInput!.includes('return this.filter ? "筛选" : "搜索";'), true);
 		assert.equal(
 			localizedSearchInput!.includes(
 				'`${this.label}使用自然语言搜索提交（↑↓ 查看历史），例如 my commits from last week`',
@@ -980,18 +1084,21 @@ function testReturnedDisplayTemplateSlotsLocalizeVariableInitializers(): void {
 		syncWebviewsI18n({ rootDir });
 		const context = createWebviewsDomainContext(rootDir);
 		const catalog = loadWebviewsCatalog(context);
-		for (const source of ['Draft pull request', 'Pull request', '${slot1} ${slot2} is ${slot3}']) {
+		for (const source of ['Draft pull request', 'Pull request']) {
 			assert.equal(
 				catalog.occurrences.some(occurrence => occurrence.sourceText === source),
 				true,
 				`expected returned label source to be extracted: ${source}`,
 			);
 		}
+		assert.equal(
+			catalog.occurrences.some(occurrence => occurrence.sourceText === '${slot1} ${slot2} is ${slot3}'),
+			false,
+		);
 
 		approveTranslations(context, {
 			'Draft pull request': '草稿拉取请求',
 			'Pull request': '拉取请求',
-			'${slot1} ${slot2} is ${slot3}': '${slot1} ${slot2} 状态为 ${slot3}',
 		});
 		promoteWebviewsAuthority({ rootDir });
 		generateWebviewsLocalizedDynamicSources({ rootDir });
@@ -1001,12 +1108,9 @@ function testReturnedDisplayTemplateSlotsLocalizeVariableInitializers(): void {
 			'src/webviews/apps/shared/components/rich/pr-icon.ts',
 		);
 		assert.notEqual(localizedPrIcon, undefined);
+		assert.equal(localizedPrIcon!.includes('const type = this.draft ? "草稿拉取请求" : "拉取请求";'), true);
 		assert.equal(
-			localizedPrIcon!.includes('const type = this.draft ? "草稿拉取请求" : "拉取请求";'),
-			true,
-		);
-		assert.equal(
-			localizedPrIcon!.includes("return `${type} ${this.prId ? `#${this.prId}` : ''} 状态为 ${this.state}`;"),
+			localizedPrIcon!.includes("return `${type} ${this.prId ? `#${this.prId}` : ''} is ${this.state}`;"),
 			true,
 		);
 	} finally {
@@ -1103,12 +1207,21 @@ function testGraphBranchVisibilityOptionsAreLocalized(): void {
 		);
 		assert.notEqual(localizedGraphHeader, undefined);
 		assert.match(localizedGraphHeader!, /<gl-tooltip placement="top" content="分支可见性">/u);
-		assert.match(localizedGraphHeader!, /<sl-option value="all" \?disabled=\$\{repo\?\.virtual\}>\s*所有分支\s*<\/sl-option>/u);
+		assert.match(
+			localizedGraphHeader!,
+			/<sl-option value="all" \?disabled=\$\{repo\?\.virtual\}>\s*所有分支\s*<\/sl-option>/u,
+		);
 		assert.match(localizedGraphHeader!, /<sl-option value="current">当前分支<\/sl-option>/u);
 		assert.match(localizedGraphHeader!, /智能分支\s*\$\{[\s\S]*?<gl-tooltip placement="right" slot="suffix">/u);
 		assert.match(localizedGraphHeader!, /收藏的分支\s*<gl-tooltip placement="right" slot="suffix">/u);
-		assert.match(localizedGraphHeader!, /<span slot="content">仅显示相关分支 <br \/><br \/><i>包括当前分支、其上游以及其基础分支或目标分支<\/i><\/span>/u);
-		assert.match(localizedGraphHeader!, /<span slot="content">仅显示已加星标为收藏的分支 <br \/><br \/><i>也包括当前分支<\/i><\/span>/u);
+		assert.match(
+			localizedGraphHeader!,
+			/<span slot="content">仅显示相关分支 <br \/><br \/><i>包括当前分支、其上游以及其基础分支或目标分支<\/i><\/span>/u,
+		);
+		assert.match(
+			localizedGraphHeader!,
+			/<span slot="content">仅显示已加星标为收藏的分支 <br \/><br \/><i>也包括当前分支<\/i><\/span>/u,
+		);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}
