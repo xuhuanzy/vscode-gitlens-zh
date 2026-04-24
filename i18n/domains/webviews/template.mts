@@ -12,6 +12,7 @@ export interface SyntheticTextTemplateFragment {
 
 export interface SyntheticHtmlTemplateSlotContext {
 	readonly kind: 'text' | 'attribute';
+	readonly tag?: string;
 	readonly attribute?: string;
 }
 
@@ -126,6 +127,7 @@ export function getSyntheticHtmlTemplateSlotContext(
 
 			return {
 				kind: 'attribute',
+				tag: getPendingTagName(context.tagTail),
 				attribute: normalizedAttribute,
 			};
 		}
@@ -235,6 +237,11 @@ function isAttributeValueContext(context: HtmlInsertionContext): boolean {
 function getPendingAttributeName(tagTail: string): string | undefined {
 	const match = /(?:^|[\s<])([^\s=<>/]+)\s*=\s*(?:"|')?$/u.exec(tagTail);
 	return match?.[1];
+}
+
+function getPendingTagName(tagTail: string): string | undefined {
+	const match = /^<\s*([A-Za-z0-9:_-]+)/u.exec(tagTail);
+	return match?.[1]?.toLowerCase();
 }
 
 function normalizePendingAttributeName(name: string): string | undefined {

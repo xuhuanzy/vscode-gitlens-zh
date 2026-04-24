@@ -49,6 +49,7 @@ const translatableJsxAttributeNames = new Set([
 	'primary-button',
 	'secondary-button',
 ]);
+const translatableAttributesByTag = new Map([['gl-tooltip', new Set(['content'])]]);
 
 export function generateLocalizedSettingsShell(
 	englishHtml: string,
@@ -819,6 +820,13 @@ function localizeJsxAttribute(
 	availableSourceTexts: ReadonlySet<string>,
 	resolvedBySourceText: ReadonlyMap<string, ResolvedTranslation>,
 ): { readonly value?: string; readonly translatedCount: number; readonly unresolvedCount: number } {
+	if (!isTranslatableAttribute(node.name.text, getJsxElementTagName(node))) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+
 	if (node.initializer == null) {
 		return {
 			translatedCount: 0,
@@ -1022,9 +1030,24 @@ function hasImperativeDisplayContextAncestor(node: ts.Node, sourceFile: ts.Sourc
 		if (ts.isVariableDeclaration(current) && current.initializer === child) {
 			return variableDeclarationFlowsToDisplay(current, sourceFile);
 		}
+		if (ts.isReturnStatement(current) && current.expression === child) {
+			return returnStatementFlowsToNamedDisplayProducer(current);
+		}
 		if (withinDisplayProducer) {
 			if (isImperativeDisplayCallArgument(current, child)) return true;
 			if (isImperativeDisplayAssignment(current, child)) return true;
+		}
+		if (ts.isSourceFile(current)) break;
+	}
+
+	return false;
+}
+
+function returnStatementFlowsToNamedDisplayProducer(node: ts.ReturnStatement): boolean {
+	for (let current = node.parent; current != null; current = current.parent) {
+		if (isFunctionLike(current)) {
+			const name = getFunctionLikeName(current);
+			return name != null && looksLikeTextReturnProducerName(name);
 		}
 		if (ts.isSourceFile(current)) break;
 	}
@@ -1054,7 +1077,11 @@ function functionProducesDisplay(node: ts.Node, sourceFile: ts.SourceFile): bool
 }
 
 function looksLikeDisplayProducerName(name: string): boolean {
-	return /(label|message|render|text|title|tooltip)/iu.test(name);
+	return /(label|message|placeholder|render|text|title|tooltip)/iu.test(name);
+}
+
+function looksLikeTextReturnProducerName(name: string): boolean {
+	return /(label|message|placeholder|text|title|tooltip)/iu.test(name);
 }
 
 function bodyContainsHtmlTemplate(node: ts.Node, sourceFile: ts.SourceFile): boolean {
@@ -1226,12 +1253,16 @@ function identifierFlowsToDisplay(node: ts.Identifier): boolean {
 			continue;
 		}
 
+		if (ts.isReturnStatement(parent) && parent.expression === current) {
+			return returnStatementFlowsToNamedDisplayProducer(parent);
+		}
+
 		if (ts.isJsxExpression(parent) && parent.expression === current) {
 			return jsxExpressionDisplayContext(parent);
 		}
 
 		if (ts.isJsxAttribute(parent)) {
-			return translatableJsxAttributeNames.has(parent.name.text);
+			return isTranslatableAttribute(parent.name.text, getJsxElementTagName(parent));
 		}
 
 		if (
@@ -1291,13 +1322,13 @@ function templateSpanDisplayContext(span: ts.TemplateSpan, sourceFile: ts.Source
 	if (slotContext == null) return false;
 	if (slotContext.kind === 'text') return true;
 
-	return slotContext.attribute != null && translatableJsxAttributeNames.has(slotContext.attribute);
+	return slotContext.attribute != null && isTranslatableAttribute(slotContext.attribute, slotContext.tag);
 }
 
 function jsxExpressionDisplayContext(node: ts.JsxExpression): boolean {
 	const parent = node.parent;
 	if (ts.isJsxAttribute(parent)) {
-		return translatableJsxAttributeNames.has(parent.name.text);
+		return isTranslatableAttribute(parent.name.text, getJsxElementTagName(parent));
 	}
 
 	return !ts.isJsxAttribute(parent);
@@ -1367,6 +1398,26 @@ function getStaticJsxAttributeValue(initializer: ts.JsxAttributeValue): string |
 	}
 
 	return getStaticStringValue(initializer.expression);
+}
+
+function isTranslatableAttribute(attribute: string, tag?: string): boolean {
+	if (translatableJsxAttributeNames.has(attribute)) return true;
+
+	const normalizedTag = tag?.toLowerCase();
+	if (normalizedTag == null) return false;
+	return translatableAttributesByTag.get(normalizedTag)?.has(attribute) ?? false;
+}
+
+function getJsxElementTagName(node: ts.JsxAttribute): string | undefined {
+	const parent = node.parent;
+	if (!ts.isJsxAttributes(parent)) return undefined;
+
+	const element = parent.parent;
+	if (ts.isJsxOpeningElement(element) || ts.isJsxSelfClosingElement(element)) {
+		return element.tagName.getText().toLowerCase();
+	}
+
+	return undefined;
 }
 
 function normalizeJsxText(text: string): string {

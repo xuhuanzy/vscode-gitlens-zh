@@ -39,6 +39,9 @@ function run(): void {
 	testWelcomeWorkflowPreservesTemplateArgumentSeparators();
 	testWelcomeWorkflowSkipsObviousNonUiImperativeStrings();
 	testCommitDetailsWorkflowLocalizesDisplayOnlyImperativeStrings();
+	testSearchInputPlaceholderGetterIsLocalized();
+	testReturnedDisplayTemplateSlotsLocalizeVariableInitializers();
+	testGraphBranchVisibilityOptionsAreLocalized();
 	testDeferredRuntimeBoundariesAreReported();
 	testGeneratorPreservesStructuralNodes();
 	testLocalizedSourcePreservesNamedSlotSubtrees();
@@ -853,6 +856,259 @@ function testCommitDetailsWorkflowLocalizesDisplayOnlyImperativeStrings(): void 
 		assert.equal(localizedWipDetails!.includes('data-action="${fetchLabel.toLowerCase()}"'), true);
 		assert.equal(localizedWipDetails!.includes('>${fetchLabel}<span slot="tooltip">${fetchTooltip}'), true);
 		assert.equal(localizedWipDetails!.includes('<gl-button tooltip="${label}">${label}</gl-button>'), true);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testSearchInputPlaceholderGetterIsLocalized(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-search-placeholder-'));
+	try {
+		writeDefaultSettingsShell(rootDir);
+		writeTextFile(
+			rootDir,
+			'src/webviews/apps/home/home.ts',
+			[
+				"import { html } from 'lit';",
+				'export function renderHome() {',
+				'\treturn html`<gl-search-input></gl-search-input>`;',
+				'}',
+				'',
+			].join('\n'),
+		);
+		writeTextFile(
+			rootDir,
+			'src/webviews/apps/shared/components/search/search-input.ts',
+			[
+				"import { html } from 'lit';",
+				'export class GlSearchInput {',
+				'\tfilter = false;',
+				'\tnaturalLanguage = false;',
+				'\tprivate get label() {',
+				"\t\treturn this.filter ? 'Filter' : 'Search';",
+				'\t}',
+				'\tprivate get placeholder() {',
+				'\t\tif (this.naturalLanguage) {',
+				'\t\t\treturn `${this.label} commits using natural language (↑↓ for history), e.g. my commits from last week`;',
+				'\t\t}',
+				'\t\treturn `${this.label} commits (press Enter to search, ↑↓ for history), e.g. @me after:1.week.ago file:*.ts`;',
+				'\t}',
+				'\trender() {',
+				'\t\treturn html`<input placeholder="${this.placeholder}" />`;',
+				'\t}',
+				'}',
+				'',
+			].join('\n'),
+		);
+
+		syncWebviewsI18n({ rootDir });
+		const context = createWebviewsDomainContext(rootDir);
+		const catalog = loadWebviewsCatalog(context);
+		for (const source of [
+			'Filter',
+			'Search',
+			'${slot1} commits using natural language (↑↓ for history), e.g. my commits from last week',
+			'${slot1} commits (press Enter to search, ↑↓ for history), e.g. @me after:1.week.ago file:*.ts',
+		]) {
+			assert.equal(
+				catalog.occurrences.some(occurrence => occurrence.sourceText === source),
+				true,
+				`expected search placeholder source to be extracted: ${source}`,
+			);
+		}
+
+		approveTranslations(context, {
+			Filter: '筛选',
+			Search: '搜索',
+			'${slot1} commits using natural language (↑↓ for history), e.g. my commits from last week':
+				'${slot1}使用自然语言搜索提交（↑↓ 查看历史），例如 my commits from last week',
+			'${slot1} commits (press Enter to search, ↑↓ for history), e.g. @me after:1.week.ago file:*.ts':
+				'${slot1}提交（按 Enter 搜索，↑↓ 查看历史），例如 @me after:1.week.ago file:*.ts',
+		});
+		promoteWebviewsAuthority({ rootDir });
+		generateWebviewsLocalizedDynamicSources({ rootDir });
+
+		const localizedSearchInput = loadLocalizedDynamicSource(
+			context,
+			'src/webviews/apps/shared/components/search/search-input.ts',
+		);
+		assert.notEqual(localizedSearchInput, undefined);
+		assert.equal(localizedSearchInput!.includes("return this.filter ? \"筛选\" : \"搜索\";"), true);
+		assert.equal(
+			localizedSearchInput!.includes(
+				'`${this.label}使用自然语言搜索提交（↑↓ 查看历史），例如 my commits from last week`',
+			),
+			true,
+		);
+		assert.equal(
+			localizedSearchInput!.includes(
+				'`${this.label}提交（按 Enter 搜索，↑↓ 查看历史），例如 @me after:1.week.ago file:*.ts`',
+			),
+			true,
+		);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testReturnedDisplayTemplateSlotsLocalizeVariableInitializers(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-returned-label-slots-'));
+	try {
+		writeDefaultSettingsShell(rootDir);
+		writeTextFile(
+			rootDir,
+			'src/webviews/apps/shared/components/rich/pr-icon.ts',
+			[
+				"import { html } from 'lit';",
+				'export class PrIcon {',
+				'\tdraft = false;',
+				'\tstate?: string;',
+				'\tprId?: string;',
+				'\tget label(): string {',
+				"\t\tconst type = this.draft ? 'Draft pull request' : 'Pull request';",
+				'\t\tif (!this.state) return type;',
+				"\t\treturn `${type} ${this.prId ? `#${this.prId}` : ''} is ${this.state}`;",
+				'\t}',
+				'\trender() {',
+				'\t\treturn html`<span>${this.label}</span>`;',
+				'\t}',
+				'}',
+				'',
+			].join('\n'),
+		);
+
+		syncWebviewsI18n({ rootDir });
+		const context = createWebviewsDomainContext(rootDir);
+		const catalog = loadWebviewsCatalog(context);
+		for (const source of ['Draft pull request', 'Pull request', '${slot1} ${slot2} is ${slot3}']) {
+			assert.equal(
+				catalog.occurrences.some(occurrence => occurrence.sourceText === source),
+				true,
+				`expected returned label source to be extracted: ${source}`,
+			);
+		}
+
+		approveTranslations(context, {
+			'Draft pull request': '草稿拉取请求',
+			'Pull request': '拉取请求',
+			'${slot1} ${slot2} is ${slot3}': '${slot1} ${slot2} 状态为 ${slot3}',
+		});
+		promoteWebviewsAuthority({ rootDir });
+		generateWebviewsLocalizedDynamicSources({ rootDir });
+
+		const localizedPrIcon = loadLocalizedDynamicSource(
+			context,
+			'src/webviews/apps/shared/components/rich/pr-icon.ts',
+		);
+		assert.notEqual(localizedPrIcon, undefined);
+		assert.equal(
+			localizedPrIcon!.includes('const type = this.draft ? "草稿拉取请求" : "拉取请求";'),
+			true,
+		);
+		assert.equal(
+			localizedPrIcon!.includes("return `${type} ${this.prId ? `#${this.prId}` : ''} 状态为 ${this.state}`;"),
+			true,
+		);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testGraphBranchVisibilityOptionsAreLocalized(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-graph-branch-visibility-'));
+	try {
+		writeDefaultSettingsShell(rootDir);
+		writeTextFile(
+			rootDir,
+			'src/webviews/apps/plus/graph/graph-header.ts',
+			[
+				"import { html } from 'lit';",
+				'export function renderBranchVisibility(repo, branchesVisibility) {',
+				'\treturn html`<gl-tooltip placement="top" content="Branches Visibility">',
+				'\t\t<sl-select value=${branchesVisibility} hoist>',
+				'\t\t\t<code-icon icon="chevron-down" slot="expand-icon"></code-icon>',
+				'\t\t\t<sl-option value="all" ?disabled=${repo?.virtual}> All Branches </sl-option>',
+				'\t\t\t<sl-option value="current">Current Branch</sl-option>',
+				'\t\t\t<menu-divider></menu-divider>',
+				'\t\t\t<sl-option value="smart" ?disabled=${repo?.virtual}>',
+				'\t\t\t\tSmart Branches',
+				'\t\t\t\t${html`<gl-tooltip placement="right" slot="suffix">',
+				'\t\t\t\t\t<code-icon icon="info"></code-icon>',
+				'\t\t\t\t\t<span slot="content">',
+				'\t\t\t\t\t\tShows only relevant branches',
+				'\t\t\t\t\t\t<br />',
+				'\t\t\t\t\t\t<br />',
+				'\t\t\t\t\t\t<i>Includes the current branch, its upstream, and its base or target branch</i>',
+				'\t\t\t\t\t</span>',
+				'\t\t\t\t</gl-tooltip>`}',
+				'\t\t\t</sl-option>',
+				'\t\t\t<sl-option value="favorited" ?disabled=${repo?.virtual}>',
+				'\t\t\t\tFavorited Branches',
+				'\t\t\t\t<gl-tooltip placement="right" slot="suffix">',
+				'\t\t\t\t\t<code-icon icon="info"></code-icon>',
+				'\t\t\t\t\t<span slot="content">',
+				'\t\t\t\t\t\tShows only branches that have been starred as favorites',
+				'\t\t\t\t\t\t<br />',
+				'\t\t\t\t\t\t<br />',
+				'\t\t\t\t\t\t<i>Also includes the current branch</i>',
+				'\t\t\t\t\t</span>',
+				'\t\t\t\t</gl-tooltip>',
+				'\t\t\t</sl-option>',
+				'\t\t</sl-select>',
+				'\t</gl-tooltip>`;',
+				'}',
+				'',
+			].join('\n'),
+		);
+
+		syncWebviewsI18n({ rootDir });
+		const context = createWebviewsDomainContext(rootDir);
+		const catalog = loadWebviewsCatalog(context);
+		for (const source of [
+			'Branches Visibility',
+			'All Branches',
+			'Current Branch',
+			'Smart Branches ${slot1}',
+			'Favorited Branches',
+			'Shows only relevant branches ${slot1}',
+			'Includes the current branch, its upstream, and its base or target branch',
+			'Shows only branches that have been starred as favorites ${slot1}',
+			'Also includes the current branch',
+		]) {
+			assert.equal(
+				catalog.occurrences.some(occurrence => occurrence.sourceText === source),
+				true,
+				`expected graph branch visibility source to be extracted: ${source}`,
+			);
+		}
+
+		approveTranslations(context, {
+			'Branches Visibility': '分支可见性',
+			'All Branches': '所有分支',
+			'Current Branch': '当前分支',
+			'Smart Branches ${slot1}': '智能分支 ${slot1}',
+			'Favorited Branches': '收藏的分支',
+			'Shows only relevant branches ${slot1}': '仅显示相关分支 ${slot1}',
+			'Includes the current branch, its upstream, and its base or target branch':
+				'包括当前分支、其上游以及其基础分支或目标分支',
+			'Shows only branches that have been starred as favorites ${slot1}': '仅显示已加星标为收藏的分支 ${slot1}',
+			'Also includes the current branch': '也包括当前分支',
+		});
+		promoteWebviewsAuthority({ rootDir });
+		generateWebviewsLocalizedDynamicSources({ rootDir });
+
+		const localizedGraphHeader = loadLocalizedDynamicSource(
+			context,
+			'src/webviews/apps/plus/graph/graph-header.ts',
+		);
+		assert.notEqual(localizedGraphHeader, undefined);
+		assert.match(localizedGraphHeader!, /<gl-tooltip placement="top" content="分支可见性">/u);
+		assert.match(localizedGraphHeader!, /<sl-option value="all" \?disabled=\$\{repo\?\.virtual\}>\s*所有分支\s*<\/sl-option>/u);
+		assert.match(localizedGraphHeader!, /<sl-option value="current">当前分支<\/sl-option>/u);
+		assert.match(localizedGraphHeader!, /智能分支\s*\$\{[\s\S]*?<gl-tooltip placement="right" slot="suffix">/u);
+		assert.match(localizedGraphHeader!, /收藏的分支\s*<gl-tooltip placement="right" slot="suffix">/u);
+		assert.match(localizedGraphHeader!, /<span slot="content">仅显示相关分支 <br \/><br \/><i>包括当前分支、其上游以及其基础分支或目标分支<\/i><\/span>/u);
+		assert.match(localizedGraphHeader!, /<span slot="content">仅显示已加星标为收藏的分支 <br \/><br \/><i>也包括当前分支<\/i><\/span>/u);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}

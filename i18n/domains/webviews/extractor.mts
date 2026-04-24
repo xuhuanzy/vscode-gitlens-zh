@@ -73,6 +73,7 @@ const translatableAttributes = new Set([
 	'primary-button',
 	'secondary-button',
 ]);
+const translatableAttributesByTag = new Map([['gl-tooltip', new Set(['content'])]]);
 const translatablePropertyNames = new Set(['title']);
 const localizationHelperNames = new Set(['localizeWebviewText', 'localizeWebviewTemplate']);
 const litTemplateTagNames = new Set(['html']);
@@ -430,7 +431,7 @@ function extractJsxTextMatch(node: ts.JsxText, sourceFile: ts.SourceFile): Match
 
 function extractJsxAttributeMatch(node: ts.JsxAttribute, sourceFile: ts.SourceFile): MatchDefinition | undefined {
 	const attribute = node.name.text;
-	if (!translatableAttributes.has(attribute)) return undefined;
+	if (!isTranslatableAttribute(attribute, getJsxElementTagName(node))) return undefined;
 
 	const initializer = node.initializer;
 	if (initializer == null) return undefined;
@@ -478,7 +479,7 @@ function extractImperativePropertyMatches(
 function addAttributeMatches(matches: MatchDefinition[], html: string, element: HtmlElementNode): void {
 	const rawTag = html.slice(element.start, element.openTagEnd);
 	for (const [attribute, value] of Object.entries(element.attributes)) {
-		if (!translatableAttributes.has(attribute)) continue;
+		if (!isTranslatableAttribute(attribute, element.tag)) continue;
 		if (!isTranslatableLiteralText(value)) continue;
 
 		const valueRange = findAttributeValueRange(rawTag, attribute);
@@ -617,9 +618,24 @@ function hasImperativeDisplayContextAncestor(node: ts.Node, sourceFile: ts.Sourc
 		if (ts.isVariableDeclaration(current) && current.initializer === child) {
 			return variableDeclarationFlowsToDisplay(current, sourceFile);
 		}
+		if (ts.isReturnStatement(current) && current.expression === child) {
+			return returnStatementFlowsToNamedDisplayProducer(current);
+		}
 		if (withinDisplayProducer) {
 			if (isImperativeDisplayCallArgument(current, child)) return true;
 			if (isImperativeDisplayAssignment(current, child)) return true;
+		}
+		if (ts.isSourceFile(current)) break;
+	}
+
+	return false;
+}
+
+function returnStatementFlowsToNamedDisplayProducer(node: ts.ReturnStatement): boolean {
+	for (let current = node.parent; current != null; current = current.parent) {
+		if (isFunctionLike(current)) {
+			const name = getFunctionLikeName(current);
+			return name != null && looksLikeTextReturnProducerName(name);
 		}
 		if (ts.isSourceFile(current)) break;
 	}
@@ -649,7 +665,11 @@ function functionProducesDisplay(node: ts.Node, sourceFile: ts.SourceFile): bool
 }
 
 function looksLikeDisplayProducerName(name: string): boolean {
-	return /(label|message|render|text|title|tooltip)/iu.test(name);
+	return /(label|message|placeholder|render|text|title|tooltip)/iu.test(name);
+}
+
+function looksLikeTextReturnProducerName(name: string): boolean {
+	return /(label|message|placeholder|text|title|tooltip)/iu.test(name);
 }
 
 function bodyContainsHtmlTemplate(node: ts.Node, sourceFile: ts.SourceFile): boolean {
@@ -822,12 +842,16 @@ function identifierFlowsToDisplay(node: ts.Identifier, sourceFile: ts.SourceFile
 			continue;
 		}
 
+		if (ts.isReturnStatement(parent) && parent.expression === current) {
+			return returnStatementFlowsToNamedDisplayProducer(parent);
+		}
+
 		if (ts.isJsxExpression(parent) && parent.expression === current) {
 			return jsxExpressionDisplayContext(parent);
 		}
 
 		if (ts.isJsxAttribute(parent)) {
-			return translatableAttributes.has(parent.name.text);
+			return isTranslatableAttribute(parent.name.text, getJsxElementTagName(parent));
 		}
 
 		if (
@@ -887,13 +911,13 @@ function templateSpanDisplayContext(span: ts.TemplateSpan): boolean | undefined 
 	if (slotContext == null) return false;
 	if (slotContext.kind === 'text') return true;
 
-	return slotContext.attribute != null && translatableAttributes.has(slotContext.attribute);
+	return slotContext.attribute != null && isTranslatableAttribute(slotContext.attribute, slotContext.tag);
 }
 
 function jsxExpressionDisplayContext(node: ts.JsxExpression): boolean {
 	const parent = node.parent;
 	if (ts.isJsxAttribute(parent)) {
-		return translatableAttributes.has(parent.name.text);
+		return isTranslatableAttribute(parent.name.text, getJsxElementTagName(parent));
 	}
 
 	return !ts.isJsxAttribute(parent);
@@ -944,6 +968,7 @@ function getFunctionLikeName(node: ts.Node): string | undefined {
 function looksLikeImperativeDisplayText(text: string, node: ts.StringLiteralLike | ts.TemplateExpression): boolean {
 	const trimmed = text.trim();
 	if (trimmed.length === 0) return false;
+	if (isPureStructuralTemplateText(trimmed)) return false;
 	if (/^\[[A-Z][A-Z0-9_-]*\]\s/u.test(trimmed)) return false;
 	if (/^@[\w-]+\s+can only be used on\b/u.test(trimmed)) return false;
 	if (/\b(?:var|color-mix|rgba?|hsla?)\(/iu.test(trimmed)) return false;
@@ -957,6 +982,10 @@ function looksLikeImperativeDisplayText(text: string, node: ts.StringLiteralLike
 	if (isImperativeDisplayPropertyValue(node.parent)) return true;
 
 	return false;
+}
+
+function isPureStructuralTemplateText(text: string): boolean {
+	return text === '${slot1}\n[${slot2}] ${slot3}' || text === '${slot1} (${slot2})';
 }
 
 function scanDeferredJsxNodes(target: RuntimeSourceTarget, sourceFile: ts.SourceFile, issues: CatalogIssue[]): void {
@@ -977,7 +1006,7 @@ function scanDeferredJsxNodes(target: RuntimeSourceTarget, sourceFile: ts.Source
 
 		if (ts.isJsxAttribute(node)) {
 			const attribute = node.name.text;
-			if (!translatableAttributes.has(attribute)) {
+			if (!isTranslatableAttribute(attribute, getJsxElementTagName(node))) {
 				ts.forEachChild(node, visit);
 				return;
 			}
@@ -1007,6 +1036,26 @@ function scanDeferredJsxNodes(target: RuntimeSourceTarget, sourceFile: ts.Source
 	};
 
 	visit(sourceFile);
+}
+
+function isTranslatableAttribute(attribute: string, tag?: string): boolean {
+	if (translatableAttributes.has(attribute)) return true;
+
+	const normalizedTag = tag?.toLowerCase();
+	if (normalizedTag == null) return false;
+	return translatableAttributesByTag.get(normalizedTag)?.has(attribute) ?? false;
+}
+
+function getJsxElementTagName(node: ts.JsxAttribute): string | undefined {
+	const parent = node.parent;
+	if (!ts.isJsxAttributes(parent)) return undefined;
+
+	const element = parent.parent;
+	if (ts.isJsxOpeningElement(element) || ts.isJsxSelfClosingElement(element)) {
+		return element.tagName.getText().toLowerCase();
+	}
+
+	return undefined;
 }
 
 function getCallIdentifier(expression: ts.LeftHandSideExpression): string | undefined {

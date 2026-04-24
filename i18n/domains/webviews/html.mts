@@ -70,6 +70,7 @@ const translatableContentTags = new Set([
 	'label',
 	'button',
 	'option',
+	'sl-option',
 	'a',
 	'b',
 	'em',

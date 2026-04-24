@@ -3,7 +3,7 @@
 	"version": 2,
 	"kind": "messages",
 	"locale": "zh-cn",
-	"updatedAt": "2026-04-24T09:04:35.890Z",
+	"updatedAt": "2026-04-24T10:50:20.181Z",
 	"entries": [
 		{
 			"id": "message.000d1a29b2365349f8762064ef86edc1f548f435002395035bdc26f6c87754fc",
@@ -2258,6 +2258,12 @@
 			"translation": "在 VS Code 中强化 Git 体验 - 通过 Git 追溯注解和 CodeLens 一目了然地查看代码作者信息，无缝导航并探索 Git 仓库，借助丰富的可视化和强大的比较命令获得有价值的洞察，等等"
 		},
 		{
+			"id": "message.266acf16a4bcef2391ec5dab20804aa4a2716b2187357c0d14dcf6995b029bc9",
+			"kind": "literal",
+			"source": "Only follow the first parent of merge commits to provide a more linear history",
+			"translation": "仅跟随合并提交的第一个父提交，以提供更线性的历史记录"
+		},
+		{
 			"id": "message.266c395eb5bdcc55ea276aa5a83537e2a4dfc5c7d1bc530aeb70be815e4f8d83",
 			"kind": "literal",
 			"source": "Advantages of GitLens Pro",
@@ -3225,6 +3231,12 @@
 			"translation": "切分方式"
 		},
 		{
+			"id": "message.3632a54259327aa7f1c558a5e3246683ad42d8e64ad3f953b632e1df8f115005",
+			"kind": "literal",
+			"source": "Show Account view",
+			"translation": "显示帐户视图"
+		},
+		{
 			"id": "message.366c72bff1ba33a8f8b13c742c1c25800f740c4823cbd99636dc05e58b256d80",
 			"kind": "template",
 			"source": "You have ${slot1} in your Pro trial. Once your trial ends, you will only be able to use Pro features on publicly-hosted repos.",
@@ -3267,6 +3279,12 @@
 			"kind": "literal",
 			"source": " is-active",
 			"translation": " is-active"
+		},
+		{
+			"id": "message.3720549ccb9e379f6d988e724456d4840f17afc3fad4d87e29830a58233b562b",
+			"kind": "literal",
+			"source": "Connected",
+			"translation": "已连接"
 		},
 		{
 			"id": "message.3752c4d144769cf19f73d4980ca56b5c78644980efbd16d5011df88291c52da9",
@@ -3367,6 +3385,13 @@
 			"kind": "literal",
 			"source": "Commit label format",
 			"translation": "提交标签格式"
+		},
+		{
+			"id": "message.392e04d9ac0beb9c871ea84cf00dac106d3a3ef393345b77debbe484e2398fa7",
+			"kind": "template",
+			"source": "Issue ${slot1} is ${slot2}",
+			"translation": "Issue ${slot1} 状态为 ${slot2}",
+			"slots": ["slot1", "slot2"]
 		},
 		{
 			"id": "message.3932447e91fba2f70e290fb81f288331308a6cee085ef7a4f0c9aed0fa3b9695",
@@ -4040,6 +4065,12 @@
 			"translation": "贮藏所有更改..."
 		},
 		{
+			"id": "message.4500b9fb9365956714f253fa10cbca570670c60eaf76f40551df614381f15cf8",
+			"kind": "literal",
+			"source": "Pro features that do not require an account",
+			"translation": "不需要帐户的 Pro 功能"
+		},
+		{
 			"id": "message.450f37ae9c96db59b27ffe1dc2cbe69036e3973d4e233f42c98e1a20fe937cf9",
 			"kind": "literal",
 			"source": "Specifies whether to show the experimental incoming activity for each repository in the _Cloud Workspaces_ view",
@@ -4476,6 +4507,13 @@
 			"kind": "literal",
 			"source": "Also includes the current branch",
 			"translation": "也包括当前分支"
+		},
+		{
+			"id": "message.4c3bde477f12f97e934453d73c19594bb6ee6d3e804ccbfc032d901cce793801",
+			"kind": "template",
+			"source": "${slot1} ${slot2} is ${slot3}",
+			"translation": "${slot1} ${slot2} 状态为 ${slot3}",
+			"slots": ["slot1", "slot2", "slot3"]
 		},
 		{
 			"id": "message.4c3f99f1384e7d6314176a6891ea3077f8646ec5ac674c2b104179ba8f8e4e07",
@@ -5259,6 +5297,12 @@
 			"kind": "literal",
 			"source": "Copy Link to Commit",
 			"translation": "复制提交链接"
+		},
+		{
+			"id": "message.5769123d7e14c418702f8eecdc4f26c26083c8138698b23e6318d0dd50c1325f",
+			"kind": "literal",
+			"source": "Show Commit Actions",
+			"translation": "显示提交操作"
 		},
 		{
 			"id": "message.579d4d217d45c8a9294cc6abe301701c4287e8609823ad3ab3b29f35c5b05c60",
@@ -6770,6 +6814,12 @@
 			"translation": "工作树视图选项"
 		},
 		{
+			"id": "message.707f31a0a3f38567fcef9bf271aa4815f00ae94913d010e4c4db854eb3916f6b",
+			"kind": "literal",
+			"source": "Issue",
+			"translation": "Issue"
+		},
+		{
 			"id": "message.70957480893cd81c00caee4a2e323ffe6166f97cfcd890cebc810a70e32b9d0b",
 			"kind": "literal",
 			"source": "Copy Link to Comparison",
@@ -7395,6 +7445,12 @@
 			"slots": ["slot1", "slot2"]
 		},
 		{
+			"id": "message.78adc912ee36caa5447745a871341090bc9c07287698dd80b5dfaceaeb44229a",
+			"kind": "literal",
+			"source": "Current Branch",
+			"translation": "当前分支"
+		},
+		{
 			"id": "message.78bf6494f3674e95467eb75208a867b2c1a5021cd03589eb1d07a393ff0117a6",
 			"kind": "rich",
 			"source": "Specifies how times will be formatted by default. See the [Moment.js docs](https://momentjs.com/docs/#/displaying/format/) for supported formats",
@@ -7876,10 +7932,22 @@
 			"translation": "隐藏远程分支标记"
 		},
 		{
+			"id": "message.81cae58e82d97a41884d7fbdf6b950716a47b8150546c7c4feffdd2ba21de4e1",
+			"kind": "literal",
+			"source": "Show Conflicts",
+			"translation": "显示冲突"
+		},
+		{
 			"id": "message.821af4147f38550155c72eb14c2472032d1e7f74fefdf3a0159cd2625feb7a3d",
 			"kind": "literal",
 			"source": "(trial)",
 			"translation": "(试用)"
+		},
+		{
+			"id": "message.82478bfacfff984eb7072c3ed40890034f9dc655185191b6d5a1967a90f0e6a8",
+			"kind": "literal",
+			"source": "Search",
+			"translation": "搜索"
 		},
 		{
 			"id": "message.82570415b9f78c4a6dd83e972870bb94df9c2fda24501df490d35ebe694cbe11",
@@ -7992,6 +8060,12 @@
 			"kind": "literal",
 			"source": "Show the active mode in the status bar",
 			"translation": "在状态栏中显示当前活动模式"
+		},
+		{
+			"id": "message.846eb6d2d6a1790132a7ad836ccdf6040c4565f9fe0252a771664685a2bdf46d",
+			"kind": "literal",
+			"source": "Open SCM view",
+			"translation": "打开 SCM 视图"
 		},
 		{
 			"id": "message.846ee8b8d15c0ee0f4075d32ff20609a4e31822eb47ab7f5630632917ed039d0",
@@ -9313,6 +9387,12 @@
 			"translation": "未找到结果"
 		},
 		{
+			"id": "message.9aa9a060432a91328e88a4da461db9ab71d60681d1e12782cc3d08a1a779c55a",
+			"kind": "literal",
+			"source": "Favorited Branches",
+			"translation": "收藏的分支"
+		},
+		{
 			"id": "message.9ab6b7fa75d9809f17259a157fe6edd88566263bec4421390e03230d3811eb72",
 			"kind": "literal",
 			"source": "Restore Previous Changes",
@@ -9607,6 +9687,12 @@
 			"kind": "literal",
 			"source": "Add to Favorites",
 			"translation": "添加到收藏"
+		},
+		{
+			"id": "message.9f610c7351ec1fff3a7793c828c6ec521358038bd5fe60eaa0f0ad6fcaea62f1",
+			"kind": "literal",
+			"source": "Branches Visibility",
+			"translation": "分支可见性"
 		},
 		{
 			"id": "message.9f7a9d0336072a381eb095594b6849b43c3d2626c8334f866a245783df828d55",
@@ -11174,6 +11260,12 @@
 			"kind": "literal",
 			"source": "Stashes",
 			"translation": "贮藏"
+		},
+		{
+			"id": "message.ba75312c6ff0d8872db4aa8747f45ab1dcd06616a6d5878bf0384c89cae0b82b",
+			"kind": "literal",
+			"source": "Working Changes",
+			"translation": "工作区更改"
 		},
 		{
 			"id": "message.baad243f7e20551fc9a2bf2a9bba55666acb3a4e7f6df90ee15b98eee2e4d56a",
@@ -12924,6 +13016,13 @@
 			"translation": "安装 GitKraken MCP"
 		},
 		{
+			"id": "message.db5b8ed4047a665eb760cff19e4aa4283cf10835129c36876bd4e171e5565497",
+			"kind": "template",
+			"source": "${slot1} commits using natural language (↑↓ for history), e.g. my commits from last week",
+			"translation": "${slot1}提交（使用自然语言，↑↓ 查看历史），例如 my commits from last week",
+			"slots": ["slot1"]
+		},
+		{
 			"id": "message.db5ed8f75427f088e459650961b3be30739f0606f39e7a291e8d16af52cd6cb8",
 			"kind": "template",
 			"source": "Open Repository on ${slot1} ${slot2}",
@@ -13398,6 +13497,13 @@
 			"kind": "literal",
 			"source": "Specifies whether to show the commits on the current branch for each repository in the _Cloud Workspaces_ view",
 			"translation": "指定是否在 _云工作区_ 视图中显示每个仓库的当前分支上的提交"
+		},
+		{
+			"id": "message.e2fa0ba0eb3c53d6350c2830d3165034958eae927c1152da44f750f7e3d17d3d",
+			"kind": "template",
+			"source": "${slot1} commits (press Enter to search, ↑↓ for history), e.g. @me after:1.week.ago file:*.ts",
+			"translation": "${slot1}提交（按 Enter 搜索，↑↓ 查看历史），例如 @me after:1.week.ago file:*.ts",
+			"slots": ["slot1"]
 		},
 		{
 			"id": "message.e33e12863f3f0a56934ea636590e2fcd574ed0ad012d549112831967abfb0caf",
@@ -14384,6 +14490,12 @@
 			"translation": "打开工作树"
 		},
 		{
+			"id": "message.f39112883cc6a8fa5947c813b8d2bd2e9c0ca0a97d5dbb19350c87fbcf892e15",
+			"kind": "literal",
+			"source": "Filter",
+			"translation": "筛选"
+		},
+		{
 			"id": "message.f395de0080fcb50c746633391b9db67041955b1e47e650211ad965702cc88f5c",
 			"kind": "literal",
 			"source": "Change Linked Workspace Auto-Add Behavior...",
@@ -14603,6 +14715,13 @@
 			"kind": "literal",
 			"source": "Visual File History (ᴘʀᴏ)",
 			"translation": "可视文件历史 (ᴘʀᴏ)"
+		},
+		{
+			"id": "message.f7c348552b63274c6d5bd03f9be1ee5cff3eb983fe9e75d2d7d4ec6e3cb3cb52",
+			"kind": "template",
+			"source": "Smart Branches ${slot1}",
+			"translation": "智能分支 ${slot1}",
+			"slots": ["slot1"]
 		},
 		{
 			"id": "message.f7cee18d6322f660e5e87c03f1a182e0eb22765996125fab9c776e2d6a54be7c",

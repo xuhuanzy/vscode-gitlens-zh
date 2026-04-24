@@ -2,7 +2,7 @@
 	"$schema": "../schemas/sourceCatalog.schema.json",
 	"version": 3,
 	"domain": "webviews",
-	"generatedAt": "2026-04-24T10:03:46.031Z",
+	"generatedAt": "2026-04-24T12:19:40.562Z",
 	"deferredDomains": ["quickpicks", "formatter", "runtimeCensus"],
 	"occurrences": [
 		{
@@ -100,6 +100,38 @@
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
 				"key": "commitDetails.imperative-display-123-12.text.dd8ace93a5"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-131-10.text.45a5c02147#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-131-10.text.45a5c02147",
+			"slot": "text",
+			"authorityId": "message.ba75312c6ff0d8872db4aa8747f45ab1dcd06616a6d5878bf0384c89cae0b82b",
+			"pattern": {
+				"kind": "literal",
+				"text": "Working Changes"
+			},
+			"sourceText": "Working Changes",
+			"sourceHash": "7b5d66944b4512ab009f67ea2e4bf1b8b5b290ebe9e7d3259204bcc30202f4fc",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/commitDetails/components/gl-wip-details.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 131,
+					"column": 10
+				},
+				"end": {
+					"line": 131,
+					"column": 27
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-131-10.text.45a5c02147"
 			}
 		},
 		{
@@ -1835,6 +1867,70 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-360-24.text.a55e3c791f#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-360-24.text.a55e3c791f",
+			"slot": "text",
+			"authorityId": "message.f39112883cc6a8fa5947c813b8d2bd2e9c0ca0a97d5dbb19350c87fbcf892e15",
+			"pattern": {
+				"kind": "literal",
+				"text": "Filter"
+			},
+			"sourceText": "Filter",
+			"sourceHash": "638e249f4a15ebb84957da130701d138a6e06d88dceeaa2e6dcd91db70cc1381",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/search/search-input.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 360,
+					"column": 24
+				},
+				"end": {
+					"line": 360,
+					"column": 32
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-360-24.text.a55e3c791f"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-360-35.text.1b539ae1d6#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-360-35.text.1b539ae1d6",
+			"slot": "text",
+			"authorityId": "message.82478bfacfff984eb7072c3ed40890034f9dc655185191b6d5a1967a90f0e6a8",
+			"pattern": {
+				"kind": "literal",
+				"text": "Search"
+			},
+			"sourceText": "Search",
+			"sourceHash": "49c266baaaa70981ea188fa714d5c40cf13830d786a861c9943ae0d26a7f3fe9",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/search/search-input.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 360,
+					"column": 35
+				},
+				"end": {
+					"line": 360,
+					"column": 43
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-360-35.text.1b539ae1d6"
+			}
+		},
+		{
 			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-368-13.text.c10f229da8#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
@@ -1932,6 +2028,72 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-376-11.text.174d721836#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-376-11.text.174d721836",
+			"slot": "text",
+			"authorityId": "message.db5b8ed4047a665eb760cff19e4aa4283cf10835129c36876bd4e171e5565497",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} commits using natural language (↑↓ for history), e.g. my commits from last week",
+				"slots": ["slot1"]
+			},
+			"sourceText": "${slot1} commits using natural language (↑↓ for history), e.g. my commits from last week",
+			"sourceHash": "66df5620c7c94808d0e4d9f05a5b423ffa701e44b99caacd9b6fdb44eb1eff6c",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/search/search-input.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 376,
+					"column": 11
+				},
+				"end": {
+					"line": 376,
+					"column": 106
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-376-11.text.174d721836"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-378-10.text.4be3e3afa1#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-378-10.text.4be3e3afa1",
+			"slot": "text",
+			"authorityId": "message.e2fa0ba0eb3c53d6350c2830d3165034958eae927c1152da44f750f7e3d17d3d",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} commits (press Enter to search, ↑↓ for history), e.g. @me after:1.week.ago file:*.ts",
+				"slots": ["slot1"]
+			},
+			"sourceText": "${slot1} commits (press Enter to search, ↑↓ for history), e.g. @me after:1.week.ago file:*.ts",
+			"sourceHash": "10d549343a6b5ab554cdeb387e3932d80e615fa5e02b6ff4bf86f0aa9d700259",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/search/search-input.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 378,
+					"column": 10
+				},
+				"end": {
+					"line": 378,
+					"column": 110
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-378-10.text.4be3e3afa1"
+			}
+		},
+		{
 			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-381-13.text.b958bb2ba1#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
@@ -1993,6 +2155,38 @@
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
 				"key": "commitDetails.imperative-display-381-60.text.005d1fe226"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-40-27.text.3d92d41fcc#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-40-27.text.3d92d41fcc",
+			"slot": "text",
+			"authorityId": "message.707f31a0a3f38567fcef9bf271aa4815f00ae94913d010e4c4db854eb3916f6b",
+			"pattern": {
+				"kind": "literal",
+				"text": "Issue"
+			},
+			"sourceText": "Issue",
+			"sourceHash": "48dc76dfa23ae03fea1372c5ed6c0e1bd62eaeca7bba6d804eb0afa87972f031",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/rich/issue-icon.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 40,
+					"column": 27
+				},
+				"end": {
+					"line": 40,
+					"column": 34
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-40-27.text.3d92d41fcc"
 			}
 		},
 		{
@@ -2156,6 +2350,39 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-42-10.text.849c283d2e#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-42-10.text.849c283d2e",
+			"slot": "text",
+			"authorityId": "message.392e04d9ac0beb9c871ea84cf00dac106d3a3ef393345b77debbe484e2398fa7",
+			"pattern": {
+				"kind": "template",
+				"text": "Issue ${slot1} is ${slot2}",
+				"slots": ["slot1", "slot2"]
+			},
+			"sourceText": "Issue ${slot1} is ${slot2}",
+			"sourceHash": "dc9fd94165cf40b26a8e50c222a573d4bd8e714fd235ee33a7994c46633ed781",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/rich/issue-icon.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 42,
+					"column": 10
+				},
+				"end": {
+					"line": 42,
+					"column": 76
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-42-10.text.849c283d2e"
+			}
+		},
+		{
 			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-43-15.text.83af1d358b#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
@@ -2185,6 +2412,231 @@
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
 				"key": "commitDetails.imperative-display-43-15.text.83af1d358b"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-442-33.text.a34eae60d4#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-442-33.text.a34eae60d4",
+			"slot": "text",
+			"authorityId": "message.2cfae239683a8492e60fe13366e744a933ed6fc759494a27a824ea46368706aa",
+			"pattern": {
+				"kind": "literal",
+				"text": "Overview"
+			},
+			"sourceText": "Overview",
+			"sourceHash": "d4b1ea5708dd532930a85188b45aff6f0a3ed458500c7577e0127a538eb0d100",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/commitDetails/commitDetails.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 442,
+					"column": 33
+				},
+				"end": {
+					"line": 442,
+					"column": 43
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-442-33.text.a34eae60d4"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-45-28.text.a398cbf8aa#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-45-28.text.a398cbf8aa",
+			"slot": "text",
+			"authorityId": "message.b31d982139dc4172b3f1d857911f659f36b0aeadbef2ed28dbb3e41f6858a709",
+			"pattern": {
+				"kind": "literal",
+				"text": "Working"
+			},
+			"sourceText": "Working",
+			"sourceHash": "a92f0449a9f7235bf69dc2e8ff7070bfae3f00ec8f8f26e5457a9beac53466ac",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/commit-sha.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 45,
+					"column": 28
+				},
+				"end": {
+					"line": 45,
+					"column": 37
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-45-28.text.a398cbf8aa"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-45-29.text.197c96447d#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-45-29.text.197c96447d",
+			"slot": "text",
+			"authorityId": "message.beba5465f939a1520c784e12d82d9e8b5214f801a78665739c6c3c3e9682dd92",
+			"pattern": {
+				"kind": "literal",
+				"text": "Draft pull request"
+			},
+			"sourceText": "Draft pull request",
+			"sourceHash": "e201d8356df8163789e0a3a0d41c12aa03bd141be8685dd2cc17d90f7c7b960d",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/rich/pr-icon.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 45,
+					"column": 29
+				},
+				"end": {
+					"line": 45,
+					"column": 49
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-45-29.text.197c96447d"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-45-52.text.430af3a44b#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-45-52.text.430af3a44b",
+			"slot": "text",
+			"authorityId": "message.5137ef564fc65acb8d7fe5c9376ad95183df98494806986055be6002c82b400b",
+			"pattern": {
+				"kind": "literal",
+				"text": "Pull request"
+			},
+			"sourceText": "Pull request",
+			"sourceHash": "f3dba6629c69d91bd65527f178591b6ab2ac3843cfbf76943801e8dd45bcb7d6",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/rich/pr-icon.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 45,
+					"column": 52
+				},
+				"end": {
+					"line": 45,
+					"column": 66
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-45-52.text.430af3a44b"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-45-58.text.2f6eee508d#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-45-58.text.2f6eee508d",
+			"slot": "text",
+			"authorityId": "message.5a4cbbef21e1a9c6fdc5c8b91b5f00744e56453d852980320baf5371979fe583",
+			"pattern": {
+				"kind": "literal",
+				"text": "Staged"
+			},
+			"sourceText": "Staged",
+			"sourceHash": "daec459ab6cce9cee8ad1bdebdec8cf8fca2476c5994591d9ee554705214b8c5",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/commit-sha.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 45,
+					"column": 58
+				},
+				"end": {
+					"line": 45,
+					"column": 66
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-45-58.text.2f6eee508d"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-45-77.text.b42063d3ea#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-45-77.text.b42063d3ea",
+			"slot": "text",
+			"authorityId": "message.b31d982139dc4172b3f1d857911f659f36b0aeadbef2ed28dbb3e41f6858a709",
+			"pattern": {
+				"kind": "literal",
+				"text": "Working"
+			},
+			"sourceText": "Working",
+			"sourceHash": "a92f0449a9f7235bf69dc2e8ff7070bfae3f00ec8f8f26e5457a9beac53466ac",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/commit-sha.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 45,
+					"column": 77
+				},
+				"end": {
+					"line": 45,
+					"column": 86
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-45-77.text.b42063d3ea"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-48-10.text.25704126a9#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-48-10.text.25704126a9",
+			"slot": "text",
+			"authorityId": "message.4c3bde477f12f97e934453d73c19594bb6ee6d3e804ccbfc032d901cce793801",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} ${slot2} is ${slot3}",
+				"slots": ["slot1", "slot2", "slot3"]
+			},
+			"sourceText": "${slot1} ${slot2} is ${slot3}",
+			"sourceHash": "85d299a6a238e29f566b4d669817a8792418504c932def24dcc17e0de0109265",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/rich/pr-icon.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 48,
+					"column": 10
+				},
+				"end": {
+					"line": 48,
+					"column": 72
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-48-10.text.25704126a9"
 			}
 		},
 		{
@@ -2762,6 +3214,71 @@
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
 				"key": "commitDetails.imperative-display-72-32.text.e078484929"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-72-69.text.5270426f07#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-72-69.text.5270426f07",
+			"slot": "text",
+			"authorityId": "message.6c5c012e4d1974ab0f070d5f3c69323d1a0941e117c1e1518103d025b45b4d6d",
+			"pattern": {
+				"kind": "literal",
+				"text": "Files"
+			},
+			"sourceText": "Files",
+			"sourceHash": "abc7e9892806b047b4d4786b3685285543f76ca314c4c76246d5f6544c7856c9",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/commitDetails/components/gl-details-base.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 72,
+					"column": 69
+				},
+				"end": {
+					"line": 72,
+					"column": 76
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-72-69.text.5270426f07"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-73-10.text.7d72a9b9ea#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-73-10.text.7d72a9b9ea",
+			"slot": "text",
+			"authorityId": "message.f10ce45e4b551b4905e2183226ae9632c4c7ebb2e9753ca4be76ac3a96f3495e",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} changed",
+				"slots": ["slot1"]
+			},
+			"sourceText": "${slot1} changed",
+			"sourceHash": "8853b3fd483d3273e5ce015b6986dddfdfff6d6c036e5048b3a0566e2383f4f6",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/commitDetails/components/gl-details-base.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 73,
+					"column": 10
+				},
+				"end": {
+					"line": 73,
+					"column": 33
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-73-10.text.7d72a9b9ea"
 			}
 		},
 		{
@@ -3474,6 +3991,39 @@
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
 				"key": "commitDetails.lit-template-1-div-field-div-controls-gl-button-1-tooltip.tooltip.bb514b3787"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.lit-template-1-div-group-gl-tooltip-1-content.content.2a3412006b#content",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.lit-template-1-div-group-gl-tooltip-1-content.content.2a3412006b",
+			"slot": "content",
+			"authorityId": "message.4edef4d44532c12e222a098c18b0e616371289aa6df876aa3645cff0f5c11688",
+			"pattern": {
+				"kind": "literal",
+				"text": "Fetch"
+			},
+			"sourceText": "Fetch",
+			"sourceHash": "cd7d61bf7e38c7c2280b4241c4e1211aa3965722a681077a471913801c0321a2",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/commitDetails/components/gl-status-nav.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 101,
+					"column": 14
+				},
+				"end": {
+					"line": 150,
+					"column": 4
+				},
+				"attribute": "content"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.lit-template-1-div-group-gl-tooltip-1-content.content.2a3412006b"
 			}
 		},
 		{
@@ -4323,6 +4873,39 @@
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
 				"key": "commitDetails.lit-template-10-webview-pane-1-span-1.text.6b0e3f7824"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.lit-template-11-p-1-gl-tooltip-1-content.content.e20c9d46ce#content",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.lit-template-11-p-1-gl-tooltip-1-content.content.e20c9d46ce",
+			"slot": "content",
+			"authorityId": "message.3632a54259327aa7f1c558a5e3246683ad42d8e64ad3f953b632e1df8f115005",
+			"pattern": {
+				"kind": "literal",
+				"text": "Show Account view"
+			},
+			"sourceText": "Show Account view",
+			"sourceHash": "09c0141a6454968fe36429a8aa0fcfe63d2b84962ca70b34e0b039d3db5c7da8",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/feature-badge.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 224,
+					"column": 19
+				},
+				"end": {
+					"line": 232,
+					"column": 10
+				},
+				"attribute": "content"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.lit-template-11-p-1-gl-tooltip-1-content.content.e20c9d46ce"
 			}
 		},
 		{
@@ -5460,6 +6043,39 @@
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
 				"key": "commitDetails.lit-template-17-gl-action-chip-error-span-mq-hide-sm.text.a088b6a688"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.lit-template-17-p-1-gl-tooltip-1-content.content.f1fd6213e3#content",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.lit-template-17-p-1-gl-tooltip-1-content.content.f1fd6213e3",
+			"slot": "content",
+			"authorityId": "message.4500b9fb9365956714f253fa10cbca570670c60eaf76f40551df614381f15cf8",
+			"pattern": {
+				"kind": "literal",
+				"text": "Pro features that do not require an account"
+			},
+			"sourceText": "Pro features that do not require an account",
+			"sourceHash": "b53e87ce6aa9cf9a09c6dbc68e281d706cb1d1502a2f7845dd11ef690fdc1444",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/feature-badge.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 290,
+					"column": 19
+				},
+				"end": {
+					"line": 297,
+					"column": 40
+				},
+				"attribute": "content"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.lit-template-17-p-1-gl-tooltip-1-content.content.f1fd6213e3"
 			}
 		},
 		{
@@ -7054,6 +7670,39 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.commitDetails.commitDetails.lit-template-3-div-group-gl-tooltip-3-content.content.7b6134b5cd#content",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.lit-template-3-div-group-gl-tooltip-3-content.content.7b6134b5cd",
+			"slot": "content",
+			"authorityId": "message.5f8c7672d765d412b98f17c0bf0072bac625d04538d27cd3e80f31192d71a026",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open in Commit Graph"
+			},
+			"sourceText": "Open in Commit Graph",
+			"sourceHash": "0353e5ffa51ae6e129900d023e67cf6f487dee0784b15186cd81ceeaef3fa261",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/commitDetails/components/gl-inspect-nav.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 131,
+					"column": 14
+				},
+				"end": {
+					"line": 229,
+					"column": 4
+				},
+				"attribute": "content"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.lit-template-3-div-group-gl-tooltip-3-content.content.7b6134b5cd"
+			}
+		},
+		{
 			"id": "webviews:webviews.commitDetails.commitDetails.lit-template-3-gl-button-2-tooltip.tooltip.082c6ca69c#tooltip",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
@@ -7903,6 +8552,39 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.commitDetails.commitDetails.lit-template-6-gl-tooltip-1-content.content.3a6bdac005#content",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.lit-template-6-gl-tooltip-1-content.content.3a6bdac005",
+			"slot": "content",
+			"authorityId": "message.846eb6d2d6a1790132a7ad836ccdf6040c4565f9fe0252a771664685a2bdf46d",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open SCM view"
+			},
+			"sourceText": "Open SCM view",
+			"sourceHash": "acf5f9f990a4c2cf4293a85607b88d76aafd26a5741872925cb17c375b28067d",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/commitDetails/components/gl-inspect-nav.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 193,
+					"column": 16
+				},
+				"end": {
+					"line": 203,
+					"column": 7
+				},
+				"attribute": "content"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.lit-template-6-gl-tooltip-1-content.content.3a6bdac005"
+			}
+		},
+		{
 			"id": "webviews:webviews.commitDetails.commitDetails.lit-template-6-root.text.a643523008#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
@@ -8227,6 +8909,39 @@
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
 				"key": "commitDetails.lit-template-7-gl-button-search-button-tooltip.tooltip.c1dd9bec14"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.lit-template-7-gl-tooltip-1-content.content.1b6f12bb63#content",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.lit-template-7-gl-tooltip-1-content.content.1b6f12bb63",
+			"slot": "content",
+			"authorityId": "message.5769123d7e14c418702f8eecdc4f26c26083c8138698b23e6318d0dd50c1325f",
+			"pattern": {
+				"kind": "literal",
+				"text": "Show Commit Actions"
+			},
+			"sourceText": "Show Commit Actions",
+			"sourceHash": "121fd2fb8df86cf3c9b14f7ef969497c982c3360edcde38c17a72aabb46470ad",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/commitDetails/components/gl-inspect-nav.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 216,
+					"column": 16
+				},
+				"end": {
+					"line": 226,
+					"column": 7
+				},
+				"attribute": "content"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.lit-template-7-gl-tooltip-1-content.content.1b6f12bb63"
 			}
 		},
 		{
@@ -8786,6 +9501,39 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.commitDetails.commitDetails.lit-template-9-div-search-navigation-gl-tooltip-3-content.content.8d80cd17b3#content",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.lit-template-9-div-search-navigation-gl-tooltip-3-content.content.8d80cd17b3",
+			"slot": "content",
+			"authorityId": "message.d75fadc3916094bd42aa6f2adcb0ad04939c76948f56d504228ea7f04da7fd5a",
+			"pattern": {
+				"kind": "literal",
+				"text": "Show Results in Side Bar"
+			},
+			"sourceText": "Show Results in Side Bar",
+			"sourceHash": "b43f5936ba8dd991138d6f8b1fca0b933943a5deb870065c93c9fed1e84020d6",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/search/search-box.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 387,
+					"column": 14
+				},
+				"end": {
+					"line": 454,
+					"column": 11
+				},
+				"attribute": "content"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.lit-template-9-div-search-navigation-gl-tooltip-3-content.content.8d80cd17b3"
+			}
+		},
+		{
 			"id": "webviews:webviews.commitDetails.commitDetails.lit-template-9-gl-button-banner__dismiss-aria-label.aria-label.7f1a7d26de#aria-label",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
@@ -8947,70 +9695,6 @@
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
 				"key": "commitDetails.lit-template-9-root.text.d895cfb874"
-			}
-		},
-		{
-			"id": "webviews:webviews.graph.graph.imperative-display-1002-58.text.20a467abc2#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-1002-58.text.20a467abc2",
-			"slot": "text",
-			"authorityId": "message.dbb1f3810e9ea9717a0210fa7940010fa7317dd5e98c45a1d9644e1c50d4aa5d",
-			"pattern": {
-				"kind": "literal",
-				"text": " current"
-			},
-			"sourceText": " current",
-			"sourceHash": "2fb742e5820b6c028d4b76db84364d1376fe6b98478c889658152fa396bac808",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/minimap/minimap.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 1002,
-					"column": 58
-				},
-				"end": {
-					"line": 1002,
-					"column": 68
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.imperative-display-1002-58.text.20a467abc2"
-			}
-		},
-		{
-			"id": "webviews:webviews.graph.graph.imperative-display-1017-58.text.2e0e2a815a#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-1017-58.text.2e0e2a815a",
-			"slot": "text",
-			"authorityId": "message.dbb1f3810e9ea9717a0210fa7940010fa7317dd5e98c45a1d9644e1c50d4aa5d",
-			"pattern": {
-				"kind": "literal",
-				"text": " current"
-			},
-			"sourceText": " current",
-			"sourceHash": "2fb742e5820b6c028d4b76db84364d1376fe6b98478c889658152fa396bac808",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/minimap/minimap.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 1017,
-					"column": 58
-				},
-				"end": {
-					"line": 1017,
-					"column": 68
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.imperative-display-1017-58.text.2e0e2a815a"
 			}
 		},
 		{
@@ -10587,71 +11271,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-981-55.text.f16098a43f#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-981-55.text.f16098a43f",
-			"slot": "text",
-			"authorityId": "message.c35eb0d5cc5fed40207686ac90a0b9387c190f84a0142853dabf3501f95dc77d",
-			"pattern": {
-				"kind": "literal",
-				"text": "MMMM Do, YYYY"
-			},
-			"sourceText": "MMMM Do, YYYY",
-			"sourceHash": "84f224f6a1a3242129c4015da7fe702b262d8e4c1b86292007b00a895b12c7f1",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/minimap/minimap.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 981,
-					"column": 55
-				},
-				"end": {
-					"line": 981,
-					"column": 70
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.imperative-display-981-55.text.f16098a43f"
-			}
-		},
-		{
-			"id": "webviews:webviews.graph.graph.imperative-display-985-41.text.ad2ea066a0#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-985-41.text.ad2ea066a0",
-			"slot": "text",
-			"authorityId": "message.543b41c59ba42a15ccaf168888ac4ff42812c3843509b42c4d47e72217b8de9e",
-			"pattern": {
-				"kind": "template",
-				"text": ", ${slot1}",
-				"slots": ["slot1"]
-			},
-			"sourceText": ", ${slot1}",
-			"sourceHash": "be0a0a01ace7c51aa5f967630bffe1bd1ac295ad25a641991521f4c8f32ea6b0",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/minimap/minimap.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 985,
-					"column": 41
-				},
-				"end": {
-					"line": 985,
-					"column": 60
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.imperative-display-985-41.text.ad2ea066a0"
-			}
-		},
-		{
 			"id": "webviews:webviews.graph.graph.imperative-property-title-52-10.text.952494c8b7#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
@@ -12011,6 +12630,39 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.graph.graph.lit-template-16-menu-item-1-gl-tooltip-1-content.content.fc9f2efcbb#content",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.lit-template-16-menu-item-1-gl-tooltip-1-content.content.fc9f2efcbb",
+			"slot": "content",
+			"authorityId": "message.266acf16a4bcef2391ec5dab20804aa4a2716b2187357c0d14dcf6995b029bc9",
+			"pattern": {
+				"kind": "literal",
+				"text": "Only follow the first parent of merge commits to provide a more linear history"
+			},
+			"sourceText": "Only follow the first parent of merge commits to provide a more linear history",
+			"sourceHash": "f0773f728658521dfc2fd548aa313b744b283631e3c013123ec95be153b6b568",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/graph-header.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 1288,
+					"column": 19
+				},
+				"end": {
+					"line": 1322,
+					"column": 10
+				},
+				"attribute": "content"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.lit-template-16-menu-item-1-gl-tooltip-1-content.content.fc9f2efcbb"
+			}
+		},
+		{
 			"id": "webviews:webviews.graph.graph.lit-template-16-menu-item-1-gl-tooltip-1-gl-checkbox-1.text.722ecca5c4#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
@@ -12922,6 +13574,136 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.graph.graph.lit-template-9-gl-tooltip-1-content.content.f93087538b#content",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.lit-template-9-gl-tooltip-1-content.content.f93087538b",
+			"slot": "content",
+			"authorityId": "message.9f610c7351ec1fff3a7793c828c6ec521358038bd5fe60eaa0f0ad6fcaea62f1",
+			"pattern": {
+				"kind": "literal",
+				"text": "Branches Visibility"
+			},
+			"sourceText": "Branches Visibility",
+			"sourceHash": "9a96f4b2dc8115dcb73958723109808e61f88daa31b9ab62275e5dd1033066fd",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/graph-header.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 1158,
+					"column": 14
+				},
+				"end": {
+					"line": 1195,
+					"column": 17
+				},
+				"attribute": "content"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.lit-template-9-gl-tooltip-1-content.content.f93087538b"
+			}
+		},
+		{
+			"id": "webviews:webviews.graph.graph.lit-template-9-gl-tooltip-1-sl-select-1-sl-option-1.text.486674669b#text",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.lit-template-9-gl-tooltip-1-sl-select-1-sl-option-1.text.486674669b",
+			"slot": "text",
+			"authorityId": "message.810c364e70ec99551d10d61638af2b05eb86af97adbc17fe31d682ac850e5b3e",
+			"pattern": {
+				"kind": "literal",
+				"text": "All Branches"
+			},
+			"sourceText": "All Branches",
+			"sourceHash": "15bb253e2fb19007d55c163771cb32beef6309100c91ef83d450a887136dbe8b",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/graph-header.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 1158,
+					"column": 14
+				},
+				"end": {
+					"line": 1195,
+					"column": 17
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.lit-template-9-gl-tooltip-1-sl-select-1-sl-option-1.text.486674669b"
+			}
+		},
+		{
+			"id": "webviews:webviews.graph.graph.lit-template-9-gl-tooltip-1-sl-select-1-sl-option-2.text.c67472c5eb#text",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.lit-template-9-gl-tooltip-1-sl-select-1-sl-option-2.text.c67472c5eb",
+			"slot": "text",
+			"authorityId": "message.78adc912ee36caa5447745a871341090bc9c07287698dd80b5dfaceaeb44229a",
+			"pattern": {
+				"kind": "literal",
+				"text": "Current Branch"
+			},
+			"sourceText": "Current Branch",
+			"sourceHash": "60b3bbaff96b1baa41c2e93cee9009564153e2a9b226eee0dcd84224ee5d4d6e",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/graph-header.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 1158,
+					"column": 14
+				},
+				"end": {
+					"line": 1195,
+					"column": 17
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.lit-template-9-gl-tooltip-1-sl-select-1-sl-option-2.text.c67472c5eb"
+			}
+		},
+		{
+			"id": "webviews:webviews.graph.graph.lit-template-9-gl-tooltip-1-sl-select-1-sl-option-3.text.bff44ef119#text",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.lit-template-9-gl-tooltip-1-sl-select-1-sl-option-3.text.bff44ef119",
+			"slot": "text",
+			"authorityId": "message.f7c348552b63274c6d5bd03f9be1ee5cff3eb983fe9e75d2d7d4ec6e3cb3cb52",
+			"pattern": {
+				"kind": "template",
+				"text": "Smart Branches ${slot1}",
+				"slots": ["slot1"]
+			},
+			"sourceText": "Smart Branches ${slot1}",
+			"sourceHash": "8318d806c6d5d3ff352e6d2a1996bac6734eff76cfbbccafdfe61cb62abd91f1",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/graph-header.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 1158,
+					"column": 14
+				},
+				"end": {
+					"line": 1195,
+					"column": 17
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.lit-template-9-gl-tooltip-1-sl-select-1-sl-option-3.text.bff44ef119"
+			}
+		},
+		{
 			"id": "webviews:webviews.graph.graph.lit-template-9-gl-tooltip-1-sl-select-1-sl-option-4-gl-tooltip-1-span-1-i-1.text.f35eb0b48e#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
@@ -12984,6 +13766,38 @@
 				"kind": "runtime-key",
 				"bundle": "graph",
 				"key": "graph.lit-template-9-gl-tooltip-1-sl-select-1-sl-option-4-gl-tooltip-1-span-1.text.cc6109ae07"
+			}
+		},
+		{
+			"id": "webviews:webviews.graph.graph.lit-template-9-gl-tooltip-1-sl-select-1-sl-option-4.text.8091c9d793#text",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.lit-template-9-gl-tooltip-1-sl-select-1-sl-option-4.text.8091c9d793",
+			"slot": "text",
+			"authorityId": "message.9aa9a060432a91328e88a4da461db9ab71d60681d1e12782cc3d08a1a779c55a",
+			"pattern": {
+				"kind": "literal",
+				"text": "Favorited Branches"
+			},
+			"sourceText": "Favorited Branches",
+			"sourceHash": "31c84ae62ac967c90b4c0cca7e2ee09f37d894c4fef18d9fc78e58c1dfcc89dd",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/graph-header.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 1158,
+					"column": 14
+				},
+				"end": {
+					"line": 1195,
+					"column": 17
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.lit-template-9-gl-tooltip-1-sl-select-1-sl-option-4.text.8091c9d793"
 			}
 		},
 		{
@@ -13659,6 +14473,134 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.imperative-display-173-10.text.245fe65e22"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-176-7.text.984f76a5ec#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-176-7.text.984f76a5ec",
+			"slot": "text",
+			"authorityId": "message.cf1e14cf8f47f00385fe79c8cd0473f1cb841d1314a33c46c746695b22bc9dd3",
+			"pattern": {
+				"kind": "literal",
+				"text": "Jump to Branch"
+			},
+			"sourceText": "Jump to Branch",
+			"sourceHash": "6c4d8ba03ce77b8a251ed2b18f2b225f8c125749707b1713cb62499b87962ae0",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/shared/components/merge-rebase-status.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 176,
+					"column": 7
+				},
+				"end": {
+					"line": 176,
+					"column": 23
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-176-7.text.984f76a5ec"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-177-7.text.d9a6ebd292#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-177-7.text.d9a6ebd292",
+			"slot": "text",
+			"authorityId": "message.fed775fa5dd300434724220850b6b7abbeeb939e33d9bc8cfe2815f9b709c008",
+			"pattern": {
+				"kind": "literal",
+				"text": "Jump to Commit"
+			},
+			"sourceText": "Jump to Commit",
+			"sourceHash": "5ead24aedd452bd4929166c47d3ce7754a0b273598ff0351a56ef1fe985a7440",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/shared/components/merge-rebase-status.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 177,
+					"column": 7
+				},
+				"end": {
+					"line": 177,
+					"column": 23
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-177-7.text.d9a6ebd292"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-179-7.text.a899aa00ca#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-179-7.text.a899aa00ca",
+			"slot": "text",
+			"authorityId": "message.8df246bde40db22df82be463c40bac66b64ac393c92e37106c76b6e9d347db25",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open Branch in Commit Graph"
+			},
+			"sourceText": "Open Branch in Commit Graph",
+			"sourceHash": "4c22c62451fd0c90cd95bd713f9378ffe06cde6cfded62156f2f3866caeb2cfe",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/shared/components/merge-rebase-status.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 179,
+					"column": 7
+				},
+				"end": {
+					"line": 179,
+					"column": 36
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-179-7.text.a899aa00ca"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-180-7.text.3e9a93cff5#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-180-7.text.3e9a93cff5",
+			"slot": "text",
+			"authorityId": "message.ab57deb1909b9076a7fa591341e657fae286c1e729f2c7d472566166655dcf17",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open Commit in Commit Graph"
+			},
+			"sourceText": "Open Commit in Commit Graph",
+			"sourceHash": "4783dc718807bac9a6ff85da1f40d58028f7ee9f4644ef52b221327c538987e4",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/shared/components/merge-rebase-status.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 180,
+					"column": 7
+				},
+				"end": {
+					"line": 180,
+					"column": 36
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-180-7.text.3e9a93cff5"
 			}
 		},
 		{
@@ -14536,6 +15478,70 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.home.home.imperative-display-360-24.text.a53ec9a7a8#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-360-24.text.a53ec9a7a8",
+			"slot": "text",
+			"authorityId": "message.f39112883cc6a8fa5947c813b8d2bd2e9c0ca0a97d5dbb19350c87fbcf892e15",
+			"pattern": {
+				"kind": "literal",
+				"text": "Filter"
+			},
+			"sourceText": "Filter",
+			"sourceHash": "638e249f4a15ebb84957da130701d138a6e06d88dceeaa2e6dcd91db70cc1381",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/search/search-input.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 360,
+					"column": 24
+				},
+				"end": {
+					"line": 360,
+					"column": 32
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-360-24.text.a53ec9a7a8"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-360-35.text.d3af5ad139#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-360-35.text.d3af5ad139",
+			"slot": "text",
+			"authorityId": "message.82478bfacfff984eb7072c3ed40890034f9dc655185191b6d5a1967a90f0e6a8",
+			"pattern": {
+				"kind": "literal",
+				"text": "Search"
+			},
+			"sourceText": "Search",
+			"sourceHash": "49c266baaaa70981ea188fa714d5c40cf13830d786a861c9943ae0d26a7f3fe9",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/search/search-input.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 360,
+					"column": 35
+				},
+				"end": {
+					"line": 360,
+					"column": 43
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-360-35.text.d3af5ad139"
+			}
+		},
+		{
 			"id": "webviews:webviews.home.home.imperative-display-371-62.text.3832c35f0d#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
@@ -14565,6 +15571,72 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.imperative-display-371-62.text.3832c35f0d"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-376-11.text.891f2e7dd2#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-376-11.text.891f2e7dd2",
+			"slot": "text",
+			"authorityId": "message.db5b8ed4047a665eb760cff19e4aa4283cf10835129c36876bd4e171e5565497",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} commits using natural language (↑↓ for history), e.g. my commits from last week",
+				"slots": ["slot1"]
+			},
+			"sourceText": "${slot1} commits using natural language (↑↓ for history), e.g. my commits from last week",
+			"sourceHash": "66df5620c7c94808d0e4d9f05a5b423ffa701e44b99caacd9b6fdb44eb1eff6c",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/search/search-input.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 376,
+					"column": 11
+				},
+				"end": {
+					"line": 376,
+					"column": 106
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-376-11.text.891f2e7dd2"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-378-10.text.1400f0589e#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-378-10.text.1400f0589e",
+			"slot": "text",
+			"authorityId": "message.e2fa0ba0eb3c53d6350c2830d3165034958eae927c1152da44f750f7e3d17d3d",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} commits (press Enter to search, ↑↓ for history), e.g. @me after:1.week.ago file:*.ts",
+				"slots": ["slot1"]
+			},
+			"sourceText": "${slot1} commits (press Enter to search, ↑↓ for history), e.g. @me after:1.week.ago file:*.ts",
+			"sourceHash": "10d549343a6b5ab554cdeb387e3932d80e615fa5e02b6ff4bf86f0aa9d700259",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/search/search-input.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 378,
+					"column": 10
+				},
+				"end": {
+					"line": 378,
+					"column": 110
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-378-10.text.1400f0589e"
 			}
 		},
 		{
@@ -14761,6 +15833,38 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.home.home.imperative-display-40-27.text.976f240b6f#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-40-27.text.976f240b6f",
+			"slot": "text",
+			"authorityId": "message.707f31a0a3f38567fcef9bf271aa4815f00ae94913d010e4c4db854eb3916f6b",
+			"pattern": {
+				"kind": "literal",
+				"text": "Issue"
+			},
+			"sourceText": "Issue",
+			"sourceHash": "48dc76dfa23ae03fea1372c5ed6c0e1bd62eaeca7bba6d804eb0afa87972f031",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/rich/issue-icon.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 40,
+					"column": 27
+				},
+				"end": {
+					"line": 40,
+					"column": 34
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-40-27.text.976f240b6f"
+			}
+		},
+		{
 			"id": "webviews:webviews.home.home.imperative-display-407-12.text.07205e0f13#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
@@ -14889,6 +15993,39 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.home.home.imperative-display-42-10.text.d1bd3c4142#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-42-10.text.d1bd3c4142",
+			"slot": "text",
+			"authorityId": "message.392e04d9ac0beb9c871ea84cf00dac106d3a3ef393345b77debbe484e2398fa7",
+			"pattern": {
+				"kind": "template",
+				"text": "Issue ${slot1} is ${slot2}",
+				"slots": ["slot1", "slot2"]
+			},
+			"sourceText": "Issue ${slot1} is ${slot2}",
+			"sourceHash": "dc9fd94165cf40b26a8e50c222a573d4bd8e714fd235ee33a7994c46633ed781",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/rich/issue-icon.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 42,
+					"column": 10
+				},
+				"end": {
+					"line": 42,
+					"column": 76
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-42-10.text.d1bd3c4142"
+			}
+		},
+		{
 			"id": "webviews:webviews.home.home.imperative-display-449-22.text.d34f422ab3#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
@@ -14918,6 +16055,166 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.imperative-display-449-22.text.d34f422ab3"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-45-28.text.9d3ee9f296#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-45-28.text.9d3ee9f296",
+			"slot": "text",
+			"authorityId": "message.b31d982139dc4172b3f1d857911f659f36b0aeadbef2ed28dbb3e41f6858a709",
+			"pattern": {
+				"kind": "literal",
+				"text": "Working"
+			},
+			"sourceText": "Working",
+			"sourceHash": "a92f0449a9f7235bf69dc2e8ff7070bfae3f00ec8f8f26e5457a9beac53466ac",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/commit-sha.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 45,
+					"column": 28
+				},
+				"end": {
+					"line": 45,
+					"column": 37
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-45-28.text.9d3ee9f296"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-45-29.text.6ed578759e#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-45-29.text.6ed578759e",
+			"slot": "text",
+			"authorityId": "message.beba5465f939a1520c784e12d82d9e8b5214f801a78665739c6c3c3e9682dd92",
+			"pattern": {
+				"kind": "literal",
+				"text": "Draft pull request"
+			},
+			"sourceText": "Draft pull request",
+			"sourceHash": "e201d8356df8163789e0a3a0d41c12aa03bd141be8685dd2cc17d90f7c7b960d",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/rich/pr-icon.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 45,
+					"column": 29
+				},
+				"end": {
+					"line": 45,
+					"column": 49
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-45-29.text.6ed578759e"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-45-52.text.5e1bb0522c#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-45-52.text.5e1bb0522c",
+			"slot": "text",
+			"authorityId": "message.5137ef564fc65acb8d7fe5c9376ad95183df98494806986055be6002c82b400b",
+			"pattern": {
+				"kind": "literal",
+				"text": "Pull request"
+			},
+			"sourceText": "Pull request",
+			"sourceHash": "f3dba6629c69d91bd65527f178591b6ab2ac3843cfbf76943801e8dd45bcb7d6",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/rich/pr-icon.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 45,
+					"column": 52
+				},
+				"end": {
+					"line": 45,
+					"column": 66
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-45-52.text.5e1bb0522c"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-45-58.text.53dab91ae2#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-45-58.text.53dab91ae2",
+			"slot": "text",
+			"authorityId": "message.5a4cbbef21e1a9c6fdc5c8b91b5f00744e56453d852980320baf5371979fe583",
+			"pattern": {
+				"kind": "literal",
+				"text": "Staged"
+			},
+			"sourceText": "Staged",
+			"sourceHash": "daec459ab6cce9cee8ad1bdebdec8cf8fca2476c5994591d9ee554705214b8c5",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/commit-sha.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 45,
+					"column": 58
+				},
+				"end": {
+					"line": 45,
+					"column": 66
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-45-58.text.53dab91ae2"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-45-77.text.e660ddf22b#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-45-77.text.e660ddf22b",
+			"slot": "text",
+			"authorityId": "message.b31d982139dc4172b3f1d857911f659f36b0aeadbef2ed28dbb3e41f6858a709",
+			"pattern": {
+				"kind": "literal",
+				"text": "Working"
+			},
+			"sourceText": "Working",
+			"sourceHash": "a92f0449a9f7235bf69dc2e8ff7070bfae3f00ec8f8f26e5457a9beac53466ac",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/commit-sha.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 45,
+					"column": 77
+				},
+				"end": {
+					"line": 45,
+					"column": 86
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-45-77.text.e660ddf22b"
 			}
 		},
 		{
@@ -15079,6 +16376,39 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.imperative-display-472-23.text.b651821f47"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-48-10.text.7143d9e071#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-48-10.text.7143d9e071",
+			"slot": "text",
+			"authorityId": "message.4c3bde477f12f97e934453d73c19594bb6ee6d3e804ccbfc032d901cce793801",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} ${slot2} is ${slot3}",
+				"slots": ["slot1", "slot2", "slot3"]
+			},
+			"sourceText": "${slot1} ${slot2} is ${slot3}",
+			"sourceHash": "85d299a6a238e29f566b4d669817a8792418504c932def24dcc17e0de0109265",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/rich/pr-icon.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 48,
+					"column": 10
+				},
+				"end": {
+					"line": 48,
+					"column": 72
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-48-10.text.7143d9e071"
 			}
 		},
 		{
@@ -16862,6 +18192,39 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.home.home.lit-template-10-gl-tooltip-status-indicator-content.content.3b1207d56a#content",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.lit-template-10-gl-tooltip-status-indicator-content.content.3b1207d56a",
+			"slot": "content",
+			"authorityId": "message.3720549ccb9e379f6d988e724456d4840f17afc3fad4d87e29830a58233b562b",
+			"pattern": {
+				"kind": "literal",
+				"text": "Connected"
+			},
+			"sourceText": "Connected",
+			"sourceHash": "22965568d22a14ee17af055d2870b50afcfe9fd94a83eec3196e266932297bb2",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/shared/components/integrations-chip.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 372,
+					"column": 13
+				},
+				"end": {
+					"line": 377,
+					"column": 23
+				},
+				"attribute": "content"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.lit-template-10-gl-tooltip-status-indicator-content.content.3b1207d56a"
+			}
+		},
+		{
 			"id": "webviews:webviews.home.home.lit-template-10-li-1-a-launchpad-action-span-1.text.026582183f#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
@@ -17118,6 +18481,39 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.lit-template-11-menu-item-1.text.5f46cb726b"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.lit-template-11-p-1-gl-tooltip-1-content.content.64479cdf42#content",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.lit-template-11-p-1-gl-tooltip-1-content.content.64479cdf42",
+			"slot": "content",
+			"authorityId": "message.3632a54259327aa7f1c558a5e3246683ad42d8e64ad3f953b632e1df8f115005",
+			"pattern": {
+				"kind": "literal",
+				"text": "Show Account view"
+			},
+			"sourceText": "Show Account view",
+			"sourceHash": "09c0141a6454968fe36429a8aa0fcfe63d2b84962ca70b34e0b039d3db5c7da8",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/feature-badge.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 224,
+					"column": 19
+				},
+				"end": {
+					"line": 232,
+					"column": 10
+				},
+				"attribute": "content"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.lit-template-11-p-1-gl-tooltip-1-content.content.64479cdf42"
 			}
 		},
 		{
@@ -18909,6 +20305,39 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.lit-template-17-p-1-a-1.text.545fdd0f25"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.lit-template-17-p-1-gl-tooltip-1-content.content.ada332e8a9#content",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.lit-template-17-p-1-gl-tooltip-1-content.content.ada332e8a9",
+			"slot": "content",
+			"authorityId": "message.4500b9fb9365956714f253fa10cbca570670c60eaf76f40551df614381f15cf8",
+			"pattern": {
+				"kind": "literal",
+				"text": "Pro features that do not require an account"
+			},
+			"sourceText": "Pro features that do not require an account",
+			"sourceHash": "b53e87ce6aa9cf9a09c6dbc68e281d706cb1d1502a2f7845dd11ef690fdc1444",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/feature-badge.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 290,
+					"column": 19
+				},
+				"end": {
+					"line": 297,
+					"column": 40
+				},
+				"attribute": "content"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.lit-template-17-p-1-gl-tooltip-1-content.content.ada332e8a9"
 			}
 		},
 		{
@@ -24136,6 +25565,39 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.home.home.lit-template-5-gl-tooltip-1-content.content.b595a35ef7#content",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.lit-template-5-gl-tooltip-1-content.content.b595a35ef7",
+			"slot": "content",
+			"authorityId": "message.81cae58e82d97a41884d7fbdf6b950716a47b8150546c7c4feffdd2ba21de4e1",
+			"pattern": {
+				"kind": "literal",
+				"text": "Show Conflicts"
+			},
+			"sourceText": "Show Conflicts",
+			"sourceHash": "92e21941b02619060c4501e22202df233c41522e77853393fef65220278876ff",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/shared/components/merge-rebase-status.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 164,
+					"column": 14
+				},
+				"end": {
+					"line": 166,
+					"column": 17
+				},
+				"attribute": "content"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.lit-template-5-gl-tooltip-1-content.content.b595a35ef7"
+			}
+		},
+		{
 			"id": "webviews:webviews.home.home.lit-template-5-li-1-span-launchpad-action-span-1.text.6a73d6bbd8#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
@@ -25966,6 +27428,39 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.home.home.lit-template-9-div-search-navigation-gl-tooltip-3-content.content.7e8db235a4#content",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.lit-template-9-div-search-navigation-gl-tooltip-3-content.content.7e8db235a4",
+			"slot": "content",
+			"authorityId": "message.d75fadc3916094bd42aa6f2adcb0ad04939c76948f56d504228ea7f04da7fd5a",
+			"pattern": {
+				"kind": "literal",
+				"text": "Show Results in Side Bar"
+			},
+			"sourceText": "Show Results in Side Bar",
+			"sourceHash": "b43f5936ba8dd991138d6f8b1fca0b933943a5deb870065c93c9fed1e84020d6",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/search/search-box.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 387,
+					"column": 14
+				},
+				"end": {
+					"line": 454,
+					"column": 11
+				},
+				"attribute": "content"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.lit-template-9-div-search-navigation-gl-tooltip-3-content.content.7e8db235a4"
+			}
+		},
+		{
 			"id": "webviews:webviews.home.home.lit-template-9-gl-button-banner__dismiss-aria-label.aria-label.cbca93379e#aria-label",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
@@ -26159,6 +27654,70 @@
 				"kind": "runtime-key",
 				"bundle": "rebase",
 				"key": "rebase.imperative-display-1358-7.text.24373eadac"
+			}
+		},
+		{
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1453-66.text.1895932bb1#text",
+			"domain": "webviews",
+			"scope": "webviews.rebase.runtime",
+			"anchor": "webviews.rebase.rebase.imperative-display-1453-66.text.1895932bb1",
+			"slot": "text",
+			"authorityId": "message.5f8c7672d765d412b98f17c0bf0072bac625d04538d27cd3e80f31192d71a026",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open in Commit Graph"
+			},
+			"sourceText": "Open in Commit Graph",
+			"sourceHash": "0353e5ffa51ae6e129900d023e67cf6f487dee0784b15186cd81ceeaef3fa261",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/rebase/rebase.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 1453,
+					"column": 66
+				},
+				"end": {
+					"line": 1453,
+					"column": 88
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "rebase",
+				"key": "rebase.imperative-display-1453-66.text.1895932bb1"
+			}
+		},
+		{
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1453-91.text.df088a4bfb#text",
+			"domain": "webviews",
+			"scope": "webviews.rebase.runtime",
+			"anchor": "webviews.rebase.rebase.imperative-display-1453-91.text.df088a4bfb",
+			"slot": "text",
+			"authorityId": "message.0d7f3d6f711ffdf673c04492d36cfebe31289084ce5f8e8215d436e38ad50464",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open in Inspect View"
+			},
+			"sourceText": "Open in Inspect View",
+			"sourceHash": "55d9744238adf3dcdce032b1593dcced09e78f0264c3cb81009bf86cee0bfd96",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/rebase/rebase.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 1453,
+					"column": 91
+				},
+				"end": {
+					"line": 1453,
+					"column": 113
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "rebase",
+				"key": "rebase.imperative-display-1453-91.text.df088a4bfb"
 			}
 		},
 		{
@@ -26415,6 +27974,70 @@
 				"kind": "runtime-key",
 				"bundle": "rebase",
 				"key": "rebase.imperative-display-1798-68.text.4ebe3c30d3"
+			}
+		},
+		{
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1817-65.text.235b5c456f#text",
+			"domain": "webviews",
+			"scope": "webviews.rebase.runtime",
+			"anchor": "webviews.rebase.rebase.imperative-display-1817-65.text.235b5c456f",
+			"slot": "text",
+			"authorityId": "message.5f8c7672d765d412b98f17c0bf0072bac625d04538d27cd3e80f31192d71a026",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open in Commit Graph"
+			},
+			"sourceText": "Open in Commit Graph",
+			"sourceHash": "0353e5ffa51ae6e129900d023e67cf6f487dee0784b15186cd81ceeaef3fa261",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/rebase/rebase.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 1817,
+					"column": 65
+				},
+				"end": {
+					"line": 1817,
+					"column": 87
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "rebase",
+				"key": "rebase.imperative-display-1817-65.text.235b5c456f"
+			}
+		},
+		{
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1817-90.text.f3a59151cb#text",
+			"domain": "webviews",
+			"scope": "webviews.rebase.runtime",
+			"anchor": "webviews.rebase.rebase.imperative-display-1817-90.text.f3a59151cb",
+			"slot": "text",
+			"authorityId": "message.0d7f3d6f711ffdf673c04492d36cfebe31289084ce5f8e8215d436e38ad50464",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open in Inspect View"
+			},
+			"sourceText": "Open in Inspect View",
+			"sourceHash": "55d9744238adf3dcdce032b1593dcced09e78f0264c3cb81009bf86cee0bfd96",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/rebase/rebase.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 1817,
+					"column": 90
+				},
+				"end": {
+					"line": 1817,
+					"column": 112
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "rebase",
+				"key": "rebase.imperative-display-1817-90.text.f3a59151cb"
 			}
 		},
 		{
@@ -26931,6 +28554,39 @@
 				"kind": "runtime-key",
 				"bundle": "rebase",
 				"key": "rebase.imperative-display-94-11.text.4c792bd765"
+			}
+		},
+		{
+			"id": "webviews:webviews.rebase.rebase.lit-template-1-div-__GL_I18N_SLOT_slot2__-gl-tooltip-entry-conflict-indicator-content.content.0df0291f37#content",
+			"domain": "webviews",
+			"scope": "webviews.rebase.runtime",
+			"anchor": "webviews.rebase.rebase.lit-template-1-div-__GL_I18N_SLOT_slot2__-gl-tooltip-entry-conflict-indicator-content.content.0df0291f37",
+			"slot": "content",
+			"authorityId": "message.5e9038362b522a6a1129e0a9d3bb3b5572421ebac41994c056e6a75262ceca8b",
+			"pattern": {
+				"kind": "literal",
+				"text": "This commit will cause conflicts"
+			},
+			"sourceText": "This commit will cause conflicts",
+			"sourceHash": "c2ca56a9fc36a99e248fc68abb53148ce2d1d76476cf86768ae209a712ad02cf",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/rebase/components/rebase-entry.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 198,
+					"column": 14
+				},
+				"end": {
+					"line": 273,
+					"column": 4
+				},
+				"attribute": "content"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "rebase",
+				"key": "rebase.lit-template-1-div-__GL_I18N_SLOT_slot2__-gl-tooltip-entry-conflict-indicator-content.content.0df0291f37"
 			}
 		},
 		{
@@ -27578,6 +29234,39 @@
 				"kind": "runtime-key",
 				"bundle": "rebase",
 				"key": "rebase.lit-template-24-gl-tooltip-1-a-rebase-action-link.text.612eb6f374"
+			}
+		},
+		{
+			"id": "webviews:webviews.rebase.rebase.lit-template-24-gl-tooltip-1-content.content.c4209c4ec1#content",
+			"domain": "webviews",
+			"scope": "webviews.rebase.runtime",
+			"anchor": "webviews.rebase.rebase.lit-template-24-gl-tooltip-1-content.content.c4209c4ec1",
+			"slot": "content",
+			"authorityId": "message.81cae58e82d97a41884d7fbdf6b950716a47b8150546c7c4feffdd2ba21de4e1",
+			"pattern": {
+				"kind": "literal",
+				"text": "Show Conflicts"
+			},
+			"sourceText": "Show Conflicts",
+			"sourceHash": "92e21941b02619060c4501e22202df233c41522e77853393fef65220278876ff",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/rebase/rebase.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 1514,
+					"column": 11
+				},
+				"end": {
+					"line": 1516,
+					"column": 20
+				},
+				"attribute": "content"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "rebase",
+				"key": "rebase.lit-template-24-gl-tooltip-1-content.content.c4209c4ec1"
 			}
 		},
 		{
