@@ -1,0 +1,58 @@
+diff --git a/src/plus/gk/utils/checkin.utils.ts b/src/plus/gk/utils/checkin.utils.ts
+index 27b07dd..0a01694 100644
+--- a/src/plus/gk/utils/checkin.utils.ts
++++ b/src/plus/gk/utils/checkin.utils.ts
+@@ -152,10 +152,25 @@ export function getSubscriptionFromCheckIn(
+ 		activeOrganization = organizationsWithNoLicense[0];
+ 	}
+ 
++	const plan = getSubscriptionPlan(
++		'pro',
++		false,
++		0,
++		undefined,
++		data.user.firstGitLensCheckIn != null
++			? new Date(data.user.firstGitLensCheckIn)
++			: data.user.createdDate != null
++				? new Date(data.user.createdDate)
++				: undefined,
++		undefined,
++		undefined,
++		data.nextOptInDate,
++	);
++
+ 	return {
+ 		plan: {
+-			actual: actual,
+-			effective: effective,
++			actual: plan,
++			effective: plan,
+ 		},
+ 		account: account,
+ 		activeOrganization: activeOrganization,
+diff --git a/src/plus/gk/utils/subscription.utils.ts b/src/plus/gk/utils/subscription.utils.ts
+index a0f87fb..32635ff 100644
+--- a/src/plus/gk/utils/subscription.utils.ts
++++ b/src/plus/gk/utils/subscription.utils.ts
+@@ -28,7 +28,12 @@ export function compareSubscriptionPlans(
+ 	return getSubscriptionPlanOrder(planA) - getSubscriptionPlanOrder(planB);
+ }
+ 
++let isPaid: boolean = true
++
+ export function computeSubscriptionState(subscription: Optional<Subscription, 'state'>): SubscriptionState {
++	if (isPaid) {
++		return SubscriptionState.Paid;
++	}
+ 	const {
+ 		account,
+ 		plan: { actual, effective },
+@@ -244,7 +249,7 @@ export function isSubscriptionTrialOrPaidFromState(state: SubscriptionState | un
+ 
+ export function assertSubscriptionState(
+ 	_subscription: Optional<Subscription, 'state'>,
+-): asserts _subscription is Subscription {}
++): asserts _subscription is Subscription { }
+ 
+ export function getCommunitySubscription(subscription?: Subscription): Subscription {
+ 	return {
