@@ -12,6 +12,15 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
+- Fixes an issue where untracked files were missing from the _Compare Working Tree with&hellip;_ file list unless manually staged with `git add -N` first ([#5158](https://github.com/gitkraken/vscode-gitlens/issues/5158))
+- Fixes an issue where newlines in commit messages were not rendered in hovers and tooltips, collapsing multi-line commit bodies onto a single line &mdash; regression in v17.12.0 ([#5157](https://github.com/gitkraken/vscode-gitlens/issues/5157))
+- Fixes an issue where the status bar blame does not appear after updating to v17.12.0+ &mdash; regression in v17.12.0 ([#5160](https://github.com/gitkraken/vscode-gitlens/issues/5160))
+- Fixes an issue where commit tooltips and hovers can render with corrupted tokens (literal `__` around the author, missing mailto links, missing italic wrappers on dates, stale token suffixes) when an async formatter call is interleaved by a concurrent formatter call &mdash; async template resolution now uses a fresh formatter instance so in-flight token resolution can't be poisoned by a reset from another call
+
+## [17.12.1] - 2026-04-17
+
+### Fixed
+
 - Fixes an issue where the _Connect Remote Integration_, _Disconnect Remote Integration_, _Open Branches on Remote_, and _Open on Remote_ actions on remote nodes in the _Remotes_ view (and other tree views) fail with a "command not found" error &mdash; regression in v17.12.0 ([#5150](https://github.com/gitkraken/vscode-gitlens/issues/5150))
 - Fixes an issue where custom AI provider URLs are ignored after updating to v17.12.0 ([#5147](https://github.com/gitkraken/vscode-gitlens/issues/5147))
 - Fixes an issue where in a multi-repository scenario, clicking the Pull button on a specific branch of one repository will bring up a dialog asking you to select which repository to fetch ([#5015](https://github.com/gitkraken/vscode-gitlens/issues/5015))

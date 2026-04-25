@@ -440,7 +440,7 @@ export class GraphWebviewProvider implements WebviewProvider<State, State, Graph
 		return proxyServices({
 			...base,
 			sidebar: {
-				getSidebarData: panel => this.onGetSidebarData({ panel: panel }),
+				getSidebarData: (panel, signal) => this.onGetSidebarData({ panel: panel }, signal),
 				getSidebarCounts: () => this.onGetCounts(),
 				toggleLayout: panel => this.onSidebarToggleLayout({ panel: panel }),
 				refresh: panel => this.onSidebarRefresh({ panel: panel }),
@@ -593,6 +593,14 @@ export class GraphWebviewProvider implements WebviewProvider<State, State, Graph
 		if (this.host.is('view')) {
 			commands.push(
 				registerCommand(`${this.host.id}.refresh`, () => this.host.refresh(true)),
+				registerCommand(`${this.host.id}.openInNewWindow`, async () => {
+					await executeCommand<WebviewPanelShowCommandArgs<GraphWebviewShowingArgs>>(
+						'gitlens.showGraphPage',
+						undefined,
+						this.repository,
+					);
+					void executeCoreCommand('workbench.action.moveEditorToNewWindow');
+				}),
 				registerCommand(
 					`${this.host.id}.openInTab`,
 					() =>
@@ -674,8 +682,9 @@ export class GraphWebviewProvider implements WebviewProvider<State, State, Graph
 		};
 	}
 
-	private async onGetSidebarData(params: { panel: GraphSidebarPanel }) {
+	private async onGetSidebarData(params: { panel: GraphSidebarPanel }, signal?: AbortSignal) {
 		const graph = this._graph ?? (await this._graphLoading?.catch(() => undefined));
+		signal?.throwIfAborted();
 		if (graph == null) return { panel: params.panel, items: [] };
 
 		switch (params.panel) {
@@ -5075,9 +5084,11 @@ export class GraphWebviewProvider implements WebviewProvider<State, State, Graph
 
 		for (const sha of commitShas) {
 			const row = graph.rows.find(r => r.sha === sha);
-			if (row?.reachableFromBranches) {
-				for (const branchName of row.reachableFromBranches) {
-					branchCounts.set(branchName, (branchCounts.get(branchName) ?? 0) + 1);
+			if (row?.reachability) {
+				for (const ref of row.reachability.refs) {
+					if (ref.refType === 'branch' && !ref.remote) {
+						branchCounts.set(ref.name, (branchCounts.get(ref.name) ?? 0) + 1);
+					}
 				}
 			}
 		}
@@ -5117,12 +5128,13 @@ export class GraphWebviewProvider implements WebviewProvider<State, State, Graph
 		if (graph == null) return;
 
 		const row = graph.rows.find(r => r.sha === ref.ref);
-		if (row?.reachableFromBranches?.length !== 1) {
+		const localBranches = row?.reachability?.refs.filter(r => r.refType === 'branch' && !r.remote);
+		if (localBranches?.length !== 1) {
 			void window.showErrorMessage('Unable to recompose: commit must belong to exactly one local branch');
 			return;
 		}
 
-		const branchName = row.reachableFromBranches[0];
+		const branchName = localBranches[0].name;
 		const branch = graph.branches.get(branchName);
 		if (branch == null) {
 			void window.showErrorMessage(`Branch '${branchName}' not found`);

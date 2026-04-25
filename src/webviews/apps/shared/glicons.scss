@@ -6,7 +6,7 @@ Must be placed at the end of body in the HTML file of any webview that needs it 
 	@font-face {
 		font-family: 'glicons';
 		font-display: block;
-		src: url("#{root}/dist/glicons.woff2?7017c56e8de71afd2cb7f621608a442a") format("woff2");
+		src: url("#{root}/dist/glicons.woff2?203bc57286ac95f64f6b976cb033a04e") format("woff2");
 	}
 </style>
 */
@@ -259,4 +259,34 @@ Must be placed at the end of body in the HTML file of any webview that needs it 
 }
 .glicon-provider-linear:before {
 	content: '\f147';
+}
+.glicon-diff-right:before {
+	content: '\f11b';
+}
+.glicon-diff-left:before {
+	content: '\f12e';
+}
+.glicon-accept-right:before {
+	content: '\f12f';
+}
+.glicon-accept-left:before {
+	content: '\f130';
+}
+.glicon-accept-all-right:before {
+	content: '\f131';
+}
+.glicon-accept-all-left:before {
+	content: '\f132';
+}
+.glicon-continue:before {
+	content: '\f148';
+}
+.glicon-skip:before {
+	content: '\f149';
+}
+.glicon-abort:before {
+	content: '\f14a';
+}
+.glicon-pause:before {
+	content: '\f14b';
 }

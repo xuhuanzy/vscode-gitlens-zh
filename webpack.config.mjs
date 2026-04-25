@@ -889,6 +889,7 @@ function getCspHtmlPlugin(mode, env) {
 					? ['#{cspSource}', "'nonce-#{cspNonce}'", "'unsafe-hashes'"]
 					: ['#{cspSource}', "'unsafe-hashes'", "'unsafe-inline'"],
 			'font-src': ['#{cspSource}'],
+			'connect-src': mode !== 'production' ? ['#{cspSource}'] : "'none'",
 		},
 		{
 			enabled: true,

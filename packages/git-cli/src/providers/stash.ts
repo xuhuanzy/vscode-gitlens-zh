@@ -38,13 +38,24 @@ export class StashGitSubProvider implements GitStashSubProvider {
 	@debug()
 	async applyStash(
 		repoPath: string,
-		stashName: string,
-		options?: { deleteAfter?: boolean },
+		stashNameOrSha: string,
+		options?: { deleteAfter?: boolean; index?: boolean },
 	): Promise<StashApplyResult> {
-		if (!stashName) return { conflicted: false };
+		if (!stashNameOrSha) return { conflicted: false };
 
-		const args = ['stash', options?.deleteAfter ? 'pop' : 'apply', stashName];
+		const args = ['stash', options?.deleteAfter ? 'pop' : 'apply'];
+		if (options?.index) {
+			args.push('--index');
+		}
+		args.push(stashNameOrSha);
+		return this.applyStashCore(repoPath, args, options?.deleteAfter ? 'stash-pop' : 'stash-apply');
+	}
 
+	private async applyStashCore(
+		repoPath: string,
+		args: string[],
+		conflictCommand: 'stash-apply' | 'stash-pop',
+	): Promise<StashApplyResult> {
 		try {
 			await this.git.exec({ cwd: repoPath }, ...args);
 			this.context.hooks?.cache?.onReset?.(repoPath, 'stashes');
@@ -59,7 +70,7 @@ export class StashGitSubProvider implements GitStashSubProvider {
 						((ex.stdout?.includes('Auto-merging') && ex.stdout.includes('CONFLICT')) ||
 							ex.stdout?.includes('needs merge')))
 				) {
-					this.context.hooks?.operations?.onConflicted?.(options?.deleteAfter ? 'stash-pop' : 'stash-apply');
+					this.context.hooks?.operations?.onConflicted?.(conflictCommand);
 					return { conflicted: true };
 				}
 			}
@@ -77,6 +88,17 @@ export class StashGitSubProvider implements GitStashSubProvider {
 	}
 
 	@debug()
+	async createStash(repoPath: string, message?: string): Promise<string | undefined> {
+		const args = ['stash', 'create'];
+		if (message) {
+			args.push(message);
+		}
+
+		const result = await this.git.exec({ cwd: repoPath }, ...args);
+		return result.stdout.trim() || undefined;
+	}
+
+	@debug()
 	async getStash(
 		repoPath: string,
 		options?: {
@@ -89,80 +111,86 @@ export class StashGitSubProvider implements GitStashSubProvider {
 		if (repoPath == null) return undefined;
 
 		const cfg = this.context.config;
-		const stash = await this.cache.getStash(repoPath, async (commonPath, _cacheable) => {
-			const includeFiles = options?.includeFiles ?? cfg?.commits.includeFileDetails ?? true;
-			const parser = getStashLogParser(includeFiles);
-			const args = [...parser.arguments];
+		const stash = await this.cache.getStash(
+			repoPath,
+			async (commonPath, _cacheable, signal) => {
+				// Prefer the aggregate signal from the cache; fall back to the caller's cancellation.
+				signal ??= cancellation;
+				const includeFiles = options?.includeFiles ?? cfg?.commits.includeFileDetails ?? true;
+				const parser = getStashLogParser(includeFiles);
+				const args = [...parser.arguments];
 
-			if (includeFiles) {
-				const similarityThreshold = options?.similarityThreshold ?? cfg?.commits.similarityThreshold;
-				args.push(`-M${similarityThreshold == null ? '' : `${similarityThreshold}%`}`);
-			}
+				if (includeFiles) {
+					const similarityThreshold = options?.similarityThreshold ?? cfg?.commits.similarityThreshold;
+					args.push(`-M${similarityThreshold == null ? '' : `${similarityThreshold}%`}`);
+				}
 
-			const result = await this.git.exec({ cwd: repoPath, cancellation: cancellation }, 'stash', 'list', ...args);
+				const result = await this.git.exec({ cwd: repoPath, cancellation: signal }, 'stash', 'list', ...args);
 
-			const currentUser = await this.provider.config.getCurrentUser(repoPath);
+				const currentUser = await this.provider.config.getCurrentUser(repoPath);
 
-			const stashes = new Map<string, GitStashCommit>();
-			const parentShas = new Set<string>();
+				const stashes = new Map<string, GitStashCommit>();
+				const parentShas = new Set<string>();
 
-			// First pass: create stashes and collect parent SHAs
-			for (const s of parser.parse(result.stdout)) {
-				stashes.set(s.sha, createStash(s, commonPath, currentUser));
-				// Collect all parent SHAs for timestamp lookup
-				if (s.parents) {
-					for (const parentSha of s.parents.split(' ')) {
-						if (parentSha.trim()) {
-							parentShas.add(parentSha.trim());
+				// First pass: create stashes and collect parent SHAs
+				for (const s of parser.parse(result.stdout)) {
+					stashes.set(s.sha, createStash(s, commonPath, currentUser));
+					// Collect all parent SHAs for timestamp lookup
+					if (s.parents) {
+						for (const parentSha of s.parents.split(' ')) {
+							if (parentSha.trim()) {
+								parentShas.add(parentSha.trim());
+							}
 						}
 					}
 				}
-			}
 
-			// Second pass: fetch parent timestamps if we have any parents
-			const parentTimestamps = new Map<string, { authorDate: number; committerDate: number }>();
-			if (parentShas.size > 0) {
-				try {
-					const datesParser = getShaAndDatesLogParser();
-					const parentResult = await this.git.exec(
-						{
-							cwd: repoPath,
-							cancellation: cancellation,
-							stdin: [...parentShas].join('\n'),
-						},
-						'log',
-						...datesParser.arguments,
-						'--no-walk',
-						'--stdin',
-					);
+				// Second pass: fetch parent timestamps if we have any parents
+				const parentTimestamps = new Map<string, { authorDate: number; committerDate: number }>();
+				if (parentShas.size > 0) {
+					try {
+						const datesParser = getShaAndDatesLogParser();
+						const parentResult = await this.git.exec(
+							{
+								cwd: repoPath,
+								cancellation: signal,
+								stdin: [...parentShas].join('\n'),
+							},
+							'log',
+							...datesParser.arguments,
+							'--no-walk',
+							'--stdin',
+						);
 
-					for (const entry of datesParser.parse(parentResult.stdout)) {
-						parentTimestamps.set(entry.sha, {
-							authorDate: Number(entry.authorDate),
-							committerDate: Number(entry.committerDate),
-						});
+						for (const entry of datesParser.parse(parentResult.stdout)) {
+							parentTimestamps.set(entry.sha, {
+								authorDate: Number(entry.authorDate),
+								committerDate: Number(entry.committerDate),
+							});
+						}
+					} catch (ex) {
+						Logger.debug(`Failed to fetch parent timestamps for stash commits: ${ex}`);
 					}
-				} catch (ex) {
-					Logger.debug(`Failed to fetch parent timestamps for stash commits: ${ex}`);
 				}
-			}
 
-			// Third pass: update stashes with parent timestamp information
-			for (const sha of stashes.keys()) {
-				const stashCommit = stashes.get(sha);
-				if (stashCommit?.parents.length) {
-					const parentsWithTimestamps: GitStashParentInfo[] = stashCommit.parents.map(parentSha => ({
-						sha: parentSha,
-						authorDate: parentTimestamps.get(parentSha)?.authorDate,
-						committerDate: parentTimestamps.get(parentSha)?.committerDate,
-					}));
-					// Store the parent timestamp information on the stash
-					stashes.set(sha, stashCommit.with({ parentTimestamps: parentsWithTimestamps }));
+				// Third pass: update stashes with parent timestamp information
+				for (const sha of stashes.keys()) {
+					const stashCommit = stashes.get(sha);
+					if (stashCommit?.parents.length) {
+						const parentsWithTimestamps: GitStashParentInfo[] = stashCommit.parents.map(parentSha => ({
+							sha: parentSha,
+							authorDate: parentTimestamps.get(parentSha)?.authorDate,
+							committerDate: parentTimestamps.get(parentSha)?.committerDate,
+						}));
+						// Store the parent timestamp information on the stash
+						stashes.set(sha, stashCommit.with({ parentTimestamps: parentsWithTimestamps }));
+					}
 				}
-			}
 
-			return { repoPath: commonPath, stashes: stashes };
-		});
+				return { repoPath: commonPath, stashes: stashes };
+			},
+			cancellation,
+		);
 
 		if (stash == null) return undefined;
 		if (!options?.reachableFrom || !stash?.stashes.size) return stash;

@@ -5,6 +5,7 @@ import { parseDuration, waitForEvent } from '../../dom.js';
 import { GlElement, observe } from '../element.js';
 import { scrollableBase } from '../styles/lit/base.css.js';
 import '@shoelace-style/shoelace/dist/components/popup/popup.js';
+import '../shoelace-stub.js';
 
 // Adapted from shoelace tooltip
 
@@ -163,8 +164,6 @@ export class GlPopover extends GlElement {
 				user-select: none;
 				-webkit-user-select: none;
 				max-width: min(var(--auto-size-available-width), var(--max-width, 70vw));
-				/* max-height: var(--auto-size-available-height);
-			overflow: auto; */
 				pointer-events: all;
 			}
 
@@ -405,16 +404,17 @@ export class GlPopover extends GlElement {
 	};
 
 	private _skipHideOnClick = false;
-	private readonly handleTriggerMouseDown = () => {
+	private readonly handleTriggerMouseDown = (e: MouseEvent) => {
 		if (this.hasTrigger('click') && this.hasTrigger('focus') && !this.matches(':focus-within')) {
 			this._skipHideOnClick = true;
 		} else {
 			this._skipHideOnClick = false;
 		}
 
-		// Suppress and hide hover-triggered popovers on mousedown to prevent
-		// them from being included in drag images
-		if (this.open && this._triggeredBy === 'hover') {
+		// Suppress and hide hover-triggered popovers on mousedown to prevent them from being included
+		// in drag images — but not when the mousedown originates inside the popover body, so users can
+		// interact with controls in a hover-opened popover.
+		if (this.open && this._triggeredBy === 'hover' && !e.composedPath().includes(this.body)) {
 			this.suppressed = true;
 			void this.hide();
 		}
