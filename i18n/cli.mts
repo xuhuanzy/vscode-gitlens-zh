@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 
+import type { I18nDomain, PendingReportFile } from './core/model.mts';
 import { createManifestDomainContext } from './domains/manifest/context.mts';
 import {
 	createPendingReport as createManifestPendingReport,
@@ -19,6 +20,7 @@ import {
 	syncRuntimeDynamicI18n,
 } from './domains/runtimeDynamic/workflow.mts';
 import type { RuntimeDynamicDomain } from './domains/runtimeDynamic/context.mts';
+import { createWebviewsDomainContext } from './domains/webviews/context.mts';
 import {
 	createPendingReport as createWebviewPendingReport,
 	ensureControlledWebviewFiles,
@@ -31,6 +33,22 @@ import {
 import { execute as executeAuthorityMessagesReview } from './authority/messagesReview.mts';
 
 const args = process.argv.slice(2);
+const runtimeDynamicDomains: readonly RuntimeDynamicDomain[] = ['formatter', 'quickpicks'];
+
+type AggregatePendingReportEntry =
+	| {
+			readonly domain: I18nDomain;
+			readonly skipped?: false;
+			readonly counts: PendingReportFile['counts'];
+			readonly coverage: PendingReportFile['coverage'];
+			readonly sinceBase?: PendingReportFile['sinceBase'];
+	  }
+	| {
+			readonly domain: I18nDomain;
+			readonly skipped: true;
+			readonly reason: string;
+			readonly requiredFile?: string;
+	  };
 
 if (isDirectExecution()) {
 	try {
@@ -47,6 +65,18 @@ export function execute(args: readonly string[]): void {
 	const rest = args.slice(2);
 
 	switch (domain) {
+		case 'sync':
+			runSync(args.slice(1));
+			break;
+		case 'promote':
+			runPromote(args.slice(1));
+			break;
+		case 'report':
+			runReport(args.slice(1));
+			break;
+		case 'generate':
+			runGenerate(args.slice(1));
+			break;
 		case 'manifest':
 			runManifest(action, rest);
 			break;
@@ -63,6 +93,159 @@ export function execute(args: readonly string[]): void {
 		default:
 			printUsageAndExit(`Unknown i18n domain: ${domain ?? '<missing>'}`);
 	}
+}
+
+function runSync(args: readonly string[]): void {
+	const rootDir = readOption(args, '--root');
+
+	const manifest = syncManifestI18n({ rootDir: rootDir });
+	console.log(
+		`Synchronized package manifest i18n: ${manifest.occurrenceCount} occurrences, ${manifest.worksetCount} workset entries`,
+	);
+
+	for (const domain of runtimeDynamicDomains) {
+		const result = syncRuntimeDynamicI18n({ rootDir: rootDir, domain: domain });
+		console.log(
+			`Synchronized ${result.context.domain} runtime dynamic i18n: ${result.occurrenceCount} occurrences, ${result.worksetCount} workset entries`,
+		);
+	}
+
+	const webviews = getRunnableWebviewsContext(rootDir, args);
+	if (webviews.skipped) {
+		console.log(`Skipped webview i18n sync: ${webviews.reason}`);
+		return;
+	}
+
+	const result = syncWebviewsI18n({ rootDir: webviews.context.rootDir });
+	console.log(
+		`Synchronized webview i18n: ${result.occurrenceCount} occurrences, ${result.worksetCount} workset entries`,
+	);
+}
+
+function runPromote(args: readonly string[]): void {
+	const rootDir = readOption(args, '--root');
+
+	const manifest = promoteManifestAuthority({ rootDir: rootDir });
+	console.log(`Promoted package manifest translations: ${manifest.promoted.length}`);
+
+	for (const domain of runtimeDynamicDomains) {
+		const result = promoteRuntimeDynamicAuthority({ rootDir: rootDir, domain: domain });
+		console.log(`Promoted ${result.context.domain} runtime dynamic translations: ${result.promoted.length}`);
+	}
+
+	if (readBooleanFlag(args, '--skip-webviews')) {
+		console.log('Skipped webview translation promotion: --skip-webviews was provided');
+		return;
+	}
+
+	const webviews = promoteWebviewsAuthority({ rootDir: rootDir });
+	console.log(`Promoted webview translations: ${webviews.promoted.length}`);
+}
+
+function runReport(args: readonly string[]): void {
+	const rootDir = readOption(args, '--root');
+	const baseRef = readOption(args, '--base');
+	const reports: AggregatePendingReportEntry[] = [
+		summarizePendingReport(
+			createManifestPendingReport({
+				rootDir: rootDir,
+				baseRef: baseRef,
+			}),
+		),
+	];
+
+	for (const domain of runtimeDynamicDomains) {
+		reports.push(
+			summarizePendingReport(
+				createRuntimeDynamicPendingReport({
+					rootDir: rootDir,
+					domain: domain,
+					baseRef: baseRef,
+				}),
+			),
+		);
+	}
+
+	const webviews = getRunnableWebviewsContext(rootDir, args);
+	if (webviews.skipped) {
+		reports.push({
+			domain: 'webviews',
+			skipped: true,
+			reason: webviews.reason,
+			...(webviews.requiredFile == null ? {} : { requiredFile: webviews.requiredFile }),
+		});
+	} else {
+		reports.push(
+			summarizePendingReport(
+				createWebviewPendingReport({
+					rootDir: webviews.context.rootDir,
+					baseRef: baseRef,
+				}),
+			),
+		);
+	}
+
+	const report = {
+		generatedAt: new Date().toISOString(),
+		...(baseRef == null ? {} : { baseRef: baseRef }),
+		reports: reports,
+	};
+	writeAggregateReport(rootDir, readOption(args, '--write'), report);
+	console.log(JSON.stringify(report, undefined, '\t'));
+}
+
+function runGenerate(args: readonly string[]): void {
+	const rootDir = readOption(args, '--root');
+	const includeManifest = readBooleanFlag(args, '--with-manifest');
+	const skipSettingsShell = readBooleanFlag(args, '--skip-settings-shell');
+
+	if (includeManifest) {
+		const manifest = generateManifestLocalizedOutputs({
+			rootDir: rootDir,
+			outputRoot: readOption(args, '--out-root'),
+		});
+		console.log(
+			`Generated staged package.nls outputs in ${manifest.context.stagedManifestRootDir}: ${manifest.englishKeys} english keys, ${manifest.localizedKeys} localized keys, ${manifest.unresolvedKeys} unresolved keys`,
+		);
+	}
+
+	for (const domain of runtimeDynamicDomains) {
+		const result = generateRuntimeDynamicLocalizedOutputs({
+			rootDir: rootDir,
+			domain: domain,
+			dynamicSourcesOnly: true,
+		});
+		console.log(
+			`Generated ${result.context.domain} runtime dynamic artifacts: translated=${result.translatedCount}, unresolved=${result.unresolvedCount}`,
+		);
+	}
+
+	const dynamicSources = generateWebviewsLocalizedDynamicSources({ rootDir: rootDir });
+	console.log(
+		`Generated localized webview dynamic sources: translated=${dynamicSources.translatedCount}, unresolved=${dynamicSources.unresolvedCount}`,
+	);
+
+	if (skipSettingsShell) return;
+
+	const webviewsContext = createWebviewsDomainContext(rootDir);
+	if (!fs.existsSync(webviewsContext.settingsBuildFile)) {
+		console.log(`Skipped localized webview settings shell: ${webviewsContext.settingsBuildFile} does not exist`);
+		return;
+	}
+
+	const settingsShell = generateWebviewsLocalizedSettingsShell({ rootDir: rootDir });
+	console.log(
+		`Generated localized webview settings shell: translated=${settingsShell.translatedCount}, unresolved=${settingsShell.unresolvedCount}`,
+	);
+}
+
+function summarizePendingReport(report: PendingReportFile): AggregatePendingReportEntry {
+	return {
+		domain: report.domain,
+		counts: report.counts,
+		coverage: report.coverage,
+		...(report.sinceBase == null ? {} : { sinceBase: report.sinceBase }),
+	};
 }
 
 function runManifest(action: string | undefined, args: readonly string[]): void {
@@ -236,6 +419,60 @@ function runAuthority(action: string | undefined, args: readonly string[]): void
 	}
 }
 
+function getRunnableWebviewsContext(
+	rootDir: string | undefined,
+	args: readonly string[],
+):
+	| {
+			readonly skipped: false;
+			readonly context: ReturnType<typeof createWebviewsDomainContext>;
+	  }
+	| {
+			readonly skipped: true;
+			readonly reason: string;
+			readonly requiredFile?: string;
+	  } {
+	if (readBooleanFlag(args, '--skip-webviews')) {
+		return {
+			skipped: true,
+			reason: '--skip-webviews was provided',
+		};
+	}
+
+	const context = createWebviewsDomainContext(rootDir);
+	if (fs.existsSync(context.settingsBuildFile)) {
+		return {
+			skipped: false,
+			context: context,
+		};
+	}
+
+	return {
+		skipped: true,
+		reason: `${context.settingsBuildFile} does not exist`,
+		requiredFile: context.settingsBuildFile,
+	};
+}
+
+function writeAggregateReport(rootDir: string | undefined, writeTo: string | undefined, report: unknown): void {
+	if (writeTo == null) return;
+
+	const outputFile = resolveAggregateReportOutputFile(rootDir, writeTo);
+	fs.mkdirSync(path.dirname(outputFile), { recursive: true });
+	fs.writeFileSync(outputFile, `${JSON.stringify(report, undefined, '\t')}\n`, 'utf8');
+}
+
+function resolveAggregateReportOutputFile(rootDir: string | undefined, name: string): string {
+	if (path.isAbsolute(name)) return name;
+
+	const root = path.resolve(rootDir ?? process.cwd());
+	if (name.includes('/') || name.includes('\\')) {
+		return path.resolve(root, name);
+	}
+
+	return path.join(root, 'i18n', 'reports', name);
+}
+
 function readOption(args: readonly string[], name: string): string | undefined {
 	const index = args.indexOf(name);
 	return index >= 0 ? args[index + 1] : undefined;
@@ -316,6 +553,10 @@ function printUsageAndExit(message: string): never {
 	console.error(
 		[
 			'Usage:',
+			'  node ./i18n/cli.mts sync [--root <path>] [--skip-webviews]',
+			'  node ./i18n/cli.mts promote [--root <path>] [--skip-webviews]',
+			'  node ./i18n/cli.mts report [--root <path>] [--base <ref>] [--write <path>] [--skip-webviews]',
+			'  node ./i18n/cli.mts generate [--root <path>] [--with-manifest] [--out-root <path>] [--skip-settings-shell]',
 			'  node ./i18n/cli.mts manifest sync|generate|promote|report|package [--root <path>] [--out-root <path>] [-- <vsce args>]',
 			'  node ./i18n/cli.mts webviews sync|generate|promote|report [--root <path>]',
 			'  node ./i18n/cli.mts formatter|quickpicks sync|generate|promote|report [--root <path>]',

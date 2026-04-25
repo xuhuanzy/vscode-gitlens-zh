@@ -9,6 +9,10 @@ run();
 
 function run(): void {
 	testManifestCliGeneratesStagedPackageOutputs();
+	testAggregateSyncSkipsWebviewsWhenSettingsShellIsMissing();
+	testAggregateReportWritesDomainReportsAndAggregateSummary();
+	testAggregatePromoteRunsAllDomains();
+	testAggregateGenerateDoesNotRequireBuiltSettingsShell();
 	testLegacyCliDomainAliasesAreRejected();
 	testDisableStagedPrepublishScript();
 	testWriteStagedPackageIgnoreFileIgnoresLinkedRootDirectories();
@@ -55,6 +59,105 @@ function testManifestCliGeneratesStagedPackageOutputs(): void {
 			)['extension.displayName'],
 			'Fixture Git UI',
 		);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testAggregateSyncSkipsWebviewsWhenSettingsShellIsMissing(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-i18n-cli-'));
+	try {
+		writeMinimalManifest(rootDir);
+
+		const logs = captureConsoleLog(() => execute(['sync', '--root', rootDir]));
+
+		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'package.zh-cn.json')), true);
+		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'formatter.zh-cn.json')), true);
+		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'quickpicks.zh-cn.json')), true);
+		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'webviews.zh-cn.json')), false);
+		assert.equal(
+			logs.some(log => log.includes('Skipped webview i18n sync')),
+			true,
+		);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testAggregateReportWritesDomainReportsAndAggregateSummary(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-i18n-cli-'));
+	try {
+		writeMinimalManifest(rootDir);
+		writeSettingsShell(rootDir);
+
+		const logs = captureConsoleLog(() =>
+			execute(['report', '--root', rootDir, '--write', 'aggregate-pending.json']),
+		);
+		const report = JSON.parse(logs.at(-1) ?? '{}') as {
+			readonly reports?: ReadonlyArray<{ readonly domain?: string; readonly skipped?: boolean }>;
+		};
+
+		assert.deepEqual(report.reports?.map(entry => entry.domain).sort(), [
+			'formatter',
+			'manifest',
+			'quickpicks',
+			'webviews',
+		]);
+		assert.equal(
+			report.reports?.some(entry => entry.skipped),
+			false,
+		);
+		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'reports', 'aggregate-pending.json')), true);
+		for (const name of [
+			'package-pending.json',
+			'formatter-pending.json',
+			'quickpicks-pending.json',
+			'webviews-pending.json',
+		]) {
+			assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'reports', name)), true);
+		}
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testAggregatePromoteRunsAllDomains(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-i18n-cli-'));
+	try {
+		const logs = captureConsoleLog(() => execute(['promote', '--root', rootDir]));
+
+		assert.equal(
+			logs.some(log => log.includes('Promoted package manifest translations')),
+			true,
+		);
+		assert.equal(
+			logs.some(log => log.includes('Promoted formatter runtime dynamic translations')),
+			true,
+		);
+		assert.equal(
+			logs.some(log => log.includes('Promoted quickpicks runtime dynamic translations')),
+			true,
+		);
+		assert.equal(
+			logs.some(log => log.includes('Promoted webview translations')),
+			true,
+		);
+		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'authority', 'zh-cn', 'messages.json')), true);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testAggregateGenerateDoesNotRequireBuiltSettingsShell(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-i18n-cli-'));
+	try {
+		execute(['generate', '--root', rootDir]);
+
+		assert.equal(
+			fs.existsSync(path.join(rootDir, '.work', 'i18n', 'runtime-dynamic-sources', 'zh-cn', 'formatter')),
+			false,
+		);
+		assert.equal(fs.existsSync(path.join(rootDir, 'dist', 'webviews', 'settings.html')), false);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}
@@ -118,6 +221,46 @@ function testDisableStagedPrepublishScript(): void {
 		assert.equal(disableStagedPrepublishScript(packageJsonFile), false);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function writeMinimalManifest(rootDir: string): void {
+	fs.writeFileSync(
+		path.join(rootDir, 'package.json'),
+		JSON.stringify(
+			{
+				name: 'fixture',
+				displayName: 'Fixture Git UI',
+				description: 'Review Git history quickly',
+			},
+			undefined,
+			'\t',
+		),
+		'utf8',
+	);
+}
+
+function writeSettingsShell(rootDir: string): void {
+	const directory = path.join(rootDir, 'dist', 'webviews');
+	fs.mkdirSync(directory, { recursive: true });
+	fs.writeFileSync(
+		path.join(directory, 'settings.html'),
+		['<!doctype html>', '<html lang="en">', '<body>', '<h1>Settings</h1>', '</body>', '</html>', ''].join('\n'),
+		'utf8',
+	);
+}
+
+function captureConsoleLog(callback: () => void): string[] {
+	const original = console.log;
+	const logs: string[] = [];
+	try {
+		console.log = (...data: unknown[]): void => {
+			logs.push(data.map(value => String(value)).join(' '));
+		};
+		callback();
+		return logs;
+	} finally {
+		console.log = original;
 	}
 }
 
