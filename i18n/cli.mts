@@ -20,7 +20,7 @@ import {
 	syncRuntimeDynamicI18n,
 	writeWorkflowReadme as writeRuntimeDynamicWorkflowReadme,
 } from './domains/runtimeDynamic/workflow.mts';
-import { parseRuntimeDynamicDomain } from './domains/runtimeDynamic/context.mts';
+import type { RuntimeDynamicDomain } from './domains/runtimeDynamic/context.mts';
 import {
 	createPendingReport as createWebviewPendingReport,
 	ensureControlledWebviewFiles,
@@ -32,8 +32,6 @@ import {
 	writeWorkflowReadme as writeWebviewsWorkflowReadme,
 } from './domains/webviews/workflow.mts';
 import { execute as executeAuthorityMessagesReview } from './authority/messagesReview.mts';
-
-type RuntimeDynamicCommandDomain = 'formatter' | 'quickpicks';
 
 const args = process.argv.slice(2);
 
@@ -53,20 +51,14 @@ export function execute(args: readonly string[]): void {
 
 	switch (domain) {
 		case 'manifest':
-		case 'package':
 			runManifest(action, rest);
 			break;
 		case 'webviews':
-		case 'webview':
 			runWebviews(action, rest);
-			break;
-		case 'runtime':
-		case 'runtime-dynamic':
-			runRuntimeDynamic(action, rest);
 			break;
 		case 'formatter':
 		case 'quickpicks':
-			runRuntimeDynamic(action, ['--domain', domain, ...rest]);
+			runRuntimeDynamic(action, domain, rest);
 			break;
 		case 'authority':
 			runAuthority(action, rest);
@@ -189,8 +181,11 @@ function runWebviews(action: string | undefined, args: readonly string[]): void 
 	}
 }
 
-function runRuntimeDynamic(action: string | undefined, args: readonly string[]): void {
-	const runtimeDomain = parseRuntimeDynamicDomain(readOption(args, '--domain')) as RuntimeDynamicCommandDomain;
+function runRuntimeDynamic(
+	action: string | undefined,
+	runtimeDomain: RuntimeDynamicDomain,
+	args: readonly string[],
+): void {
 	const context = ensureRuntimeDynamicDomainFiles({
 		rootDir: readOption(args, '--root'),
 		domain: runtimeDomain,
@@ -329,7 +324,7 @@ function printUsageAndExit(message: string): never {
 			'Usage:',
 			'  node ./i18n/cli.mts manifest sync|generate|promote|report|package [--root <path>] [--out-root <path>] [-- <vsce args>]',
 			'  node ./i18n/cli.mts webviews sync|generate|promote|report [--root <path>]',
-			'  node ./i18n/cli.mts runtime sync|generate|promote|report --domain formatter|quickpicks [--root <path>]',
+			'  node ./i18n/cli.mts formatter|quickpicks sync|generate|promote|report [--root <path>]',
 			'  node ./i18n/cli.mts authority review next|approve|unapprove|stats [...]',
 		].join('\n'),
 	);

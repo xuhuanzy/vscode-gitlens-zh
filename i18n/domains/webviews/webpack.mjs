@@ -130,7 +130,9 @@ export class GenerateLocalizedDynamicSourcesPlugin {
 			const result = spawnSync(
 				process.execPath,
 				[
-					path.join(this.rootDir, 'i18n', 'domains', 'webviews', 'generateWebviewNls.mts'),
+					path.join(this.rootDir, 'i18n', 'cli.mts'),
+					'webviews',
+					'generate',
 					'--root',
 					this.rootDir,
 					'--dynamic-sources-only',
@@ -191,7 +193,11 @@ export class GenerateLocalizedSettingsShellPlugin {
 			const result = spawnSync(
 				process.execPath,
 				[
-					path.join(this.rootDir, 'i18n', 'domains', 'webviews', 'generateWebviewNls.mts'),
+					path.join(this.rootDir, 'i18n', 'cli.mts'),
+					'webviews',
+					'generate',
+					'--root',
+					this.rootDir,
 					'--settings-shell-only',
 				],
 				{

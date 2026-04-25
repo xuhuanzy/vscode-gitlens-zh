@@ -127,11 +127,11 @@ if (build?.includes('unit-tests')) {
 }
 
 if (shouldBuildLocalizedWebviews) {
-	const generateWebviewNlsCmd = `node ./i18n/cli.mts webviews generate --dynamic-sources-only`;
-	console.log(`Running: ${generateWebviewNlsCmd}`);
+	const generateLocalizedWebviewsCmd = `node ./i18n/cli.mts webviews generate --dynamic-sources-only`;
+	console.log(`Running: ${generateLocalizedWebviewsCmd}`);
 
 	const webviewNlsCode = await new Promise(resolve => {
-		const webviewNls = spawn(generateWebviewNlsCmd, [], {
+		const webviewNls = spawn(generateLocalizedWebviewsCmd, [], {
 			shell: true,
 			stdio: 'inherit',
 			env: env,

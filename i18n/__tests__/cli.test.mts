@@ -9,6 +9,7 @@ run();
 
 function run(): void {
 	testManifestCliGeneratesStagedPackageOutputs();
+	testLegacyCliDomainAliasesAreRejected();
 	testDisableStagedPrepublishScript();
 	testWriteStagedPackageIgnoreFileIgnoresLinkedRootDirectories();
 }
@@ -56,6 +57,12 @@ function testManifestCliGeneratesStagedPackageOutputs(): void {
 		);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testLegacyCliDomainAliasesAreRejected(): void {
+	for (const domain of ['package', 'webview', 'runtime', 'runtime-dynamic']) {
+		assertProcessExit(() => execute([domain, 'generate']));
 	}
 }
 
@@ -111,5 +118,21 @@ function testDisableStagedPrepublishScript(): void {
 		assert.equal(disableStagedPrepublishScript(packageJsonFile), false);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function assertProcessExit(callback: () => void): void {
+	const originalExit = process.exit;
+	const originalConsoleError = console.error;
+	try {
+		process.exit = ((code?: string | number | null | undefined): never => {
+			throw new Error(`process.exit:${code ?? 0}`);
+		}) as typeof process.exit;
+		console.error = (): void => undefined;
+
+		assert.throws(callback, /process\.exit:1/u);
+	} finally {
+		process.exit = originalExit;
+		console.error = originalConsoleError;
 	}
 }

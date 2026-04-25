@@ -3,7 +3,7 @@
 	"version": 3,
 	"domain": "webviews",
 	"generatedAt": "2026-04-24T20:03:10.344Z",
-	"deferredDomains": ["quickpicks", "formatter", "runtimeCensus"],
+	"deferredDomains": ["quickpicks", "formatter"],
 	"occurrences": [
 		{
 			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-117-12.text.25e4b43997#text",

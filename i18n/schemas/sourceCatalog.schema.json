@@ -3,15 +3,15 @@
 	"title": "Source Catalog",
 	"type": "object",
 	"additionalProperties": false,
-	"required": ["$schema", "version", "domain", "generatedAt", "deferredDomains", "occurrences", "reconciliation"],
+	"required": ["$schema", "version", "domain", "generatedAt", "deferredDomains", "occurrences"],
 	"properties": {
 		"$schema": { "type": "string" },
 		"version": { "const": 3 },
-		"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "runtimeCensus"] },
+		"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter"] },
 		"generatedAt": { "type": "string", "format": "date-time" },
 		"deferredDomains": {
 			"type": "array",
-			"items": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "runtimeCensus"] }
+			"items": { "enum": ["manifest", "webviews", "quickpicks", "formatter"] }
 		},
 		"occurrences": {
 			"type": "array",
@@ -101,7 +101,7 @@
 			],
 			"properties": {
 				"id": { "type": "string" },
-				"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "runtimeCensus"] },
+				"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter"] },
 				"scope": { "type": "string" },
 				"anchor": { "type": "string" },
 				"slot": { "type": "string" },

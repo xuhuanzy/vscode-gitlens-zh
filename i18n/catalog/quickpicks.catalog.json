@@ -3,7 +3,7 @@
 	"version": 3,
 	"domain": "quickpicks",
 	"generatedAt": "2026-04-24T19:32:41.733Z",
-	"deferredDomains": ["formatter", "runtimeCensus"],
+	"deferredDomains": ["formatter"],
 	"occurrences": [
 		{
 			"id": "quickpicks:quickpicks.items.items.string-162-9.label.988c82f963#label",

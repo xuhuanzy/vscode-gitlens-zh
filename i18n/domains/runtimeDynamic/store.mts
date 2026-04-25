@@ -20,7 +20,7 @@ import {
 import type { I18nDomain, ReconciliationReportFile } from '../../core/model.mts';
 
 export function loadRuntimeDynamicCatalog(context: RuntimeDynamicDomainContext) {
-	return loadCatalog(context, createEmptyRuntimeDynamicCatalogFile(context));
+	return loadCatalog(context);
 }
 
 export function saveRuntimeDynamicCatalog(
@@ -31,7 +31,7 @@ export function saveRuntimeDynamicCatalog(
 }
 
 export function loadRuntimeDynamicReconciliationReport(context: RuntimeDynamicDomainContext): ReconciliationReportFile {
-	return readJsonFile(context.reconciliationReportFile, createEmptyRuntimeDynamicReconciliationReportFile(context));
+	return readJsonFile<ReconciliationReportFile>(context.reconciliationReportFile);
 }
 
 export function saveRuntimeDynamicReconciliationReport(
@@ -42,7 +42,7 @@ export function saveRuntimeDynamicReconciliationReport(
 }
 
 export function loadRuntimeDynamicWorkset(context: RuntimeDynamicDomainContext) {
-	return loadWorkset(context, createEmptyRuntimeDynamicWorksetFile(context));
+	return loadWorkset(context);
 }
 
 export function saveRuntimeDynamicWorkset(
@@ -110,5 +110,5 @@ export function createEmptyRuntimeDynamicWorksetFile(context: RuntimeDynamicDoma
 }
 
 function getDeferredDomains(domain: RuntimeDynamicDomainContext['domain']): I18nDomain[] {
-	return domain === 'formatter' ? ['quickpicks', 'runtimeCensus'] : ['formatter', 'runtimeCensus'];
+	return domain === 'formatter' ? ['quickpicks'] : ['formatter'];
 }

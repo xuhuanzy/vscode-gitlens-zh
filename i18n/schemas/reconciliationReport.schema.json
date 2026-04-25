@@ -7,7 +7,7 @@
 	"properties": {
 		"$schema": { "type": "string" },
 		"version": { "const": 1 },
-		"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "runtimeCensus"] },
+		"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter"] },
 		"generatedAt": { "type": "string", "format": "date-time" },
 		"entries": {
 			"type": "array",

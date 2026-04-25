@@ -8,6 +8,7 @@ import {
 	loadCatalog,
 	loadWorkset,
 	readJsonFile,
+	readJsonFileIfMissing,
 	saveAuthorityBundle,
 	saveCatalog,
 	savePendingReport,
@@ -17,11 +18,11 @@ import {
 import type { ReconciliationReportFile } from '../../core/model.mts';
 
 export function loadManifest(context: ManifestDomainContext): Record<string, unknown> {
-	return readJsonFile<Record<string, unknown>>(context.manifestFile, {});
+	return readJsonFile<Record<string, unknown>>(context.manifestFile);
 }
 
 export function loadGeneratedManifest(context: ManifestDomainContext): Record<string, unknown> {
-	return readJsonFile<Record<string, unknown>>(context.generatedManifestFile, {});
+	return readJsonFile<Record<string, unknown>>(context.generatedManifestFile);
 }
 
 export function saveGeneratedManifest(context: ManifestDomainContext, manifest: Record<string, unknown>): void {
@@ -29,7 +30,7 @@ export function saveGeneratedManifest(context: ManifestDomainContext, manifest: 
 }
 
 export function loadEnglishPackageNls(context: ManifestDomainContext): Record<string, string> {
-	return readJsonFile<Record<string, string>>(context.englishPackageNlsFile, {});
+	return readJsonFileIfMissing<Record<string, string>>(context.englishPackageNlsFile, {});
 }
 
 export function saveEnglishPackageNls(context: ManifestDomainContext, values: Record<string, string>): void {
@@ -37,7 +38,7 @@ export function saveEnglishPackageNls(context: ManifestDomainContext, values: Re
 }
 
 export function loadLocalizedPackageNls(context: ManifestDomainContext): Record<string, string> {
-	return readJsonFile<Record<string, string>>(context.localizedPackageNlsFile, {});
+	return readJsonFile<Record<string, string>>(context.localizedPackageNlsFile);
 }
 
 export function saveLocalizedPackageNls(context: ManifestDomainContext, values: Record<string, string>): void {
@@ -45,7 +46,7 @@ export function saveLocalizedPackageNls(context: ManifestDomainContext, values: 
 }
 
 export function loadManifestCatalog(context: ManifestDomainContext) {
-	return loadCatalog(context, createEmptyManifestCatalogFile());
+	return loadCatalog(context);
 }
 
 export function saveManifestCatalog(
@@ -56,7 +57,7 @@ export function saveManifestCatalog(
 }
 
 export function loadManifestReconciliationReport(context: ManifestDomainContext): ReconciliationReportFile {
-	return readJsonFile(context.reconciliationReportFile, createEmptyManifestReconciliationReportFile());
+	return readJsonFile<ReconciliationReportFile>(context.reconciliationReportFile);
 }
 
 export function saveManifestReconciliationReport(
@@ -67,7 +68,7 @@ export function saveManifestReconciliationReport(
 }
 
 export function loadManifestWorkset(context: ManifestDomainContext) {
-	return loadWorkset(context, createEmptyManifestWorksetFile());
+	return loadWorkset(context);
 }
 
 export function saveManifestWorkset(
@@ -83,7 +84,7 @@ export function createEmptyManifestCatalogFile() {
 	return createEmptyCatalogFile({
 		schemaPath: '../schemas/sourceCatalog.schema.json',
 		domain: 'manifest',
-		deferredDomains: ['webviews', 'quickpicks', 'formatter', 'runtimeCensus'],
+		deferredDomains: ['webviews', 'quickpicks', 'formatter'],
 	});
 }
 

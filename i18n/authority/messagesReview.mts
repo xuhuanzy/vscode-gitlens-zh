@@ -4,7 +4,7 @@ import { pathToFileURL } from 'node:url';
 
 import type { AuthorityMessageEntry } from '../core/model.mts';
 import { createContentHash, nowIso, stableStringify } from '../core/model.mts';
-import { createEmptyAuthorityFile, readJsonFile, writeJsonFile } from '../core/store.mts';
+import { readJsonFile, readJsonFileIfMissing, writeJsonFile } from '../core/store.mts';
 
 type ReviewDecision = 'approved';
 
@@ -231,11 +231,11 @@ function createStatsOutput(args: readonly string[]): ReviewStatsOutput {
 }
 
 function loadMessages(filePath: string): AuthorityMessagesFile {
-	return readJsonFile(filePath, createEmptyAuthorityFile('messages', defaultLocale)) as AuthorityMessagesFile;
+	return readJsonFile<AuthorityMessagesFile>(filePath);
 }
 
 function loadState(filePath: string, locale: string): ReviewStateFile {
-	return readJsonFile(filePath, createEmptyReviewState(filePath, locale));
+	return readJsonFileIfMissing(filePath, createEmptyReviewState(filePath, locale));
 }
 
 function createEmptyReviewState(filePath: string, locale: string): ReviewStateFile {

@@ -21,6 +21,24 @@ The branch localization workflow SHALL NOT rely on `contributions.json`, `genera
 - **THEN** it reads the root upstream-owned package manifest
 - **AND** it does not read tokenized staged manifest output as the source for `contributions.json`
 
+## ADDED Requirements
+
+### Requirement: Branch localization commands are exposed through a dedicated i18n CLI
+
+The branch localization workflow SHALL expose i18n sync, report, promote, generate, test, and review operations through a dedicated CLI entry point under `./i18n`, rather than through branch-local scripts in root `package.json`.
+
+#### Scenario: Maintainer runs manifest i18n workflow
+
+- **WHEN** a maintainer needs to sync, report, promote, or generate manifest localization data
+- **THEN** they invoke the dedicated i18n CLI
+- **AND** root `package.json` does not need branch-local i18n script entries for that operation
+
+#### Scenario: Build tooling needs i18n generation
+
+- **WHEN** build tooling needs to generate localized webview, runtime dynamic, or manifest artifacts
+- **THEN** it calls the dedicated i18n CLI or the underlying i18n script directly
+- **AND** it does not depend on i18n script aliases in root `package.json`
+
 ### Requirement: Branch localization workflow guards generated manifest boundaries
 
 The branch localization workflow SHALL provide guardrails so generated localized package manifest artifacts cannot be mistaken for upstream package sources, contribution extraction inputs, or valid hand-edited translation sources.
@@ -42,21 +60,3 @@ The branch localization workflow SHALL provide guardrails so generated localized
 - **WHEN** manifest localization generation runs
 - **THEN** validation detects any mutation to root `package.json` or `contributions.json`
 - **AND** rejects the run until generation is constrained to the staging output
-
-## ADDED Requirements
-
-### Requirement: Branch localization commands are exposed through a dedicated i18n CLI
-
-The branch localization workflow SHALL expose i18n sync, report, promote, generate, test, and review operations through a dedicated CLI entry point under `./i18n`, rather than through branch-local scripts in root `package.json`.
-
-#### Scenario: Maintainer runs manifest i18n workflow
-
-- **WHEN** a maintainer needs to sync, report, promote, or generate manifest localization data
-- **THEN** they invoke the dedicated i18n CLI
-- **AND** root `package.json` does not need branch-local i18n script entries for that operation
-
-#### Scenario: Build tooling needs i18n generation
-
-- **WHEN** build tooling needs to generate localized webview, runtime dynamic, or manifest artifacts
-- **THEN** it calls the dedicated i18n CLI or the underlying i18n script directly
-- **AND** it does not depend on i18n script aliases in root `package.json`

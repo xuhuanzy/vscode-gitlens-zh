@@ -3,7 +3,7 @@
 	"version": 3,
 	"domain": "formatter",
 	"generatedAt": "2026-04-24T19:32:41.479Z",
-	"deferredDomains": ["quickpicks", "runtimeCensus"],
+	"deferredDomains": ["quickpicks"],
 	"occurrences": [
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.html-title-788-17.html-title.a3b3efa810#html-title",

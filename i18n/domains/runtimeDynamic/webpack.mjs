@@ -58,11 +58,11 @@ export class GenerateLocalizedRuntimeDynamicSourcesPlugin {
 			const result = spawnSync(
 				process.execPath,
 				[
-					path.join(this.rootDir, 'i18n', 'domains', 'runtimeDynamic', 'generateRuntimeDynamicNls.mts'),
+					path.join(this.rootDir, 'i18n', 'cli.mts'),
+					domain,
+					'generate',
 					'--root',
 					this.rootDir,
-					'--domain',
-					domain,
 					'--dynamic-sources-only',
 				],
 				{

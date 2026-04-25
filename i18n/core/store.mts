@@ -48,16 +48,16 @@ export function ensureDomainFiles(
 	writeJsonIfMissing(context.worksetFile, options.workset);
 }
 
-export function loadCatalog(context: DomainContext, fallback: SourceCatalogFile): SourceCatalogFile {
-	return readJsonFile<SourceCatalogFile>(context.catalogFile, fallback);
+export function loadCatalog(context: DomainContext): SourceCatalogFile {
+	return readJsonFile<SourceCatalogFile>(context.catalogFile);
 }
 
 export function saveCatalog(context: DomainContext, catalog: SourceCatalogFile): void {
 	writeJsonFile(context.catalogFile, catalog);
 }
 
-export function loadWorkset(context: DomainContext, fallback: TranslationWorksetFile): TranslationWorksetFile {
-	return readJsonFile<TranslationWorksetFile>(context.worksetFile, fallback);
+export function loadWorkset(context: DomainContext): TranslationWorksetFile {
+	return readJsonFile<TranslationWorksetFile>(context.worksetFile);
 }
 
 export function saveWorkset(context: DomainContext, workset: TranslationWorksetFile): void {
@@ -66,10 +66,10 @@ export function saveWorkset(context: DomainContext, workset: TranslationWorksetF
 
 export function loadAuthorityBundle(context: I18nWorkspaceContext): AuthorityBundle {
 	return {
-		messages: readJsonFile(context.authorityMessagesFile, createEmptyAuthorityFile('messages', context.locale)),
-		terms: readJsonFile(context.authorityTermsFile, createEmptyAuthorityFile('terms', context.locale)),
-		aliases: readJsonFile(context.authorityAliasesFile, createEmptyAuthorityFile('aliases', context.locale)),
-		overrides: readJsonFile(context.authorityOverridesFile, createEmptyAuthorityFile('overrides', context.locale)),
+		messages: readJsonFile<AuthorityBundle['messages']>(context.authorityMessagesFile),
+		terms: readJsonFile<AuthorityBundle['terms']>(context.authorityTermsFile),
+		aliases: readJsonFile<AuthorityBundle['aliases']>(context.authorityAliasesFile),
+		overrides: readJsonFile<AuthorityBundle['overrides']>(context.authorityOverridesFile),
 	};
 }
 
@@ -150,11 +150,16 @@ export function createEmptyAuthorityFile<TKind extends AuthorityEntryKind>(
 	};
 }
 
-export function readJsonFile<T>(filePath: string, fallback: T): T {
+export function readJsonFile<T>(filePath: string): T {
+	return JSON.parse(fs.readFileSync(filePath, 'utf8')) as T;
+}
+
+export function readJsonFileIfMissing<T>(filePath: string, initialValue: T): T {
 	try {
-		return JSON.parse(fs.readFileSync(filePath, 'utf8')) as T;
-	} catch {
-		return fallback;
+		return readJsonFile<T>(filePath);
+	} catch (ex) {
+		if (isFileNotFoundError(ex)) return initialValue;
+		throw ex;
 	}
 }
 
@@ -186,4 +191,13 @@ export function resolveReportOutputFile(context: DomainContext, name: string): s
 	}
 
 	return path.join(context.reportDir, name);
+}
+
+function isFileNotFoundError(ex: unknown): boolean {
+	return (
+		typeof ex === 'object' &&
+		ex != null &&
+		'code' in ex &&
+		(ex as { readonly code?: unknown }).code === 'ENOENT'
+	);
 }

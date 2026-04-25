@@ -20,7 +20,7 @@ import {
 import type { ReconciliationReportFile } from '../../core/model.mts';
 
 export function loadWebviewsCatalog(context: WebviewsDomainContext) {
-	return loadCatalog(context, createEmptyWebviewsCatalogFile());
+	return loadCatalog(context);
 }
 
 export function saveWebviewsCatalog(
@@ -31,7 +31,7 @@ export function saveWebviewsCatalog(
 }
 
 export function loadWebviewsReconciliationReport(context: WebviewsDomainContext): ReconciliationReportFile {
-	return readJsonFile(context.reconciliationReportFile, createEmptyWebviewsReconciliationReportFile());
+	return readJsonFile<ReconciliationReportFile>(context.reconciliationReportFile);
 }
 
 export function saveWebviewsReconciliationReport(
@@ -42,7 +42,7 @@ export function saveWebviewsReconciliationReport(
 }
 
 export function loadWebviewsWorkset(context: WebviewsDomainContext) {
-	return loadWorkset(context, createEmptyWebviewsWorksetFile());
+	return loadWorkset(context);
 }
 
 export function saveWebviewsWorkset(
@@ -99,13 +99,13 @@ export function deleteLocalizedDynamicSource(context: WebviewsDomainContext, rel
 	} catch {}
 }
 
-export { loadAuthorityBundle, readJsonFile, saveAuthorityBundle, savePendingReport };
+export { loadAuthorityBundle, saveAuthorityBundle, savePendingReport };
 
 export function createEmptyWebviewsCatalogFile() {
 	return createEmptyCatalogFile({
 		schemaPath: '../schemas/sourceCatalog.schema.json',
 		domain: 'webviews',
-		deferredDomains: ['quickpicks', 'formatter', 'runtimeCensus'],
+		deferredDomains: ['quickpicks', 'formatter'],
 	});
 }
 
