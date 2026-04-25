@@ -820,7 +820,8 @@ function localizeJsxAttribute(
 	availableSourceTexts: ReadonlySet<string>,
 	resolvedBySourceText: ReadonlyMap<string, ResolvedTranslation>,
 ): { readonly value?: string; readonly translatedCount: number; readonly unresolvedCount: number } {
-	if (!isTranslatableAttribute(node.name.text, getJsxElementTagName(node))) {
+	const attributeName = getJsxAttributeName(node.name);
+	if (attributeName == null || !isTranslatableAttribute(attributeName, getJsxElementTagName(node))) {
 		return {
 			translatedCount: 0,
 			unresolvedCount: 0,
@@ -1014,7 +1015,7 @@ function hasRenderedJsxExpressionAncestor(node: ts.Node): boolean {
 }
 
 function isImperativeDisplayPropertyValue(parent: ts.Node | undefined): boolean {
-	if (!ts.isPropertyAssignment(parent)) return false;
+	if (parent == null || !ts.isPropertyAssignment(parent)) return false;
 
 	const propertyName = getPropertyName(parent.name);
 	return (
@@ -1180,7 +1181,7 @@ function collectVariableUsageDisplayContexts(
 }
 
 function getVariableUsageScope(node: ts.VariableDeclaration): ts.Node | undefined {
-	for (let current = node.parent; current != null; current = current.parent) {
+	for (let current: ts.Node | undefined = node.parent; current != null; current = current.parent) {
 		if (
 			ts.isBlock(current) ||
 			ts.isCaseClause(current) ||
@@ -1262,7 +1263,8 @@ function identifierFlowsToDisplay(node: ts.Identifier): boolean {
 		}
 
 		if (ts.isJsxAttribute(parent)) {
-			return isTranslatableAttribute(parent.name.text, getJsxElementTagName(parent));
+			const attributeName = getJsxAttributeName(parent.name);
+			return attributeName != null && isTranslatableAttribute(attributeName, getJsxElementTagName(parent));
 		}
 
 		if (
@@ -1328,7 +1330,8 @@ function templateSpanDisplayContext(span: ts.TemplateSpan, sourceFile: ts.Source
 function jsxExpressionDisplayContext(node: ts.JsxExpression): boolean {
 	const parent = node.parent;
 	if (ts.isJsxAttribute(parent)) {
-		return isTranslatableAttribute(parent.name.text, getJsxElementTagName(parent));
+		const attributeName = getJsxAttributeName(parent.name);
+		return attributeName != null && isTranslatableAttribute(attributeName, getJsxElementTagName(parent));
 	}
 
 	return !ts.isJsxAttribute(parent);
@@ -1416,6 +1419,12 @@ function getJsxElementTagName(node: ts.JsxAttribute): string | undefined {
 	if (ts.isJsxOpeningElement(element) || ts.isJsxSelfClosingElement(element)) {
 		return element.tagName.getText().toLowerCase();
 	}
+
+	return undefined;
+}
+
+function getJsxAttributeName(name: ts.JsxAttributeName): string | undefined {
+	if (ts.isIdentifier(name)) return name.text;
 
 	return undefined;
 }

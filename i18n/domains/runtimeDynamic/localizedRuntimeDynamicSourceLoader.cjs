@@ -3,6 +3,11 @@ const path = require('path');
 
 const runtimeDynamicDomains = ['formatter', 'quickpicks'];
 
+/**
+ * @this {import('webpack').LoaderContext<{ readonly rootDir: string; readonly locale: string }>}
+ * @param {string} source
+ * @returns {void}
+ */
 module.exports = function localizedRuntimeDynamicSourceLoader(source) {
 	const callback = this.async();
 	const options = this.getOptions();

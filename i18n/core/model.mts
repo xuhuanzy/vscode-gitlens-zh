@@ -437,37 +437,6 @@ export function toTranslationPattern(record: WorksetMessageRecord): MessagePatte
 	}
 }
 
-export function toSourcePattern(record: WorksetMessageRecord): MessagePattern {
-	switch (record.kind) {
-		case 'literal':
-			return {
-				kind: record.kind,
-				text: record.source,
-			};
-		case 'template':
-			return {
-				kind: record.kind,
-				text: record.source,
-				slots: [...record.slots],
-			};
-		case 'rich':
-			return {
-				kind: record.kind,
-				text: record.source,
-				format: record.format,
-				slots: [...record.slots],
-			};
-		case 'plural':
-		case 'select':
-			return {
-				kind: record.kind,
-				text: record.source,
-				selector: record.selector,
-				cases: Object.fromEntries(Object.entries(record.cases).map(([key, value]) => [key, value.source])),
-			};
-	}
-}
-
 export function createPatternFingerprint(pattern: MessagePattern): string {
 	return createContentHash(stableStringify(toCanonicalPattern(pattern)));
 }
@@ -564,10 +533,6 @@ export function cloneSourceReference<TReference extends SourceReference | undefi
 export function cloneOutputReference<TOutput extends OutputReference | undefined>(output: TOutput): TOutput {
 	if (output == null) return output;
 	return JSON.parse(JSON.stringify(output)) as TOutput;
-}
-
-export function getTranslationText(record: WorksetMessageRecord): string | null {
-	return record.translation;
 }
 
 function dedupe(values: readonly string[]): string[] {

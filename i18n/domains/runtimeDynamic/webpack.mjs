@@ -4,6 +4,7 @@ import path from 'path';
 const runtimeDynamicDomains = ['formatter', 'quickpicks'];
 
 export class GenerateLocalizedRuntimeDynamicSourcesPlugin {
+	/** @type {Promise<void> | undefined} */
 	static _generationPromise;
 	pluginName = 'GenerateLocalizedRuntimeDynamicSourcesPlugin';
 

@@ -14,7 +14,6 @@ export function createWebviewsDomainContext(rootDir?: string): {
 	readonly catalogDir: string;
 	readonly worksetDir: string;
 	readonly reportDir: string;
-	readonly workflowDocFile: string;
 	readonly authorityMessagesFile: string;
 	readonly authorityTermsFile: string;
 	readonly authorityAliasesFile: string;
@@ -38,6 +37,8 @@ export function createWebviewsDomainContext(rootDir?: string): {
 
 	return {
 		...domain,
+		domain: 'webviews',
+		artifactId: 'webviews',
 		settingsBuildFile: path.join(domain.rootDir, 'dist', 'webviews', 'settings.html'),
 		localizedDynamicSourceDir: localizedDynamicSourceDir,
 	};

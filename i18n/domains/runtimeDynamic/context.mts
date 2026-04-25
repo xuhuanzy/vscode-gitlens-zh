@@ -35,9 +35,3 @@ export function createRuntimeDynamicDomainContext(
 		),
 	};
 }
-
-export function parseRuntimeDynamicDomain(value: string | undefined): RuntimeDynamicDomain {
-	if (value === 'formatter' || value === 'quickpicks') return value;
-
-	throw new Error(`Expected --domain to be 'formatter' or 'quickpicks', got '${value ?? ''}'`);
-}

@@ -13,7 +13,6 @@ export interface I18nWorkspaceContext {
 	readonly catalogDir: string;
 	readonly worksetDir: string;
 	readonly reportDir: string;
-	readonly workflowDocFile: string;
 	readonly authorityMessagesFile: string;
 	readonly authorityTermsFile: string;
 	readonly authorityAliasesFile: string;
@@ -52,7 +51,6 @@ export function createI18nWorkspaceContext(
 		catalogDir: catalogDir,
 		worksetDir: worksetDir,
 		reportDir: reportDir,
-		workflowDocFile: path.join(i18nDir, 'README.md'),
 		authorityMessagesFile: path.join(authorityLocaleDir, 'messages.json'),
 		authorityTermsFile: path.join(authorityLocaleDir, 'terms.json'),
 		authorityAliasesFile: path.join(authorityLocaleDir, 'aliases.json'),

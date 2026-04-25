@@ -33,6 +33,13 @@ interface ReviewStatsResponse {
 	};
 }
 
+interface ReviewStateFile {
+	readonly entries: Array<{
+		readonly decision: 'approved';
+		readonly note?: string;
+	}>;
+}
+
 interface FixtureMessagesFile {
 	entries: Array<
 		| {
@@ -107,7 +114,7 @@ function testApprovePersistsFingerprintBasedReviewState(): void {
 			['message.c'],
 		);
 
-		const state = readJson(path.join(fixture.localeDir, 'messages.review-state.json'));
+		const state = readJson<ReviewStateFile>(path.join(fixture.localeDir, 'messages.review-state.json'));
 		assert.equal(state.entries.length, 2);
 		assert.equal(state.entries[0].decision, 'approved');
 		assert.equal(state.entries[0].note, 'checked');
@@ -123,7 +130,7 @@ function testChangedMessageBecomesUnreviewedAgain(): void {
 
 		const messagesFile = path.join(fixture.localeDir, 'messages.json');
 		const messages = readJson<FixtureMessagesFile>(messagesFile);
-		messages.entries = messages.entries.map((entry: { id: string; translation: string }) =>
+		messages.entries = messages.entries.map(entry =>
 			entry.id === 'message.a' ? { ...entry, translation: '已变更译文' } : entry,
 		);
 		fs.writeFileSync(messagesFile, `${JSON.stringify(messages, undefined, '\t')}\n`, 'utf8');
@@ -150,7 +157,7 @@ function testUnapproveRemovesRequestedAndStaleEntries(): void {
 
 		const messagesFile = path.join(fixture.localeDir, 'messages.json');
 		const messages = readJson<FixtureMessagesFile>(messagesFile);
-		messages.entries = messages.entries.map((entry: { id: string; translation: string }) =>
+		messages.entries = messages.entries.map(entry =>
 			entry.id === 'message.b' ? { ...entry, translation: '另一个变更译文' } : entry,
 		);
 		fs.writeFileSync(messagesFile, `${JSON.stringify(messages, undefined, '\t')}\n`, 'utf8');
@@ -159,7 +166,7 @@ function testUnapproveRemovesRequestedAndStaleEntries(): void {
 		assert.deepEqual(removed.removed, ['message.a', 'message.b']);
 		assert.equal(removed.counts.reviewedCurrent, 0);
 
-		const state = readJson(path.join(fixture.localeDir, 'messages.review-state.json'));
+		const state = readJson<ReviewStateFile>(path.join(fixture.localeDir, 'messages.review-state.json'));
 		assert.equal(state.entries.length, 0);
 	} finally {
 		cleanupFixture(fixture.rootDir);

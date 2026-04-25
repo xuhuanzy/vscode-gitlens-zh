@@ -2,7 +2,6 @@ import type { ManifestDomainContext } from './context.mts';
 
 import {
 	createEmptyCatalogFile,
-	createEmptyReconciliationReportFile,
 	createEmptyWorksetFile,
 	loadAuthorityBundle,
 	loadCatalog,
@@ -85,13 +84,6 @@ export function createEmptyManifestCatalogFile() {
 		schemaPath: '../schemas/sourceCatalog.schema.json',
 		domain: 'manifest',
 		deferredDomains: ['webviews', 'quickpicks', 'formatter'],
-	});
-}
-
-export function createEmptyManifestReconciliationReportFile(): ReconciliationReportFile {
-	return createEmptyReconciliationReportFile({
-		schemaPath: '../schemas/reconciliationReport.schema.json',
-		domain: 'manifest',
 	});
 }
 

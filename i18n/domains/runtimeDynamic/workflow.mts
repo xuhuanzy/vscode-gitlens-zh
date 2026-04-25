@@ -6,7 +6,6 @@ import { nowIso } from '../../core/model.mts';
 import { promoteApprovedEntries, resolveOccurrenceTranslation, syncWorkset } from '../../core/authority.mts';
 import { createReconciliationReport, reconcileCatalog } from '../../core/reconcile.mts';
 import { ensureAuthorityFiles, ensureDomainFiles } from '../../core/store.mts';
-import { writeI18nWorkflowReadme } from '../../workflowReadme.mts';
 
 import {
 	createRuntimeDynamicDomainContext,
@@ -145,6 +144,14 @@ export function createPendingReport(options: RuntimeDynamicWorkflowOptions): Pen
 		}
 	}
 
+	const sinceBase =
+		options.baseRef == null
+			? undefined
+			: diffWorksetAgainstBase(
+				context,
+				options.baseRef,
+				workset.entries.map(entry => entry.id),
+			);
 	const report: PendingReportFile = {
 		$schema: '../schemas/pendingReport.schema.json',
 		version: 1,
@@ -166,15 +173,8 @@ export function createPendingReport(options: RuntimeDynamicWorkflowOptions): Pen
 			status: entry.status,
 			occurrenceIds: entry.occurrenceIds,
 		})),
+		...(sinceBase == null ? {} : { sinceBase: sinceBase }),
 	};
-
-	if (options.baseRef != null) {
-		report.sinceBase = diffWorksetAgainstBase(
-			context,
-			options.baseRef,
-			workset.entries.map(entry => entry.id),
-		);
-	}
 
 	savePendingReport(context, context.pendingReportFile, report);
 	if (options.writeTo != null && options.writeTo !== context.pendingReportFile) {
@@ -203,10 +203,6 @@ export function ensureRuntimeDynamicDomainFiles(
 	}
 
 	return context;
-}
-
-export function writeWorkflowReadme(context: RuntimeDynamicDomainContext): void {
-	writeI18nWorkflowReadme(context.rootDir);
 }
 
 function diffWorksetAgainstBase(

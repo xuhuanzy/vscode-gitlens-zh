@@ -10,7 +10,6 @@ import {
 	generateManifestLocalizedOutputs,
 	promoteManifestAuthority,
 	syncManifestI18n,
-	writeWorkflowReadme as writeManifestWorkflowReadme,
 } from './domains/manifest/workflow.mts';
 import {
 	createPendingReport as createRuntimeDynamicPendingReport,
@@ -18,7 +17,6 @@ import {
 	generateRuntimeDynamicLocalizedOutputs,
 	promoteRuntimeDynamicAuthority,
 	syncRuntimeDynamicI18n,
-	writeWorkflowReadme as writeRuntimeDynamicWorkflowReadme,
 } from './domains/runtimeDynamic/workflow.mts';
 import type { RuntimeDynamicDomain } from './domains/runtimeDynamic/context.mts';
 import {
@@ -29,7 +27,6 @@ import {
 	generateWebviewsLocalizedSettingsShell,
 	promoteWebviewsAuthority,
 	syncWebviewsI18n,
-	writeWorkflowReadme as writeWebviewsWorkflowReadme,
 } from './domains/webviews/workflow.mts';
 import { execute as executeAuthorityMessagesReview } from './authority/messagesReview.mts';
 
@@ -72,7 +69,6 @@ function runManifest(action: string | undefined, args: readonly string[]): void 
 	switch (action) {
 		case 'sync': {
 			const result = syncManifestI18n({ rootDir: readOption(args, '--root') });
-			writeManifestWorkflowReadme(result.context);
 			console.log(
 				`Synchronized package manifest i18n: ${result.occurrenceCount} occurrences, ${result.worksetCount} workset entries`,
 			);
@@ -144,7 +140,6 @@ function runWebviews(action: string | undefined, args: readonly string[]): void 
 	switch (action) {
 		case 'sync': {
 			const result = syncWebviewsI18n({ rootDir: context.rootDir });
-			writeWebviewsWorkflowReadme(result.context);
 			console.log(
 				`Synchronized webview i18n: ${result.occurrenceCount} occurrences, ${result.worksetCount} workset entries`,
 			);
@@ -194,7 +189,6 @@ function runRuntimeDynamic(
 	switch (action) {
 		case 'sync': {
 			const result = syncRuntimeDynamicI18n({ rootDir: context.rootDir, domain: context.domain });
-			writeRuntimeDynamicWorkflowReadme(result.context);
 			console.log(
 				`Synchronized ${result.context.domain} runtime dynamic i18n: ${result.occurrenceCount} occurrences, ${result.worksetCount} workset entries`,
 			);

@@ -3,6 +3,10 @@ import fs from 'fs';
 import path from 'path';
 
 /**
+ * @typedef {string | RegExp | Array<string | RegExp> | undefined} WatchIgnored
+ */
+
+/**
  * @typedef {{ entry: string; plus?: boolean; alias?: Record<string, string> }} WebviewEntry
  * @typedef {Record<string, WebviewEntry>} WebviewEntries
  */
@@ -163,9 +167,9 @@ export class GenerateLocalizedDynamicSourcesPlugin {
 }
 
 /**
- * @param {import('webpack').WatchOptions['ignored']} ignored
+ * @param {WatchIgnored} ignored
  * @param {string[]} paths
- * @returns {import('webpack').WatchOptions['ignored']}
+ * @returns {WatchIgnored}
  */
 function addIgnoredPaths(ignored, paths) {
 	const normalizedPaths = paths.map(value => value.replaceAll('\\', '/'));

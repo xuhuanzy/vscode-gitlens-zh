@@ -638,7 +638,7 @@ function isSupportedStringLiteralSlot(
 		const supportedArgs = name == null ? undefined : uiConstructorNamesByArgument.get(name);
 		if (supportedArgs == null) return false;
 
-		return supportedArgs.has((parent.arguments ?? []).indexOf(node));
+		return supportedArgs.has(getArgumentIndex(parent.arguments, node));
 	}
 
 	return false;
@@ -736,7 +736,7 @@ function getStringLiteralSlot(
 	}
 	if (ts.isNewExpression(parent)) {
 		return `${getCallIdentifier(parent.expression) ?? 'constructor'}-argument-${
-			(parent.arguments ?? []).indexOf(node) + 1
+			getArgumentIndex(parent.arguments, node) + 1
 		}`;
 	}
 	return 'text';
@@ -920,7 +920,7 @@ function dedupeMatches(matches: readonly RuntimeDynamicMatch[]): RuntimeDynamicM
 	const seen = new Set<string>();
 	const results: RuntimeDynamicMatch[] = [];
 
-	for (const match of matches.sort((left, right) => left.start - right.start || left.end - right.end)) {
+	for (const match of [...matches].sort((left, right) => left.start - right.start || left.end - right.end)) {
 		const key = `${match.start}:${match.end}:${match.kind}`;
 		if (seen.has(key)) continue;
 
@@ -929,4 +929,8 @@ function dedupeMatches(matches: readonly RuntimeDynamicMatch[]): RuntimeDynamicM
 	}
 
 	return results;
+}
+
+function getArgumentIndex(argumentsList: ts.NodeArray<ts.Expression> | undefined, node: ts.Node): number {
+	return argumentsList?.findIndex(argument => argument === node) ?? -1;
 }

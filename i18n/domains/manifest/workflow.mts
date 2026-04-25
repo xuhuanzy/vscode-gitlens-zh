@@ -3,11 +3,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 import type { PendingReportFile } from '../../core/model.mts';
-import { nowIso, outputReferenceId, stableStringify } from '../../core/model.mts';
+import { nowIso, stableStringify } from '../../core/model.mts';
 import { promoteApprovedEntries, resolveOccurrenceTranslation, syncWorkset } from '../../core/authority.mts';
 import { createReconciliationReport, reconcileCatalog } from '../../core/reconcile.mts';
 import { ensureAuthorityFiles, ensureDomainFiles } from '../../core/store.mts';
-import { writeI18nWorkflowReadme } from '../../workflowReadme.mts';
 
 import { createManifestDomainContext, type ManifestDomainContext } from './context.mts';
 import { extractManifestOccurrences } from './extractor.mts';
@@ -17,8 +16,6 @@ import {
 	createEmptyManifestWorksetFile,
 	loadAuthorityBundle,
 	loadEnglishPackageNls,
-	loadGeneratedManifest,
-	loadLocalizedPackageNls,
 	loadManifest,
 	loadManifestCatalog,
 	loadManifestWorkset,
@@ -164,6 +161,7 @@ export function createPendingReport(options: WorkflowOptions = {}): PendingRepor
 		}
 	}
 
+	const sinceBase = options.baseRef == null ? undefined : diffWorksetAgainstBase(context, options.baseRef, workset);
 	const report: PendingReportFile = {
 		$schema: '../schemas/pendingReport.schema.json',
 		version: 1,
@@ -185,11 +183,8 @@ export function createPendingReport(options: WorkflowOptions = {}): PendingRepor
 			status: entry.status,
 			occurrenceIds: entry.occurrenceIds,
 		})),
+		...(sinceBase == null ? {} : { sinceBase: sinceBase }),
 	};
-
-	if (options.baseRef != null) {
-		report.sinceBase = diffWorksetAgainstBase(context, options.baseRef, workset);
-	}
 
 	savePendingReport(context, context.pendingReportFile, report);
 
@@ -198,10 +193,6 @@ export function createPendingReport(options: WorkflowOptions = {}): PendingRepor
 	}
 
 	return report;
-}
-
-export function writeWorkflowReadme(context: ManifestDomainContext): void {
-	writeI18nWorkflowReadme(context.rootDir);
 }
 
 export function diffWorksetAgainstBase(
@@ -248,27 +239,6 @@ export function diffWorksetAgainstBase(
 
 function normalizeGitPath(rootDir: string, filePath: string): string {
 	return filePath.slice(rootDir.length + 1).replaceAll('\\', '/');
-}
-
-export function getManifestOutputKeys(context: ManifestDomainContext): string[] {
-	const catalog = loadManifestCatalog(context);
-	return catalog.occurrences
-		.map(occurrence => occurrence.output)
-		.filter(output => output != null)
-		.map(output => outputReferenceId(output))
-		.sort((left, right) => left.localeCompare(right));
-}
-
-export function loadCurrentManifestOutputs(context: ManifestDomainContext): {
-	readonly manifest: Record<string, unknown>;
-	readonly englishPackageNls: Record<string, string>;
-	readonly localizedPackageNls: Record<string, string>;
-} {
-	return {
-		manifest: loadGeneratedManifest(context),
-		englishPackageNls: loadEnglishPackageNls(context),
-		localizedPackageNls: loadLocalizedPackageNls(context),
-	};
 }
 
 export function assertManifestIsNotTokenized(context: ManifestDomainContext): void {
