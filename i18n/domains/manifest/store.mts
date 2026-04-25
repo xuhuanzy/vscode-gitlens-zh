@@ -20,8 +20,12 @@ export function loadManifest(context: ManifestDomainContext): Record<string, unk
 	return readJsonFile<Record<string, unknown>>(context.manifestFile, {});
 }
 
-export function saveManifest(context: ManifestDomainContext, manifest: Record<string, unknown>): void {
-	writeJsonFile(context.manifestFile, manifest);
+export function loadGeneratedManifest(context: ManifestDomainContext): Record<string, unknown> {
+	return readJsonFile<Record<string, unknown>>(context.generatedManifestFile, {});
+}
+
+export function saveGeneratedManifest(context: ManifestDomainContext, manifest: Record<string, unknown>): void {
+	writeJsonFile(context.generatedManifestFile, manifest);
 }
 
 export function loadEnglishPackageNls(context: ManifestDomainContext): Record<string, string> {

@@ -29,8 +29,7 @@ const env = {
 	FORCE_COLOR: '1',
 };
 
-const shouldBuildWebviews =
-	Boolean(build?.includes('webviews')) || Boolean(webviews?.length) || build == null;
+const shouldBuildWebviews = Boolean(build?.includes('webviews')) || Boolean(webviews?.length) || build == null;
 const regularWebviews = webviews?.filter(webview => !isLocalizedDynamicWebview(webview));
 const shouldBuildLocalizedWebviews =
 	shouldBuildWebviews &&
@@ -128,7 +127,7 @@ if (build?.includes('unit-tests')) {
 }
 
 if (shouldBuildLocalizedWebviews) {
-	const generateWebviewNlsCmd = `pnpm run generate:webview-nls -- --dynamic-sources-only`;
+	const generateWebviewNlsCmd = `node ./i18n/cli.mts webviews generate --dynamic-sources-only`;
 	console.log(`Running: ${generateWebviewNlsCmd}`);
 
 	const webviewNlsCode = await new Promise(resolve => {

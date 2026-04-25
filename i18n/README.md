@@ -14,13 +14,17 @@
 - `i18n/catalog/package.catalog.json` 保留 manifest domain 的 occurrence、source reference、output reference 与对账信息
 - `i18n/worksets/package.zh-cn.json` 保留 manifest 翻译工作状态与 `occurrenceIds`
 - `i18n/reports/package-pending.json` 是 manifest 域的派生进度视图
+- `.work/i18n/extension-root/zh-cn/{package.json,package.nls.json,package.nls.zh-cn.json}` 是 manifest 域的可重放运行时/打包 staging 产物；根目录 `package.json` 保持上游英文源码, 不承载 `%key%` 本地化 token
 
 常用命令：
 
-1. `pnpm run sync:package-nls`
-2. `pnpm run report:package-nls:zh-cn:pending`
-3. `pnpm run promote:package-nls:zh-cn`
-4. `pnpm run generate:package-nls`
+1. `node ./i18n/cli.mts manifest sync`
+2. `node ./i18n/cli.mts manifest report --base HEAD`
+3. `node ./i18n/cli.mts manifest promote`
+4. `node ./i18n/cli.mts manifest generate`
+5. `node ./i18n/cli.mts manifest package` 先从真实仓库根目录运行生产 bundle, 再生成 staged extension root, 并从该 root 运行不会再次触发 staged `vscode:prepublish` 的 `vsce package`
+
+`.vscode/launch.json` 中的 `Run` 与 `Watch & Run` 会先运行 manifest staging 生成任务, 再使用 `.work/i18n/extension-root/zh-cn` 作为 `--extensionDevelopmentPath`。因此这两个桌面调试入口读取 staged `package.json`，而不是根目录英文 manifest。
 
 ## Webviews Domain
 
@@ -34,10 +38,10 @@
 
 常用命令：
 
-1. `pnpm run sync:webview-nls`
-2. `pnpm run report:webview-nls:zh-cn:pending`
-3. `pnpm run promote:webview-nls:zh-cn`
-4. `pnpm run generate:webview-nls`
+1. `node ./i18n/cli.mts webviews sync`
+2. `node ./i18n/cli.mts webviews report --base HEAD`
+3. `node ./i18n/cli.mts webviews promote`
+4. `node ./i18n/cli.mts webviews generate`
 5. `pnpm run build:webviews`
 
 ## Runtime Dynamic Domain
@@ -51,10 +55,10 @@
 
 常用命令：
 
-1. `pnpm run sync:formatter-nls` / `pnpm run sync:quickpicks-nls`
-2. `pnpm run report:formatter-nls:zh-cn:pending` / `pnpm run report:quickpicks-nls:zh-cn:pending`
-3. `pnpm run promote:formatter-nls:zh-cn` / `pnpm run promote:quickpicks-nls:zh-cn`
-4. `pnpm run generate:formatter-nls` / `pnpm run generate:quickpicks-nls`
+1. `node ./i18n/cli.mts formatter sync` / `node ./i18n/cli.mts quickpicks sync`
+2. `node ./i18n/cli.mts formatter report --base HEAD` / `node ./i18n/cli.mts quickpicks report --base HEAD`
+3. `node ./i18n/cli.mts formatter promote` / `node ./i18n/cli.mts quickpicks promote`
+4. `node ./i18n/cli.mts formatter generate` / `node ./i18n/cli.mts quickpicks generate`
 5. `pnpm run build:quick` 或启动对应 watch 任务后重新加载 Extension Host
 
 ## Override Selector 语义

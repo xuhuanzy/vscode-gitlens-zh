@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
+import path from 'node:path';
 
 import type { PendingReportFile } from '../../core/model.mts';
 import { nowIso, outputReferenceId, stableStringify } from '../../core/model.mts';
@@ -16,14 +17,15 @@ import {
 	createEmptyManifestWorksetFile,
 	loadAuthorityBundle,
 	loadEnglishPackageNls,
+	loadGeneratedManifest,
 	loadLocalizedPackageNls,
 	loadManifest,
 	loadManifestCatalog,
 	loadManifestWorkset,
 	saveAuthorityBundle,
 	saveEnglishPackageNls,
+	saveGeneratedManifest,
 	saveLocalizedPackageNls,
-	saveManifest,
 	saveManifestCatalog,
 	saveManifestReconciliationReport,
 	saveManifestWorkset,
@@ -32,6 +34,7 @@ import {
 
 export interface WorkflowOptions {
 	readonly rootDir?: string;
+	readonly outputRoot?: string;
 	readonly baseRef?: string;
 	readonly writeTo?: string;
 }
@@ -102,21 +105,27 @@ export function generateManifestLocalizedOutputs(options: WorkflowOptions = {}):
 	readonly localizedKeys: number;
 	readonly unresolvedKeys: number;
 } {
-	const context = createManifestDomainContext(options.rootDir);
+	const context = createManifestDomainContext(options.rootDir, options.outputRoot);
 	ensureAuthorityFiles(context);
 	ensureDomainFiles(context, {
 		catalog: createEmptyManifestCatalogFile(),
 		workset: createEmptyManifestWorksetFile(),
 	});
 
+	const beforeManifest = readTextFile(context.manifestFile);
+	const beforeContributions = readOptionalTextFile(path.join(context.rootDir, 'contributions.json'));
+	assertManifestIsNotTokenized(context);
 	const manifest = loadManifest(context);
 	const catalog = loadManifestCatalog(context);
 	const bundle = loadAuthorityBundle(context);
 	const generated = generateManifestOutputs(manifest, catalog.occurrences, bundle);
 
-	saveManifest(context, generated.manifest);
+	saveGeneratedManifest(context, generated.manifest);
 	saveEnglishPackageNls(context, generated.englishPackageNls);
 	saveLocalizedPackageNls(context, generated.localizedPackageNls);
+	prepareStagedExtensionRoot(context);
+	assertUnchanged(context.manifestFile, beforeManifest, 'root package.json');
+	assertUnchanged(path.join(context.rootDir, 'contributions.json'), beforeContributions, 'contributions.json');
 
 	return {
 		context: context,
@@ -256,8 +265,102 @@ export function loadCurrentManifestOutputs(context: ManifestDomainContext): {
 	readonly localizedPackageNls: Record<string, string>;
 } {
 	return {
-		manifest: loadManifest(context),
+		manifest: loadGeneratedManifest(context),
 		englishPackageNls: loadEnglishPackageNls(context),
 		localizedPackageNls: loadLocalizedPackageNls(context),
 	};
+}
+
+export function assertManifestIsNotTokenized(context: ManifestDomainContext): void {
+	const extraction = extractManifestOccurrences(loadManifest(context), {});
+	const tokenized = extraction.issues.filter(issue =>
+		issue.reason.startsWith('Missing english package.nls entry for token'),
+	);
+	if (tokenized.length === 0) return;
+
+	throw new Error(
+		`Root package.json contains generated localization tokens: ${tokenized
+			.slice(0, 10)
+			.map(issue => issue.occurrenceId)
+			.join(', ')}`,
+	);
+}
+
+function prepareStagedExtensionRoot(context: ManifestDomainContext): void {
+	fs.mkdirSync(context.stagedManifestRootDir, { recursive: true });
+
+	for (const entry of fs.readdirSync(context.rootDir, { withFileTypes: true })) {
+		if (shouldSkipStagedRootEntry(entry.name)) continue;
+
+		const source = path.join(context.rootDir, entry.name);
+		const target = path.join(context.stagedManifestRootDir, entry.name);
+
+		if (entry.isDirectory()) {
+			if (shouldMaterializeStagedRootEntry(entry.name)) {
+				materializeStagedDirectory(source, target);
+				continue;
+			}
+
+			if (fs.existsSync(target)) continue;
+			fs.symlinkSync(source, target, process.platform === 'win32' ? 'junction' : 'dir');
+		} else if (entry.isFile()) {
+			fs.copyFileSync(source, target);
+		}
+	}
+}
+
+function materializeStagedDirectory(source: string, target: string): void {
+	fs.rmSync(target, { recursive: true, force: true });
+	fs.mkdirSync(target, { recursive: true });
+
+	for (const entry of fs.readdirSync(source, { withFileTypes: true })) {
+		const sourcePath = path.join(source, entry.name);
+		const targetPath = path.join(target, entry.name);
+
+		if (entry.isDirectory()) {
+			materializeStagedDirectory(sourcePath, targetPath);
+		} else if (entry.isFile()) {
+			linkOrCopyFile(sourcePath, targetPath);
+		}
+	}
+}
+
+function linkOrCopyFile(source: string, target: string): void {
+	try {
+		fs.linkSync(source, target);
+	} catch {
+		fs.copyFileSync(source, target);
+	}
+}
+
+function shouldMaterializeStagedRootEntry(name: string): boolean {
+	return name === 'dist' || name === 'images' || name === 'walkthroughs';
+}
+
+function shouldSkipStagedRootEntry(name: string): boolean {
+	return (
+		name === '.git' ||
+		name === '.work' ||
+		name === 'package.json' ||
+		name === 'package.nls.json' ||
+		name === 'package.nls.zh-cn.json'
+	);
+}
+
+function assertUnchanged(filePath: string, expected: string | undefined, label: string): void {
+	if (readOptionalTextFile(filePath) === expected) return;
+
+	throw new Error(`Manifest localization generation unexpectedly mutated ${label}`);
+}
+
+function readTextFile(filePath: string): string {
+	return fs.readFileSync(filePath, 'utf8');
+}
+
+function readOptionalTextFile(filePath: string): string | undefined {
+	try {
+		return readTextFile(filePath);
+	} catch {
+		return undefined;
+	}
 }

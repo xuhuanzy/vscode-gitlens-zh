@@ -7,7 +7,10 @@
 			"type": "extensionHost",
 			"request": "launch",
 			"runtimeExecutable": "${execPath}",
-			"args": ["--profile=Debugging (GitLens)", "--extensionDevelopmentPath=${workspaceFolder}"],
+			"args": [
+				"--profile=Debugging (GitLens)",
+				"--extensionDevelopmentPath=${workspaceFolder}/.work/i18n/extension-root/zh-cn"
+			],
 			"debugWebviews": true,
 			"rendererDebugOptions": {
 				"outFiles": ["${workspaceFolder}/dist/webviews/**/*.js"],
@@ -22,6 +25,7 @@
 			},
 			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
 			"pauseForSourceMap": true,
+			"preLaunchTask": "i18n: manifest generate",
 			"runtimeSourcemapPausePatterns": ["${workspaceFolder}/dist/**/*.js"],
 			"presentation": {
 				"group": "2_run",
@@ -125,7 +129,10 @@
 			"type": "extensionHost",
 			"request": "launch",
 			"runtimeExecutable": "${execPath}",
-			"args": ["--profile=Debugging (GitLens)", "--extensionDevelopmentPath=${workspaceFolder}"],
+			"args": [
+				"--profile=Debugging (GitLens)",
+				"--extensionDevelopmentPath=${workspaceFolder}/.work/i18n/extension-root/zh-cn"
+			],
 			"debugWebviews": true,
 			"rendererDebugOptions": {
 				"outFiles": ["${workspaceFolder}/dist/webviews/**/*.js"],
@@ -141,7 +148,7 @@
 			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
 			"pauseForSourceMap": true,
 			"runtimeSourcemapPausePatterns": ["${workspaceFolder}/dist/**/*.js"],
-			"preLaunchTask": "${defaultBuildTask}",
+			"preLaunchTask": "i18n: watch",
 			"presentation": {
 				"group": "1_watch",
 				"order": 1

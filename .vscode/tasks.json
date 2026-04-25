@@ -137,6 +137,20 @@
 			]
 		},
 		{
+			"label": "i18n: manifest generate",
+			"type": "shell",
+			"command": "node",
+			"args": ["./i18n/cli.mts", "manifest", "generate"],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
+			"label": "i18n: watch",
+			"dependsOrder": "sequence",
+			"dependsOn": ["npm: watch", "i18n: manifest generate"],
+			"problemMatcher": []
+		},
+		{
 			"label": "Install dependencies",
 			"type": "shell",
 			"command": "pnpm",

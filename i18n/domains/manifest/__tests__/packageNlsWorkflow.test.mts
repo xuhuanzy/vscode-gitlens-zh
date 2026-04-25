@@ -8,6 +8,7 @@ import { createManifestDomainContext } from '../context.mts';
 import {
 	loadAuthorityBundle,
 	loadEnglishPackageNls,
+	loadGeneratedManifest,
 	loadLocalizedPackageNls,
 	loadManifest,
 	loadManifestCatalog,
@@ -27,6 +28,8 @@ run();
 
 function run(): void {
 	testPromotionWorkflow();
+	testStagedPackageRuntimeDirectoriesAreMaterialized();
+	testRootTokenizedManifestIsRejected();
 	testDuplicateViewsWelcomeKeys();
 	testOverridesDoNotRemainPending();
 	testReportWritePathUsesWorkspaceRoot();
@@ -84,6 +87,7 @@ function testPromotionWorkflow(): void {
 			'utf8',
 		);
 
+		const rootManifestBeforeGeneration = fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8');
 		const syncResult = syncManifestI18n({ rootDir });
 		assert.equal(syncResult.occurrenceCount > 0, true);
 
@@ -136,9 +140,15 @@ function testPromotionWorkflow(): void {
 		const generateResult = generateManifestLocalizedOutputs({ rootDir });
 		assert.equal(generateResult.englishKeys > 0, true);
 		assert.equal(generateResult.localizedKeys > 0, true);
+		assert.equal(fs.readFileSync(path.join(rootDir, 'package.json'), 'utf8'), rootManifestBeforeGeneration);
 
 		const manifest = loadManifest(context);
-		assert.equal(manifest.displayName, '%extension.displayName%');
+		assert.equal(manifest.displayName, 'Fixture Git UI');
+
+		const generatedManifest = loadGeneratedManifest(context);
+		assert.equal(generatedManifest.displayName, '%extension.displayName%');
+		assert.equal(fs.existsSync(path.join(context.stagedManifestRootDir, 'package.nls.json')), true);
+		assert.equal(fs.existsSync(path.join(context.stagedManifestRootDir, 'package.nls.zh-cn.json')), true);
 
 		const englishPackageNls = loadEnglishPackageNls(context);
 		assert.equal(englishPackageNls['extension.displayName'], 'Fixture Git UI');
@@ -154,6 +164,82 @@ function testPromotionWorkflow(): void {
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}
+}
+
+function testStagedPackageRuntimeDirectoriesAreMaterialized(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-package-nls-'));
+	try {
+		fs.writeFileSync(
+			path.join(rootDir, 'package.json'),
+			JSON.stringify(
+				{
+					name: 'fixture',
+					displayName: 'Fixture Git UI',
+					description: 'Review Git history quickly',
+					main: './dist/gitlens.js',
+					icon: 'images/gitlens-icon.png',
+				},
+				undefined,
+				'\t',
+			),
+			'utf8',
+		);
+		fs.mkdirSync(path.join(rootDir, 'dist'), { recursive: true });
+		fs.writeFileSync(path.join(rootDir, 'dist', 'gitlens.js'), 'module.exports = {};\n', 'utf8');
+		fs.mkdirSync(path.join(rootDir, 'images'), { recursive: true });
+		fs.writeFileSync(path.join(rootDir, 'images', 'gitlens-icon.png'), 'icon\n', 'utf8');
+		fs.mkdirSync(path.join(rootDir, 'walkthroughs', 'welcome'), { recursive: true });
+		fs.writeFileSync(path.join(rootDir, 'walkthroughs', 'welcome', 'start.md'), '# Start\n', 'utf8');
+		fs.mkdirSync(path.join(rootDir, 'src'), { recursive: true });
+		fs.writeFileSync(path.join(rootDir, 'src', 'extension.ts'), 'export {};\n', 'utf8');
+
+		syncManifestI18n({ rootDir });
+		const context = createManifestDomainContext(rootDir);
+		generateManifestLocalizedOutputs({ rootDir });
+
+		const stagedDistDir = path.join(context.stagedManifestRootDir, 'dist');
+		const stagedMain = path.join(stagedDistDir, 'gitlens.js');
+		const stagedImagesDir = path.join(context.stagedManifestRootDir, 'images');
+		const stagedIcon = path.join(stagedImagesDir, 'gitlens-icon.png');
+		const stagedWalkthroughsDir = path.join(context.stagedManifestRootDir, 'walkthroughs');
+		const stagedWalkthrough = path.join(stagedWalkthroughsDir, 'welcome', 'start.md');
+		assert.equal(fs.lstatSync(stagedDistDir).isSymbolicLink(), false);
+		assert.equal(normalizePath(fs.realpathSync.native(stagedMain)), normalizePath(stagedMain));
+		assert.equal(fs.lstatSync(stagedImagesDir).isSymbolicLink(), false);
+		assert.equal(normalizePath(fs.realpathSync.native(stagedIcon)), normalizePath(stagedIcon));
+		assert.equal(fs.lstatSync(stagedWalkthroughsDir).isSymbolicLink(), false);
+		assert.equal(normalizePath(fs.realpathSync.native(stagedWalkthrough)), normalizePath(stagedWalkthrough));
+		assert.equal(fs.lstatSync(path.join(context.stagedManifestRootDir, 'src')).isSymbolicLink(), true);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testRootTokenizedManifestIsRejected(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-package-nls-'));
+	try {
+		fs.writeFileSync(
+			path.join(rootDir, 'package.json'),
+			JSON.stringify(
+				{
+					name: 'fixture',
+					displayName: '%extension.displayName%',
+					description: 'Review Git history quickly',
+				},
+				undefined,
+				'\t',
+			),
+			'utf8',
+		);
+
+		assert.throws(() => generateManifestLocalizedOutputs({ rootDir }), /Root package\.json contains generated/u);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function normalizePath(filePath: string): string {
+	return path.normalize(filePath).toLowerCase();
 }
 
 function testDuplicateViewsWelcomeKeys(): void {
@@ -195,9 +281,11 @@ function testDuplicateViewsWelcomeKeys(): void {
 		generateManifestLocalizedOutputs({ rootDir });
 
 		const manifest = loadManifest(context);
-		const welcomes = (((manifest.contributes as Record<string, unknown>).viewsWelcome as unknown[]) ?? []) as Array<
-			Record<string, unknown>
-		>;
+		assert.equal(manifest.displayName, 'Fixture Git UI');
+
+		const generatedManifest = loadGeneratedManifest(context);
+		const welcomes = (((generatedManifest.contributes as Record<string, unknown>).viewsWelcome as unknown[]) ??
+			[]) as Array<Record<string, unknown>>;
 		const selector = `when-${shortHash('view == fixture')}`;
 		assert.equal(welcomes[0].contents, `%contributes.viewsWelcome.fixture.view.${selector}.slot-1.contents%`);
 		assert.equal(welcomes[1].contents, `%contributes.viewsWelcome.fixture.view.${selector}.slot-2.contents%`);
@@ -215,7 +303,6 @@ function testDuplicateViewsWelcomeKeys(): void {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}
 }
-
 function testOverridesDoNotRemainPending(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-package-nls-'));
 	try {
