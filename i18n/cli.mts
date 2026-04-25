@@ -33,7 +33,7 @@ import {
 import { execute as executeAuthorityMessagesReview } from './authority/messagesReview.mts';
 
 const args = process.argv.slice(2);
-const runtimeDynamicDomains: readonly RuntimeDynamicDomain[] = ['formatter', 'quickpicks'];
+const runtimeDynamicDomains: readonly RuntimeDynamicDomain[] = ['formatter', 'quickpicks', 'webviewHost'];
 
 type AggregatePendingReportEntry =
 	| {
@@ -85,6 +85,7 @@ export function execute(args: readonly string[]): void {
 			break;
 		case 'formatter':
 		case 'quickpicks':
+		case 'webviewHost':
 			runRuntimeDynamic(action, domain, rest);
 			break;
 		case 'authority':
@@ -559,7 +560,7 @@ function printUsageAndExit(message: string): never {
 			'  node ./i18n/cli.mts generate [--root <path>] [--with-manifest] [--out-root <path>] [--skip-settings-shell]',
 			'  node ./i18n/cli.mts manifest sync|generate|promote|report|package [--root <path>] [--out-root <path>] [-- <vsce args>]',
 			'  node ./i18n/cli.mts webviews sync|generate|promote|report [--root <path>]',
-			'  node ./i18n/cli.mts formatter|quickpicks sync|generate|promote|report [--root <path>]',
+			'  node ./i18n/cli.mts formatter|quickpicks|webviewHost sync|generate|promote|report [--root <path>]',
 			'  node ./i18n/cli.mts authority review next|approve|unapprove|stats [...]',
 		].join('\n'),
 	);

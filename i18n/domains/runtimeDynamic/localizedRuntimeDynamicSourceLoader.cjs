@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const runtimeDynamicDomains = ['formatter', 'quickpicks'];
+const runtimeDynamicDomains = ['formatter', 'quickpicks', 'webviewHost'];
 
 /**
  * @this {import('webpack').LoaderContext<{ readonly rootDir: string; readonly locale: string }>}

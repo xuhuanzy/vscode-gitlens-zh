@@ -7,11 +7,11 @@
 	"properties": {
 		"$schema": { "type": "string" },
 		"version": { "const": 3 },
-		"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter"] },
+		"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "webviewHost"] },
 		"generatedAt": { "type": "string", "format": "date-time" },
 		"deferredDomains": {
 			"type": "array",
-			"items": { "enum": ["manifest", "webviews", "quickpicks", "formatter"] }
+			"items": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "webviewHost"] }
 		},
 		"occurrences": {
 			"type": "array",
@@ -101,7 +101,7 @@
 			],
 			"properties": {
 				"id": { "type": "string" },
-				"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter"] },
+				"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "webviewHost"] },
 				"scope": { "type": "string" },
 				"anchor": { "type": "string" },
 				"slot": { "type": "string" },

@@ -17,7 +17,7 @@ import {
 } from '../../core/model.mts';
 
 export interface RuntimeDynamicSourceTarget {
-	readonly domain: 'formatter' | 'quickpicks';
+	readonly domain: 'formatter' | 'quickpicks' | 'webviewHost';
 	readonly group: string;
 	readonly file: string;
 	readonly source: string;
@@ -601,6 +601,10 @@ function isSupportedStringLiteralSlot(
 
 	if (ts.isPropertyAssignment(parent) && parent.initializer === node) {
 		const propertyName = getPropertyName(parent.name);
+		if (target.domain === 'webviewHost') {
+			return propertyName === 'title' && isWebviewRegistrationDescriptor(parent);
+		}
+
 		return propertyName != null && uiPropertyNames.has(propertyName) && !isTelemetrySourceDetail(parent);
 	}
 
@@ -858,6 +862,26 @@ function getEnclosingFunctionName(node: ts.Node): string | undefined {
 		if (ts.isSourceFile(current)) return undefined;
 	}
 
+	return undefined;
+}
+
+function isWebviewRegistrationDescriptor(titleProperty: ts.PropertyAssignment): boolean {
+	const descriptor = titleProperty.parent;
+	if (!ts.isObjectLiteralExpression(descriptor)) return false;
+
+	const call = descriptor.parent;
+	if (!ts.isCallExpression(call) || !call.arguments.includes(descriptor)) return false;
+	if (getCallIdentifier(call.expression) !== 'registerWebviewView') return false;
+
+	const id = descriptor.properties.find(
+		(property): property is ts.PropertyAssignment =>
+			ts.isPropertyAssignment(property) && getPropertyName(property.name) === 'id',
+	);
+	return id != null && getStringLiteralValue(id.initializer)?.startsWith('gitlens.views.') === true;
+}
+
+function getStringLiteralValue(expression: ts.Expression): string | undefined {
+	if (ts.isStringLiteral(expression) || ts.isNoSubstitutionTemplateLiteral(expression)) return expression.text;
 	return undefined;
 }
 

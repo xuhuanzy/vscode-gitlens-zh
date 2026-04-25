@@ -74,6 +74,7 @@ function testAggregateSyncSkipsWebviewsWhenSettingsShellIsMissing(): void {
 		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'package.zh-cn.json')), true);
 		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'formatter.zh-cn.json')), true);
 		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'quickpicks.zh-cn.json')), true);
+		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'webviewHost.zh-cn.json')), true);
 		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'webviews.zh-cn.json')), false);
 		assert.equal(
 			logs.some(log => log.includes('Skipped webview i18n sync')),
@@ -101,6 +102,7 @@ function testAggregateReportWritesDomainReportsAndAggregateSummary(): void {
 			'formatter',
 			'manifest',
 			'quickpicks',
+			'webviewHost',
 			'webviews',
 		]);
 		assert.equal(
@@ -112,6 +114,7 @@ function testAggregateReportWritesDomainReportsAndAggregateSummary(): void {
 			'package-pending.json',
 			'formatter-pending.json',
 			'quickpicks-pending.json',
+			'webviewHost-pending.json',
 			'webviews-pending.json',
 		]) {
 			assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'reports', name)), true);
@@ -136,6 +139,10 @@ function testAggregatePromoteRunsAllDomains(): void {
 		);
 		assert.equal(
 			logs.some(log => log.includes('Promoted quickpicks runtime dynamic translations')),
+			true,
+		);
+		assert.equal(
+			logs.some(log => log.includes('Promoted webviewHost runtime dynamic translations')),
 			true,
 		);
 		assert.equal(

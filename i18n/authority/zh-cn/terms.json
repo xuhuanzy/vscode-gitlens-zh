@@ -25,6 +25,11 @@
 			"updatedAt": "2026-04-24T14:00:00.000Z"
 		},
 		{
+			"source": "Launchpad",
+			"translation": "启动台",
+			"updatedAt": "2026-04-26T00:00:00.000Z"
+		},
+		{
 			"source": "Load more",
 			"translation": "加载更多",
 			"updatedAt": "2026-04-24T14:00:00.000Z"
@@ -150,5 +155,5 @@
 			"updatedAt": "2026-04-24T14:00:00.000Z"
 		}
 	],
-	"updatedAt": "2026-04-24T19:24:00.000Z"
+	"updatedAt": "2026-04-26T00:00:00.000Z"
 }

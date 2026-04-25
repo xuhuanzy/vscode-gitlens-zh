@@ -5,7 +5,7 @@
 - `i18n/core` 负责通用 occurrence、reference、output reference、authority、workset、report 模型
 - `i18n/domains/manifest` 负责 `package.json` / `package.nls*` 的提取、对账与生成
 - `i18n/domains/webviews` 当前覆盖 `settings` 静态 HTML shell 的端到端提取/生成，以及 `welcome` / `rebase` / `home` / `commitDetails` / `timeline` / `graph` 的构建期本地化源码派生；本分支将本地化 webview 产物直接发布为 canonical `dist/webviews` 运行时产物，`patchDetails` 与其他 mixed-renderer 或后续页面族仍通过 deferred issues 显式保留在后续范围
-- `i18n/domains/runtimeDynamic` 负责 formatter / quickpicks 这类扩展宿主动态 UI 文案的只读源码提取、对账、报告与 `.work` 本地化源码产物生成；webpack 构建期 loader 会在不修改 `src/**` 调用点的前提下将这些产物注入扩展 bundle
+- `i18n/domains/runtimeDynamic` 负责 formatter / quickpicks / webviewHost 这类扩展宿主动态 UI 文案的只读源码提取、对账、报告与 `.work` 本地化源码产物生成；webpack 构建期 loader 会在不修改 `src/**` 调用点的前提下将这些产物注入扩展 bundle
 
 `i18n/authority/zh-cn/overrides.json` 统一承载 `occurrence` / `anchor` / `scope` / `output` 四类覆盖规则。
 
@@ -13,7 +13,7 @@
 
 ### 首选聚合命令
 
-普通人工介入流程优先使用顶层聚合命令，不再默认拆成 manifest / formatter / quickpicks / webviews 四组分别执行：
+普通人工介入流程优先使用顶层聚合命令，不再默认拆成 manifest / formatter / quickpicks / webviewHost / webviews 五组分别执行：
 
 ```bash
 node ./i18n/cli.mts sync
@@ -27,7 +27,7 @@ node ./i18n/cli.mts generate
 - `promote` 将已批准 workset 条目提升到 authority
 - `generate` 基于既有 catalog 与 authority 生成运行时产物
 
-`sync` / `report` 默认覆盖 manifest、formatter、quickpicks；如果 `dist/webviews/settings.html` 已存在，也会覆盖 webviews。缺少该 settings shell 时会跳过 webviews 并说明原因；如果本次需要刷新 webviews catalog/report，先运行 webview 构建生成 settings shell，或只在明确不需要 webviews 时加 `--skip-webviews`。
+`sync` / `report` 默认覆盖 manifest、formatter、quickpicks、webviewHost；如果 `dist/webviews/settings.html` 已存在，也会覆盖 webviews。缺少该 settings shell 时会跳过 webviews 并说明原因；如果本次需要刷新 webviews catalog/report，先运行 webview 构建生成 settings shell，或只在明确不需要 webviews 时加 `--skip-webviews`。
 
 ### 手动修改 authority 后
 
@@ -41,6 +41,7 @@ node ./i18n/cli.mts generate
 
 - formatter runtime dynamic 本地化源码
 - quickpicks runtime dynamic 本地化源码
+- webviewHost runtime dynamic 本地化源码
 - webviews 动态源码
 - 已存在 `dist/webviews/settings.html` 时，顺手刷新 settings 静态壳页
 
@@ -113,17 +114,18 @@ node ./i18n/cli.mts generate
 
 ## Runtime Dynamic Domain
 
-- `i18n/catalog/formatter.catalog.json` / `i18n/catalog/quickpicks.catalog.json` 保留 formatter 与 quickpicks runtime dynamic domain 的 occurrence、source reference、runtime output reference 与对账信息
-- `i18n/worksets/formatter.zh-cn.json` / `i18n/worksets/quickpicks.zh-cn.json` 保留对应翻译工作状态与 `occurrenceIds`
-- `i18n/reports/formatter-pending.json` / `i18n/reports/quickpicks-pending.json` 是对应域的派生进度视图
-- `.work/i18n/runtime-dynamic-sources/zh-cn/{formatter,quickpicks}/**` 是由 workflow 基于上游英文源码 AST 派生的本地化源码产物；构建时通过 `i18n/domains/runtimeDynamic/localizedRuntimeDynamicSourceLoader.cjs` 以内存替换方式注入 extension bundle, 不直接修改或替代 `src/**`
+- `i18n/catalog/formatter.catalog.json` / `i18n/catalog/quickpicks.catalog.json` / `i18n/catalog/webviewHost.catalog.json` 保留 runtime dynamic domain 的 occurrence、source reference、runtime output reference 与对账信息
+- `i18n/worksets/formatter.zh-cn.json` / `i18n/worksets/quickpicks.zh-cn.json` / `i18n/worksets/webviewHost.zh-cn.json` 保留对应翻译工作状态与 `occurrenceIds`
+- `i18n/reports/formatter-pending.json` / `i18n/reports/quickpicks-pending.json` / `i18n/reports/webviewHost-pending.json` 是对应域的派生进度视图
+- `.work/i18n/runtime-dynamic-sources/zh-cn/{formatter,quickpicks,webviewHost}/**` 是由 workflow 基于上游英文源码 AST 派生的本地化源码产物；构建时通过 `i18n/domains/runtimeDynamic/localizedRuntimeDynamicSourceLoader.cjs` 以内存替换方式注入 extension bundle, 不直接修改或替代 `src/**`
+- `webviewHost` 当前覆盖 `src/webviews/**/registration.ts` 中的 WebviewView descriptor 标题，用于避免 VS Code manifest 本地化标题在视图 resolve 后被英文 runtime descriptor 覆盖。
 - 任何需要改动应用源码以消费 runtime dynamic 产物的路径, 必须先通过 source-touchpoint review; 禁止为了本地化在上层 commands、picker flows、views、services 中大面积添加调用点
 - `node ./i18n/cli.mts generate` / `pnpm run build:quick` / `pnpm run watch:quick` 会触发 runtime dynamic source generation；如果 VS Code Extension Host 已启动, 需要重新加载窗口才能看到新的 bundle
 
 常用命令：
 
 1. 常规刷新使用顶层 `node ./i18n/cli.mts sync` / `report --base HEAD` / `promote`
-2. `node ./i18n/cli.mts generate` 或仅排查单一域时使用 `node ./i18n/cli.mts formatter generate` / `node ./i18n/cli.mts quickpicks generate`
+2. `node ./i18n/cli.mts generate` 或仅排查单一域时使用 `node ./i18n/cli.mts formatter generate` / `node ./i18n/cli.mts quickpicks generate` / `node ./i18n/cli.mts webviewHost generate`
 3. `pnpm run build:quick` 或启动对应 watch 任务后重新加载 Extension Host
 
 ## Override Selector 语义

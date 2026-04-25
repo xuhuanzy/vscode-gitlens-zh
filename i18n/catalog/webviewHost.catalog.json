@@ -1,0 +1,240 @@
+{
+	"$schema": "../schemas/sourceCatalog.schema.json",
+	"version": 3,
+	"domain": "webviewHost",
+	"generatedAt": "2026-04-25T22:34:06.200Z",
+	"deferredDomains": ["formatter", "quickpicks"],
+	"occurrences": [
+		{
+			"id": "webviewHost:webviewHost.registration.registration.string-13-11.title.2dd918d139#title",
+			"domain": "webviewHost",
+			"scope": "webviewHost.registration",
+			"anchor": "webviewHost.registration.registration.string-13-11.title.2dd918d139",
+			"slot": "title",
+			"authorityId": "message.4c96ba5a87241c8c80b57192b38fdddd46b5a62f3dbec5f0fd04eb312f684ad7",
+			"pattern": {
+				"kind": "literal",
+				"text": "Welcome"
+			},
+			"sourceText": "Welcome",
+			"sourceHash": "0e2226b5235f0ff94a276eb4d07a3bfea74b7e3b8b85e9efca6c18430f041bf8",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/welcome/registration.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 13,
+					"column": 11
+				},
+				"end": {
+					"line": 13,
+					"column": 20
+				},
+				"attribute": "title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "webviewHost",
+				"key": "registration.string-13-11.title.2dd918d139"
+			}
+		},
+		{
+			"id": "webviewHost:webviewHost.registration.registration.string-13-11.title.7e579833a0#title",
+			"domain": "webviewHost",
+			"scope": "webviewHost.registration",
+			"anchor": "webviewHost.registration.registration.string-13-11.title.7e579833a0",
+			"slot": "title",
+			"authorityId": "message.0ceb2c753e03c1ae4a5b1feea215eece337171272c9461a83b6a37c8e5e5ad5c",
+			"pattern": {
+				"kind": "literal",
+				"text": "Home"
+			},
+			"sourceText": "Home",
+			"sourceHash": "3a78695388b38b5cceefaf6796b0137877514593543b91af2752d5a17e3d736c",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/home/registration.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 13,
+					"column": 11
+				},
+				"end": {
+					"line": 13,
+					"column": 17
+				},
+				"attribute": "title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "webviewHost",
+				"key": "registration.string-13-11.title.7e579833a0"
+			}
+		},
+		{
+			"id": "webviewHost:webviewHost.registration.registration.string-14-11.title.58cec5c681#title",
+			"domain": "webviewHost",
+			"scope": "webviewHost.registration",
+			"anchor": "webviewHost.registration.registration.string-14-11.title.58cec5c681",
+			"slot": "title",
+			"authorityId": "message.982fc5fac57ac73293a4dcf26bb37702a147681a8fca5d98be7fc379174f1714",
+			"pattern": {
+				"kind": "literal",
+				"text": "Inspect"
+			},
+			"sourceText": "Inspect",
+			"sourceHash": "e0723a86a5b9408aee9113031785d3d15d9702892f31a46e5fe927c0c8552675",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/commitDetails/registration.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 14,
+					"column": 11
+				},
+				"end": {
+					"line": 14,
+					"column": 20
+				},
+				"attribute": "title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "webviewHost",
+				"key": "registration.string-14-11.title.58cec5c681"
+			}
+		},
+		{
+			"id": "webviewHost:webviewHost.registration.registration.string-39-11.title.ce83324eb8#title",
+			"domain": "webviewHost",
+			"scope": "webviewHost.registration",
+			"anchor": "webviewHost.registration.registration.string-39-11.title.ce83324eb8",
+			"slot": "title",
+			"authorityId": "message.81aeb933af5f0a32583af3f4cbc901dd30c0b5aaf10ae4a93453fbb3e4336a06",
+			"pattern": {
+				"kind": "literal",
+				"text": "Commit Graph Inspect"
+			},
+			"sourceText": "Commit Graph Inspect",
+			"sourceHash": "165d6e5e59ee82c8b544ca41a5f367faf8663db67ab61e42118978713c6367b7",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/commitDetails/registration.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 39,
+					"column": 11
+				},
+				"end": {
+					"line": 39,
+					"column": 33
+				},
+				"attribute": "title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "webviewHost",
+				"key": "registration.string-39-11.title.ce83324eb8"
+			}
+		},
+		{
+			"id": "webviewHost:webviewHost.registration.registration.string-41-11.title.6d2231ca0a#title",
+			"domain": "webviewHost",
+			"scope": "webviewHost.registration",
+			"anchor": "webviewHost.registration.registration.string-41-11.title.6d2231ca0a",
+			"slot": "title",
+			"authorityId": "message.18b6295b855d5e178c086a1a6b6decb53b35c4e18c3e7c6baa5986763006a543",
+			"pattern": {
+				"kind": "literal",
+				"text": "Patch"
+			},
+			"sourceText": "Patch",
+			"sourceHash": "7e345470de240d118d52814a74f5c64fabae0f55b122ecb00ffa17a8889ebc7d",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/plus/patchDetails/registration.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 41,
+					"column": 11
+				},
+				"end": {
+					"line": 41,
+					"column": 18
+				},
+				"attribute": "title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "webviewHost",
+				"key": "registration.string-41-11.title.6d2231ca0a"
+			}
+		},
+		{
+			"id": "webviewHost:webviewHost.registration.registration.string-48-11.title.8410c7b5d8#title",
+			"domain": "webviewHost",
+			"scope": "webviewHost.registration",
+			"anchor": "webviewHost.registration.registration.string-48-11.title.8410c7b5d8",
+			"slot": "title",
+			"authorityId": "message.fa462a4b7f5e41a6b714b6885911a72fc65e301c95255df36bbe130d3df31ac3",
+			"pattern": {
+				"kind": "literal",
+				"text": "Visual File History"
+			},
+			"sourceText": "Visual File History",
+			"sourceHash": "4142f19c98080b950ef950b83d56d33d6993de8085b05486247110fc6017f87b",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/plus/timeline/registration.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 48,
+					"column": 11
+				},
+				"end": {
+					"line": 48,
+					"column": 32
+				},
+				"attribute": "title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "webviewHost",
+				"key": "registration.string-48-11.title.8410c7b5d8"
+			}
+		},
+		{
+			"id": "webviewHost:webviewHost.registration.registration.string-87-11.title.cc089f157d#title",
+			"domain": "webviewHost",
+			"scope": "webviewHost.registration",
+			"anchor": "webviewHost.registration.registration.string-87-11.title.cc089f157d",
+			"slot": "title",
+			"authorityId": "message.3555510e73c530918e9c2c9bd8e22d8468de8a00cfd2aaaddaa5cdafbdc30f3c",
+			"pattern": {
+				"kind": "literal",
+				"text": "Commit Graph"
+			},
+			"sourceText": "Commit Graph",
+			"sourceHash": "9cda4a7ac93dc5bd89d388f4cf399134bfe7d2034b9483a0adae3ba1f22093f2",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/plus/graph/registration.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 87,
+					"column": 11
+				},
+				"end": {
+					"line": 87,
+					"column": 25
+				},
+				"attribute": "title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "webviewHost",
+				"key": "registration.string-87-11.title.cc089f157d"
+			}
+		}
+	]
+}

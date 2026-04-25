@@ -83,7 +83,7 @@ export function createEmptyManifestCatalogFile() {
 	return createEmptyCatalogFile({
 		schemaPath: '../schemas/sourceCatalog.schema.json',
 		domain: 'manifest',
-		deferredDomains: ['webviews', 'quickpicks', 'formatter'],
+		deferredDomains: ['webviews', 'quickpicks', 'formatter', 'webviewHost'],
 	});
 }
 

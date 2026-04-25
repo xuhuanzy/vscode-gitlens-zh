@@ -1,7 +1,7 @@
 import { spawnSync } from 'child_process';
 import path from 'path';
 
-const runtimeDynamicDomains = ['formatter', 'quickpicks'];
+const runtimeDynamicDomains = ['formatter', 'quickpicks', 'webviewHost'];
 
 export class GenerateLocalizedRuntimeDynamicSourcesPlugin {
 	/** @type {Promise<void> | undefined} */
@@ -20,6 +20,12 @@ export class GenerateLocalizedRuntimeDynamicSourcesPlugin {
 			path.join(this.rootDir, 'src', 'quickpicks', 'remoteProviderPicker.ts'),
 			path.join(this.rootDir, 'src', 'quickpicks', 'items'),
 			path.join(this.rootDir, 'src', 'commands', 'quick-wizard', 'steps', 'commits.ts'),
+			path.join(this.rootDir, 'src', 'webviews', 'commitDetails', 'registration.ts'),
+			path.join(this.rootDir, 'src', 'webviews', 'home', 'registration.ts'),
+			path.join(this.rootDir, 'src', 'webviews', 'plus', 'graph', 'registration.ts'),
+			path.join(this.rootDir, 'src', 'webviews', 'plus', 'patchDetails', 'registration.ts'),
+			path.join(this.rootDir, 'src', 'webviews', 'plus', 'timeline', 'registration.ts'),
+			path.join(this.rootDir, 'src', 'webviews', 'welcome', 'registration.ts'),
 			path.join(this.rootDir, 'packages', 'git', 'src', 'utils', 'remote.utils.ts'),
 			path.join(this.rootDir, 'i18n', 'authority'),
 			path.join(this.rootDir, 'i18n', 'catalog'),

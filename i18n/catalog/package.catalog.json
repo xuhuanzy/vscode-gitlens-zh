@@ -3,7 +3,7 @@
 	"version": 3,
 	"domain": "manifest",
 	"generatedAt": "2026-04-24T19:14:02.742Z",
-	"deferredDomains": ["webviews", "quickpicks", "formatter"],
+	"deferredDomains": ["webviews", "quickpicks", "formatter", "webviewHost"],
 	"occurrences": [
 		{
 			"id": "manifest:manifest.badge.https-slack.gitkraken.com#description",

@@ -22,6 +22,7 @@ import {
 run();
 
 function run(): void {
+	testWebviewHostRegistrationTitlesAreLocalized();
 	testQuickPickLowLevelStringsAreExtracted();
 	testQuickPickNullishAssignmentStringsAreLocalized();
 	testQuickPickTemplateLabelsAreLocalizedWithPlaceholders();
@@ -36,6 +37,65 @@ function run(): void {
 	testFormatterHtmlTitlesAreLocalizedWithoutChangingElementSyntax();
 	testFormatterHtmlWrapperTemplatesAreNotExtracted();
 	testDynamicMarkdownTitlesAreDeferred();
+}
+
+function testWebviewHostRegistrationTitlesAreLocalized(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-runtime-webview-host-'));
+	try {
+		writeFile(
+			rootDir,
+			'src/webviews/home/registration.ts',
+			[
+				'export function registerHomeWebviewView(controller: { registerWebviewView: (...args: unknown[]) => unknown }) {',
+				'\treturn controller.registerWebviewView(',
+				'\t\t{',
+				"\t\t\tid: 'gitlens.views.home',",
+				"\t\t\tfileName: 'home.html',",
+				"\t\t\ttitle: 'Home',",
+				'\t\t},',
+				'\t\tasync () => undefined,',
+				'\t);',
+				'}',
+				'',
+			].join('\n'),
+		);
+
+		const result = syncRuntimeDynamicI18n({ rootDir: rootDir, domain: 'webviewHost' });
+		assert.equal(result.occurrenceCount, 1);
+
+		const context = createRuntimeDynamicDomainContext('webviewHost', rootDir);
+		const catalog = loadRuntimeDynamicCatalog(context);
+		const workset = loadRuntimeDynamicWorkset(context);
+		assert.equal(catalog.domain, 'webviewHost');
+		assert.equal(
+			workset.entries.some(entry => entry.source === 'Home'),
+			true,
+		);
+
+		saveRuntimeDynamicWorkset(context, {
+			...workset,
+			entries: workset.entries.map(entry =>
+				entry.source === 'Home' ? { ...entry, status: 'approved', translation: '主页' } : entry,
+			),
+		});
+		const promoted = promoteRuntimeDynamicAuthority({ rootDir: rootDir, domain: 'webviewHost' });
+		assert.equal(promoted.promoted.length, 1);
+
+		const generated = generateRuntimeDynamicLocalizedOutputs({ rootDir: rootDir, domain: 'webviewHost' });
+		assert.equal(generated.translatedCount, 1);
+
+		const localized = loadLocalizedRuntimeDynamicSource(context, 'src/webviews/home/registration.ts');
+		assert.notEqual(localized, undefined);
+		assert.equal(localized!.includes("title: '主页'"), true);
+		assert.equal(
+			fs.readFileSync(path.join(rootDir, 'src', 'webviews', 'home', 'registration.ts'), 'utf8').includes(
+				"title: 'Home'",
+			),
+			true,
+		);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
 }
 
 function testQuickPickLowLevelStringsAreExtracted(): void {

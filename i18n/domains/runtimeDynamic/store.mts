@@ -110,5 +110,12 @@ export function createEmptyRuntimeDynamicWorksetFile(context: RuntimeDynamicDoma
 }
 
 function getDeferredDomains(domain: RuntimeDynamicDomainContext['domain']): I18nDomain[] {
-	return domain === 'formatter' ? ['quickpicks'] : ['formatter'];
+	switch (domain) {
+		case 'formatter':
+			return ['quickpicks', 'webviewHost'];
+		case 'quickpicks':
+			return ['formatter', 'webviewHost'];
+		case 'webviewHost':
+			return ['formatter', 'quickpicks'];
+	}
 }

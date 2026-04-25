@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 
 export const translationStatuses = ['pending', 'translated', 'needsReview', 'approved'] as const;
-export const i18nDomains = ['manifest', 'webviews', 'quickpicks', 'formatter'] as const;
+export const i18nDomains = ['manifest', 'webviews', 'quickpicks', 'formatter', 'webviewHost'] as const;
 
 export type TranslationStatus = (typeof translationStatuses)[number];
 export type I18nDomain = (typeof i18nDomains)[number];

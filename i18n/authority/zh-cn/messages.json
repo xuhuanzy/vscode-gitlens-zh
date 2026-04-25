@@ -3,7 +3,7 @@
 	"version": 2,
 	"kind": "messages",
 	"locale": "zh-cn",
-	"updatedAt": "2026-04-24T19:24:56.693Z",
+	"updatedAt": "2026-04-26T00:00:00.000Z",
 	"entries": [
 		{
 			"id": "message.000d1a29b2365349f8762064ef86edc1f548f435002395035bdc26f6c87754fc",
@@ -377,7 +377,7 @@
 			"id": "message.0724fc69c493af007d280bebb2fb83c52483eec437c0e4f8d769f25245fa1519",
 			"kind": "literal",
 			"source": "Launchpad View (ᴘʀᴏ)",
-			"translation": "Launchpad 视图 (ᴘʀᴏ)"
+			"translation": "启动台视图 (ᴘʀᴏ)"
 		},
 		{
 			"id": "message.0731b8256284c172e19f21235bb1fe15686d42bef8f034cc357178fdf9a4e722",
@@ -586,7 +586,7 @@
 			"id": "message.0969494d407229bf20a9fe4cb49e78f0afa7d846e2dec8f9a55cb64f9677eb8d",
 			"kind": "literal",
 			"source": "Specifies how the _Launchpad_ view will display file icons",
-			"translation": "指定 _Launchpad_ 视图如何显示文件图标"
+			"translation": "指定 _启动台_ 视图如何显示文件图标"
 		},
 		{
 			"id": "message.0977900d15b6c0e8c04680528c189a34267848ef97cdbaaf5f487f0faaad46b6",
@@ -635,7 +635,7 @@
 			"id": "message.0a3c60e4c469753a5f18cd04d7e1927ec2b323306a59bb428d5c20e044ad7bfd",
 			"kind": "literal",
 			"source": "Your Pro trial has ended. Please upgrade for full access to Launchpad and other Pro features.",
-			"translation": "你的 Pro 试用已结束。请升级以完整访问 Launchpad 和其他 Pro 功能。"
+			"translation": "你的 Pro 试用已结束。请升级以完整访问启动台和其他 Pro 功能。"
 		},
 		{
 			"id": "message.0a53df978d41dd405dfdc9c0541bf1c8643cba536a064dab018e1cb0a2aa0f55",
@@ -813,7 +813,7 @@
 			"id": "message.0d8bead24e51f58a0d97259faf50b9549a51d3889e96efb8a26e258c9eef99b0",
 			"kind": "literal",
 			"source": "Specifies how the _Launchpad_ view will display files",
-			"translation": "指定 _Launchpad_ 视图如何显示文件"
+			"translation": "指定 _启动台_ 视图如何显示文件"
 		},
 		{
 			"id": "message.0d9385b1a8139835b41e6bc36c92c7f112441869111c4182be79ab8704e92c15",
@@ -825,7 +825,7 @@
 			"id": "message.0d9e66881650e9a4eec71085f3842a00f2e24280a44d94a0425a607a39701df6",
 			"kind": "rich",
 			"source": "[Launchpad](command:gitlens.views.launchpad.info \"Learn about Launchpad\") — organizes your pull requests into actionable groups to help you focus and keep your team unblocked.",
-			"translation": "[Launchpad](command:gitlens.views.launchpad.info \"了解 Launchpad\") - 将你的拉取请求组织为可执行的分组，帮助你聚焦工作并让团队保持畅通。",
+			"translation": "[启动台](command:gitlens.views.launchpad.info \"了解启动台\") - 将你的拉取请求组织为可执行的分组，帮助你聚焦工作并让团队保持畅通。",
 			"format": "markdown",
 			"slots": []
 		},
@@ -1198,7 +1198,7 @@
 			"id": "message.14bf256b1d28b929d587ff5e5da971eb9b9e92ea74abcdfc4b633e38e3f2359e",
 			"kind": "literal",
 			"source": "Learn about Launchpad...",
-			"translation": "了解 Launchpad..."
+			"translation": "了解启动台..."
 		},
 		{
 			"id": "message.14da24df9d14d8fa565e38a9ee48c122599bfdee1da93c21939581e877e13242",
@@ -1401,7 +1401,7 @@
 			"id": "message.1713c72f3e8ab72be26afff04317736e46c35aa1226d734eadd85caa7e0ea217",
 			"kind": "literal",
 			"source": "Detach Launchpad View",
-			"translation": "分离 Launchpad 视图"
+			"translation": "分离启动台视图"
 		},
 		{
 			"id": "message.173b554dbc11da216c7fdab013de05477a5f2f46b329589bdd0849e644f10c1d",
@@ -1679,7 +1679,7 @@
 			"id": "message.1ccad4b4141d65af8de90fee9512ba2b5df45701915b5068764ceda15ec7cdd3",
 			"kind": "literal",
 			"source": "Hide Launchpad View",
-			"translation": "隐藏 Launchpad 视图"
+			"translation": "隐藏启动台视图"
 		},
 		{
 			"id": "message.1cf8a0d4d275cba48640bb55d5d27eb2f6ad78b32203d09babcc8f626e4f9245",
@@ -3046,7 +3046,7 @@
 			"id": "message.33316e0eb0c77fac82d5c15ecc8233a827cb3a95d224664cbcce8233c83df915",
 			"kind": "literal",
 			"source": "Specifies the organizations to include in the _Launchpad_. If empty, all organizations are included",
-			"translation": "指定 _Launchpad_ 中要包含的组织。如果为空，则包含所有组织"
+			"translation": "指定 _启动台_ 中要包含的组织。如果为空，则包含所有组织"
 		},
 		{
 			"id": "message.333f63fe9cdf938cb1e5391076b94492212ab513f60e8c98c757b3d34eb0dc27",
@@ -3650,7 +3650,7 @@
 			"id": "message.3d289fe1c5cfa6dce7c29a0acb32e11abccc0c7760494f14f3f44a3d5dae782c",
 			"kind": "literal",
 			"source": "(Experimental) Specifies a limit on the number of pull requests to be queried in the _Launchpad_",
-			"translation": "（实验性）指定在 _Launchpad_ 中可查询的拉取请求数量上限"
+			"translation": "（实验性）指定在 _启动台_ 中可查询的拉取请求数量上限"
 		},
 		{
 			"id": "message.3d69049865ff0fe73abc3fbb461b9bc3a23faab446e51eb7ea08044b428ee7da",
@@ -3766,7 +3766,7 @@
 			"id": "message.3f09efdfe93b9542f0532fcc489298f265ac797e8b5cac0cd073b0c4e2b91b3a",
 			"kind": "literal",
 			"source": "Specifies whether the status bar indicator will fetch and display pull request data for _Launchpad_",
-			"translation": "指定状态栏指示器是否会为 _Launchpad_ 获取并显示拉取请求数据"
+			"translation": "指定状态栏指示器是否会为 _启动台_ 获取并显示拉取请求数据"
 		},
 		{
 			"id": "message.3f157bc25fbf74d55b9efcb7b8f24955500454c3f3084cc46bd55e67479240ac",
@@ -3907,7 +3907,7 @@
 			"id": "message.41bec0fd54bfc103aadb82a9048ef75b0c165ed2e217e1cbc640bbe0b36cf246",
 			"kind": "literal",
 			"source": "Specifies the organizations to ignore in the _Launchpad_",
-			"translation": "指定 _Launchpad_ 中要忽略的组织"
+			"translation": "指定 _启动台_ 中要忽略的组织"
 		},
 		{
 			"id": "message.41cbd8d31cbfdcf64e6b23cfd57f08ef6edb34ae03961e247138d52e0df31563",
@@ -4074,7 +4074,7 @@
 			"id": "message.43fc58a4c0ca8a2ea43ff765e5b24e9372fe3c939bf764397c5ded77d4ecfed3",
 			"kind": "literal",
 			"source": "Launchpad (ᴘʀᴏ)",
-			"translation": "Launchpad (ᴘʀᴏ)"
+			"translation": "启动台 (ᴘʀᴏ)"
 		},
 		{
 			"id": "message.445802ff01805a5d600fc07218859512412533e983027ec0576716efa218e1ff",
@@ -4243,7 +4243,7 @@
 			"id": "message.46e70146604c3d450299dc03e417088a834a1a0b1bc12c67ac565dcec6b8615a",
 			"kind": "literal",
 			"source": "Keep everything at your fingertips with Launchpad & Worktrees.",
-			"translation": "借助 Launchpad 和 Worktrees，将一切尽在掌握。"
+			"translation": "借助启动台和 Worktrees，将一切尽在掌握。"
 		},
 		{
 			"id": "message.46fbf8fa40c765a5429134a257ade70c237b5d1596febc1f98b233b60399286d",
@@ -4417,7 +4417,7 @@
 			"id": "message.49cb3882bf6b2306b3bee74e4c2b3369587b812ec1213d4cfabcc8d430f7f7b3",
 			"kind": "literal",
 			"source": "Launchpad — organizes your pull requests into actionable groups to help you focus and keep your team unblocked.",
-			"translation": "Launchpad - 将你的拉取请求组织为可执行的分组，帮助你聚焦工作并让团队保持畅通。"
+			"translation": "启动台 - 将你的拉取请求组织为可执行的分组，帮助你聚焦工作并让团队保持畅通。"
 		},
 		{
 			"id": "message.49f79d7b9f1ea7815ae3b879d3e503f2b69eee0958a476ecff0372f5a84ceeb6",
@@ -5061,7 +5061,7 @@
 			"id": "message.53fbfd57399ce1fc0071516d3ff3ffc0401d91d9df92cea6e838cc727f56ff18",
 			"kind": "literal",
 			"source": "Toggle Launchpad Indicator",
-			"translation": "切换 Launchpad 指示器"
+			"translation": "切换启动台指示器"
 		},
 		{
 			"id": "message.53fe9a93900ef71d83ac2ff121c82c17d9d8ea6f9e8589429ba85914be7dc330",
@@ -5324,7 +5324,7 @@
 			"id": "message.580e64fa8a9625daffffa75272a79cd11e4d08da1751d59ff8d2804026d5c522",
 			"kind": "literal",
 			"source": "Shows the Launchpad icon",
-			"translation": "显示 Launchpad 图标"
+			"translation": "显示启动台图标"
 		},
 		{
 			"id": "message.58116f0faa49a3b958f6aac3014d0e9d8cfd824121cafc95b6c92bd9ac9c5c7b",
@@ -6727,7 +6727,7 @@
 			"id": "message.6e116828aec39ae6dc70b0282bad8e8fef096e7a2c0db02a629457ea31eaf8ad",
 			"kind": "rich",
 			"source": "Keep everything at your fingertips with Launchpad & Worktrees.\n\n**- Launchpad:** view and manage all your PRs and branches from one hub\n\n**- Worktrees:** code, test, and review on multiple branches in parallel\n\n**- Integrations:** connect PRs and issues from GitHub, GitLab, Jira, Azure DevOps & more\n\nStay in flow, ship faster, and never lose track of what matters.\n\n[Open Launchpad](command:gitlens.walkthrough.showLaunchpad)",
-			"translation": "借助 Launchpad 和 Worktrees，将一切尽在掌握。\n\n**- Launchpad：** 在一个中心查看并管理所有 PR 和分支\n\n**- Worktrees：** 在多个分支上并行编码、测试和审查\n\n**- 集成：** 连接来自 GitHub、GitLab、Jira、Azure DevOps 等平台的 PR 和 Issue\n\n保持专注，更快交付，且绝不遗漏重要事项。\n\n[打开 Launchpad](command:gitlens.walkthrough.showLaunchpad)",
+			"translation": "借助启动台和 Worktrees，将一切尽在掌握。\n\n**- 启动台：** 在一个中心查看并管理所有 PR 和分支\n\n**- Worktrees：** 在多个分支上并行编码、测试和审查\n\n**- 集成：** 连接来自 GitHub、GitLab、Jira、Azure DevOps 等平台的 PR 和 Issue\n\n保持专注，更快交付，且绝不遗漏重要事项。\n\n[打开启动台](command:gitlens.walkthrough.showLaunchpad)",
 			"format": "markdown",
 			"slots": []
 		},
@@ -6755,7 +6755,7 @@
 			"id": "message.6e97543549b506e943885c4a1a688274ec3cd1a19ed3fbbf9a8a6294c531148f",
 			"kind": "literal",
 			"source": "Specifies whether to allow opening multiple instances of the _Launchpad_ as an editor tab",
-			"translation": "指定是否允许将 _Launchpad_ 的多个实例作为编辑器标签页打开"
+			"translation": "指定是否允许将 _启动台_ 的多个实例作为编辑器标签页打开"
 		},
 		{
 			"id": "message.6ea3be6f99f4c6a052f2c0e36ff0a8b0c4a8e82dfe3ce7085752ee024f858f47",
@@ -6932,7 +6932,7 @@
 			"id": "message.71958e1c95def6a8eb9f989953772a692e04386351f2546d4db51c5b656c6c39",
 			"kind": "rich",
 			"source": "The Community Edition lets you:\n\n- View blame annotations and commit details inline\n- Explore file revision history for any repo\n\nUpgrade to **GitLens Pro** (Free 14-Day Trial) to access everything above plus advanced visualization, collaboration, and built-in AI tools that work right inside VS Code.\n\n$(sparkle) Pro gives you full access to:\n\n**- Commit Graph:** visualize every branch and commit relationship\n**- Visual File History:** see how a file has evolved with a graph of what changed and when\n**- Launchpad & Worktrees:** manage PRs and branches in one hub\n**- GitKraken AI: ** writes commits, PRs & changelogs for you.\n\n[Get Started with GitLens Pro](command:gitlens.walkthrough.plus.signUp)\n\nor [sign in](command:gitlens.walkthrough.plus.login)",
-			"translation": "Community 版本可让你：\n\n- 直接在编辑器中查看追溯注解和提交详情\n- 探索任意仓库的文件修订历史\n\n升级到 **GitLens Pro**（免费试用 14 天），即可在上述功能之外，获得可直接在 VS Code 中使用的高级可视化、协作能力和内置 AI 工具。\n\n$(sparkle) Pro 将让你完整访问：\n\n**- 提交图：** 可视化每个分支与提交之间的关系\n**- 可视文件历史：** 通过图表查看文件何时、如何演进\n**- Launchpad 和 Worktrees：** 在一个中心管理 PR 和分支\n**- GitKraken AI：** 为你编写提交、PR 和更改日志\n\n[开始使用 GitLens Pro](command:gitlens.walkthrough.plus.signUp)\n\n或[登录](command:gitlens.walkthrough.plus.login)",
+			"translation": "Community 版本可让你：\n\n- 直接在编辑器中查看追溯注解和提交详情\n- 探索任意仓库的文件修订历史\n\n升级到 **GitLens Pro**（免费试用 14 天），即可在上述功能之外，获得可直接在 VS Code 中使用的高级可视化、协作能力和内置 AI 工具。\n\n$(sparkle) Pro 将让你完整访问：\n\n**- 提交图：** 可视化每个分支与提交之间的关系\n**- 可视文件历史：** 通过图表查看文件何时、如何演进\n**- 启动台和 Worktrees：** 在一个中心管理 PR 和分支\n**- GitKraken AI：** 为你编写提交、PR 和更改日志\n\n[开始使用 GitLens Pro](command:gitlens.walkthrough.plus.signUp)\n\n或[登录](command:gitlens.walkthrough.plus.login)",
 			"format": "markdown",
 			"slots": []
 		},
@@ -7090,7 +7090,7 @@
 			"id": "message.73aa84f3349aa407d25f0ddee80c3d256f386be195ac844ddc8d4db76d2cc778",
 			"kind": "literal",
 			"source": "Specifies the style of the  _Launchpad_ status bar indicator icon",
-			"translation": "指定 _Launchpad_ 状态栏指示器图标的样式"
+			"translation": "指定 _启动台_ 状态栏指示器图标的样式"
 		},
 		{
 			"id": "message.73eb9c984412bb07731acaabe78de8912ebbf4c0f6a917268d4f14a9d1217c54",
@@ -7948,6 +7948,12 @@
 			"kind": "literal",
 			"source": "Specifies custom instructions to provide to the AI provider when generating a stash message",
 			"translation": "指定在生成贮藏消息时提供给 AI 提供商的自定义指令"
+		},
+		{
+			"id": "message.81aeb933af5f0a32583af3f4cbc901dd30c0b5aaf10ae4a93453fbb3e4336a06",
+			"kind": "literal",
+			"source": "Commit Graph Inspect",
+			"translation": "提交图检查"
 		},
 		{
 			"id": "message.81b5462050b4aaed38d433b2381e935a255ea407fc5dd47ce95c440c6b796137",
@@ -8992,7 +8998,7 @@
 			"id": "message.948df785a28a44e53407447dd56fd1558d24dacbd8be882a3efbd87c1108c967",
 			"kind": "rich",
 			"source": "[Connect an Integration...](command:gitlens.showLaunchpad?%7B%22source%22%3A%22launchpad-view%22%7D)\n\nAllows Launchpad to organize your pull requests into actionable groups and keep your team unblocked.",
-			"translation": "[连接集成...](command:gitlens.showLaunchpad?%7B%22source%22%3A%22launchpad-view%22%7D)\n\n允许 Launchpad 将你的拉取请求组织为可执行的分组，并让团队保持畅通。",
+			"translation": "[连接集成...](command:gitlens.showLaunchpad?%7B%22source%22%3A%22launchpad-view%22%7D)\n\n允许启动台将你的拉取请求组织为可执行的分组，并让团队保持畅通。",
 			"format": "markdown",
 			"slots": []
 		},
@@ -9309,7 +9315,7 @@
 			"id": "message.99a441858d9ecaa109b9c44a28dfd6d9febb552a6260745e494caa90a38462a0",
 			"kind": "rich",
 			"source": "Specifies when to switch between displaying files as a `tree` or `list` based on the number of files in a nesting level in the _Launchpad_ view. Only applies when `#gitlens.views.launchpad.files.layout#` is set to `auto`",
-			"translation": "指定在 _Launchpad_ 视图中，何时根据某一嵌套层级中的文件数量在 `tree` 或 `list` 之间切换文件显示方式。仅当 `#gitlens.views.launchpad.files.layout#` 设置为 `auto` 时适用",
+			"translation": "指定在 _启动台_ 视图中，何时根据某一嵌套层级中的文件数量在 `tree` 或 `list` 之间切换文件显示方式。仅当 `#gitlens.views.launchpad.files.layout#` 设置为 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -9600,7 +9606,7 @@
 			"id": "message.9d7de72b39c99acd11096f679e23b6565655144bf3f8c7a11607bbee16609f8b",
 			"kind": "literal",
 			"source": "Open Launchpad",
-			"translation": "打开 Launchpad"
+			"translation": "打开启动台"
 		},
 		{
 			"id": "message.9d8aa429c121777dd2bec33fc0eb7a07e87cc211568158a1b1e06036d18255a2",
@@ -9820,7 +9826,7 @@
 			"id": "message.a0ad57c32cf0c69374306eace2451b38bd6550eb02ba6f2854b85ea274d9e366",
 			"kind": "literal",
 			"source": "Group Launchpad View",
-			"translation": "编组 Launchpad 视图"
+			"translation": "编组启动台视图"
 		},
 		{
 			"id": "message.a0dc39782c215c3b7ed06dc86e400cc6734f999cbb98f6446cea0e95dc42e204",
@@ -9976,13 +9982,13 @@
 			"id": "message.a395a1044a68feaa845fe09ca948cbf2c43d01b9f344f5b0168437a65c923316",
 			"kind": "literal",
 			"source": "Launchpad & Worktrees:",
-			"translation": "Launchpad 和 Worktrees："
+			"translation": "启动台和 Worktrees："
 		},
 		{
 			"id": "message.a39793cb861dcbc0fbd68137d03dae4a68867b50e6e70d28f04f7a0c0773234a",
 			"kind": "literal",
 			"source": "Launchpad view",
-			"translation": "Launchpad 视图"
+			"translation": "启动台视图"
 		},
 		{
 			"id": "message.a3d144ffeb26ae98891c20a954a2a296517d1c0372da2d4fa5ced7f5bb7a4f51",
@@ -10201,7 +10207,7 @@
 			"id": "message.a6ffa8134fd05e83b2426fc4a1d7957189fff8d2ceee413ad67ba589b7ea52b0",
 			"kind": "literal",
 			"source": "Show Launchpad View",
-			"translation": "显示 Launchpad 视图"
+			"translation": "显示启动台视图"
 		},
 		{
 			"id": "message.a713716615b73e2e0d49aa8558e2898109fabc2816d154b446fd72c49bc05686",
@@ -10428,7 +10434,7 @@
 			"id": "message.aa8dd446acc1ed55d0b9f88bb3165b98f6fbb1e6bd8e08798eaf3ef7690a5157",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Launchpad_ view. Only applies when `#gitlens.views.launchpad.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _Launchpad_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.launchpad.files.layout#` 设置为 `tree` 或 `auto` 时适用",
+			"translation": "指定是否在 _启动台_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.launchpad.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -10436,7 +10442,7 @@
 			"id": "message.aabbf6df766d6df07e12c97fed5e16ba3b310815277176a765263901938f1623",
 			"kind": "literal",
 			"source": "Launchpad View Options",
-			"translation": "Launchpad 视图选项"
+			"translation": "启动台视图选项"
 		},
 		{
 			"id": "message.aacf7e345dcc3afe91fca4e3238908adca5d3053108215fbb8063abc60383366",
@@ -10473,7 +10479,7 @@
 			"id": "message.ab4bafed6248986d6347f7db2ce803656210c0517d4109798aad3fe6bd56d060",
 			"kind": "template",
 			"source": "Connect to ${slot1} View pull requests and issues in Home, Commit Graph, Launchpad, autolinks, and more",
-			"translation": "连接到 ${slot1} 后，可在主页、Commit Graph、Launchpad、自动链接等位置查看拉取请求和 Issue",
+			"translation": "连接到 ${slot1} 后，可在主页、Commit Graph、启动台、自动链接等位置查看拉取请求和 Issue",
 			"slots": ["slot1"]
 		},
 		{
@@ -10674,7 +10680,7 @@
 			"id": "message.af17a006858d8f26ef96b5f2bc7ae4f8a57031717f2ef55eab8d49bfdd00a6d6",
 			"kind": "literal",
 			"source": "Specifies the repositories to ignore in the _Launchpad_",
-			"translation": "指定 _Launchpad_ 中要忽略的仓库"
+			"translation": "指定 _启动台_ 中要忽略的仓库"
 		},
 		{
 			"id": "message.af27b62a54da4d654545890215a52ef752ca028616acfb32a61f764ecbabcd1c",
@@ -11052,7 +11058,7 @@
 			"id": "message.b5e53d2976c120b20c5cb97c4d7b73ef459ed27c71bef9be21fc62e55f5bb024",
 			"kind": "rich",
 			"source": "[Continue](command:gitlens.plus.reactivateProTrial?%7B%22source%22%3A%22launchpad-view%22%7D)\n\nReactivate your Pro trial and experience Launchpad and all the new Pro features — free for another 14 days!",
-			"translation": "[继续](command:gitlens.plus.reactivateProTrial?%7B%22source%22%3A%22launchpad-view%22%7D)\n\n重新激活你的 Pro 试用，再免费体验 Launchpad 和所有新 Pro 功能 14 天！",
+			"translation": "[继续](command:gitlens.plus.reactivateProTrial?%7B%22source%22%3A%22launchpad-view%22%7D)\n\n重新激活你的 Pro 试用，再免费体验启动台和所有新 Pro 功能 14 天！",
 			"format": "markdown",
 			"slots": []
 		},
@@ -11168,7 +11174,7 @@
 			"id": "message.b77b5699377c06319099228650fe70ee5a93d03fca3d5524ed25794f6d535cbe",
 			"kind": "literal",
 			"source": "Specifies the rate (in minutes) at which the status bar indicator will fetch pull request data for _Launchpad_. Use 0 to disable automatic polling",
-			"translation": "指定状态栏指示器为 _Launchpad_ 获取拉取请求数据的频率（分钟）。使用 0 可禁用自动轮询"
+			"translation": "指定状态栏指示器为 _启动台_ 获取拉取请求数据的频率（分钟）。使用 0 可禁用自动轮询"
 		},
 		{
 			"id": "message.b7aada6c54ebdfe07cd5c03dc919b6c1764f254376026ea1f571e8320bb0ab51",
@@ -11509,7 +11515,7 @@
 			"id": "message.bdd784b8e4b6e47426359a89144bb90930e041ec2b52082d0162d784a4bfba2d",
 			"kind": "literal",
 			"source": "Launchpad:",
-			"translation": "Launchpad："
+			"translation": "启动台："
 		},
 		{
 			"id": "message.be0ab0a3e8623781874859ed0b5901e394ad5488eb5a4b33afad086506fc4c59",
@@ -12068,7 +12074,7 @@
 			"id": "message.c87ca9f211125756537b88e772554d71ab0529f8acfc8365722a75800af3a38b",
 			"kind": "literal",
 			"source": "Specifies the number of days after which a pull request is considered stale and moved to Other in the _Launchpad_",
-			"translation": "指定拉取请求在 _Launchpad_ 中被视为陈旧并移动到 Other 所需的天数"
+			"translation": "指定拉取请求在 _启动台_ 中被视为陈旧并移动到 Other 所需的天数"
 		},
 		{
 			"id": "message.c8840d54a2114260e01b6f3a882f7df35b18782872a580f941e0d18994d4398f",
@@ -12623,7 +12629,7 @@
 			"id": "message.d2bb2109b5dbcbbca2ac679653819e84d229bb4a543dd34d3c77da61347da93d",
 			"kind": "literal",
 			"source": "Specifies the display of the  _Launchpad_ status bar indicator label",
-			"translation": "指定 _Launchpad_ 状态栏指示器标签的显示方式"
+			"translation": "指定 _启动台_ 状态栏指示器标签的显示方式"
 		},
 		{
 			"id": "message.d2c932e230e6ebaccdd6450b988ba6e25f56a4a81dff635d4c9261aebe2d08ab",
@@ -13059,7 +13065,7 @@
 			"id": "message.da00ec5c8b03347a6ee8478f25ee3333f647cfccd80077f53a66665703a34b16",
 			"kind": "literal",
 			"source": "Specifies whether to use colors on the _Launchpad_ status bar indicator",
-			"translation": "指定是否在 _Launchpad_ 状态栏指示器上使用颜色"
+			"translation": "指定是否在 _启动台_ 状态栏指示器上使用颜色"
 		},
 		{
 			"id": "message.da5dba01712e8bddea7ad1d88d7b60e99b0ba2cb7658759d695421b6c441f584",
@@ -13071,7 +13077,7 @@
 			"id": "message.da5f08e9dfd83b58ed716d7e8a524741e528999fba63dd85edf75d731d6aca6e",
 			"kind": "literal",
 			"source": "Launchpad (9)",
-			"translation": "Launchpad (9)"
+			"translation": "启动台 (9)"
 		},
 		{
 			"id": "message.daa9962d9fe17e720499c070fc04b57486fbab085904714c7d5aa9e91d0ee256",
@@ -13101,7 +13107,7 @@
 			"id": "message.db3ae055209d16d25ae89157b164ee7dcfbb712b0837c64fff1d9cc371042fe1",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Launchpad_ view",
-			"translation": "指定是否在 _Launchpad_ 视图中显示头像图像而不是提交（或状态）图标"
+			"translation": "指定是否在 _启动台_ 视图中显示头像图像而不是提交（或状态）图标"
 		},
 		{
 			"id": "message.db4c84ffa735c83d2f1219a7a572ad1998b6b539461f59e41bb7a668f0f40beb",
@@ -13896,7 +13902,7 @@
 			"id": "message.e7dc8dea12a24ccc1cd5d0efd438d339b7711b40215ec84d270e7dffbe64eb00",
 			"kind": "literal",
 			"source": "Specifies the groups of pull requests to show on the _Launchpad_ status bar indicator",
-			"translation": "指定要在 _Launchpad_ 状态栏指示器中显示的拉取请求分组"
+			"translation": "指定要在 _启动台_ 状态栏指示器中显示的拉取请求分组"
 		},
 		{
 			"id": "message.e7f93e63e671f12e3a2e06220056d3dcbbee0fb7ef11828c81359b48e31146c6",
@@ -14245,7 +14251,7 @@
 			"id": "message.ed9fb8ddf3715adc392f8d4d860c9bea7f8f2a1b4872534ee56daa9ccd19b96c",
 			"kind": "literal",
 			"source": "Launchpad",
-			"translation": "Launchpad"
+			"translation": "启动台"
 		},
 		{
 			"id": "message.edd9adcaeb119dd3826b6c180b50d8127a44b84e31f3573191b8d3769c327ca3",
@@ -14445,7 +14451,7 @@
 			"id": "message.f121350b0d0ae4bfbde6c0a3f9cf2024265dda85d3775e1b77e506805752b733",
 			"kind": "literal",
 			"source": "Specifies whether to enable status bar indicator for _Launchpad_",
-			"translation": "指定是否为 _Launchpad_ 启用状态栏指示器"
+			"translation": "指定是否为 _启动台_ 启用状态栏指示器"
 		},
 		{
 			"id": "message.f13c03c5f703dc4c495555b8ef94307e610472e1a894b4b6f693281a475ecaf9",

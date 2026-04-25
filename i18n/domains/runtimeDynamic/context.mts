@@ -2,7 +2,7 @@ import path from 'node:path';
 
 import { createDomainContext, createI18nWorkspaceContext, type DomainContext } from '../../core/context.mts';
 
-export type RuntimeDynamicDomain = 'formatter' | 'quickpicks';
+export type RuntimeDynamicDomain = 'formatter' | 'quickpicks' | 'webviewHost';
 
 export interface RuntimeDynamicDomainContext extends DomainContext {
 	readonly domain: RuntimeDynamicDomain;

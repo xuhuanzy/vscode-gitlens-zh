@@ -43,6 +43,19 @@ const targetsByDomain: Record<RuntimeDynamicDomain, readonly TargetDefinition[]>
 			files: ['src/commands/quick-wizard/steps/commits.ts'],
 		},
 	],
+	webviewHost: [
+		{
+			group: 'registration',
+			files: [
+				'src/webviews/commitDetails/registration.ts',
+				'src/webviews/home/registration.ts',
+				'src/webviews/plus/graph/registration.ts',
+				'src/webviews/plus/patchDetails/registration.ts',
+				'src/webviews/plus/timeline/registration.ts',
+				'src/webviews/welcome/registration.ts',
+			],
+		},
+	],
 };
 
 export function loadRuntimeDynamicSourceTargets(context: RuntimeDynamicDomainContext): RuntimeDynamicSourceTarget[] {
