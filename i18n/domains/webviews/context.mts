@@ -25,6 +25,7 @@ export function createWebviewsDomainContext(rootDir?: string): {
 	readonly worksetFile: string;
 	readonly pendingReportFile: string;
 	readonly settingsBuildFile: string;
+	readonly settingsSourceFile: string;
 	readonly localizedDynamicSourceDir: string;
 } {
 	const workspace = createI18nWorkspaceContext(rootDir);
@@ -40,6 +41,7 @@ export function createWebviewsDomainContext(rootDir?: string): {
 		domain: 'webviews',
 		artifactId: 'webviews',
 		settingsBuildFile: path.join(domain.rootDir, 'dist', 'webviews', 'settings.html'),
+		settingsSourceFile: path.join(domain.rootDir, '.work', 'i18n', 'webviews-settings-shell', 'en', 'settings.html'),
 		localizedDynamicSourceDir: localizedDynamicSourceDir,
 	};
 }

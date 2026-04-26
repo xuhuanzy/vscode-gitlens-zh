@@ -74,8 +74,10 @@ function testAggregateSyncSkipsWebviewsWhenSettingsShellIsMissing(): void {
 		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'package.zh-cn.json')), true);
 		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'formatter.zh-cn.json')), true);
 		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'quickpicks.zh-cn.json')), true);
-		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'webviewHost.zh-cn.json')), true);
-		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'webviews.zh-cn.json')), false);
+		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'webviewHost.zh-cn.json')), false);
+		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'webviews.zh-cn.json')), true);
+		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'catalog', 'webviewHost.catalog.json')), false);
+		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'catalog', 'webviews.catalog.json')), true);
 		assert.equal(
 			logs.some(log => log.includes('Skipped webview i18n sync')),
 			true,

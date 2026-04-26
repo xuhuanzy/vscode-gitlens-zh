@@ -11,6 +11,7 @@ import {
 	loadWebviewsWorkset,
 	loadLocalizedDynamicSource,
 	loadLocalizedSettingsShell,
+	saveWebviewsCatalog,
 	saveWebviewsWorkset,
 } from '../store.mts';
 import {
@@ -27,6 +28,8 @@ run();
 
 function run(): void {
 	testSettingsWorkflow();
+	testSettingsSourceSnapshotPreventsLocalizedResync();
+	testWebviewsSyncPreservesSharedWebviewHostEntries();
 	testWelcomeLocalizedSourceWorkflow();
 	testDynamicSourceGenerationDoesNotRequireBuiltSettingsShell();
 	testLocalizedWebpackWatchIgnoresGeneratedArtifacts();
@@ -125,6 +128,146 @@ function testSettingsWorkflow(): void {
 
 		const report = createPendingReport({ rootDir });
 		assert.equal(report.domain, 'webviews');
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testSettingsSourceSnapshotPreventsLocalizedResync(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-settings-source-snapshot-'));
+	try {
+		writeTextFile(
+			rootDir,
+			'dist/webviews/settings.html',
+			[
+				'<!doctype html>',
+				'<html lang="en">',
+				'<body>',
+				'\t<select>',
+				'\t\t<option>Toggles file changes from the commit</option>',
+				'\t</select>',
+				'</body>',
+				'</html>',
+				'',
+			].join('\n'),
+		);
+
+		syncWebviewsI18n({ rootDir });
+		const context = createWebviewsDomainContext(rootDir);
+		approveTranslations(context, {
+			'Toggles file changes from the commit': '切换该提交的文件更改',
+		});
+		promoteWebviewsAuthority({ rootDir });
+		generateWebviewsLocalizedSettingsShell({ rootDir });
+
+		assert.match(fs.readFileSync(context.settingsBuildFile, 'utf8'), /<html lang="zh-CN">/u);
+		assert.match(fs.readFileSync(context.settingsBuildFile, 'utf8'), /切换该提交的文件更改/u);
+		assert.match(fs.readFileSync(context.settingsSourceFile, 'utf8'), /<html lang="en">/u);
+		assert.match(fs.readFileSync(context.settingsSourceFile, 'utf8'), /Toggles file changes from the commit/u);
+
+		syncWebviewsI18n({ rootDir });
+		const catalog = loadWebviewsCatalog(context);
+		const workset = loadWebviewsWorkset(context);
+		assert.equal(
+			catalog.occurrences.some(occurrence => occurrence.sourceText === 'Toggles file changes from the commit'),
+			true,
+		);
+		assert.equal(
+			catalog.occurrences.some(occurrence => occurrence.sourceText === '切换该提交的文件更改'),
+			false,
+		);
+		assert.equal(
+			workset.entries.some(entry => entry.source === '切换该提交的文件更改'),
+			false,
+		);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testWebviewsSyncPreservesSharedWebviewHostEntries(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-shared-webviews-files-'));
+	try {
+		writeTextFile(
+			rootDir,
+			'dist/webviews/settings.html',
+			[
+				'<!doctype html>',
+				'<html lang="en">',
+				'<body>',
+				'\t<h1>Settings</h1>',
+				'</body>',
+				'</html>',
+				'',
+			].join('\n'),
+		);
+
+		const context = createWebviewsDomainContext(rootDir);
+		saveWebviewsCatalog(context, {
+			$schema: '../schemas/sourceCatalog.schema.json',
+			version: 3,
+			domain: 'webviews',
+			generatedAt: new Date(0).toISOString(),
+			deferredDomains: ['quickpicks', 'formatter'],
+			occurrences: [
+				{
+					id: 'webviewHost:webviewHost.registration.registration.string-13-11.title.123#title',
+					domain: 'webviewHost',
+					scope: 'webviewHost.registration',
+					anchor: 'webviewHost.registration.registration.string-13-11.title.123',
+					slot: 'title',
+					authorityId: 'message.webview-host-only',
+					pattern: {
+						kind: 'literal',
+						text: 'Home',
+					},
+					sourceText: 'Home',
+					sourceHash: 'hash-home',
+					reference: {
+						kind: 'source',
+						file: 'src/webviews/home/registration.ts',
+						syntax: 'ts',
+						start: { line: 13, column: 11 },
+						end: { line: 13, column: 17 },
+						attribute: 'title',
+					},
+					output: {
+						kind: 'runtime-key',
+						bundle: 'webviewHost',
+						key: 'registration.string-13-11.title.123',
+					},
+				},
+			],
+		});
+		saveWebviewsWorkset(context, {
+			$schema: '../schemas/translationWorkset.schema.json',
+			version: 2,
+			locale: 'zh-cn',
+			domain: 'webviews',
+			generatedAt: new Date(0).toISOString(),
+			entries: [
+				{
+					id: 'message.webview-host-only',
+					kind: 'literal',
+					source: 'Home',
+					translation: null,
+					sourceHash: 'hash-home',
+					occurrenceIds: ['webviewHost:webviewHost.registration.registration.string-13-11.title.123#title'],
+					status: 'pending',
+				},
+			],
+		});
+
+		const result = syncWebviewsI18n({ rootDir });
+		assert.equal(result.worksetCount, 1);
+
+		const workset = loadWebviewsWorkset(context);
+		assert.equal(workset.entries.some(entry => entry.id === 'message.webview-host-only'), true);
+		assert.equal(workset.entries.some(entry => entry.source === 'Settings'), true);
+		const catalog = loadWebviewsCatalog(context);
+		assert.equal(catalog.domain, 'webviews');
+		assert.equal(catalog.occurrences.some(occurrence => occurrence.id.startsWith('webviewHost:')), true);
+		assert.equal(catalog.occurrences.some(occurrence => occurrence.sourceText === 'Settings'), true);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}
@@ -239,6 +382,7 @@ function testLocalizedWebpackWatchIgnoresGeneratedArtifacts(): void {
 			path.join(rootDir, 'i18n', 'reports').replaceAll('\\', '/'),
 		]);
 
+		// @ts-ignore
 		const generator = config.plugins?.find(plugin => plugin instanceof GenerateLocalizedDynamicSourcesPlugin) as
 			| GenerateLocalizedDynamicSourcesPlugin
 			| undefined;

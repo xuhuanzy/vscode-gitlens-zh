@@ -12,6 +12,7 @@ import type {
 	SourceCatalogFile,
 	TranslationWorksetFile,
 } from './model.mts';
+import { stableStringify } from './model.mts';
 
 export function ensureI18nDirectories(context: I18nWorkspaceContext): void {
 	for (const directory of [
@@ -61,6 +62,11 @@ export function loadWorkset(context: DomainContext): TranslationWorksetFile {
 }
 
 export function saveWorkset(context: DomainContext, workset: TranslationWorksetFile): void {
+	try {
+		const existing = loadWorkset(context);
+		if (areEquivalentWorksetsIgnoringGeneratedAt(existing, workset)) return;
+	} catch {}
+
 	writeJsonFile(context.worksetFile, workset);
 }
 
@@ -200,4 +206,11 @@ function isFileNotFoundError(ex: unknown): boolean {
 		'code' in ex &&
 		(ex as { readonly code?: unknown }).code === 'ENOENT'
 	);
+}
+
+function areEquivalentWorksetsIgnoringGeneratedAt(
+	left: TranslationWorksetFile,
+	right: TranslationWorksetFile,
+): boolean {
+	return stableStringify({ ...left, generatedAt: '' }) === stableStringify({ ...right, generatedAt: '' });
 }

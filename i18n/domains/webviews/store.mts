@@ -56,6 +56,31 @@ export function loadSettingsBuildHtml(context: WebviewsDomainContext): string {
 	return fs.readFileSync(context.settingsBuildFile, 'utf8');
 }
 
+export function loadSettingsSourceHtml(context: WebviewsDomainContext): string {
+	if (fs.existsSync(context.settingsSourceFile)) {
+		return fs.readFileSync(context.settingsSourceFile, 'utf8');
+	}
+
+	const html = loadSettingsBuildHtml(context);
+	if (isLocalizedSettingsShell(html)) {
+		throw new Error(
+			`Cannot use localized settings shell as webview i18n source: ${context.settingsBuildFile}. Rebuild the settings webview to refresh ${context.settingsSourceFile}.`,
+		);
+	}
+
+	return html;
+}
+
+export function saveSettingsSourceHtml(context: WebviewsDomainContext, html: string): void {
+	if (isLocalizedSettingsShell(html)) {
+		throw new Error(
+			`Cannot snapshot localized settings shell as webview i18n source: ${context.settingsBuildFile}. Rebuild the settings webview before generating localized settings output.`,
+		);
+	}
+
+	writeTextFile(context.settingsSourceFile, html);
+}
+
 export function loadSourceTargetContents(context: WebviewsDomainContext, relativeFile: string): string | undefined {
 	try {
 		return fs.readFileSync(path.join(context.rootDir, ...relativeFile.split('/')), 'utf8');
@@ -99,13 +124,17 @@ export function deleteLocalizedDynamicSource(context: WebviewsDomainContext, rel
 	} catch {}
 }
 
+export function isLocalizedSettingsShell(html: string): boolean {
+	return /<html\b[^>]*\blang=["']zh-CN["']/u.test(html);
+}
+
 export { loadAuthorityBundle, saveAuthorityBundle, savePendingReport };
 
 export function createEmptyWebviewsCatalogFile() {
 	return createEmptyCatalogFile({
 		schemaPath: '../schemas/sourceCatalog.schema.json',
 		domain: 'webviews',
-		deferredDomains: ['quickpicks', 'formatter', 'webviewHost'],
+		deferredDomains: ['quickpicks', 'formatter'],
 	});
 }
 

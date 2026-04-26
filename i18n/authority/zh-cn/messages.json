@@ -3,7 +3,7 @@
 	"version": 2,
 	"kind": "messages",
 	"locale": "zh-cn",
-	"updatedAt": "2026-04-26T00:00:00.000Z",
+	"updatedAt": "2026-04-25T23:57:24.537Z",
 	"entries": [
 		{
 			"id": "message.000d1a29b2365349f8762064ef86edc1f548f435002395035bdc26f6c87754fc",
@@ -8145,6 +8145,12 @@
 			"translation": "删除工作树..."
 		},
 		{
+			"id": "message.851109b576a4755f4b096db8a0fc8fa8409a6a18893608c705dccac4548a899c",
+			"kind": "literal",
+			"source": "Open in New Window",
+			"translation": "在新窗口中打开"
+		},
+		{
 			"id": "message.85161f11276d099b0d4105edaf2d21058378490ea46922fcbd390e99c066fe75",
 			"kind": "literal",
 			"source": "Start Work on an Issue",
@@ -11335,6 +11341,13 @@
 			"translation": "工作区更改"
 		},
 		{
+			"id": "message.ba98efd990613d52d51300ecc338a6e5b7f0db2e9d158a2993b897012eab6aaa",
+			"kind": "template",
+			"source": "${slot1} Conflict ${slot2} Detected",
+			"translation": "检测到 ${slot1} 个冲突",
+			"slots": ["slot1", "slot2"]
+		},
+		{
 			"id": "message.baad243f7e20551fc9a2bf2a9bba55666acb3a4e7f6df90ee15b98eee2e4d56a",
 			"kind": "literal",
 			"source": "Specifies whether to reveal stashes in the _Stashes_ view, otherwise they revealed in the _Repositories_ view",
@@ -14328,6 +14341,12 @@
 			"kind": "literal",
 			"source": "Previous Match (Shift+Enter) First Match (Shift+Click)",
 			"translation": "上一个匹配（Shift+Enter） 第一个匹配（Shift+Click）"
+		},
+		{
+			"id": "message.ef4ff1b22b73e222bfca21e6ab75221dbf060741b8b1a2090dd9ed5ee082d2a8",
+			"kind": "literal",
+			"source": "Detecting Conflicts",
+			"translation": "正在检测冲突"
 		},
 		{
 			"id": "message.ef584ae8d3ac5fb2440535b1e9966091ee05c3c832dd09947af1b60dfc191a67",

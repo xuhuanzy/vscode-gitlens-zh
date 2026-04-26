@@ -2,9 +2,240 @@
 	"$schema": "../schemas/sourceCatalog.schema.json",
 	"version": 3,
 	"domain": "webviews",
-	"generatedAt": "2026-04-24T20:03:10.344Z",
-	"deferredDomains": ["quickpicks", "formatter", "webviewHost"],
+	"generatedAt": "2026-04-26T00:33:47.933Z",
+	"deferredDomains": ["quickpicks", "formatter"],
 	"occurrences": [
+		{
+			"id": "webviewHost:webviewHost.registration.registration.string-13-11.title.2dd918d139#title",
+			"domain": "webviewHost",
+			"scope": "webviewHost.registration",
+			"anchor": "webviewHost.registration.registration.string-13-11.title.2dd918d139",
+			"slot": "title",
+			"authorityId": "message.4c96ba5a87241c8c80b57192b38fdddd46b5a62f3dbec5f0fd04eb312f684ad7",
+			"pattern": {
+				"kind": "literal",
+				"text": "Welcome"
+			},
+			"sourceText": "Welcome",
+			"sourceHash": "0e2226b5235f0ff94a276eb4d07a3bfea74b7e3b8b85e9efca6c18430f041bf8",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/welcome/registration.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 13,
+					"column": 11
+				},
+				"end": {
+					"line": 13,
+					"column": 20
+				},
+				"attribute": "title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "webviewHost",
+				"key": "registration.string-13-11.title.2dd918d139"
+			}
+		},
+		{
+			"id": "webviewHost:webviewHost.registration.registration.string-13-11.title.7e579833a0#title",
+			"domain": "webviewHost",
+			"scope": "webviewHost.registration",
+			"anchor": "webviewHost.registration.registration.string-13-11.title.7e579833a0",
+			"slot": "title",
+			"authorityId": "message.0ceb2c753e03c1ae4a5b1feea215eece337171272c9461a83b6a37c8e5e5ad5c",
+			"pattern": {
+				"kind": "literal",
+				"text": "Home"
+			},
+			"sourceText": "Home",
+			"sourceHash": "3a78695388b38b5cceefaf6796b0137877514593543b91af2752d5a17e3d736c",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/home/registration.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 13,
+					"column": 11
+				},
+				"end": {
+					"line": 13,
+					"column": 17
+				},
+				"attribute": "title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "webviewHost",
+				"key": "registration.string-13-11.title.7e579833a0"
+			}
+		},
+		{
+			"id": "webviewHost:webviewHost.registration.registration.string-14-11.title.58cec5c681#title",
+			"domain": "webviewHost",
+			"scope": "webviewHost.registration",
+			"anchor": "webviewHost.registration.registration.string-14-11.title.58cec5c681",
+			"slot": "title",
+			"authorityId": "message.982fc5fac57ac73293a4dcf26bb37702a147681a8fca5d98be7fc379174f1714",
+			"pattern": {
+				"kind": "literal",
+				"text": "Inspect"
+			},
+			"sourceText": "Inspect",
+			"sourceHash": "e0723a86a5b9408aee9113031785d3d15d9702892f31a46e5fe927c0c8552675",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/commitDetails/registration.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 14,
+					"column": 11
+				},
+				"end": {
+					"line": 14,
+					"column": 20
+				},
+				"attribute": "title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "webviewHost",
+				"key": "registration.string-14-11.title.58cec5c681"
+			}
+		},
+		{
+			"id": "webviewHost:webviewHost.registration.registration.string-39-11.title.ce83324eb8#title",
+			"domain": "webviewHost",
+			"scope": "webviewHost.registration",
+			"anchor": "webviewHost.registration.registration.string-39-11.title.ce83324eb8",
+			"slot": "title",
+			"authorityId": "message.81aeb933af5f0a32583af3f4cbc901dd30c0b5aaf10ae4a93453fbb3e4336a06",
+			"pattern": {
+				"kind": "literal",
+				"text": "Commit Graph Inspect"
+			},
+			"sourceText": "Commit Graph Inspect",
+			"sourceHash": "165d6e5e59ee82c8b544ca41a5f367faf8663db67ab61e42118978713c6367b7",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/commitDetails/registration.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 39,
+					"column": 11
+				},
+				"end": {
+					"line": 39,
+					"column": 33
+				},
+				"attribute": "title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "webviewHost",
+				"key": "registration.string-39-11.title.ce83324eb8"
+			}
+		},
+		{
+			"id": "webviewHost:webviewHost.registration.registration.string-41-11.title.6d2231ca0a#title",
+			"domain": "webviewHost",
+			"scope": "webviewHost.registration",
+			"anchor": "webviewHost.registration.registration.string-41-11.title.6d2231ca0a",
+			"slot": "title",
+			"authorityId": "message.18b6295b855d5e178c086a1a6b6decb53b35c4e18c3e7c6baa5986763006a543",
+			"pattern": {
+				"kind": "literal",
+				"text": "Patch"
+			},
+			"sourceText": "Patch",
+			"sourceHash": "7e345470de240d118d52814a74f5c64fabae0f55b122ecb00ffa17a8889ebc7d",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/plus/patchDetails/registration.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 41,
+					"column": 11
+				},
+				"end": {
+					"line": 41,
+					"column": 18
+				},
+				"attribute": "title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "webviewHost",
+				"key": "registration.string-41-11.title.6d2231ca0a"
+			}
+		},
+		{
+			"id": "webviewHost:webviewHost.registration.registration.string-48-11.title.8410c7b5d8#title",
+			"domain": "webviewHost",
+			"scope": "webviewHost.registration",
+			"anchor": "webviewHost.registration.registration.string-48-11.title.8410c7b5d8",
+			"slot": "title",
+			"authorityId": "message.fa462a4b7f5e41a6b714b6885911a72fc65e301c95255df36bbe130d3df31ac3",
+			"pattern": {
+				"kind": "literal",
+				"text": "Visual File History"
+			},
+			"sourceText": "Visual File History",
+			"sourceHash": "4142f19c98080b950ef950b83d56d33d6993de8085b05486247110fc6017f87b",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/plus/timeline/registration.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 48,
+					"column": 11
+				},
+				"end": {
+					"line": 48,
+					"column": 32
+				},
+				"attribute": "title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "webviewHost",
+				"key": "registration.string-48-11.title.8410c7b5d8"
+			}
+		},
+		{
+			"id": "webviewHost:webviewHost.registration.registration.string-87-11.title.cc089f157d#title",
+			"domain": "webviewHost",
+			"scope": "webviewHost.registration",
+			"anchor": "webviewHost.registration.registration.string-87-11.title.cc089f157d",
+			"slot": "title",
+			"authorityId": "message.3555510e73c530918e9c2c9bd8e22d8468de8a00cfd2aaaddaa5cdafbdc30f3c",
+			"pattern": {
+				"kind": "literal",
+				"text": "Commit Graph"
+			},
+			"sourceText": "Commit Graph",
+			"sourceHash": "9cda4a7ac93dc5bd89d388f4cf399134bfe7d2034b9483a0adae3ba1f22093f2",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/plus/graph/registration.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 87,
+					"column": 11
+				},
+				"end": {
+					"line": 87,
+					"column": 25
+				},
+				"attribute": "title"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "webviewHost",
+				"key": "registration.string-87-11.title.cc089f157d"
+			}
+		},
 		{
 			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-117-12.text.25e4b43997#text",
 			"domain": "webviews",
@@ -294,10 +525,10 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-1558-8.text.849c33269a#text",
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-1559-8.text.7a67a0be84#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-1558-8.text.849c33269a",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-1559-8.text.7a67a0be84",
 			"slot": "text",
 			"authorityId": "message.6448973dcb17337b935432322e7840287e440395f1b4c80c723bf32234b8d600",
 			"pattern": {
@@ -311,25 +542,25 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1558,
+					"line": 1559,
 					"column": 8
 				},
 				"end": {
-					"line": 1558,
+					"line": 1559,
 					"column": 50
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-1558-8.text.849c33269a"
+				"key": "commitDetails.imperative-display-1559-8.text.7a67a0be84"
 			}
 		},
 		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-1561-8.text.d437ee4708#text",
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-1562-8.text.167b3281ee#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-1561-8.text.d437ee4708",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-1562-8.text.167b3281ee",
 			"slot": "text",
 			"authorityId": "message.6448973dcb17337b935432322e7840287e440395f1b4c80c723bf32234b8d600",
 			"pattern": {
@@ -343,25 +574,25 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1561,
+					"line": 1562,
 					"column": 8
 				},
 				"end": {
-					"line": 1561,
+					"line": 1562,
 					"column": 50
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-1561-8.text.d437ee4708"
+				"key": "commitDetails.imperative-display-1562-8.text.167b3281ee"
 			}
 		},
 		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-1573-8.text.b0148c7564#text",
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-1574-8.text.ae203973fd#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-1573-8.text.b0148c7564",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-1574-8.text.ae203973fd",
 			"slot": "text",
 			"authorityId": "message.d2d357dbfa2aa28c4943b5491070dc097a68b79f08d716668fab814daafb1dda",
 			"pattern": {
@@ -375,25 +606,25 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1573,
+					"line": 1574,
 					"column": 8
 				},
 				"end": {
-					"line": 1573,
+					"line": 1574,
 					"column": 41
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-1573-8.text.b0148c7564"
+				"key": "commitDetails.imperative-display-1574-8.text.ae203973fd"
 			}
 		},
 		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-1576-8.text.65be6198ff#text",
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-1577-8.text.3f4016677e#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-1576-8.text.65be6198ff",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-1577-8.text.3f4016677e",
 			"slot": "text",
 			"authorityId": "message.d2d357dbfa2aa28c4943b5491070dc097a68b79f08d716668fab814daafb1dda",
 			"pattern": {
@@ -407,18 +638,18 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1576,
+					"line": 1577,
 					"column": 8
 				},
 				"end": {
-					"line": 1576,
+					"line": 1577,
 					"column": 41
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-1576-8.text.65be6198ff"
+				"key": "commitDetails.imperative-display-1577-8.text.3f4016677e"
 			}
 		},
 		{
@@ -1834,10 +2065,10 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-360-24.text.a55e3c791f#text",
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-361-24.text.86e8e41182#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-360-24.text.a55e3c791f",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-361-24.text.86e8e41182",
 			"slot": "text",
 			"authorityId": "message.f39112883cc6a8fa5947c813b8d2bd2e9c0ca0a97d5dbb19350c87fbcf892e15",
 			"pattern": {
@@ -1851,25 +2082,25 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 360,
+					"line": 361,
 					"column": 24
 				},
 				"end": {
-					"line": 360,
+					"line": 361,
 					"column": 32
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-360-24.text.a55e3c791f"
+				"key": "commitDetails.imperative-display-361-24.text.86e8e41182"
 			}
 		},
 		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-360-35.text.1b539ae1d6#text",
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-361-35.text.402453650c#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-360-35.text.1b539ae1d6",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-361-35.text.402453650c",
 			"slot": "text",
 			"authorityId": "message.82478bfacfff984eb7072c3ed40890034f9dc655185191b6d5a1967a90f0e6a8",
 			"pattern": {
@@ -1883,18 +2114,18 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 360,
+					"line": 361,
 					"column": 35
 				},
 				"end": {
-					"line": 360,
+					"line": 361,
 					"column": 43
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-360-35.text.1b539ae1d6"
+				"key": "commitDetails.imperative-display-361-35.text.402453650c"
 			}
 		},
 		{
@@ -1995,10 +2226,10 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-376-11.text.174d721836#text",
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-377-11.text.05aa4ff627#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-376-11.text.174d721836",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-377-11.text.05aa4ff627",
 			"slot": "text",
 			"authorityId": "message.db5b8ed4047a665eb760cff19e4aa4283cf10835129c36876bd4e171e5565497",
 			"pattern": {
@@ -2013,25 +2244,25 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 376,
+					"line": 377,
 					"column": 11
 				},
 				"end": {
-					"line": 376,
+					"line": 377,
 					"column": 106
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-376-11.text.174d721836"
+				"key": "commitDetails.imperative-display-377-11.text.05aa4ff627"
 			}
 		},
 		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-378-10.text.4be3e3afa1#text",
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-379-10.text.85d360b464#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-378-10.text.4be3e3afa1",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-379-10.text.85d360b464",
 			"slot": "text",
 			"authorityId": "message.e2fa0ba0eb3c53d6350c2830d3165034958eae927c1152da44f750f7e3d17d3d",
 			"pattern": {
@@ -2046,18 +2277,18 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 378,
+					"line": 379,
 					"column": 10
 				},
 				"end": {
-					"line": 378,
+					"line": 379,
 					"column": 110
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-378-10.text.4be3e3afa1"
+				"key": "commitDetails.imperative-display-379-10.text.85d360b464"
 			}
 		},
 		{
@@ -2734,134 +2965,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-525-48.text.4eb123770a#text",
-			"domain": "webviews",
-			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-525-48.text.4eb123770a",
-			"slot": "text",
-			"authorityId": "message.07fe69f67848c680b3412df6ceb4a8623729e4d2fabd943f8cb4297f2be0f8f0",
-			"pattern": {
-				"kind": "literal",
-				"text": "Filter Results"
-			},
-			"sourceText": "Filter Results",
-			"sourceHash": "c21d440790d6bf44437e90f58a8cd578e26d9a57dfe4f1cb93a0144df678ba1a",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/tree/tree-generator.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 525,
-					"column": 48
-				},
-				"end": {
-					"line": 525,
-					"column": 64
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-525-48.text.4eb123770a"
-			}
-		},
-		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-525-67.text.6e125aca0f#text",
-			"domain": "webviews",
-			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-525-67.text.6e125aca0f",
-			"slot": "text",
-			"authorityId": "message.8cbe22d1e29c2ceea53eee018e662c2988cb5d2ead2927a0db9c72d1d8dc5201",
-			"pattern": {
-				"kind": "literal",
-				"text": "Highlight Results"
-			},
-			"sourceText": "Highlight Results",
-			"sourceHash": "a9bc516e389fe8e88a0a92f3d3bf103fe5dbb85fdedc52519f2ecf6e4f91ea23",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/tree/tree-generator.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 525,
-					"column": 67
-				},
-				"end": {
-					"line": 525,
-					"column": 86
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-525-67.text.6e125aca0f"
-			}
-		},
-		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-526-51.text.e5ecc25e1a#text",
-			"domain": "webviews",
-			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-526-51.text.e5ecc25e1a",
-			"slot": "text",
-			"authorityId": "message.07fe69f67848c680b3412df6ceb4a8623729e4d2fabd943f8cb4297f2be0f8f0",
-			"pattern": {
-				"kind": "literal",
-				"text": "Filter Results"
-			},
-			"sourceText": "Filter Results",
-			"sourceHash": "c21d440790d6bf44437e90f58a8cd578e26d9a57dfe4f1cb93a0144df678ba1a",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/tree/tree-generator.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 526,
-					"column": 51
-				},
-				"end": {
-					"line": 526,
-					"column": 67
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-526-51.text.e5ecc25e1a"
-			}
-		},
-		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-526-70.text.13e6939cb4#text",
-			"domain": "webviews",
-			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-526-70.text.13e6939cb4",
-			"slot": "text",
-			"authorityId": "message.8cbe22d1e29c2ceea53eee018e662c2988cb5d2ead2927a0db9c72d1d8dc5201",
-			"pattern": {
-				"kind": "literal",
-				"text": "Highlight Results"
-			},
-			"sourceText": "Highlight Results",
-			"sourceHash": "a9bc516e389fe8e88a0a92f3d3bf103fe5dbb85fdedc52519f2ecf6e4f91ea23",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/tree/tree-generator.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 526,
-					"column": 70
-				},
-				"end": {
-					"line": 526,
-					"column": 89
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-526-70.text.13e6939cb4"
-			}
-		},
-		{
 			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-53-13.text.eb78a39ff6#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
@@ -3118,6 +3221,134 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-648-48.text.0704a61b69#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-648-48.text.0704a61b69",
+			"slot": "text",
+			"authorityId": "message.07fe69f67848c680b3412df6ceb4a8623729e4d2fabd943f8cb4297f2be0f8f0",
+			"pattern": {
+				"kind": "literal",
+				"text": "Filter Results"
+			},
+			"sourceText": "Filter Results",
+			"sourceHash": "c21d440790d6bf44437e90f58a8cd578e26d9a57dfe4f1cb93a0144df678ba1a",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/tree-view.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 648,
+					"column": 48
+				},
+				"end": {
+					"line": 648,
+					"column": 64
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-648-48.text.0704a61b69"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-648-67.text.0037160937#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-648-67.text.0037160937",
+			"slot": "text",
+			"authorityId": "message.8cbe22d1e29c2ceea53eee018e662c2988cb5d2ead2927a0db9c72d1d8dc5201",
+			"pattern": {
+				"kind": "literal",
+				"text": "Highlight Results"
+			},
+			"sourceText": "Highlight Results",
+			"sourceHash": "a9bc516e389fe8e88a0a92f3d3bf103fe5dbb85fdedc52519f2ecf6e4f91ea23",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/tree-view.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 648,
+					"column": 67
+				},
+				"end": {
+					"line": 648,
+					"column": 86
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-648-67.text.0037160937"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-649-51.text.5e5bf624b0#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-649-51.text.5e5bf624b0",
+			"slot": "text",
+			"authorityId": "message.07fe69f67848c680b3412df6ceb4a8623729e4d2fabd943f8cb4297f2be0f8f0",
+			"pattern": {
+				"kind": "literal",
+				"text": "Filter Results"
+			},
+			"sourceText": "Filter Results",
+			"sourceHash": "c21d440790d6bf44437e90f58a8cd578e26d9a57dfe4f1cb93a0144df678ba1a",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/tree-view.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 649,
+					"column": 51
+				},
+				"end": {
+					"line": 649,
+					"column": 67
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-649-51.text.5e5bf624b0"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-649-70.text.9f504a9834#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-649-70.text.9f504a9834",
+			"slot": "text",
+			"authorityId": "message.8cbe22d1e29c2ceea53eee018e662c2988cb5d2ead2927a0db9c72d1d8dc5201",
+			"pattern": {
+				"kind": "literal",
+				"text": "Highlight Results"
+			},
+			"sourceText": "Highlight Results",
+			"sourceHash": "a9bc516e389fe8e88a0a92f3d3bf103fe5dbb85fdedc52519f2ecf6e4f91ea23",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/tree-view.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 649,
+					"column": 70
+				},
+				"end": {
+					"line": 649,
+					"column": 89
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.imperative-display-649-70.text.9f504a9834"
+			}
+		},
+		{
 			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-72-69.text.5270426f07#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
@@ -3215,10 +3446,10 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-823-48.text.fc9947c352#text",
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-824-48.text.9d853b47ed#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-823-48.text.fc9947c352",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-824-48.text.9d853b47ed",
 			"slot": "text",
 			"authorityId": "message.9f84e70564ac1b4435ca7d59cb089679e0b5c0c67e2ba1870a068db4caa31f15",
 			"pattern": {
@@ -3232,25 +3463,25 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 823,
+					"line": 824,
 					"column": 48
 				},
 				"end": {
-					"line": 823,
+					"line": 824,
 					"column": 64
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-823-48.text.fc9947c352"
+				"key": "commitDetails.imperative-display-824-48.text.9d853b47ed"
 			}
 		},
 		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-823-67.text.c26834804b#text",
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-display-824-67.text.7ccad74ff2#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-display-823-67.text.c26834804b",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-display-824-67.text.7ccad74ff2",
 			"slot": "text",
 			"authorityId": "message.de569e329dcfcbef1aab53ba3ffb9671cab8f036b0017eb579e339bc2a33c774",
 			"pattern": {
@@ -3264,18 +3495,18 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 823,
+					"line": 824,
 					"column": 67
 				},
 				"end": {
-					"line": 823,
+					"line": 824,
 					"column": 85
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-display-823-67.text.c26834804b"
+				"key": "commitDetails.imperative-display-824-67.text.7ccad74ff2"
 			}
 		},
 		{
@@ -3668,10 +3899,10 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-property-title-779-14.text.734c27545b#text",
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-property-title-780-14.text.589de691ae#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-property-title-779-14.text.734c27545b",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-property-title-780-14.text.589de691ae",
 			"slot": "text",
 			"authorityId": "message.139920d61fa842673f50706ee78992d6f0268527dfb955e24060ae4c8c40ff57",
 			"pattern": {
@@ -3685,25 +3916,25 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 779,
+					"line": 780,
 					"column": 14
 				},
 				"end": {
-					"line": 779,
+					"line": 780,
 					"column": 32
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-property-title-779-14.text.734c27545b"
+				"key": "commitDetails.imperative-property-title-780-14.text.589de691ae"
 			}
 		},
 		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-property-title-793-14.text.65283dafb7#text",
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-property-title-794-14.text.344c8e62fe#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-property-title-793-14.text.65283dafb7",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-property-title-794-14.text.344c8e62fe",
 			"slot": "text",
 			"authorityId": "message.b7c8cec5ce40b94136649aac2ec84c8158e5784f10886d47621ec3445629db93",
 			"pattern": {
@@ -3717,25 +3948,25 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 793,
+					"line": 794,
 					"column": 14
 				},
 				"end": {
-					"line": 793,
+					"line": 794,
 					"column": 39
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-property-title-793-14.text.65283dafb7"
+				"key": "commitDetails.imperative-property-title-794-14.text.344c8e62fe"
 			}
 		},
 		{
-			"id": "webviews:webviews.commitDetails.commitDetails.imperative-property-title-809-14.text.266264a14c#text",
+			"id": "webviews:webviews.commitDetails.commitDetails.imperative-property-title-810-14.text.ffaf9eecf5#text",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.imperative-property-title-809-14.text.266264a14c",
+			"anchor": "webviews.commitDetails.commitDetails.imperative-property-title-810-14.text.ffaf9eecf5",
 			"slot": "text",
 			"authorityId": "message.2359960ed4965fdb4dbc6683ad075365f6782c692fcfbe4ce3f28d9b880b1473",
 			"pattern": {
@@ -3749,18 +3980,18 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 809,
+					"line": 810,
 					"column": 14
 				},
 				"end": {
-					"line": 809,
+					"line": 810,
 					"column": 42
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
-				"key": "commitDetails.imperative-property-title-809-14.text.266264a14c"
+				"key": "commitDetails.imperative-property-title-810-14.text.ffaf9eecf5"
 			}
 		},
 		{
@@ -3781,11 +4012,11 @@
 				"file": "src/webviews/apps/shared/components/split-panel/split-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 138,
+					"line": 181,
 					"column": 14
 				},
 				"end": {
-					"line": 160,
+					"line": 201,
 					"column": 4
 				},
 				"attribute": "aria-label"
@@ -3846,11 +4077,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1332,
+					"line": 1333,
 					"column": 14
 				},
 				"end": {
-					"line": 1400,
+					"line": 1401,
 					"column": 11
 				},
 				"attribute": "aria-label"
@@ -3879,11 +4110,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1332,
+					"line": 1333,
 					"column": 14
 				},
 				"end": {
-					"line": 1400,
+					"line": 1401,
 					"column": 11
 				},
 				"attribute": "tooltip"
@@ -4565,11 +4796,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1521,
+					"line": 1522,
 					"column": 15
 				},
 				"end": {
-					"line": 1521,
+					"line": 1522,
 					"column": 113
 				}
 			},
@@ -4893,11 +5124,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1525,
+					"line": 1526,
 					"column": 15
 				},
 				"end": {
-					"line": 1525,
+					"line": 1526,
 					"column": 59
 				}
 			},
@@ -5088,11 +5319,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1528,
+					"line": 1529,
 					"column": 14
 				},
 				"end": {
-					"line": 1529,
+					"line": 1530,
 					"column": 105
 				}
 			},
@@ -5136,38 +5367,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.commitDetails.commitDetails.lit-template-13-div-no-results.text.cd2ca4e7ba#text",
-			"domain": "webviews",
-			"scope": "webviews.commitDetails.runtime",
-			"anchor": "webviews.commitDetails.commitDetails.lit-template-13-div-no-results.text.cd2ca4e7ba",
-			"slot": "text",
-			"authorityId": "message.9aa1d60f1eadeb0979b38d1a2c9a83b41b9c13dd1d4d403ccc6dd376b6b75b4e",
-			"pattern": {
-				"kind": "literal",
-				"text": "No results found"
-			},
-			"sourceText": "No results found",
-			"sourceHash": "7d7e360586090927c7aeee67c8a46d8354694e7aa4b722ff5b421347f798057a",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/tree/tree-generator.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 552,
-					"column": 11
-				},
-				"end": {
-					"line": 552,
-					"column": 59
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "commitDetails",
-				"key": "commitDetails.lit-template-13-div-no-results.text.cd2ca4e7ba"
-			}
-		},
-		{
 			"id": "webviews:webviews.commitDetails.commitDetails.lit-template-13-gl-copy-container-1-code-icon-copy-icon-aria-label.aria-label.f77c8c521d#aria-label",
 			"domain": "webviews",
 			"scope": "webviews.commitDetails.runtime",
@@ -5185,11 +5384,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1535,
+					"line": 1536,
 					"column": 11
 				},
 				"end": {
-					"line": 1549,
+					"line": 1550,
 					"column": 27
 				},
 				"attribute": "aria-label"
@@ -5445,11 +5644,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1553,
+					"line": 1554,
 					"column": 14
 				},
 				"end": {
-					"line": 1602,
+					"line": 1603,
 					"column": 17
 				},
 				"attribute": "aria-label"
@@ -5478,11 +5677,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1553,
+					"line": 1554,
 					"column": 14
 				},
 				"end": {
-					"line": 1602,
+					"line": 1603,
 					"column": 17
 				},
 				"attribute": "tooltip"
@@ -5511,11 +5710,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1553,
+					"line": 1554,
 					"column": 14
 				},
 				"end": {
-					"line": 1602,
+					"line": 1603,
 					"column": 17
 				},
 				"attribute": "aria-label"
@@ -5544,11 +5743,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1553,
+					"line": 1554,
 					"column": 14
 				},
 				"end": {
-					"line": 1602,
+					"line": 1603,
 					"column": 17
 				},
 				"attribute": "tooltip"
@@ -5653,6 +5852,38 @@
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
 				"key": "commitDetails.lit-template-14-root.text.d788e7b109"
+			}
+		},
+		{
+			"id": "webviews:webviews.commitDetails.commitDetails.lit-template-15-div-no-results.text.66ab5c8d49#text",
+			"domain": "webviews",
+			"scope": "webviews.commitDetails.runtime",
+			"anchor": "webviews.commitDetails.commitDetails.lit-template-15-div-no-results.text.66ab5c8d49",
+			"slot": "text",
+			"authorityId": "message.9aa1d60f1eadeb0979b38d1a2c9a83b41b9c13dd1d4d403ccc6dd376b6b75b4e",
+			"pattern": {
+				"kind": "literal",
+				"text": "No results found"
+			},
+			"sourceText": "No results found",
+			"sourceHash": "7d7e360586090927c7aeee67c8a46d8354694e7aa4b722ff5b421347f798057a",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/tree-view.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 702,
+					"column": 12
+				},
+				"end": {
+					"line": 702,
+					"column": 60
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.lit-template-15-div-no-results.text.66ab5c8d49"
 			}
 		},
 		{
@@ -6518,11 +6749,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1345,
+					"line": 1346,
 					"column": 13
 				},
 				"end": {
-					"line": 1354,
+					"line": 1355,
 					"column": 21
 				},
 				"attribute": "aria-label"
@@ -6551,11 +6782,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1345,
+					"line": 1346,
 					"column": 13
 				},
 				"end": {
-					"line": 1354,
+					"line": 1355,
 					"column": 21
 				},
 				"attribute": "tooltip"
@@ -7914,11 +8145,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1390,
+					"line": 1391,
 					"column": 12
 				},
 				"end": {
-					"line": 1397,
+					"line": 1398,
 					"column": 20
 				},
 				"attribute": "aria-label"
@@ -7947,11 +8178,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1390,
+					"line": 1391,
 					"column": 12
 				},
 				"end": {
-					"line": 1397,
+					"line": 1398,
 					"column": 20
 				},
 				"attribute": "tooltip"
@@ -9126,11 +9357,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1505,
+					"line": 1506,
 					"column": 15
 				},
 				"end": {
-					"line": 1506,
+					"line": 1507,
 					"column": 55
 				}
 			},
@@ -9982,10 +10213,10 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-349-12.text.d613e2b090#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-392-46.text.f18a96d523#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-349-12.text.d613e2b090",
+			"anchor": "webviews.graph.graph.imperative-display-392-46.text.f18a96d523",
 			"slot": "text",
 			"authorityId": "message.f0dda86cb4ffb79cefc32edde74301e6a028f1cda51557076ce5405f618cbbad",
 			"pattern": {
@@ -9999,25 +10230,25 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 349,
-					"column": 12
+					"line": 392,
+					"column": 46
 				},
 				"end": {
-					"line": 349,
-					"column": 35
+					"line": 392,
+					"column": 69
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-349-12.text.d613e2b090"
+				"key": "graph.imperative-display-392-46.text.f18a96d523"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-350-12.text.0f83bfdcf0#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-392-72.text.3993e70b89#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-350-12.text.0f83bfdcf0",
+			"anchor": "webviews.graph.graph.imperative-display-392-72.text.3993e70b89",
 			"slot": "text",
 			"authorityId": "message.fd752d526fe4bd5f3fbe4722e4e704daabb169f60b795e49ba42d726a8be9a5d",
 			"pattern": {
@@ -10031,25 +10262,25 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 350,
-					"column": 12
+					"line": 392,
+					"column": 72
 				},
 				"end": {
-					"line": 350,
-					"column": 35
+					"line": 392,
+					"column": 95
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-350-12.text.0f83bfdcf0"
+				"key": "graph.imperative-display-392-72.text.3993e70b89"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-439-39.text.59f968c5ce#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-484-39.text.8e9429c412#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-439-39.text.59f968c5ce",
+			"anchor": "webviews.graph.graph.imperative-display-484-39.text.8e9429c412",
 			"slot": "text",
 			"authorityId": "message.849493727abdcd488c1e003aeb9380c6313240ba9c3574e2c1c6e2dc1201695b",
 			"pattern": {
@@ -10063,25 +10294,25 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 439,
+					"line": 484,
 					"column": 39
 				},
 				"end": {
-					"line": 439,
+					"line": 484,
 					"column": 55
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-439-39.text.59f968c5ce"
+				"key": "graph.imperative-display-484-39.text.8e9429c412"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-440-32.text.ae47840be5#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-485-32.text.6eb0207ec0#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-440-32.text.ae47840be5",
+			"anchor": "webviews.graph.graph.imperative-display-485-32.text.6eb0207ec0",
 			"slot": "text",
 			"authorityId": "message.e255e34215307b18a57e2798d512cc05417e6313941eee9dfefec79135081178",
 			"pattern": {
@@ -10095,25 +10326,25 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 440,
+					"line": 485,
 					"column": 32
 				},
 				"end": {
-					"line": 440,
+					"line": 485,
 					"column": 49
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-440-32.text.ae47840be5"
+				"key": "graph.imperative-display-485-32.text.6eb0207ec0"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-472-12.text.ff333b5d3f#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-517-12.text.a211e8be39#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-472-12.text.ff333b5d3f",
+			"anchor": "webviews.graph.graph.imperative-display-517-12.text.a211e8be39",
 			"slot": "text",
 			"authorityId": "message.c05ec69b4101f5a7648cc45c782c49377abdebd71c9866fb5dce963555b84934",
 			"pattern": {
@@ -10127,25 +10358,25 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 472,
+					"line": 517,
 					"column": 12
 				},
 				"end": {
-					"line": 472,
+					"line": 517,
 					"column": 18
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-472-12.text.ff333b5d3f"
+				"key": "graph.imperative-display-517-12.text.a211e8be39"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-479-45.text.593a30d3f9#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-524-45.text.5aab32d9d1#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-479-45.text.593a30d3f9",
+			"anchor": "webviews.graph.graph.imperative-display-524-45.text.5aab32d9d1",
 			"slot": "text",
 			"authorityId": "message.3821cdbb3d9fb8431e626e6d22e84e95f72cf933972b17e8546b36e33b7527cf",
 			"pattern": {
@@ -10159,25 +10390,25 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 479,
+					"line": 524,
 					"column": 45
 				},
 				"end": {
-					"line": 479,
+					"line": 524,
 					"column": 51
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-479-45.text.593a30d3f9"
+				"key": "graph.imperative-display-524-45.text.5aab32d9d1"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-483-12.text.67fb5b8a16#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-528-12.text.dfb8d8db7e#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-483-12.text.67fb5b8a16",
+			"anchor": "webviews.graph.graph.imperative-display-528-12.text.dfb8d8db7e",
 			"slot": "text",
 			"authorityId": "message.4edef4d44532c12e222a098c18b0e616371289aa6df876aa3645cff0f5c11688",
 			"pattern": {
@@ -10191,25 +10422,25 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 483,
+					"line": 528,
 					"column": 12
 				},
 				"end": {
-					"line": 483,
+					"line": 528,
 					"column": 19
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-483-12.text.67fb5b8a16"
+				"key": "graph.imperative-display-528-12.text.dfb8d8db7e"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-494-12.text.cc4918453a#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-539-12.text.13148df16e#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-494-12.text.cc4918453a",
+			"anchor": "webviews.graph.graph.imperative-display-539-12.text.13148df16e",
 			"slot": "text",
 			"authorityId": "message.d58f1a3cedb5594c42922331873cc2ac4aedc341cf700597081ee7db737eb754",
 			"pattern": {
@@ -10223,146 +10454,18 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 494,
+					"line": 539,
 					"column": 12
 				},
 				"end": {
-					"line": 494,
+					"line": 539,
 					"column": 41
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-494-12.text.cc4918453a"
-			}
-		},
-		{
-			"id": "webviews:webviews.graph.graph.imperative-display-499-12.text.fead787b63#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-499-12.text.fead787b63",
-			"slot": "text",
-			"authorityId": "message.ac5ee54aeb42dde7f0b157a863cf17ce2038cf0ca9d5885b078671fa514454c7",
-			"pattern": {
-				"kind": "literal",
-				"text": "Compare with Working Tree"
-			},
-			"sourceText": "Compare with Working Tree",
-			"sourceHash": "cac8e134c4f84a7f8566dbe1363d6f135def8230073d4127e1cb93eed0c52443",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 499,
-					"column": 12
-				},
-				"end": {
-					"line": 499,
-					"column": 39
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.imperative-display-499-12.text.fead787b63"
-			}
-		},
-		{
-			"id": "webviews:webviews.graph.graph.imperative-display-505-12.text.45f724bd9f#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-505-12.text.45f724bd9f",
-			"slot": "text",
-			"authorityId": "message.b2aedd3b5607ebcd88970907bcd2c0cab2ba5309323bd18b7b09d3b370071c72",
-			"pattern": {
-				"kind": "literal",
-				"text": "Open Worktree..."
-			},
-			"sourceText": "Open Worktree...",
-			"sourceHash": "9d92d6ca1a0442f003fa4b51d279be60da8856c7e3dbc83ef9cf5d98774eb146",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 505,
-					"column": 12
-				},
-				"end": {
-					"line": 505,
-					"column": 30
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.imperative-display-505-12.text.45f724bd9f"
-			}
-		},
-		{
-			"id": "webviews:webviews.graph.graph.imperative-display-514-12.text.be49f04dbe#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-514-12.text.be49f04dbe",
-			"slot": "text",
-			"authorityId": "message.66b29ec71a0565ad6c7410241b8a810fcc11c3d0178c460826b78707873949ac",
-			"pattern": {
-				"kind": "literal",
-				"text": "Switch to Branch..."
-			},
-			"sourceText": "Switch to Branch...",
-			"sourceHash": "b110c40292e5748c7d428fed9db6f6fae03346603a2613953a451db29f9d0450",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 514,
-					"column": 12
-				},
-				"end": {
-					"line": 514,
-					"column": 33
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.imperative-display-514-12.text.be49f04dbe"
-			}
-		},
-		{
-			"id": "webviews:webviews.graph.graph.imperative-display-519-12.text.e0c17976f7#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-519-12.text.e0c17976f7",
-			"slot": "text",
-			"authorityId": "message.cdc752fb0392c144379772b569300dd1b095b320d8fdd05b81a9f35c0839a4dc",
-			"pattern": {
-				"kind": "literal",
-				"text": "Compare with HEAD"
-			},
-			"sourceText": "Compare with HEAD",
-			"sourceHash": "7c646e0dea8195e057c157d82330e281437ef91724ddd7d47708f79e5ecdf81b",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 519,
-					"column": 12
-				},
-				"end": {
-					"line": 519,
-					"column": 31
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.imperative-display-519-12.text.e0c17976f7"
+				"key": "graph.imperative-display-539-12.text.13148df16e"
 			}
 		},
 		{
@@ -10398,138 +10501,42 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-548-42.text.54353622fa#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-544-12.text.e8f041b30f#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-548-42.text.54353622fa",
+			"anchor": "webviews.graph.graph.imperative-display-544-12.text.e8f041b30f",
 			"slot": "text",
-			"authorityId": "message.e35e752ac3000779ff0a25c4792e00a8506b7cc8859480e34e2403e2c7d65560",
+			"authorityId": "message.ac5ee54aeb42dde7f0b157a863cf17ce2038cf0ca9d5885b078671fa514454c7",
 			"pattern": {
 				"kind": "literal",
-				"text": "Switch to Tag..."
+				"text": "Compare with Working Tree"
 			},
-			"sourceText": "Switch to Tag...",
-			"sourceHash": "7d0ab90894b124a609e4ca065b7d1e482e7873042c34785aef0efd6ca9ef1055",
+			"sourceText": "Compare with Working Tree",
+			"sourceHash": "cac8e134c4f84a7f8566dbe1363d6f135def8230073d4127e1cb93eed0c52443",
 			"reference": {
 				"kind": "source",
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 548,
-					"column": 42
-				},
-				"end": {
-					"line": 548,
-					"column": 60
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.imperative-display-548-42.text.54353622fa"
-			}
-		},
-		{
-			"id": "webviews:webviews.graph.graph.imperative-display-560-12.text.401f104726#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-560-12.text.401f104726",
-			"slot": "text",
-			"authorityId": "message.c05ec69b4101f5a7648cc45c782c49377abdebd71c9866fb5dce963555b84934",
-			"pattern": {
-				"kind": "literal",
-				"text": "Pull"
-			},
-			"sourceText": "Pull",
-			"sourceHash": "b66d044181a0e29642a958723512a8706ae494ccf63552c08cddca418d1cf097",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 560,
+					"line": 544,
 					"column": 12
 				},
 				"end": {
-					"line": 560,
-					"column": 18
+					"line": 544,
+					"column": 39
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-560-12.text.401f104726"
+				"key": "graph.imperative-display-544-12.text.e8f041b30f"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-567-45.text.6dc8c9b892#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-550-12.text.11581daa64#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-567-45.text.6dc8c9b892",
-			"slot": "text",
-			"authorityId": "message.3821cdbb3d9fb8431e626e6d22e84e95f72cf933972b17e8546b36e33b7527cf",
-			"pattern": {
-				"kind": "literal",
-				"text": "Push"
-			},
-			"sourceText": "Push",
-			"sourceHash": "731ce7ed808913b2fb4a3db764cad1d9be4433f3fe232818d7e66c7d3fd2a9c0",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 567,
-					"column": 45
-				},
-				"end": {
-					"line": 567,
-					"column": 51
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.imperative-display-567-45.text.6dc8c9b892"
-			}
-		},
-		{
-			"id": "webviews:webviews.graph.graph.imperative-display-571-12.text.19e49257ac#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-571-12.text.19e49257ac",
-			"slot": "text",
-			"authorityId": "message.4edef4d44532c12e222a098c18b0e616371289aa6df876aa3645cff0f5c11688",
-			"pattern": {
-				"kind": "literal",
-				"text": "Fetch"
-			},
-			"sourceText": "Fetch",
-			"sourceHash": "cd7d61bf7e38c7c2280b4241c4e1211aa3965722a681077a471913801c0321a2",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 571,
-					"column": 12
-				},
-				"end": {
-					"line": 571,
-					"column": 19
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.imperative-display-571-12.text.19e49257ac"
-			}
-		},
-		{
-			"id": "webviews:webviews.graph.graph.imperative-display-582-12.text.7ef601ed5a#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-582-12.text.7ef601ed5a",
+			"anchor": "webviews.graph.graph.imperative-display-550-12.text.11581daa64",
 			"slot": "text",
 			"authorityId": "message.b2aedd3b5607ebcd88970907bcd2c0cab2ba5309323bd18b7b09d3b370071c72",
 			"pattern": {
@@ -10543,57 +10550,25 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 582,
+					"line": 550,
 					"column": 12
 				},
 				"end": {
-					"line": 582,
+					"line": 550,
 					"column": 30
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-582-12.text.7ef601ed5a"
+				"key": "graph.imperative-display-550-12.text.11581daa64"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-599-68.text.cd5f8800d4#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-559-12.text.5235497751#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-599-68.text.cd5f8800d4",
-			"slot": "text",
-			"authorityId": "message.b7f0e5bfcfc9d8ff33d259b4be6cc8c9217e9f84165e0eff15ec0742b83e5969",
-			"pattern": {
-				"kind": "literal",
-				"text": "Active"
-			},
-			"sourceText": "Active",
-			"sourceHash": "92340695899bd2d86223e4a007620e0d6502fc0e08809773634c7e0743764a9c",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 599,
-					"column": 68
-				},
-				"end": {
-					"line": 599,
-					"column": 76
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.imperative-display-599-68.text.cd5f8800d4"
-			}
-		},
-		{
-			"id": "webviews:webviews.graph.graph.imperative-display-60-34.text.d3485c57a6#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-60-34.text.d3485c57a6",
+			"anchor": "webviews.graph.graph.imperative-display-559-12.text.5235497751",
 			"slot": "text",
 			"authorityId": "message.66b29ec71a0565ad6c7410241b8a810fcc11c3d0178c460826b78707873949ac",
 			"pattern": {
@@ -10607,57 +10582,121 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 60,
+					"line": 559,
+					"column": 12
+				},
+				"end": {
+					"line": 559,
+					"column": 33
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.imperative-display-559-12.text.5235497751"
+			}
+		},
+		{
+			"id": "webviews:webviews.graph.graph.imperative-display-564-12.text.b78ef97aa6#text",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.imperative-display-564-12.text.b78ef97aa6",
+			"slot": "text",
+			"authorityId": "message.cdc752fb0392c144379772b569300dd1b095b320d8fdd05b81a9f35c0839a4dc",
+			"pattern": {
+				"kind": "literal",
+				"text": "Compare with HEAD"
+			},
+			"sourceText": "Compare with HEAD",
+			"sourceHash": "7c646e0dea8195e057c157d82330e281437ef91724ddd7d47708f79e5ecdf81b",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 564,
+					"column": 12
+				},
+				"end": {
+					"line": 564,
+					"column": 31
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.imperative-display-564-12.text.b78ef97aa6"
+			}
+		},
+		{
+			"id": "webviews:webviews.graph.graph.imperative-display-59-34.text.b356c8b1b2#text",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.imperative-display-59-34.text.b356c8b1b2",
+			"slot": "text",
+			"authorityId": "message.66b29ec71a0565ad6c7410241b8a810fcc11c3d0178c460826b78707873949ac",
+			"pattern": {
+				"kind": "literal",
+				"text": "Switch to Branch..."
+			},
+			"sourceText": "Switch to Branch...",
+			"sourceHash": "b110c40292e5748c7d428fed9db6f6fae03346603a2613953a451db29f9d0450",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 59,
 					"column": 34
 				},
 				"end": {
-					"line": 60,
+					"line": 59,
 					"column": 55
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-60-34.text.d3485c57a6"
+				"key": "graph.imperative-display-59-34.text.b356c8b1b2"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-600-67.text.4b43679aa9#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-593-42.text.d4653c92a1#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-600-67.text.4b43679aa9",
+			"anchor": "webviews.graph.graph.imperative-display-593-42.text.d4653c92a1",
 			"slot": "text",
-			"authorityId": "message.735820648ae1ccc27c3919193ff7ed53680aa3da3599e90de77c7d3d5e1e27c1",
+			"authorityId": "message.e35e752ac3000779ff0a25c4792e00a8506b7cc8859480e34e2403e2c7d65560",
 			"pattern": {
 				"kind": "literal",
-				"text": "Locked"
+				"text": "Switch to Tag..."
 			},
-			"sourceText": "Locked",
-			"sourceHash": "a424e33d90931d1ed22f2af37a3f3491a5c9de0dfae079f6f3ff4edf0309e07f",
+			"sourceText": "Switch to Tag...",
+			"sourceHash": "7d0ab90894b124a609e4ca065b7d1e482e7873042c34785aef0efd6ca9ef1055",
 			"reference": {
 				"kind": "source",
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 600,
-					"column": 67
+					"line": 593,
+					"column": 42
 				},
 				"end": {
-					"line": 600,
-					"column": 75
+					"line": 593,
+					"column": 60
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-600-67.text.4b43679aa9"
+				"key": "graph.imperative-display-593-42.text.d4653c92a1"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-61-28.text.75880745db#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-60-28.text.ad3a60b2a5#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-61-28.text.75880745db",
+			"anchor": "webviews.graph.graph.imperative-display-60-28.text.ad3a60b2a5",
 			"slot": "text",
 			"authorityId": "message.4f27650c5d735dd39e813306392b713ca906d8d02917f1de919f1bd2bca2905c",
 			"pattern": {
@@ -10671,59 +10710,89 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 61,
+					"line": 60,
 					"column": 28
 				},
 				"end": {
-					"line": 61,
+					"line": 60,
 					"column": 46
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-61-28.text.75880745db"
+				"key": "graph.imperative-display-60-28.text.ad3a60b2a5"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-623-15.text.2d37a57038#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-605-12.text.106e104507#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-623-15.text.2d37a57038",
+			"anchor": "webviews.graph.graph.imperative-display-605-12.text.106e104507",
 			"slot": "text",
-			"authorityId": "message.081b6ed49a6f5816aeac5704ceccccb51a7881b6da6cdcf5e531d1b2825cdfe3",
+			"authorityId": "message.c05ec69b4101f5a7648cc45c782c49377abdebd71c9866fb5dce963555b84934",
 			"pattern": {
-				"kind": "rich",
-				"text": "$(git-branch) `${slot1}/${slot2}`",
-				"format": "markdown",
-				"slots": ["slot1", "slot2"]
+				"kind": "literal",
+				"text": "Pull"
 			},
-			"sourceText": "$(git-branch) `${slot1}/${slot2}`",
-			"sourceHash": "a5c84d72d873d3e531bbf6142b3364c3f325c237b72cbbe71adb89c1f6e5fdde",
+			"sourceText": "Pull",
+			"sourceHash": "b66d044181a0e29642a958723512a8706ae494ccf63552c08cddca418d1cf097",
 			"reference": {
 				"kind": "source",
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 623,
-					"column": 15
+					"line": 605,
+					"column": 12
 				},
 				"end": {
-					"line": 623,
-					"column": 54
+					"line": 605,
+					"column": 18
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-623-15.text.2d37a57038"
+				"key": "graph.imperative-display-605-12.text.106e104507"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-647-44.text.29bef2b396#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-612-45.text.be3126bf52#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-647-44.text.29bef2b396",
+			"anchor": "webviews.graph.graph.imperative-display-612-45.text.be3126bf52",
+			"slot": "text",
+			"authorityId": "message.3821cdbb3d9fb8431e626e6d22e84e95f72cf933972b17e8546b36e33b7527cf",
+			"pattern": {
+				"kind": "literal",
+				"text": "Push"
+			},
+			"sourceText": "Push",
+			"sourceHash": "731ce7ed808913b2fb4a3db764cad1d9be4433f3fe232818d7e66c7d3fd2a9c0",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 612,
+					"column": 45
+				},
+				"end": {
+					"line": 612,
+					"column": 51
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.imperative-display-612-45.text.be3126bf52"
+			}
+		},
+		{
+			"id": "webviews:webviews.graph.graph.imperative-display-616-12.text.eb7b4b7589#text",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.imperative-display-616-12.text.eb7b4b7589",
 			"slot": "text",
 			"authorityId": "message.4edef4d44532c12e222a098c18b0e616371289aa6df876aa3645cff0f5c11688",
 			"pattern": {
@@ -10737,18 +10806,146 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 647,
-					"column": 44
+					"line": 616,
+					"column": 12
 				},
 				"end": {
-					"line": 647,
-					"column": 51
+					"line": 616,
+					"column": 19
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-647-44.text.29bef2b396"
+				"key": "graph.imperative-display-616-12.text.eb7b4b7589"
+			}
+		},
+		{
+			"id": "webviews:webviews.graph.graph.imperative-display-627-12.text.818f6baec6#text",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.imperative-display-627-12.text.818f6baec6",
+			"slot": "text",
+			"authorityId": "message.b2aedd3b5607ebcd88970907bcd2c0cab2ba5309323bd18b7b09d3b370071c72",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open Worktree..."
+			},
+			"sourceText": "Open Worktree...",
+			"sourceHash": "9d92d6ca1a0442f003fa4b51d279be60da8856c7e3dbc83ef9cf5d98774eb146",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 627,
+					"column": 12
+				},
+				"end": {
+					"line": 627,
+					"column": 30
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.imperative-display-627-12.text.818f6baec6"
+			}
+		},
+		{
+			"id": "webviews:webviews.graph.graph.imperative-display-644-68.text.db5108958b#text",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.imperative-display-644-68.text.db5108958b",
+			"slot": "text",
+			"authorityId": "message.b7f0e5bfcfc9d8ff33d259b4be6cc8c9217e9f84165e0eff15ec0742b83e5969",
+			"pattern": {
+				"kind": "literal",
+				"text": "Active"
+			},
+			"sourceText": "Active",
+			"sourceHash": "92340695899bd2d86223e4a007620e0d6502fc0e08809773634c7e0743764a9c",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 644,
+					"column": 68
+				},
+				"end": {
+					"line": 644,
+					"column": 76
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.imperative-display-644-68.text.db5108958b"
+			}
+		},
+		{
+			"id": "webviews:webviews.graph.graph.imperative-display-645-67.text.bc031f7df2#text",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.imperative-display-645-67.text.bc031f7df2",
+			"slot": "text",
+			"authorityId": "message.735820648ae1ccc27c3919193ff7ed53680aa3da3599e90de77c7d3d5e1e27c1",
+			"pattern": {
+				"kind": "literal",
+				"text": "Locked"
+			},
+			"sourceText": "Locked",
+			"sourceHash": "a424e33d90931d1ed22f2af37a3f3491a5c9de0dfae079f6f3ff4edf0309e07f",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 645,
+					"column": 67
+				},
+				"end": {
+					"line": 645,
+					"column": 75
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.imperative-display-645-67.text.bc031f7df2"
+			}
+		},
+		{
+			"id": "webviews:webviews.graph.graph.imperative-display-65-37.text.96f8e38af0#text",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.imperative-display-65-37.text.96f8e38af0",
+			"slot": "text",
+			"authorityId": "message.45af4d4b55f31828cf02294992b3f220d5552cefb16cc31cbccd77194de0a5b7",
+			"pattern": {
+				"kind": "literal",
+				"text": "Add Remote..."
+			},
+			"sourceText": "Add Remote...",
+			"sourceHash": "25e69a1d70e16a286cd64288e6c3506d02e4dd43b44cf4068bf09715a0c361cd",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 65,
+					"column": 37
+				},
+				"end": {
+					"line": 65,
+					"column": 52
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.imperative-display-65-37.text.96f8e38af0"
 			}
 		},
 		{
@@ -10785,6 +10982,40 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.graph.graph.imperative-display-668-15.text.058207282a#text",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.imperative-display-668-15.text.058207282a",
+			"slot": "text",
+			"authorityId": "message.081b6ed49a6f5816aeac5704ceccccb51a7881b6da6cdcf5e531d1b2825cdfe3",
+			"pattern": {
+				"kind": "rich",
+				"text": "$(git-branch) `${slot1}/${slot2}`",
+				"format": "markdown",
+				"slots": ["slot1", "slot2"]
+			},
+			"sourceText": "$(git-branch) `${slot1}/${slot2}`",
+			"sourceHash": "a5c84d72d873d3e531bbf6142b3364c3f325c237b72cbbe71adb89c1f6e5fdde",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 668,
+					"column": 15
+				},
+				"end": {
+					"line": 668,
+					"column": 54
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.imperative-display-668-15.text.058207282a"
+			}
+		},
+		{
 			"id": "webviews:webviews.graph.graph.imperative-display-668-7.text.133cdc4e50#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
@@ -10815,38 +11046,6 @@
 				"kind": "runtime-key",
 				"bundle": "graph",
 				"key": "graph.imperative-display-668-7.text.133cdc4e50"
-			}
-		},
-		{
-			"id": "webviews:webviews.graph.graph.imperative-display-67-37.text.050b05a9db#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-67-37.text.050b05a9db",
-			"slot": "text",
-			"authorityId": "message.45af4d4b55f31828cf02294992b3f220d5552cefb16cc31cbccd77194de0a5b7",
-			"pattern": {
-				"kind": "literal",
-				"text": "Add Remote..."
-			},
-			"sourceText": "Add Remote...",
-			"sourceHash": "25e69a1d70e16a286cd64288e6c3506d02e4dd43b44cf4068bf09715a0c361cd",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 67,
-					"column": 37
-				},
-				"end": {
-					"line": 67,
-					"column": 52
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.imperative-display-67-37.text.050b05a9db"
 			}
 		},
 		{
@@ -10914,10 +11113,42 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-73-38.text.b882e8fc44#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-692-44.text.c35e57fcf3#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-73-38.text.b882e8fc44",
+			"anchor": "webviews.graph.graph.imperative-display-692-44.text.c35e57fcf3",
+			"slot": "text",
+			"authorityId": "message.4edef4d44532c12e222a098c18b0e616371289aa6df876aa3645cff0f5c11688",
+			"pattern": {
+				"kind": "literal",
+				"text": "Fetch"
+			},
+			"sourceText": "Fetch",
+			"sourceHash": "cd7d61bf7e38c7c2280b4241c4e1211aa3965722a681077a471913801c0321a2",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 692,
+					"column": 44
+				},
+				"end": {
+					"line": 692,
+					"column": 51
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.imperative-display-692-44.text.c35e57fcf3"
+			}
+		},
+		{
+			"id": "webviews:webviews.graph.graph.imperative-display-70-38.text.35e221ea37#text",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.imperative-display-70-38.text.35e221ea37",
 			"slot": "text",
 			"authorityId": "message.44fd75f9461ed155b4ff5e636302d360aade1ef03a261b78dc7113261af11b6c",
 			"pattern": {
@@ -10931,25 +11162,25 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 73,
+					"line": 70,
 					"column": 38
 				},
 				"end": {
-					"line": 73,
+					"line": 70,
 					"column": 60
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-73-38.text.b882e8fc44"
+				"key": "graph.imperative-display-70-38.text.35e221ea37"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-74-37.text.ef4f4c8710#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-71-37.text.c0204efd0b#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-74-37.text.ef4f4c8710",
+			"anchor": "webviews.graph.graph.imperative-display-71-37.text.c0204efd0b",
 			"slot": "text",
 			"authorityId": "message.849493727abdcd488c1e003aeb9380c6313240ba9c3574e2c1c6e2dc1201695b",
 			"pattern": {
@@ -10963,25 +11194,25 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 74,
+					"line": 71,
 					"column": 37
 				},
 				"end": {
-					"line": 74,
+					"line": 71,
 					"column": 53
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-74-37.text.ef4f4c8710"
+				"key": "graph.imperative-display-71-37.text.c0204efd0b"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-display-80-37.text.684fff22f0#text",
+			"id": "webviews:webviews.graph.graph.imperative-display-76-37.text.a629eeac75#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-display-80-37.text.684fff22f0",
+			"anchor": "webviews.graph.graph.imperative-display-76-37.text.a629eeac75",
 			"slot": "text",
 			"authorityId": "message.f63d6ace64d94d27432b39fa1ac05a6db9e526f53bfba7d8b4836fc0174ec274",
 			"pattern": {
@@ -10995,18 +11226,18 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 80,
+					"line": 76,
 					"column": 37
 				},
 				"end": {
-					"line": 80,
+					"line": 76,
 					"column": 52
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-display-80-37.text.684fff22f0"
+				"key": "graph.imperative-display-76-37.text.a629eeac75"
 			}
 		},
 		{
@@ -11139,10 +11370,10 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-property-title-52-10.text.952494c8b7#text",
+			"id": "webviews:webviews.graph.graph.imperative-property-title-53-10.text.6badee1107#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-property-title-52-10.text.952494c8b7",
+			"anchor": "webviews.graph.graph.imperative-property-title-53-10.text.6badee1107",
 			"slot": "text",
 			"authorityId": "message.afc28efd76ade1bcbbac1ccaf6478d45976d70424c59b6037e6c96d1d08db13a",
 			"pattern": {
@@ -11156,18 +11387,18 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 52,
+					"line": 53,
 					"column": 10
 				},
 				"end": {
-					"line": 52,
+					"line": 53,
 					"column": 21
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-property-title-52-10.text.952494c8b7"
+				"key": "graph.imperative-property-title-53-10.text.6badee1107"
 			}
 		},
 		{
@@ -11203,10 +11434,10 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-property-title-65-10.text.aadd455d27#text",
+			"id": "webviews:webviews.graph.graph.imperative-property-title-64-10.text.e592210fa1#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-property-title-65-10.text.aadd455d27",
+			"anchor": "webviews.graph.graph.imperative-property-title-64-10.text.e592210fa1",
 			"slot": "text",
 			"authorityId": "message.2b9b47ea56d04f394831eaffc5fba588bda32cafaa434e8b7e1a61c08bae1d30",
 			"pattern": {
@@ -11220,25 +11451,25 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 65,
+					"line": 64,
 					"column": 10
 				},
 				"end": {
-					"line": 65,
+					"line": 64,
 					"column": 19
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-property-title-65-10.text.aadd455d27"
+				"key": "graph.imperative-property-title-64-10.text.e592210fa1"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-property-title-70-10.text.157775538c#text",
+			"id": "webviews:webviews.graph.graph.imperative-property-title-68-10.text.fcfac24c64#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-property-title-70-10.text.157775538c",
+			"anchor": "webviews.graph.graph.imperative-property-title-68-10.text.fcfac24c64",
 			"slot": "text",
 			"authorityId": "message.ba616871864665bc0ed900d4ebb980bbac9651719df8dad81f8fc2753677de5d",
 			"pattern": {
@@ -11252,25 +11483,25 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 70,
+					"line": 68,
 					"column": 10
 				},
 				"end": {
-					"line": 70,
+					"line": 68,
 					"column": 19
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-property-title-70-10.text.157775538c"
+				"key": "graph.imperative-property-title-68-10.text.fcfac24c64"
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.imperative-property-title-78-10.text.2b8502c2f8#text",
+			"id": "webviews:webviews.graph.graph.imperative-property-title-75-10.text.5e5a667595#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.imperative-property-title-78-10.text.2b8502c2f8",
+			"anchor": "webviews.graph.graph.imperative-property-title-75-10.text.5e5a667595",
 			"slot": "text",
 			"authorityId": "message.946c028aa85e8e07500b39fd092d6f50a3d8ccc74e029f811da7aa295fa00020",
 			"pattern": {
@@ -11284,18 +11515,18 @@
 				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 78,
+					"line": 75,
 					"column": 10
 				},
 				"end": {
-					"line": 78,
+					"line": 75,
 					"column": 16
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "graph",
-				"key": "graph.imperative-property-title-78-10.text.2b8502c2f8"
+				"key": "graph.imperative-property-title-75-10.text.5e5a667595"
 			}
 		},
 		{
@@ -11558,39 +11789,6 @@
 				"kind": "runtime-key",
 				"bundle": "graph",
 				"key": "graph.jsx-text-745-58.text.72f79a2374"
-			}
-		},
-		{
-			"id": "webviews:webviews.graph.graph.lit-template-1-div-panel-div-header-div-header-actions-gl-button-1-tooltip.tooltip.91d7f6f2cb#tooltip",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.lit-template-1-div-panel-div-header-div-header-actions-gl-button-1-tooltip.tooltip.91d7f6f2cb",
-			"slot": "tooltip",
-			"authorityId": "message.15bad6f37b975c6279bed9274b2588231bd7f7a1517a51b89eebdcc62e802216",
-			"pattern": {
-				"kind": "literal",
-				"text": "Refresh"
-			},
-			"sourceText": "Refresh",
-			"sourceHash": "0e91610117029a62a478b7fa7df0b8598bebe3ab1e192d4b1882e310719c9671",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 329,
-					"column": 14
-				},
-				"end": {
-					"line": 367,
-					"column": 10
-				},
-				"attribute": "tooltip"
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.lit-template-1-div-panel-div-header-div-header-actions-gl-button-1-tooltip.tooltip.91d7f6f2cb"
 			}
 		},
 		{
@@ -12726,6 +12924,38 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.graph.graph.lit-template-2-div-empty.text.1b39a33362#text",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.lit-template-2-div-empty.text.1b39a33362",
+			"slot": "text",
+			"authorityId": "message.33c3c52fa1d306354d62852a5dea48dd16f3f1130da3697620cc0b9101ba8156",
+			"pattern": {
+				"kind": "literal",
+				"text": "Failed to load data"
+			},
+			"sourceText": "Failed to load data",
+			"sourceHash": "afa69443bb931e88100648a5eb9c43d054bd223e31750c4359fb8a33047163f9",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 360,
+					"column": 12
+				},
+				"end": {
+					"line": 360,
+					"column": 58
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.lit-template-2-div-empty.text.1b39a33362"
+			}
+		},
+		{
 			"id": "webviews:webviews.graph.graph.lit-template-2-div-titlebar__row-div-titlebar__group-gl-repo-button-group-1-span-1.text.54f96aef96#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
@@ -12986,6 +13216,39 @@
 			}
 		},
 		{
+			"id": "webviews:webviews.graph.graph.lit-template-3-div-header-div-header-actions-gl-button-1-tooltip.tooltip.cebe16bb25#tooltip",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.lit-template-3-div-header-div-header-actions-gl-button-1-tooltip.tooltip.cebe16bb25",
+			"slot": "tooltip",
+			"authorityId": "message.15bad6f37b975c6279bed9274b2588231bd7f7a1517a51b89eebdcc62e802216",
+			"pattern": {
+				"kind": "literal",
+				"text": "Refresh"
+			},
+			"sourceText": "Refresh",
+			"sourceHash": "0e91610117029a62a478b7fa7df0b8598bebe3ab1e192d4b1882e310719c9671",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 375,
+					"column": 14
+				},
+				"end": {
+					"line": 402,
+					"column": 10
+				},
+				"attribute": "tooltip"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.lit-template-3-div-header-div-header-actions-gl-button-1-tooltip.tooltip.cebe16bb25"
+			}
+		},
+		{
 			"id": "webviews:webviews.graph.graph.lit-template-3-gl-button-jump-to-ref-span-1.text.3fb1eed258#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
@@ -13117,70 +13380,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.graph.graph.lit-template-4-div-empty.text.8c20926103#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.lit-template-4-div-empty.text.8c20926103",
-			"slot": "text",
-			"authorityId": "message.33c3c52fa1d306354d62852a5dea48dd16f3f1130da3697620cc0b9101ba8156",
-			"pattern": {
-				"kind": "literal",
-				"text": "Failed to load data"
-			},
-			"sourceText": "Failed to load data",
-			"sourceHash": "afa69443bb931e88100648a5eb9c43d054bd223e31750c4359fb8a33047163f9",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 362,
-					"column": 12
-				},
-				"end": {
-					"line": 362,
-					"column": 58
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.lit-template-4-div-empty.text.8c20926103"
-			}
-		},
-		{
-			"id": "webviews:webviews.graph.graph.lit-template-5-div-empty.text.db4e1d4767#text",
-			"domain": "webviews",
-			"scope": "webviews.graph.runtime",
-			"anchor": "webviews.graph.graph.lit-template-5-div-empty.text.db4e1d4767",
-			"slot": "text",
-			"authorityId": "message.855337c402db9e18bb2acd45bf341b09b8e60b7165a8a1a377514a7b1a2bd24a",
-			"pattern": {
-				"kind": "literal",
-				"text": "No items"
-			},
-			"sourceText": "No items",
-			"sourceHash": "6c351c116cc7feeaf5724426f891c890b4f7d9cb8baab5f2ec1d6c512cc016b6",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 372,
-					"column": 38
-				},
-				"end": {
-					"line": 372,
-					"column": 73
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "graph",
-				"key": "graph.lit-template-5-div-empty.text.db4e1d4767"
-			}
-		},
-		{
 			"id": "webviews:webviews.graph.graph.lit-template-5-i-1.text.4e1b1e8492#text",
 			"domain": "webviews",
 			"scope": "webviews.graph.runtime",
@@ -13210,6 +13409,38 @@
 				"kind": "runtime-key",
 				"bundle": "graph",
 				"key": "graph.lit-template-5-i-1.text.4e1b1e8492"
+			}
+		},
+		{
+			"id": "webviews:webviews.graph.graph.lit-template-6-div-empty.text.ce01adf05f#text",
+			"domain": "webviews",
+			"scope": "webviews.graph.runtime",
+			"anchor": "webviews.graph.graph.lit-template-6-div-empty.text.ce01adf05f",
+			"slot": "text",
+			"authorityId": "message.855337c402db9e18bb2acd45bf341b09b8e60b7165a8a1a377514a7b1a2bd24a",
+			"pattern": {
+				"kind": "literal",
+				"text": "No items"
+			},
+			"sourceText": "No items",
+			"sourceHash": "6c351c116cc7feeaf5724426f891c890b4f7d9cb8baab5f2ec1d6c512cc016b6",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/sidebar/sidebar-panel.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 407,
+					"column": 38
+				},
+				"end": {
+					"line": 407,
+					"column": 73
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.lit-template-6-div-empty.text.ce01adf05f"
 			}
 		},
 		{
@@ -13890,10 +14121,10 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.imperative-display-1558-8.text.ab137a2bc1#text",
+			"id": "webviews:webviews.home.home.imperative-display-1559-8.text.468ea22e1f#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-1558-8.text.ab137a2bc1",
+			"anchor": "webviews.home.home.imperative-display-1559-8.text.468ea22e1f",
 			"slot": "text",
 			"authorityId": "message.6448973dcb17337b935432322e7840287e440395f1b4c80c723bf32234b8d600",
 			"pattern": {
@@ -13907,25 +14138,25 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1558,
+					"line": 1559,
 					"column": 8
 				},
 				"end": {
-					"line": 1558,
+					"line": 1559,
 					"column": 50
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "home",
-				"key": "home.imperative-display-1558-8.text.ab137a2bc1"
+				"key": "home.imperative-display-1559-8.text.468ea22e1f"
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.imperative-display-1561-8.text.0046a71af1#text",
+			"id": "webviews:webviews.home.home.imperative-display-1562-8.text.54e729d0d3#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-1561-8.text.0046a71af1",
+			"anchor": "webviews.home.home.imperative-display-1562-8.text.54e729d0d3",
 			"slot": "text",
 			"authorityId": "message.6448973dcb17337b935432322e7840287e440395f1b4c80c723bf32234b8d600",
 			"pattern": {
@@ -13939,25 +14170,25 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1561,
+					"line": 1562,
 					"column": 8
 				},
 				"end": {
-					"line": 1561,
+					"line": 1562,
 					"column": 50
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "home",
-				"key": "home.imperative-display-1561-8.text.0046a71af1"
+				"key": "home.imperative-display-1562-8.text.54e729d0d3"
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.imperative-display-1573-8.text.e75f87e52f#text",
+			"id": "webviews:webviews.home.home.imperative-display-1574-8.text.263c3845f5#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-1573-8.text.e75f87e52f",
+			"anchor": "webviews.home.home.imperative-display-1574-8.text.263c3845f5",
 			"slot": "text",
 			"authorityId": "message.d2d357dbfa2aa28c4943b5491070dc097a68b79f08d716668fab814daafb1dda",
 			"pattern": {
@@ -13971,25 +14202,25 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1573,
+					"line": 1574,
 					"column": 8
 				},
 				"end": {
-					"line": 1573,
+					"line": 1574,
 					"column": 41
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "home",
-				"key": "home.imperative-display-1573-8.text.e75f87e52f"
+				"key": "home.imperative-display-1574-8.text.263c3845f5"
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.imperative-display-1576-8.text.719be89ee1#text",
+			"id": "webviews:webviews.home.home.imperative-display-1577-8.text.0e3bda956a#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-1576-8.text.719be89ee1",
+			"anchor": "webviews.home.home.imperative-display-1577-8.text.0e3bda956a",
 			"slot": "text",
 			"authorityId": "message.d2d357dbfa2aa28c4943b5491070dc097a68b79f08d716668fab814daafb1dda",
 			"pattern": {
@@ -14003,18 +14234,18 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1576,
+					"line": 1577,
 					"column": 8
 				},
 				"end": {
-					"line": 1576,
+					"line": 1577,
 					"column": 41
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "home",
-				"key": "home.imperative-display-1576-8.text.719be89ee1"
+				"key": "home.imperative-display-1577-8.text.0e3bda956a"
 			}
 		},
 		{
@@ -15049,10 +15280,10 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.imperative-display-360-24.text.a53ec9a7a8#text",
+			"id": "webviews:webviews.home.home.imperative-display-361-24.text.e790aec697#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-360-24.text.a53ec9a7a8",
+			"anchor": "webviews.home.home.imperative-display-361-24.text.e790aec697",
 			"slot": "text",
 			"authorityId": "message.f39112883cc6a8fa5947c813b8d2bd2e9c0ca0a97d5dbb19350c87fbcf892e15",
 			"pattern": {
@@ -15066,25 +15297,25 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 360,
+					"line": 361,
 					"column": 24
 				},
 				"end": {
-					"line": 360,
+					"line": 361,
 					"column": 32
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "home",
-				"key": "home.imperative-display-360-24.text.a53ec9a7a8"
+				"key": "home.imperative-display-361-24.text.e790aec697"
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.imperative-display-360-35.text.d3af5ad139#text",
+			"id": "webviews:webviews.home.home.imperative-display-361-35.text.efc3a1a77f#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-360-35.text.d3af5ad139",
+			"anchor": "webviews.home.home.imperative-display-361-35.text.efc3a1a77f",
 			"slot": "text",
 			"authorityId": "message.82478bfacfff984eb7072c3ed40890034f9dc655185191b6d5a1967a90f0e6a8",
 			"pattern": {
@@ -15098,18 +15329,18 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 360,
+					"line": 361,
 					"column": 35
 				},
 				"end": {
-					"line": 360,
+					"line": 361,
 					"column": 43
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "home",
-				"key": "home.imperative-display-360-35.text.d3af5ad139"
+				"key": "home.imperative-display-361-35.text.efc3a1a77f"
 			}
 		},
 		{
@@ -15145,10 +15376,10 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.imperative-display-376-11.text.891f2e7dd2#text",
+			"id": "webviews:webviews.home.home.imperative-display-377-11.text.b7541ae40c#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-376-11.text.891f2e7dd2",
+			"anchor": "webviews.home.home.imperative-display-377-11.text.b7541ae40c",
 			"slot": "text",
 			"authorityId": "message.db5b8ed4047a665eb760cff19e4aa4283cf10835129c36876bd4e171e5565497",
 			"pattern": {
@@ -15163,51 +15394,18 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 376,
+					"line": 377,
 					"column": 11
 				},
 				"end": {
-					"line": 376,
+					"line": 377,
 					"column": 106
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "home",
-				"key": "home.imperative-display-376-11.text.891f2e7dd2"
-			}
-		},
-		{
-			"id": "webviews:webviews.home.home.imperative-display-378-10.text.1400f0589e#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-378-10.text.1400f0589e",
-			"slot": "text",
-			"authorityId": "message.e2fa0ba0eb3c53d6350c2830d3165034958eae927c1152da44f750f7e3d17d3d",
-			"pattern": {
-				"kind": "template",
-				"text": "${slot1} commits (press Enter to search, ↑↓ for history), e.g. @me after:1.week.ago file:*.ts",
-				"slots": ["slot1"]
-			},
-			"sourceText": "${slot1} commits (press Enter to search, ↑↓ for history), e.g. @me after:1.week.ago file:*.ts",
-			"sourceHash": "10d549343a6b5ab554cdeb387e3932d80e615fa5e02b6ff4bf86f0aa9d700259",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/search/search-input.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 378,
-					"column": 10
-				},
-				"end": {
-					"line": 378,
-					"column": 110
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.imperative-display-378-10.text.1400f0589e"
+				"key": "home.imperative-display-377-11.text.b7541ae40c"
 			}
 		},
 		{
@@ -15240,6 +15438,39 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.imperative-display-378-13.text.bf0a9e31c0"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-379-10.text.a7a389e924#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-379-10.text.a7a389e924",
+			"slot": "text",
+			"authorityId": "message.e2fa0ba0eb3c53d6350c2830d3165034958eae927c1152da44f750f7e3d17d3d",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} commits (press Enter to search, ↑↓ for history), e.g. @me after:1.week.ago file:*.ts",
+				"slots": ["slot1"]
+			},
+			"sourceText": "${slot1} commits (press Enter to search, ↑↓ for history), e.g. @me after:1.week.ago file:*.ts",
+			"sourceHash": "10d549343a6b5ab554cdeb387e3932d80e615fa5e02b6ff4bf86f0aa9d700259",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/search/search-input.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 379,
+					"column": 10
+				},
+				"end": {
+					"line": 379,
+					"column": 110
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-379-10.text.a7a389e924"
 			}
 		},
 		{
@@ -16046,134 +16277,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.imperative-display-525-48.text.816440580e#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-525-48.text.816440580e",
-			"slot": "text",
-			"authorityId": "message.07fe69f67848c680b3412df6ceb4a8623729e4d2fabd943f8cb4297f2be0f8f0",
-			"pattern": {
-				"kind": "literal",
-				"text": "Filter Results"
-			},
-			"sourceText": "Filter Results",
-			"sourceHash": "c21d440790d6bf44437e90f58a8cd578e26d9a57dfe4f1cb93a0144df678ba1a",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/tree/tree-generator.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 525,
-					"column": 48
-				},
-				"end": {
-					"line": 525,
-					"column": 64
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.imperative-display-525-48.text.816440580e"
-			}
-		},
-		{
-			"id": "webviews:webviews.home.home.imperative-display-525-67.text.8b10775cef#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-525-67.text.8b10775cef",
-			"slot": "text",
-			"authorityId": "message.8cbe22d1e29c2ceea53eee018e662c2988cb5d2ead2927a0db9c72d1d8dc5201",
-			"pattern": {
-				"kind": "literal",
-				"text": "Highlight Results"
-			},
-			"sourceText": "Highlight Results",
-			"sourceHash": "a9bc516e389fe8e88a0a92f3d3bf103fe5dbb85fdedc52519f2ecf6e4f91ea23",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/tree/tree-generator.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 525,
-					"column": 67
-				},
-				"end": {
-					"line": 525,
-					"column": 86
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.imperative-display-525-67.text.8b10775cef"
-			}
-		},
-		{
-			"id": "webviews:webviews.home.home.imperative-display-526-51.text.c0e032d224#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-526-51.text.c0e032d224",
-			"slot": "text",
-			"authorityId": "message.07fe69f67848c680b3412df6ceb4a8623729e4d2fabd943f8cb4297f2be0f8f0",
-			"pattern": {
-				"kind": "literal",
-				"text": "Filter Results"
-			},
-			"sourceText": "Filter Results",
-			"sourceHash": "c21d440790d6bf44437e90f58a8cd578e26d9a57dfe4f1cb93a0144df678ba1a",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/tree/tree-generator.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 526,
-					"column": 51
-				},
-				"end": {
-					"line": 526,
-					"column": 67
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.imperative-display-526-51.text.c0e032d224"
-			}
-		},
-		{
-			"id": "webviews:webviews.home.home.imperative-display-526-70.text.9446a0a80c#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-526-70.text.9446a0a80c",
-			"slot": "text",
-			"authorityId": "message.8cbe22d1e29c2ceea53eee018e662c2988cb5d2ead2927a0db9c72d1d8dc5201",
-			"pattern": {
-				"kind": "literal",
-				"text": "Highlight Results"
-			},
-			"sourceText": "Highlight Results",
-			"sourceHash": "a9bc516e389fe8e88a0a92f3d3bf103fe5dbb85fdedc52519f2ecf6e4f91ea23",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/tree/tree-generator.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 526,
-					"column": 70
-				},
-				"end": {
-					"line": 526,
-					"column": 89
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.imperative-display-526-70.text.9446a0a80c"
-			}
-		},
-		{
 			"id": "webviews:webviews.home.home.imperative-display-534-23.text.efc4e0405f#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
@@ -16463,10 +16566,138 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.imperative-display-823-48.text.28cbab5682#text",
+			"id": "webviews:webviews.home.home.imperative-display-648-48.text.cd812e828e#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-823-48.text.28cbab5682",
+			"anchor": "webviews.home.home.imperative-display-648-48.text.cd812e828e",
+			"slot": "text",
+			"authorityId": "message.07fe69f67848c680b3412df6ceb4a8623729e4d2fabd943f8cb4297f2be0f8f0",
+			"pattern": {
+				"kind": "literal",
+				"text": "Filter Results"
+			},
+			"sourceText": "Filter Results",
+			"sourceHash": "c21d440790d6bf44437e90f58a8cd578e26d9a57dfe4f1cb93a0144df678ba1a",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/tree-view.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 648,
+					"column": 48
+				},
+				"end": {
+					"line": 648,
+					"column": 64
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-648-48.text.cd812e828e"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-648-67.text.4a53473e6c#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-648-67.text.4a53473e6c",
+			"slot": "text",
+			"authorityId": "message.8cbe22d1e29c2ceea53eee018e662c2988cb5d2ead2927a0db9c72d1d8dc5201",
+			"pattern": {
+				"kind": "literal",
+				"text": "Highlight Results"
+			},
+			"sourceText": "Highlight Results",
+			"sourceHash": "a9bc516e389fe8e88a0a92f3d3bf103fe5dbb85fdedc52519f2ecf6e4f91ea23",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/tree-view.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 648,
+					"column": 67
+				},
+				"end": {
+					"line": 648,
+					"column": 86
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-648-67.text.4a53473e6c"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-649-51.text.81214ab913#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-649-51.text.81214ab913",
+			"slot": "text",
+			"authorityId": "message.07fe69f67848c680b3412df6ceb4a8623729e4d2fabd943f8cb4297f2be0f8f0",
+			"pattern": {
+				"kind": "literal",
+				"text": "Filter Results"
+			},
+			"sourceText": "Filter Results",
+			"sourceHash": "c21d440790d6bf44437e90f58a8cd578e26d9a57dfe4f1cb93a0144df678ba1a",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/tree-view.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 649,
+					"column": 51
+				},
+				"end": {
+					"line": 649,
+					"column": 67
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-649-51.text.81214ab913"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-649-70.text.26e7deda38#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-649-70.text.26e7deda38",
+			"slot": "text",
+			"authorityId": "message.8cbe22d1e29c2ceea53eee018e662c2988cb5d2ead2927a0db9c72d1d8dc5201",
+			"pattern": {
+				"kind": "literal",
+				"text": "Highlight Results"
+			},
+			"sourceText": "Highlight Results",
+			"sourceHash": "a9bc516e389fe8e88a0a92f3d3bf103fe5dbb85fdedc52519f2ecf6e4f91ea23",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/tree-view.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 649,
+					"column": 70
+				},
+				"end": {
+					"line": 649,
+					"column": 89
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.imperative-display-649-70.text.26e7deda38"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.imperative-display-824-48.text.863c9621f2#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.imperative-display-824-48.text.863c9621f2",
 			"slot": "text",
 			"authorityId": "message.9f84e70564ac1b4435ca7d59cb089679e0b5c0c67e2ba1870a068db4caa31f15",
 			"pattern": {
@@ -16480,25 +16711,25 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 823,
+					"line": 824,
 					"column": 48
 				},
 				"end": {
-					"line": 823,
+					"line": 824,
 					"column": 64
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "home",
-				"key": "home.imperative-display-823-48.text.28cbab5682"
+				"key": "home.imperative-display-824-48.text.863c9621f2"
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.imperative-display-823-67.text.811412ca39#text",
+			"id": "webviews:webviews.home.home.imperative-display-824-67.text.fd53a08d20#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-display-823-67.text.811412ca39",
+			"anchor": "webviews.home.home.imperative-display-824-67.text.fd53a08d20",
 			"slot": "text",
 			"authorityId": "message.de569e329dcfcbef1aab53ba3ffb9671cab8f036b0017eb579e339bc2a33c774",
 			"pattern": {
@@ -16512,18 +16743,18 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 823,
+					"line": 824,
 					"column": 67
 				},
 				"end": {
-					"line": 823,
+					"line": 824,
 					"column": 85
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "home",
-				"key": "home.imperative-display-823-67.text.811412ca39"
+				"key": "home.imperative-display-824-67.text.fd53a08d20"
 			}
 		},
 		{
@@ -16657,10 +16888,10 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.imperative-property-title-779-14.text.b3af0f6463#text",
+			"id": "webviews:webviews.home.home.imperative-property-title-780-14.text.d20f92b277#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-property-title-779-14.text.b3af0f6463",
+			"anchor": "webviews.home.home.imperative-property-title-780-14.text.d20f92b277",
 			"slot": "text",
 			"authorityId": "message.139920d61fa842673f50706ee78992d6f0268527dfb955e24060ae4c8c40ff57",
 			"pattern": {
@@ -16674,25 +16905,25 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 779,
+					"line": 780,
 					"column": 14
 				},
 				"end": {
-					"line": 779,
+					"line": 780,
 					"column": 32
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "home",
-				"key": "home.imperative-property-title-779-14.text.b3af0f6463"
+				"key": "home.imperative-property-title-780-14.text.d20f92b277"
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.imperative-property-title-793-14.text.98aa0cbbe3#text",
+			"id": "webviews:webviews.home.home.imperative-property-title-794-14.text.b06e388a7d#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-property-title-793-14.text.98aa0cbbe3",
+			"anchor": "webviews.home.home.imperative-property-title-794-14.text.b06e388a7d",
 			"slot": "text",
 			"authorityId": "message.b7c8cec5ce40b94136649aac2ec84c8158e5784f10886d47621ec3445629db93",
 			"pattern": {
@@ -16706,25 +16937,25 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 793,
+					"line": 794,
 					"column": 14
 				},
 				"end": {
-					"line": 793,
+					"line": 794,
 					"column": 39
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "home",
-				"key": "home.imperative-property-title-793-14.text.98aa0cbbe3"
+				"key": "home.imperative-property-title-794-14.text.b06e388a7d"
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.imperative-property-title-809-14.text.0904baa48b#text",
+			"id": "webviews:webviews.home.home.imperative-property-title-810-14.text.9ef2ce77e2#text",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.imperative-property-title-809-14.text.0904baa48b",
+			"anchor": "webviews.home.home.imperative-property-title-810-14.text.9ef2ce77e2",
 			"slot": "text",
 			"authorityId": "message.2359960ed4965fdb4dbc6683ad075365f6782c692fcfbe4ce3f28d9b880b1473",
 			"pattern": {
@@ -16738,18 +16969,18 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 809,
+					"line": 810,
 					"column": 14
 				},
 				"end": {
-					"line": 809,
+					"line": 810,
 					"column": 42
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "home",
-				"key": "home.imperative-property-title-809-14.text.0904baa48b"
+				"key": "home.imperative-property-title-810-14.text.9ef2ce77e2"
 			}
 		},
 		{
@@ -16770,11 +17001,11 @@
 				"file": "src/webviews/apps/shared/components/split-panel/split-panel.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 138,
+					"line": 181,
 					"column": 14
 				},
 				"end": {
-					"line": 160,
+					"line": 201,
 					"column": 4
 				},
 				"attribute": "aria-label"
@@ -16803,11 +17034,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1332,
+					"line": 1333,
 					"column": 14
 				},
 				"end": {
-					"line": 1400,
+					"line": 1401,
 					"column": 11
 				},
 				"attribute": "aria-label"
@@ -16836,11 +17067,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1332,
+					"line": 1333,
 					"column": 14
 				},
 				"end": {
-					"line": 1400,
+					"line": 1401,
 					"column": 11
 				},
 				"attribute": "tooltip"
@@ -17909,11 +18140,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1521,
+					"line": 1522,
 					"column": 15
 				},
 				"end": {
-					"line": 1521,
+					"line": 1522,
 					"column": 113
 				}
 			},
@@ -18136,11 +18367,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1525,
+					"line": 1526,
 					"column": 15
 				},
 				"end": {
-					"line": 1525,
+					"line": 1526,
 					"column": 59
 				}
 			},
@@ -18304,7 +18535,7 @@
 				},
 				"end": {
 					"line": 222,
-					"column": 103
+					"column": 95
 				},
 				"attribute": "label"
 			},
@@ -18529,11 +18760,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1528,
+					"line": 1529,
 					"column": 14
 				},
 				"end": {
-					"line": 1529,
+					"line": 1530,
 					"column": 105
 				}
 			},
@@ -18675,38 +18906,6 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.home.home.lit-template-13-div-no-results.text.3b69640ffc#text",
-			"domain": "webviews",
-			"scope": "webviews.home.runtime",
-			"anchor": "webviews.home.home.lit-template-13-div-no-results.text.3b69640ffc",
-			"slot": "text",
-			"authorityId": "message.9aa1d60f1eadeb0979b38d1a2c9a83b41b9c13dd1d4d403ccc6dd376b6b75b4e",
-			"pattern": {
-				"kind": "literal",
-				"text": "No results found"
-			},
-			"sourceText": "No results found",
-			"sourceHash": "7d7e360586090927c7aeee67c8a46d8354694e7aa4b722ff5b421347f798057a",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/shared/components/tree/tree-generator.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 552,
-					"column": 11
-				},
-				"end": {
-					"line": 552,
-					"column": 59
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "home",
-				"key": "home.lit-template-13-div-no-results.text.3b69640ffc"
-			}
-		},
-		{
 			"id": "webviews:webviews.home.home.lit-template-13-gl-button-target-edit-tooltip.tooltip.1ecd91f2b7#tooltip",
 			"domain": "webviews",
 			"scope": "webviews.home.runtime",
@@ -18757,11 +18956,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1535,
+					"line": 1536,
 					"column": 11
 				},
 				"end": {
-					"line": 1549,
+					"line": 1550,
 					"column": 27
 				},
 				"attribute": "aria-label"
@@ -18954,11 +19153,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1553,
+					"line": 1554,
 					"column": 14
 				},
 				"end": {
-					"line": 1602,
+					"line": 1603,
 					"column": 17
 				},
 				"attribute": "aria-label"
@@ -18987,11 +19186,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1553,
+					"line": 1554,
 					"column": 14
 				},
 				"end": {
-					"line": 1602,
+					"line": 1603,
 					"column": 17
 				},
 				"attribute": "tooltip"
@@ -19020,11 +19219,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1553,
+					"line": 1554,
 					"column": 14
 				},
 				"end": {
-					"line": 1602,
+					"line": 1603,
 					"column": 17
 				},
 				"attribute": "aria-label"
@@ -19053,11 +19252,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1553,
+					"line": 1554,
 					"column": 14
 				},
 				"end": {
-					"line": 1602,
+					"line": 1603,
 					"column": 17
 				},
 				"attribute": "tooltip"
@@ -19293,6 +19492,38 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.lit-template-15-div-account-status-p-1.text.9d19658081"
+			}
+		},
+		{
+			"id": "webviews:webviews.home.home.lit-template-15-div-no-results.text.d777816476#text",
+			"domain": "webviews",
+			"scope": "webviews.home.runtime",
+			"anchor": "webviews.home.home.lit-template-15-div-no-results.text.d777816476",
+			"slot": "text",
+			"authorityId": "message.9aa1d60f1eadeb0979b38d1a2c9a83b41b9c13dd1d4d403ccc6dd376b6b75b4e",
+			"pattern": {
+				"kind": "literal",
+				"text": "No results found"
+			},
+			"sourceText": "No results found",
+			"sourceHash": "7d7e360586090927c7aeee67c8a46d8354694e7aa4b722ff5b421347f798057a",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/tree-view.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 702,
+					"column": 12
+				},
+				"end": {
+					"line": 702,
+					"column": 60
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.lit-template-15-div-no-results.text.d777816476"
 			}
 		},
 		{
@@ -20808,11 +21039,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1345,
+					"line": 1346,
 					"column": 13
 				},
 				"end": {
-					"line": 1354,
+					"line": 1355,
 					"column": 21
 				},
 				"attribute": "aria-label"
@@ -20841,11 +21072,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1345,
+					"line": 1346,
 					"column": 13
 				},
 				"end": {
-					"line": 1354,
+					"line": 1355,
 					"column": 21
 				},
 				"attribute": "tooltip"
@@ -23905,11 +24136,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1390,
+					"line": 1391,
 					"column": 12
 				},
 				"end": {
-					"line": 1397,
+					"line": 1398,
 					"column": 20
 				},
 				"attribute": "aria-label"
@@ -23938,11 +24169,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1390,
+					"line": 1391,
 					"column": 12
 				},
 				"end": {
-					"line": 1397,
+					"line": 1398,
 					"column": 20
 				},
 				"attribute": "tooltip"
@@ -26261,11 +26492,11 @@
 				"file": "src/webviews/apps/shared/components/search/search-input.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1505,
+					"line": 1506,
 					"column": 15
 				},
 				"end": {
-					"line": 1506,
+					"line": 1507,
 					"column": 55
 				}
 			},
@@ -26801,10 +27032,10 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-1189-38.text.ee462c9e4d#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1179-38.text.162cf85a26#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-1189-38.text.ee462c9e4d",
+			"anchor": "webviews.rebase.rebase.imperative-display-1179-38.text.162cf85a26",
 			"slot": "text",
 			"authorityId": "message.bb1d3b468a28b72c4a50d3a9f70707524170647c9fa19e2301fbf170676494ec",
 			"pattern": {
@@ -26818,25 +27049,25 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1189,
+					"line": 1179,
 					"column": 38
 				},
 				"end": {
-					"line": 1189,
+					"line": 1179,
 					"column": 51
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-1189-38.text.ee462c9e4d"
+				"key": "rebase.imperative-display-1179-38.text.162cf85a26"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-1358-7.text.24373eadac#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1364-7.text.bbe49d314d#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-1358-7.text.24373eadac",
+			"anchor": "webviews.rebase.rebase.imperative-display-1364-7.text.bbe49d314d",
 			"slot": "text",
 			"authorityId": "message.778e44c58925c9fa1ca50586ef4a989fef8591a983f0df72c8c2bbc3a7fdadd5",
 			"pattern": {
@@ -26850,25 +27081,25 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1358,
+					"line": 1364,
 					"column": 7
 				},
 				"end": {
-					"line": 1358,
+					"line": 1364,
 					"column": 23
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-1358-7.text.24373eadac"
+				"key": "rebase.imperative-display-1364-7.text.bbe49d314d"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-1453-66.text.1895932bb1#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1475-66.text.9093207095#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-1453-66.text.1895932bb1",
+			"anchor": "webviews.rebase.rebase.imperative-display-1475-66.text.9093207095",
 			"slot": "text",
 			"authorityId": "message.5f8c7672d765d412b98f17c0bf0072bac625d04538d27cd3e80f31192d71a026",
 			"pattern": {
@@ -26882,25 +27113,25 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1453,
+					"line": 1475,
 					"column": 66
 				},
 				"end": {
-					"line": 1453,
+					"line": 1475,
 					"column": 88
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-1453-66.text.1895932bb1"
+				"key": "rebase.imperative-display-1475-66.text.9093207095"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-1453-91.text.df088a4bfb#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1475-91.text.1eb018447d#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-1453-91.text.df088a4bfb",
+			"anchor": "webviews.rebase.rebase.imperative-display-1475-91.text.1eb018447d",
 			"slot": "text",
 			"authorityId": "message.0d7f3d6f711ffdf673c04492d36cfebe31289084ce5f8e8215d436e38ad50464",
 			"pattern": {
@@ -26914,25 +27145,25 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1453,
+					"line": 1475,
 					"column": 91
 				},
 				"end": {
-					"line": 1453,
+					"line": 1475,
 					"column": 113
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-1453-91.text.df088a4bfb"
+				"key": "rebase.imperative-display-1475-91.text.1eb018447d"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-1535-9.text.3027d3376b#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1557-9.text.e513610c82#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-1535-9.text.3027d3376b",
+			"anchor": "webviews.rebase.rebase.imperative-display-1557-9.text.e513610c82",
 			"slot": "text",
 			"authorityId": "message.f0dda86cb4ffb79cefc32edde74301e6a028f1cda51557076ce5405f618cbbad",
 			"pattern": {
@@ -26946,25 +27177,25 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1535,
+					"line": 1557,
 					"column": 9
 				},
 				"end": {
-					"line": 1535,
+					"line": 1557,
 					"column": 32
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-1535-9.text.3027d3376b"
+				"key": "rebase.imperative-display-1557-9.text.e513610c82"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-1536-9.text.fd4c068c46#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1558-9.text.b113a70e55#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-1536-9.text.fd4c068c46",
+			"anchor": "webviews.rebase.rebase.imperative-display-1558-9.text.b113a70e55",
 			"slot": "text",
 			"authorityId": "message.fd752d526fe4bd5f3fbe4722e4e704daabb169f60b795e49ba42d726a8be9a5d",
 			"pattern": {
@@ -26978,25 +27209,25 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1536,
+					"line": 1558,
 					"column": 9
 				},
 				"end": {
-					"line": 1536,
+					"line": 1558,
 					"column": 32
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-1536-9.text.fd4c068c46"
+				"key": "rebase.imperative-display-1558-9.text.b113a70e55"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-1576-29.text.454f47235e#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1598-37.text.72217ef137#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-1576-29.text.454f47235e",
+			"anchor": "webviews.rebase.rebase.imperative-display-1598-37.text.72217ef137",
 			"slot": "text",
 			"authorityId": "message.9e57a4f5023465bf8823fef24aa07724a54c26ff1e3e89699ead31c0bc90cd30",
 			"pattern": {
@@ -27010,89 +27241,25 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1576,
-					"column": 29
+					"line": 1598,
+					"column": 37
 				},
 				"end": {
-					"line": 1576,
-					"column": 51
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "rebase",
-				"key": "rebase.imperative-display-1576-29.text.454f47235e"
-			}
-		},
-		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-1577-36.text.3e66649951#text",
-			"domain": "webviews",
-			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-1577-36.text.3e66649951",
-			"slot": "text",
-			"authorityId": "message.7f0482a966233f5329bceb2742e124616d71eee61193af502c114a2022061490",
-			"pattern": {
-				"kind": "literal",
-				"text": "Open Incoming Changes"
-			},
-			"sourceText": "Open Incoming Changes",
-			"sourceHash": "8251ef4178602aa61a658d3db56ddeab1567e24270f43da3ca343bc826142641",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/rebase/rebase.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 1577,
-					"column": 36
-				},
-				"end": {
-					"line": 1577,
+					"line": 1598,
 					"column": 59
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-1577-36.text.3e66649951"
+				"key": "rebase.imperative-display-1598-37.text.72217ef137"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-1610-31.text.fa593d7c37#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1599-38.text.f2970f3007#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-1610-31.text.fa593d7c37",
-			"slot": "text",
-			"authorityId": "message.9e57a4f5023465bf8823fef24aa07724a54c26ff1e3e89699ead31c0bc90cd30",
-			"pattern": {
-				"kind": "literal",
-				"text": "Open Current Changes"
-			},
-			"sourceText": "Open Current Changes",
-			"sourceHash": "de12e2fcffafd438ba5c28870b602d081d0481642636fb7b011d424c02d76bb2",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/rebase/rebase.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 1610,
-					"column": 31
-				},
-				"end": {
-					"line": 1610,
-					"column": 53
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "rebase",
-				"key": "rebase.imperative-display-1610-31.text.fa593d7c37"
-			}
-		},
-		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-1613-16.text.35f31918bc#text",
-			"domain": "webviews",
-			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-1613-16.text.35f31918bc",
+			"anchor": "webviews.rebase.rebase.imperative-display-1599-38.text.f2970f3007",
 			"slot": "text",
 			"authorityId": "message.7f0482a966233f5329bceb2742e124616d71eee61193af502c114a2022061490",
 			"pattern": {
@@ -27106,25 +27273,89 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1613,
+					"line": 1599,
+					"column": 38
+				},
+				"end": {
+					"line": 1599,
+					"column": 61
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "rebase",
+				"key": "rebase.imperative-display-1599-38.text.f2970f3007"
+			}
+		},
+		{
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1632-39.text.b72e95039b#text",
+			"domain": "webviews",
+			"scope": "webviews.rebase.runtime",
+			"anchor": "webviews.rebase.rebase.imperative-display-1632-39.text.b72e95039b",
+			"slot": "text",
+			"authorityId": "message.9e57a4f5023465bf8823fef24aa07724a54c26ff1e3e89699ead31c0bc90cd30",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open Current Changes"
+			},
+			"sourceText": "Open Current Changes",
+			"sourceHash": "de12e2fcffafd438ba5c28870b602d081d0481642636fb7b011d424c02d76bb2",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/rebase/rebase.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 1632,
+					"column": 39
+				},
+				"end": {
+					"line": 1632,
+					"column": 61
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "rebase",
+				"key": "rebase.imperative-display-1632-39.text.b72e95039b"
+			}
+		},
+		{
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1635-16.text.a6730e2126#text",
+			"domain": "webviews",
+			"scope": "webviews.rebase.runtime",
+			"anchor": "webviews.rebase.rebase.imperative-display-1635-16.text.a6730e2126",
+			"slot": "text",
+			"authorityId": "message.7f0482a966233f5329bceb2742e124616d71eee61193af502c114a2022061490",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open Incoming Changes"
+			},
+			"sourceText": "Open Incoming Changes",
+			"sourceHash": "8251ef4178602aa61a658d3db56ddeab1567e24270f43da3ca343bc826142641",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/rebase/rebase.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 1635,
 					"column": 16
 				},
 				"end": {
-					"line": 1613,
+					"line": 1635,
 					"column": 39
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-1613-16.text.35f31918bc"
+				"key": "rebase.imperative-display-1635-16.text.a6730e2126"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-1798-35.text.20fdd0db0b#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1820-35.text.943547f7f2#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-1798-35.text.20fdd0db0b",
+			"anchor": "webviews.rebase.rebase.imperative-display-1820-35.text.943547f7f2",
 			"slot": "text",
 			"authorityId": "message.bc3129cf4734056edc22a35aea21a733d0284827a76115302358c6fe260db3bb",
 			"pattern": {
@@ -27138,25 +27369,25 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1798,
+					"line": 1820,
 					"column": 35
 				},
 				"end": {
-					"line": 1798,
+					"line": 1820,
 					"column": 65
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-1798-35.text.20fdd0db0b"
+				"key": "rebase.imperative-display-1820-35.text.943547f7f2"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-1798-68.text.4ebe3c30d3#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1820-68.text.2b20275665#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-1798-68.text.4ebe3c30d3",
+			"anchor": "webviews.rebase.rebase.imperative-display-1820-68.text.2b20275665",
 			"slot": "text",
 			"authorityId": "message.02ff4b0d4d38e623eb622842584a764161d9f82bc303d7de5f307e2bbbf97390",
 			"pattern": {
@@ -27170,25 +27401,25 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1798,
+					"line": 1820,
 					"column": 68
 				},
 				"end": {
-					"line": 1798,
+					"line": 1820,
 					"column": 98
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-1798-68.text.4ebe3c30d3"
+				"key": "rebase.imperative-display-1820-68.text.2b20275665"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-1817-65.text.235b5c456f#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1839-65.text.a4551c6ec6#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-1817-65.text.235b5c456f",
+			"anchor": "webviews.rebase.rebase.imperative-display-1839-65.text.a4551c6ec6",
 			"slot": "text",
 			"authorityId": "message.5f8c7672d765d412b98f17c0bf0072bac625d04538d27cd3e80f31192d71a026",
 			"pattern": {
@@ -27202,25 +27433,25 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1817,
+					"line": 1839,
 					"column": 65
 				},
 				"end": {
-					"line": 1817,
+					"line": 1839,
 					"column": 87
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-1817-65.text.235b5c456f"
+				"key": "rebase.imperative-display-1839-65.text.a4551c6ec6"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-1817-90.text.f3a59151cb#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1839-90.text.1f04f93c89#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-1817-90.text.f3a59151cb",
+			"anchor": "webviews.rebase.rebase.imperative-display-1839-90.text.1f04f93c89",
 			"slot": "text",
 			"authorityId": "message.0d7f3d6f711ffdf673c04492d36cfebe31289084ce5f8e8215d436e38ad50464",
 			"pattern": {
@@ -27234,25 +27465,25 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1817,
+					"line": 1839,
 					"column": 90
 				},
 				"end": {
-					"line": 1817,
+					"line": 1839,
 					"column": 112
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-1817-90.text.f3a59151cb"
+				"key": "rebase.imperative-display-1839-90.text.1f04f93c89"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-1845-8.text.530be0fb12#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-1867-8.text.406da75b48#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-1845-8.text.530be0fb12",
+			"anchor": "webviews.rebase.rebase.imperative-display-1867-8.text.406da75b48",
 			"slot": "text",
 			"authorityId": "message.a57c09917b31b4860e629ff83d31707b14193c3d3a07fca341fb54f62af440fe",
 			"pattern": {
@@ -27267,25 +27498,25 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1845,
+					"line": 1867,
 					"column": 8
 				},
 				"end": {
-					"line": 1845,
+					"line": 1867,
 					"column": 56
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-1845-8.text.530be0fb12"
+				"key": "rebase.imperative-display-1867-8.text.406da75b48"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-2008-16.text.89dc071717#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-2042-16.text.02eeba1d1b#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-2008-16.text.89dc071717",
+			"anchor": "webviews.rebase.rebase.imperative-display-2042-16.text.02eeba1d1b",
 			"slot": "text",
 			"authorityId": "message.bb9a19eac40a42f5aa7852bd86f38bd1b2028ed8c540ef1dab789430ba8e3bfb",
 			"pattern": {
@@ -27299,25 +27530,25 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 2008,
+					"line": 2042,
 					"column": 16
 				},
 				"end": {
-					"line": 2008,
+					"line": 2042,
 					"column": 51
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-2008-16.text.89dc071717"
+				"key": "rebase.imperative-display-2042-16.text.02eeba1d1b"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-2012-16.text.99c13456b6#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-2046-16.text.d16070b8d3#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-2012-16.text.99c13456b6",
+			"anchor": "webviews.rebase.rebase.imperative-display-2046-16.text.d16070b8d3",
 			"slot": "text",
 			"authorityId": "message.91fdcb316e2ff317a8a50afd56f659509c0c0ed2fbee21beedeb5fa5a1b377ba",
 			"pattern": {
@@ -27331,25 +27562,25 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 2012,
+					"line": 2046,
 					"column": 16
 				},
 				"end": {
-					"line": 2012,
+					"line": 2046,
 					"column": 54
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-2012-16.text.99c13456b6"
+				"key": "rebase.imperative-display-2046-16.text.d16070b8d3"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-2016-15.text.2d9bf15fad#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-2050-15.text.573a68fe44#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-2016-15.text.2d9bf15fad",
+			"anchor": "webviews.rebase.rebase.imperative-display-2050-15.text.573a68fe44",
 			"slot": "text",
 			"authorityId": "message.30772031809238cb1177227fe4a02a5fd61fe787e600c9ccb4104c028e5c987b",
 			"pattern": {
@@ -27363,89 +27594,25 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 2016,
+					"line": 2050,
 					"column": 15
 				},
 				"end": {
-					"line": 2016,
+					"line": 2050,
 					"column": 42
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-2016-15.text.2d9bf15fad"
+				"key": "rebase.imperative-display-2050-15.text.573a68fe44"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-261-50.text.f466bee326#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-213-80.text.0d80b84c9a#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-261-50.text.f466bee326",
-			"slot": "text",
-			"authorityId": "message.5f8c7672d765d412b98f17c0bf0072bac625d04538d27cd3e80f31192d71a026",
-			"pattern": {
-				"kind": "literal",
-				"text": "Open in Commit Graph"
-			},
-			"sourceText": "Open in Commit Graph",
-			"sourceHash": "0353e5ffa51ae6e129900d023e67cf6f487dee0784b15186cd81ceeaef3fa261",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/rebase/components/rebase-entry.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 261,
-					"column": 50
-				},
-				"end": {
-					"line": 261,
-					"column": 72
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "rebase",
-				"key": "rebase.imperative-display-261-50.text.f466bee326"
-			}
-		},
-		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-261-75.text.bdfa555169#text",
-			"domain": "webviews",
-			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-261-75.text.bdfa555169",
-			"slot": "text",
-			"authorityId": "message.0d7f3d6f711ffdf673c04492d36cfebe31289084ce5f8e8215d436e38ad50464",
-			"pattern": {
-				"kind": "literal",
-				"text": "Open in Inspect View"
-			},
-			"sourceText": "Open in Inspect View",
-			"sourceHash": "55d9744238adf3dcdce032b1593dcced09e78f0264c3cb81009bf86cee0bfd96",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/rebase/components/rebase-entry.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 261,
-					"column": 75
-				},
-				"end": {
-					"line": 261,
-					"column": 97
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "rebase",
-				"key": "rebase.imperative-display-261-75.text.bdfa555169"
-			}
-		},
-		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-314-68.text.68307a178b#text",
-			"domain": "webviews",
-			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-314-68.text.68307a178b",
+			"anchor": "webviews.rebase.rebase.imperative-display-213-80.text.0d80b84c9a",
 			"slot": "text",
 			"authorityId": "message.5caeaba47f057738d10548a3f3196967b1e93107031487c4f4f8c42ccfd44b43",
 			"pattern": {
@@ -27459,57 +27626,121 @@
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 314,
-					"column": 68
+					"line": 213,
+					"column": 80
 				},
 				"end": {
-					"line": 314,
-					"column": 96
+					"line": 213,
+					"column": 108
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-314-68.text.68307a178b"
+				"key": "rebase.imperative-display-213-80.text.0d80b84c9a"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-377-23.text.31b11df158#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-262-50.text.ed5e3e534d#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-377-23.text.31b11df158",
+			"anchor": "webviews.rebase.rebase.imperative-display-262-50.text.ed5e3e534d",
 			"slot": "text",
-			"authorityId": "message.5be84ea7c3e80bab584f33fcad9f1e4fbfd9b5bb7cbfc214e89404669b4bd03c",
+			"authorityId": "message.5f8c7672d765d412b98f17c0bf0072bac625d04538d27cd3e80f31192d71a026",
 			"pattern": {
 				"kind": "literal",
-				"text": "No Conflicts Detected (may be stale)"
+				"text": "Open in Commit Graph"
 			},
-			"sourceText": "No Conflicts Detected (may be stale)",
-			"sourceHash": "5186228eb18027682a465235f5f557580c3211fa7ce1696f80840bd60227075d",
+			"sourceText": "Open in Commit Graph",
+			"sourceHash": "0353e5ffa51ae6e129900d023e67cf6f487dee0784b15186cd81ceeaef3fa261",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/rebase/components/rebase-entry.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 262,
+					"column": 50
+				},
+				"end": {
+					"line": 262,
+					"column": 72
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "rebase",
+				"key": "rebase.imperative-display-262-50.text.ed5e3e534d"
+			}
+		},
+		{
+			"id": "webviews:webviews.rebase.rebase.imperative-display-262-75.text.65cd4d59dc#text",
+			"domain": "webviews",
+			"scope": "webviews.rebase.runtime",
+			"anchor": "webviews.rebase.rebase.imperative-display-262-75.text.65cd4d59dc",
+			"slot": "text",
+			"authorityId": "message.0d7f3d6f711ffdf673c04492d36cfebe31289084ce5f8e8215d436e38ad50464",
+			"pattern": {
+				"kind": "literal",
+				"text": "Open in Inspect View"
+			},
+			"sourceText": "Open in Inspect View",
+			"sourceHash": "55d9744238adf3dcdce032b1593dcced09e78f0264c3cb81009bf86cee0bfd96",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/rebase/components/rebase-entry.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 262,
+					"column": 75
+				},
+				"end": {
+					"line": 262,
+					"column": 97
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "rebase",
+				"key": "rebase.imperative-display-262-75.text.65cd4d59dc"
+			}
+		},
+		{
+			"id": "webviews:webviews.rebase.rebase.imperative-display-276-26.text.340ac2c21b#text",
+			"domain": "webviews",
+			"scope": "webviews.rebase.runtime",
+			"anchor": "webviews.rebase.rebase.imperative-display-276-26.text.340ac2c21b",
+			"slot": "text",
+			"authorityId": "message.ef4ff1b22b73e222bfca21e6ab75221dbf060741b8b1a2090dd9ed5ee082d2a8",
+			"pattern": {
+				"kind": "literal",
+				"text": "Detecting Conflicts"
+			},
+			"sourceText": "Detecting Conflicts",
+			"sourceHash": "659682e03fd69c583e3ee90cfb67b0d90c50847aa04288df638d784a5c80f15e",
 			"reference": {
 				"kind": "source",
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 377,
-					"column": 23
+					"line": 276,
+					"column": 26
 				},
 				"end": {
-					"line": 377,
-					"column": 61
+					"line": 276,
+					"column": 47
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-377-23.text.31b11df158"
+				"key": "rebase.imperative-display-276-26.text.340ac2c21b"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-377-64.text.1bcacb294f#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-276-50.text.39ba2bbcdf#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-377-64.text.1bcacb294f",
+			"anchor": "webviews.rebase.rebase.imperative-display-276-50.text.39ba2bbcdf",
 			"slot": "text",
 			"authorityId": "message.4bfa9d6dc573f2d57483c3e5fc6b6dd710da5c7fb891f87df9dc33eec3821737",
 			"pattern": {
@@ -27523,50 +27754,50 @@
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 377,
-					"column": 64
+					"line": 276,
+					"column": 50
 				},
 				"end": {
-					"line": 377,
-					"column": 87
+					"line": 276,
+					"column": 73
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-377-64.text.1bcacb294f"
+				"key": "rebase.imperative-display-276-50.text.39ba2bbcdf"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.imperative-display-434-30.text.824bc7ba7e#text",
+			"id": "webviews:webviews.rebase.rebase.imperative-display-333-10.text.c06ecd40dc#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.imperative-display-434-30.text.824bc7ba7e",
+			"anchor": "webviews.rebase.rebase.imperative-display-333-10.text.c06ecd40dc",
 			"slot": "text",
-			"authorityId": "message.e7f93e63e671f12e3a2e06220056d3dcbbee0fb7ef11828c81359b48e31146c6",
+			"authorityId": "message.ef4ff1b22b73e222bfca21e6ab75221dbf060741b8b1a2090dd9ed5ee082d2a8",
 			"pattern": {
 				"kind": "literal",
-				"text": " (may be stale)"
+				"text": "Detecting Conflicts"
 			},
-			"sourceText": " (may be stale)",
-			"sourceHash": "410369251cea131e06ad6b833e6389fb8edc13bcf4e9ddc4d196995082d57535",
+			"sourceText": "Detecting Conflicts",
+			"sourceHash": "659682e03fd69c583e3ee90cfb67b0d90c50847aa04288df638d784a5c80f15e",
 			"reference": {
 				"kind": "source",
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 434,
-					"column": 30
+					"line": 333,
+					"column": 10
 				},
 				"end": {
-					"line": 434,
-					"column": 47
+					"line": 333,
+					"column": 31
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.imperative-display-434-30.text.824bc7ba7e"
+				"key": "rebase.imperative-display-333-10.text.c06ecd40dc"
 			}
 		},
 		{
@@ -27716,11 +27947,11 @@
 				"file": "src/webviews/apps/rebase/components/rebase-entry.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 198,
+					"line": 199,
 					"column": 14
 				},
 				"end": {
-					"line": 273,
+					"line": 274,
 					"column": 4
 				},
 				"attribute": "content"
@@ -27732,10 +27963,10 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.lit-template-11-p-popover__message.text.da374abdbb#text",
+			"id": "webviews:webviews.rebase.rebase.lit-template-10-p-popover__message.text.22162fee88#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.lit-template-11-p-popover__message.text.da374abdbb",
+			"anchor": "webviews.rebase.rebase.lit-template-10-p-popover__message.text.22162fee88",
 			"slot": "text",
 			"authorityId": "message.1ba3c576ec72a699f7140ec80ff275b3265ffeb6ae9dc608a9fc021d1fe9457c",
 			"pattern": {
@@ -27749,25 +27980,25 @@
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 418,
-					"column": 15
+					"line": 284,
+					"column": 14
 				},
 				"end": {
-					"line": 420,
-					"column": 15
+					"line": 286,
+					"column": 14
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.lit-template-11-p-popover__message.text.da374abdbb"
+				"key": "rebase.lit-template-10-p-popover__message.text.22162fee88"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.lit-template-12-gl-popover-1-div-2-div-popover-p-popover__message.text.20743f7213#text",
+			"id": "webviews:webviews.rebase.rebase.lit-template-11-gl-popover-1-div-2-div-popover-p-popover__message.text.a0eec9dab2#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.lit-template-12-gl-popover-1-div-2-div-popover-p-popover__message.text.20743f7213",
+			"anchor": "webviews.rebase.rebase.lit-template-11-gl-popover-1-div-2-div-popover-p-popover__message.text.a0eec9dab2",
 			"slot": "text",
 			"authorityId": "message.35a0c1f60a7cac6902d7a5267348e87ff57f25a1a1282e2b964f9df132a23f5c",
 			"pattern": {
@@ -27782,25 +28013,25 @@
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 428,
-					"column": 14
+					"line": 302,
+					"column": 15
 				},
 				"end": {
-					"line": 454,
-					"column": 4
+					"line": 324,
+					"column": 5
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.lit-template-12-gl-popover-1-div-2-div-popover-p-popover__message.text.20743f7213"
+				"key": "rebase.lit-template-11-gl-popover-1-div-2-div-popover-p-popover__message.text.a0eec9dab2"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.lit-template-12-gl-popover-1-div-2-div-popover-p-popover__title.text.d292bf01f8#text",
+			"id": "webviews:webviews.rebase.rebase.lit-template-11-gl-popover-1-div-2-div-popover-p-popover__title.text.f5e69c6e19#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.lit-template-12-gl-popover-1-div-2-div-popover-p-popover__title.text.d292bf01f8",
+			"anchor": "webviews.rebase.rebase.lit-template-11-gl-popover-1-div-2-div-popover-p-popover__title.text.f5e69c6e19",
 			"slot": "text",
 			"authorityId": "message.9a52ba6e034702fc0af2b2749965145d93fd0f61926858ba336835db2bc56fb8",
 			"pattern": {
@@ -27814,51 +28045,50 @@
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 428,
-					"column": 14
+					"line": 302,
+					"column": 15
 				},
 				"end": {
-					"line": 454,
-					"column": 4
+					"line": 324,
+					"column": 5
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.lit-template-12-gl-popover-1-div-2-div-popover-p-popover__title.text.d292bf01f8"
+				"key": "rebase.lit-template-11-gl-popover-1-div-2-div-popover-p-popover__title.text.f5e69c6e19"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.lit-template-12-gl-popover-1-div-indicator-span-indicator__content.text.e9ad6e715b#text",
+			"id": "webviews:webviews.rebase.rebase.lit-template-13-p-popover__message.text.6dda253371#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.lit-template-12-gl-popover-1-div-indicator-span-indicator__content.text.e9ad6e715b",
+			"anchor": "webviews.rebase.rebase.lit-template-13-p-popover__message.text.6dda253371",
 			"slot": "text",
-			"authorityId": "message.f7f38ab7e35196aa717ce4aec920727505ecc3a26ceac09fd05624ccef227544",
+			"authorityId": "message.1ba3c576ec72a699f7140ec80ff275b3265ffeb6ae9dc608a9fc021d1fe9457c",
 			"pattern": {
-				"kind": "template",
-				"text": "${slot1} Conflict ${slot2} Detected ${slot3}",
-				"slots": ["slot1", "slot2", "slot3"]
+				"kind": "literal",
+				"text": "Detection may be stale. Rebase plan was modified after conflict check."
 			},
-			"sourceText": "${slot1} Conflict ${slot2} Detected ${slot3}",
-			"sourceHash": "87e6519c9eddbdd04fce4399e4d73a0a2641605d44f00b254f786b4c3846bdf8",
+			"sourceText": "Detection may be stale. Rebase plan was modified after conflict check.",
+			"sourceHash": "fbc5bb324a04c201893ca889faab53489519fd05114577d6ba99c508e9060b4d",
 			"reference": {
 				"kind": "source",
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 428,
-					"column": 14
+					"line": 317,
+					"column": 15
 				},
 				"end": {
-					"line": 454,
-					"column": 4
+					"line": 319,
+					"column": 15
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.lit-template-12-gl-popover-1-div-indicator-span-indicator__content.text.e9ad6e715b"
+				"key": "rebase.lit-template-13-p-popover__message.text.6dda253371"
 			}
 		},
 		{
@@ -27879,11 +28109,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1481,
+					"line": 1503,
 					"column": 25
 				},
 				"end": {
-					"line": 1481,
+					"line": 1503,
 					"column": 54
 				}
 			},
@@ -27894,35 +28124,68 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.lit-template-14-p-popover__message.text.ae65887e2b#text",
+			"id": "webviews:webviews.rebase.rebase.lit-template-14-gl-popover-1-div-2-div-popover-p-popover__message.text.52f091cc16#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.lit-template-14-p-popover__message.text.ae65887e2b",
+			"anchor": "webviews.rebase.rebase.lit-template-14-gl-popover-1-div-2-div-popover-p-popover__message.text.52f091cc16",
 			"slot": "text",
-			"authorityId": "message.1ba3c576ec72a699f7140ec80ff275b3265ffeb6ae9dc608a9fc021d1fe9457c",
+			"authorityId": "message.35a0c1f60a7cac6902d7a5267348e87ff57f25a1a1282e2b964f9df132a23f5c",
 			"pattern": {
-				"kind": "literal",
-				"text": "Detection may be stale. Rebase plan was modified after conflict check."
+				"kind": "template",
+				"text": "This rebase will cause conflicts in ${slot1}:",
+				"slots": ["slot1"]
 			},
-			"sourceText": "Detection may be stale. Rebase plan was modified after conflict check.",
-			"sourceHash": "fbc5bb324a04c201893ca889faab53489519fd05114577d6ba99c508e9060b4d",
+			"sourceText": "This rebase will cause conflicts in ${slot1}:",
+			"sourceHash": "2f187d416d5c08c43822355e646602e4bd27ad3120d89c21234bdc7cb2db721f",
 			"reference": {
 				"kind": "source",
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 447,
+					"line": 327,
 					"column": 14
 				},
 				"end": {
-					"line": 449,
-					"column": 14
+					"line": 354,
+					"column": 4
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.lit-template-14-p-popover__message.text.ae65887e2b"
+				"key": "rebase.lit-template-14-gl-popover-1-div-2-div-popover-p-popover__message.text.52f091cc16"
+			}
+		},
+		{
+			"id": "webviews:webviews.rebase.rebase.lit-template-14-gl-popover-1-div-2-div-popover-p-popover__title.text.b7b40e4b20#text",
+			"domain": "webviews",
+			"scope": "webviews.rebase.runtime",
+			"anchor": "webviews.rebase.rebase.lit-template-14-gl-popover-1-div-2-div-popover-p-popover__title.text.b7b40e4b20",
+			"slot": "text",
+			"authorityId": "message.9a52ba6e034702fc0af2b2749965145d93fd0f61926858ba336835db2bc56fb8",
+			"pattern": {
+				"kind": "literal",
+				"text": "Potential Conflicts Detected"
+			},
+			"sourceText": "Potential Conflicts Detected",
+			"sourceHash": "52e7bc5d00600126695f8f473d772e52c673af40cdfbe2355bc85cdf09c31d8a",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 327,
+					"column": 14
+				},
+				"end": {
+					"line": 354,
+					"column": 4
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "rebase",
+				"key": "rebase.lit-template-14-gl-popover-1-div-2-div-popover-p-popover__title.text.b7b40e4b20"
 			}
 		},
 		{
@@ -27944,11 +28207,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1486,
+					"line": 1508,
 					"column": 12
 				},
 				"end": {
-					"line": 1486,
+					"line": 1508,
 					"column": 54
 				}
 			},
@@ -27959,35 +28222,36 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.lit-template-15-gl-popover-1-gl-feature-gate-plus-state-1-p-1.text.d337757f79#text",
+			"id": "webviews:webviews.rebase.rebase.lit-template-15-root.text.dfefc9e34f#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.lit-template-15-gl-popover-1-gl-feature-gate-plus-state-1-p-1.text.d337757f79",
+			"anchor": "webviews.rebase.rebase.lit-template-15-root.text.dfefc9e34f",
 			"slot": "text",
-			"authorityId": "message.b664f43412bd06f9ca5230648316e374d8672f15f16078f91c928ed59ccea7c3",
+			"authorityId": "message.ba98efd990613d52d51300ecc338a6e5b7f0db2e9d158a2993b897012eab6aaa",
 			"pattern": {
-				"kind": "literal",
-				"text": "Detect potential conflicts before starting your rebase and take action to resolve them."
+				"kind": "template",
+				"text": "${slot1} Conflict ${slot2} Detected",
+				"slots": ["slot1", "slot2"]
 			},
-			"sourceText": "Detect potential conflicts before starting your rebase and take action to resolve them.",
-			"sourceHash": "84cda01edf4a214c049de7d72723d727cb44b75b4639e2c87957dcb65eada2cc",
+			"sourceText": "${slot1} Conflict ${slot2} Detected",
+			"sourceHash": "dec4b2ac54860c079ee4ce07cb19f15e629e42a8089c8b196866846e22f1c566",
 			"reference": {
 				"kind": "source",
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 460,
+					"line": 334,
 					"column": 14
 				},
 				"end": {
-					"line": 478,
-					"column": 4
+					"line": 334,
+					"column": 83
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.lit-template-15-gl-popover-1-gl-feature-gate-plus-state-1-p-1.text.d337757f79"
+				"key": "rebase.lit-template-15-root.text.dfefc9e34f"
 			}
 		},
 		{
@@ -28008,11 +28272,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1487,
+					"line": 1509,
 					"column": 12
 				},
 				"end": {
-					"line": 1487,
+					"line": 1509,
 					"column": 44
 				}
 			},
@@ -28040,11 +28304,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1491,
+					"line": 1513,
 					"column": 25
 				},
 				"end": {
-					"line": 1491,
+					"line": 1513,
 					"column": 60
 				}
 			},
@@ -28055,35 +28319,35 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.lit-template-16-span-indicator__content.text.b4d2fdb304#text",
+			"id": "webviews:webviews.rebase.rebase.lit-template-17-p-popover__message.text.18094a4143#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.lit-template-16-span-indicator__content.text.b4d2fdb304",
+			"anchor": "webviews.rebase.rebase.lit-template-17-p-popover__message.text.18094a4143",
 			"slot": "text",
-			"authorityId": "message.f0d78825ede81e22f73f87412663b4cd3a5e4a10d74b84b0315f50c7c93701b4",
+			"authorityId": "message.1ba3c576ec72a699f7140ec80ff275b3265ffeb6ae9dc608a9fc021d1fe9457c",
 			"pattern": {
 				"kind": "literal",
-				"text": "Conflict Detection (Pro)"
+				"text": "Detection may be stale. Rebase plan was modified after conflict check."
 			},
-			"sourceText": "Conflict Detection (Pro)",
-			"sourceHash": "b1e5145e73896645736b0e5376c1c6fb04176e4225c7e50346928d7212a132f8",
+			"sourceText": "Detection may be stale. Rebase plan was modified after conflict check.",
+			"sourceHash": "fbc5bb324a04c201893ca889faab53489519fd05114577d6ba99c508e9060b4d",
 			"reference": {
 				"kind": "source",
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 464,
-					"column": 37
+					"line": 347,
+					"column": 14
 				},
 				"end": {
-					"line": 464,
-					"column": 103
+					"line": 349,
+					"column": 14
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.lit-template-16-span-indicator__content.text.b4d2fdb304"
+				"key": "rebase.lit-template-17-p-popover__message.text.18094a4143"
 			}
 		},
 		{
@@ -28105,11 +28369,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1496,
+					"line": 1518,
 					"column": 12
 				},
 				"end": {
-					"line": 1496,
+					"line": 1518,
 					"column": 49
 				}
 			},
@@ -28117,6 +28381,38 @@
 				"kind": "runtime-key",
 				"bundle": "rebase",
 				"key": "rebase.lit-template-17-root.text.2e3180d92a"
+			}
+		},
+		{
+			"id": "webviews:webviews.rebase.rebase.lit-template-18-gl-popover-1-gl-feature-gate-plus-state-1-p-1.text.07b49d6e2d#text",
+			"domain": "webviews",
+			"scope": "webviews.rebase.runtime",
+			"anchor": "webviews.rebase.rebase.lit-template-18-gl-popover-1-gl-feature-gate-plus-state-1-p-1.text.07b49d6e2d",
+			"slot": "text",
+			"authorityId": "message.b664f43412bd06f9ca5230648316e374d8672f15f16078f91c928ed59ccea7c3",
+			"pattern": {
+				"kind": "literal",
+				"text": "Detect potential conflicts before starting your rebase and take action to resolve them."
+			},
+			"sourceText": "Detect potential conflicts before starting your rebase and take action to resolve them.",
+			"sourceHash": "84cda01edf4a214c049de7d72723d727cb44b75b4639e2c87957dcb65eada2cc",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 360,
+					"column": 14
+				},
+				"end": {
+					"line": 378,
+					"column": 4
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "rebase",
+				"key": "rebase.lit-template-18-gl-popover-1-gl-feature-gate-plus-state-1-p-1.text.07b49d6e2d"
 			}
 		},
 		{
@@ -28137,11 +28433,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1497,
+					"line": 1519,
 					"column": 12
 				},
 				"end": {
-					"line": 1497,
+					"line": 1519,
 					"column": 39
 				}
 			},
@@ -28170,11 +28466,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1502,
+					"line": 1524,
 					"column": 12
 				},
 				"end": {
-					"line": 1502,
+					"line": 1524,
 					"column": 51
 				}
 			},
@@ -28185,35 +28481,67 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.lit-template-2-span-indicator__content.text.5024af358a#text",
+			"id": "webviews:webviews.rebase.rebase.lit-template-19-span-indicator__content.text.2f5e2b6138#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.lit-template-2-span-indicator__content.text.5024af358a",
+			"anchor": "webviews.rebase.rebase.lit-template-19-span-indicator__content.text.2f5e2b6138",
 			"slot": "text",
-			"authorityId": "message.30772031809238cb1177227fe4a02a5fd61fe787e600c9ccb4104c028e5c987b",
+			"authorityId": "message.f0d78825ede81e22f73f87412663b4cd3a5e4a10d74b84b0315f50c7c93701b4",
 			"pattern": {
 				"kind": "literal",
-				"text": "Checking for conflicts..."
+				"text": "Conflict Detection (Pro)"
 			},
-			"sourceText": "Checking for conflicts...",
-			"sourceHash": "bc101267230da959e55739cee195a288346cda41d4c857b16c788eda6e9c2bb4",
+			"sourceText": "Conflict Detection (Pro)",
+			"sourceHash": "b1e5145e73896645736b0e5376c1c6fb04176e4225c7e50346928d7212a132f8",
 			"reference": {
 				"kind": "source",
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 307,
-					"column": 36
+					"line": 364,
+					"column": 37
 				},
 				"end": {
-					"line": 307,
+					"line": 364,
 					"column": 103
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.lit-template-2-span-indicator__content.text.5024af358a"
+				"key": "rebase.lit-template-19-span-indicator__content.text.2f5e2b6138"
+			}
+		},
+		{
+			"id": "webviews:webviews.rebase.rebase.lit-template-2-span-indicator__content.text.26652fbd88#text",
+			"domain": "webviews",
+			"scope": "webviews.rebase.runtime",
+			"anchor": "webviews.rebase.rebase.lit-template-2-span-indicator__content.text.26652fbd88",
+			"slot": "text",
+			"authorityId": "message.ef4ff1b22b73e222bfca21e6ab75221dbf060741b8b1a2090dd9ed5ee082d2a8",
+			"pattern": {
+				"kind": "literal",
+				"text": "Detecting Conflicts"
+			},
+			"sourceText": "Detecting Conflicts",
+			"sourceHash": "659682e03fd69c583e3ee90cfb67b0d90c50847aa04288df638d784a5c80f15e",
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 201,
+					"column": 36
+				},
+				"end": {
+					"line": 201,
+					"column": 97
+				}
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "rebase",
+				"key": "rebase.lit-template-2-span-indicator__content.text.26652fbd88"
 			}
 		},
 		{
@@ -28234,11 +28562,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1503,
+					"line": 1525,
 					"column": 12
 				},
 				"end": {
-					"line": 1503,
+					"line": 1525,
 					"column": 41
 				}
 			},
@@ -28267,11 +28595,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1507,
+					"line": 1529,
 					"column": 44
 				},
 				"end": {
-					"line": 1507,
+					"line": 1529,
 					"column": 69
 				}
 			},
@@ -28299,11 +28627,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1507,
+					"line": 1529,
 					"column": 76
 				},
 				"end": {
-					"line": 1507,
+					"line": 1529,
 					"column": 91
 				}
 			},
@@ -28332,11 +28660,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1510,
+					"line": 1532,
 					"column": 14
 				},
 				"end": {
-					"line": 1520,
+					"line": 1542,
 					"column": 10
 				}
 			},
@@ -28364,11 +28692,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1514,
+					"line": 1536,
 					"column": 11
 				},
 				"end": {
-					"line": 1516,
+					"line": 1538,
 					"column": 20
 				}
 			},
@@ -28396,11 +28724,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1514,
+					"line": 1536,
 					"column": 11
 				},
 				"end": {
-					"line": 1516,
+					"line": 1538,
 					"column": 20
 				},
 				"attribute": "content"
@@ -28429,11 +28757,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1788,
+					"line": 1810,
 					"column": 14
 				},
 				"end": {
-					"line": 1807,
+					"line": 1829,
 					"column": 13
 				}
 			},
@@ -28441,38 +28769,6 @@
 				"kind": "runtime-key",
 				"bundle": "rebase",
 				"key": "rebase.lit-template-28-header-1-div-header__row-h1-header-title.text.7c419c4a24"
-			}
-		},
-		{
-			"id": "webviews:webviews.rebase.rebase.lit-template-3-gl-popover-1-div-2-div-popover-p-popover__title.text.c6956112eb#text",
-			"domain": "webviews",
-			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.lit-template-3-gl-popover-1-div-2-div-popover-p-popover__title.text.c6956112eb",
-			"slot": "text",
-			"authorityId": "message.38d858e0e6685c9daad436509cc9cebe54189eb118d620457b14be4ab5d30f68",
-			"pattern": {
-				"kind": "literal",
-				"text": "Conflict Detection Unavailable"
-			},
-			"sourceText": "Conflict Detection Unavailable",
-			"sourceHash": "0c2768e735064fb549b71c8e206f701797890aada8c5bf29bea1990179d9c719",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 317,
-					"column": 15
-				},
-				"end": {
-					"line": 329,
-					"column": 5
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "rebase",
-				"key": "rebase.lit-template-3-gl-popover-1-div-2-div-popover-p-popover__title.text.c6956112eb"
 			}
 		},
 		{
@@ -28493,11 +28789,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1830,
+					"line": 1852,
 					"column": 11
 				},
 				"end": {
-					"line": 1841,
+					"line": 1863,
 					"column": 14
 				}
 			},
@@ -28526,11 +28822,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 2020,
+					"line": 2054,
 					"column": 14
 				},
 				"end": {
-					"line": 2038,
+					"line": 2072,
 					"column": 86
 				}
 			},
@@ -28558,11 +28854,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 2020,
+					"line": 2054,
 					"column": 14
 				},
 				"end": {
-					"line": 2038,
+					"line": 2072,
 					"column": 86
 				}
 			},
@@ -28590,11 +28886,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 2020,
+					"line": 2054,
 					"column": 14
 				},
 				"end": {
-					"line": 2038,
+					"line": 2072,
 					"column": 86
 				}
 			},
@@ -28622,11 +28918,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 2047,
+					"line": 2081,
 					"column": 14
 				},
 				"end": {
-					"line": 2060,
+					"line": 2094,
 					"column": 25
 				},
 				"attribute": "tooltip"
@@ -28655,11 +28951,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 2064,
+					"line": 2098,
 					"column": 14
 				},
 				"end": {
-					"line": 2071,
+					"line": 2105,
 					"column": 4
 				}
 			},
@@ -28687,11 +28983,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 2064,
+					"line": 2098,
 					"column": 14
 				},
 				"end": {
-					"line": 2071,
+					"line": 2105,
 					"column": 4
 				}
 			},
@@ -28719,11 +29015,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 2064,
+					"line": 2098,
 					"column": 14
 				},
 				"end": {
-					"line": 2071,
+					"line": 2105,
 					"column": 4
 				}
 			},
@@ -28751,11 +29047,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 2064,
+					"line": 2098,
 					"column": 14
 				},
 				"end": {
-					"line": 2071,
+					"line": 2105,
 					"column": 4
 				}
 			},
@@ -28783,11 +29079,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1342,
+					"line": 1348,
 					"column": 16
 				},
 				"end": {
-					"line": 1342,
+					"line": 1348,
 					"column": 84
 				}
 			},
@@ -28795,70 +29091,6 @@
 				"kind": "runtime-key",
 				"bundle": "rebase",
 				"key": "rebase.lit-template-4-div-entries-empty.text.e3834b7827"
-			}
-		},
-		{
-			"id": "webviews:webviews.rebase.rebase.lit-template-4-gl-popover-1-div-2-div-popover-p-popover__title.text.bd72f8b1e4#text",
-			"domain": "webviews",
-			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.lit-template-4-gl-popover-1-div-2-div-popover-p-popover__title.text.bd72f8b1e4",
-			"slot": "text",
-			"authorityId": "message.38d858e0e6685c9daad436509cc9cebe54189eb118d620457b14be4ab5d30f68",
-			"pattern": {
-				"kind": "literal",
-				"text": "Conflict Detection Unavailable"
-			},
-			"sourceText": "Conflict Detection Unavailable",
-			"sourceHash": "0c2768e735064fb549b71c8e206f701797890aada8c5bf29bea1990179d9c719",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 332,
-					"column": 14
-				},
-				"end": {
-					"line": 345,
-					"column": 4
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "rebase",
-				"key": "rebase.lit-template-4-gl-popover-1-div-2-div-popover-p-popover__title.text.bd72f8b1e4"
-			}
-		},
-		{
-			"id": "webviews:webviews.rebase.rebase.lit-template-4-gl-popover-1-div-indicator-span-indicator__content.text.5263930676#text",
-			"domain": "webviews",
-			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.lit-template-4-gl-popover-1-div-indicator-span-indicator__content.text.5263930676",
-			"slot": "text",
-			"authorityId": "message.38d858e0e6685c9daad436509cc9cebe54189eb118d620457b14be4ab5d30f68",
-			"pattern": {
-				"kind": "literal",
-				"text": "Conflict Detection Unavailable"
-			},
-			"sourceText": "Conflict Detection Unavailable",
-			"sourceHash": "0c2768e735064fb549b71c8e206f701797890aada8c5bf29bea1990179d9c719",
-			"reference": {
-				"kind": "source",
-				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 332,
-					"column": 14
-				},
-				"end": {
-					"line": 345,
-					"column": 4
-				}
-			},
-			"output": {
-				"kind": "runtime-key",
-				"bundle": "rebase",
-				"key": "rebase.lit-template-4-gl-popover-1-div-indicator-span-indicator__content.text.5263930676"
 			}
 		},
 		{
@@ -28879,11 +29111,11 @@
 				"file": "src/webviews/apps/rebase/components/rebase-entry.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 241,
+					"line": 242,
 					"column": 14
 				},
 				"end": {
-					"line": 245,
+					"line": 246,
 					"column": 17
 				}
 			},
@@ -28911,11 +29143,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1347,
+					"line": 1353,
 					"column": 14
 				},
 				"end": {
-					"line": 1347,
+					"line": 1353,
 					"column": 69
 				}
 			},
@@ -28926,99 +29158,99 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.lit-template-5-gl-popover-1-div-2-div-popover-p-popover__message.text.c3a1ee6308#text",
+			"id": "webviews:webviews.rebase.rebase.lit-template-5-gl-popover-1-div-2-div-popover-p-popover__title.text.7b78a7f79b#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.lit-template-5-gl-popover-1-div-2-div-popover-p-popover__message.text.c3a1ee6308",
+			"anchor": "webviews.rebase.rebase.lit-template-5-gl-popover-1-div-2-div-popover-p-popover__title.text.7b78a7f79b",
 			"slot": "text",
-			"authorityId": "message.6467d0723c8964a86627b2664a3bfa5ec6843b950c16f42282f7a5f8207c680c",
+			"authorityId": "message.38d858e0e6685c9daad436509cc9cebe54189eb118d620457b14be4ab5d30f68",
 			"pattern": {
 				"kind": "literal",
-				"text": "This rebase should complete without conflicts."
+				"text": "Conflict Detection Unavailable"
 			},
-			"sourceText": "This rebase should complete without conflicts.",
-			"sourceHash": "c36b7379347c588661b3c9671eef6547a676c49f35afeaf0ce879f53b8e42c43",
+			"sourceText": "Conflict Detection Unavailable",
+			"sourceHash": "0c2768e735064fb549b71c8e206f701797890aada8c5bf29bea1990179d9c719",
 			"reference": {
 				"kind": "source",
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 352,
+					"line": 216,
 					"column": 15
 				},
 				"end": {
-					"line": 369,
+					"line": 228,
 					"column": 5
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.lit-template-5-gl-popover-1-div-2-div-popover-p-popover__message.text.c3a1ee6308"
+				"key": "rebase.lit-template-5-gl-popover-1-div-2-div-popover-p-popover__title.text.7b78a7f79b"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.lit-template-5-gl-popover-1-div-2-div-popover-p-popover__title.text.c075a8bcb7#text",
+			"id": "webviews:webviews.rebase.rebase.lit-template-6-gl-popover-1-div-2-div-popover-p-popover__title.text.beaf87a021#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.lit-template-5-gl-popover-1-div-2-div-popover-p-popover__title.text.c075a8bcb7",
+			"anchor": "webviews.rebase.rebase.lit-template-6-gl-popover-1-div-2-div-popover-p-popover__title.text.beaf87a021",
 			"slot": "text",
-			"authorityId": "message.4bfa9d6dc573f2d57483c3e5fc6b6dd710da5c7fb891f87df9dc33eec3821737",
+			"authorityId": "message.38d858e0e6685c9daad436509cc9cebe54189eb118d620457b14be4ab5d30f68",
 			"pattern": {
 				"kind": "literal",
-				"text": "No Conflicts Detected"
+				"text": "Conflict Detection Unavailable"
 			},
-			"sourceText": "No Conflicts Detected",
-			"sourceHash": "a108684adefe1d0684d47ce539c9f5fa197a310612ff15b168b6873563a0a836",
+			"sourceText": "Conflict Detection Unavailable",
+			"sourceHash": "0c2768e735064fb549b71c8e206f701797890aada8c5bf29bea1990179d9c719",
 			"reference": {
 				"kind": "source",
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 352,
-					"column": 15
+					"line": 231,
+					"column": 14
 				},
 				"end": {
-					"line": 369,
-					"column": 5
+					"line": 244,
+					"column": 4
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.lit-template-5-gl-popover-1-div-2-div-popover-p-popover__title.text.c075a8bcb7"
+				"key": "rebase.lit-template-6-gl-popover-1-div-2-div-popover-p-popover__title.text.beaf87a021"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.lit-template-6-p-popover__message.text.ca7b45c4f5#text",
+			"id": "webviews:webviews.rebase.rebase.lit-template-6-gl-popover-1-div-indicator-span-indicator__content.text.2cb8c21f40#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.lit-template-6-p-popover__message.text.ca7b45c4f5",
+			"anchor": "webviews.rebase.rebase.lit-template-6-gl-popover-1-div-indicator-span-indicator__content.text.2cb8c21f40",
 			"slot": "text",
-			"authorityId": "message.1ba3c576ec72a699f7140ec80ff275b3265ffeb6ae9dc608a9fc021d1fe9457c",
+			"authorityId": "message.38d858e0e6685c9daad436509cc9cebe54189eb118d620457b14be4ab5d30f68",
 			"pattern": {
 				"kind": "literal",
-				"text": "Detection may be stale. Rebase plan was modified after conflict check."
+				"text": "Conflict Detection Unavailable"
 			},
-			"sourceText": "Detection may be stale. Rebase plan was modified after conflict check.",
-			"sourceHash": "fbc5bb324a04c201893ca889faab53489519fd05114577d6ba99c508e9060b4d",
+			"sourceText": "Conflict Detection Unavailable",
+			"sourceHash": "0c2768e735064fb549b71c8e206f701797890aada8c5bf29bea1990179d9c719",
 			"reference": {
 				"kind": "source",
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 362,
-					"column": 15
+					"line": 231,
+					"column": 14
 				},
 				"end": {
-					"line": 364,
-					"column": 15
+					"line": 244,
+					"column": 4
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.lit-template-6-p-popover__message.text.ca7b45c4f5"
+				"key": "rebase.lit-template-6-gl-popover-1-div-indicator-span-indicator__content.text.2cb8c21f40"
 			}
 		},
 		{
@@ -29039,12 +29271,12 @@
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 372,
-					"column": 14
+					"line": 251,
+					"column": 15
 				},
 				"end": {
-					"line": 392,
-					"column": 4
+					"line": 268,
+					"column": 5
 				}
 			},
 			"output": {
@@ -29071,12 +29303,12 @@
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 372,
-					"column": 14
+					"line": 251,
+					"column": 15
 				},
 				"end": {
-					"line": 392,
-					"column": 4
+					"line": 268,
+					"column": 5
 				}
 			},
 			"output": {
@@ -29103,12 +29335,12 @@
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 385,
-					"column": 14
+					"line": 261,
+					"column": 15
 				},
 				"end": {
-					"line": 387,
-					"column": 14
+					"line": 263,
+					"column": 15
 				}
 			},
 			"output": {
@@ -29118,68 +29350,67 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.lit-template-9-gl-popover-1-div-2-div-popover-p-popover__message.text.c909b413d1#text",
+			"id": "webviews:webviews.rebase.rebase.lit-template-9-gl-popover-1-div-2-div-popover-p-popover__message.text.c978eb54f9#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.lit-template-9-gl-popover-1-div-2-div-popover-p-popover__message.text.c909b413d1",
+			"anchor": "webviews.rebase.rebase.lit-template-9-gl-popover-1-div-2-div-popover-p-popover__message.text.c978eb54f9",
 			"slot": "text",
-			"authorityId": "message.35a0c1f60a7cac6902d7a5267348e87ff57f25a1a1282e2b964f9df132a23f5c",
+			"authorityId": "message.6467d0723c8964a86627b2664a3bfa5ec6843b950c16f42282f7a5f8207c680c",
 			"pattern": {
-				"kind": "template",
-				"text": "This rebase will cause conflicts in ${slot1}:",
-				"slots": ["slot1"]
+				"kind": "literal",
+				"text": "This rebase should complete without conflicts."
 			},
-			"sourceText": "This rebase will cause conflicts in ${slot1}:",
-			"sourceHash": "2f187d416d5c08c43822355e646602e4bd27ad3120d89c21234bdc7cb2db721f",
+			"sourceText": "This rebase should complete without conflicts.",
+			"sourceHash": "c36b7379347c588661b3c9671eef6547a676c49f35afeaf0ce879f53b8e42c43",
 			"reference": {
 				"kind": "source",
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 403,
-					"column": 15
+					"line": 271,
+					"column": 14
 				},
 				"end": {
-					"line": 425,
-					"column": 5
+					"line": 291,
+					"column": 4
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.lit-template-9-gl-popover-1-div-2-div-popover-p-popover__message.text.c909b413d1"
+				"key": "rebase.lit-template-9-gl-popover-1-div-2-div-popover-p-popover__message.text.c978eb54f9"
 			}
 		},
 		{
-			"id": "webviews:webviews.rebase.rebase.lit-template-9-gl-popover-1-div-2-div-popover-p-popover__title.text.98874365fe#text",
+			"id": "webviews:webviews.rebase.rebase.lit-template-9-gl-popover-1-div-2-div-popover-p-popover__title.text.b62ae7939b#text",
 			"domain": "webviews",
 			"scope": "webviews.rebase.runtime",
-			"anchor": "webviews.rebase.rebase.lit-template-9-gl-popover-1-div-2-div-popover-p-popover__title.text.98874365fe",
+			"anchor": "webviews.rebase.rebase.lit-template-9-gl-popover-1-div-2-div-popover-p-popover__title.text.b62ae7939b",
 			"slot": "text",
-			"authorityId": "message.9a52ba6e034702fc0af2b2749965145d93fd0f61926858ba336835db2bc56fb8",
+			"authorityId": "message.4bfa9d6dc573f2d57483c3e5fc6b6dd710da5c7fb891f87df9dc33eec3821737",
 			"pattern": {
 				"kind": "literal",
-				"text": "Potential Conflicts Detected"
+				"text": "No Conflicts Detected"
 			},
-			"sourceText": "Potential Conflicts Detected",
-			"sourceHash": "52e7bc5d00600126695f8f473d772e52c673af40cdfbe2355bc85cdf09c31d8a",
+			"sourceText": "No Conflicts Detected",
+			"sourceHash": "a108684adefe1d0684d47ce539c9f5fa197a310612ff15b168b6873563a0a836",
 			"reference": {
 				"kind": "source",
 				"file": "src/webviews/apps/rebase/components/conflict-indicator.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 403,
-					"column": 15
+					"line": 271,
+					"column": 14
 				},
 				"end": {
-					"line": 425,
-					"column": 5
+					"line": 291,
+					"column": 4
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "rebase",
-				"key": "rebase.lit-template-9-gl-popover-1-div-2-div-popover-p-popover__title.text.98874365fe"
+				"key": "rebase.lit-template-9-gl-popover-1-div-2-div-popover-p-popover__title.text.b62ae7939b"
 			}
 		},
 		{
@@ -29200,11 +29431,11 @@
 				"file": "src/webviews/apps/rebase/components/rebase-entry.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 333,
+					"line": 334,
 					"column": 14
 				},
 				"end": {
-					"line": 338,
+					"line": 339,
 					"column": 28
 				},
 				"attribute": "label"
@@ -29233,11 +29464,11 @@
 				"file": "src/webviews/apps/rebase/rebase.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 1410,
+					"line": 1419,
 					"column": 16
 				},
 				"end": {
-					"line": 1412,
+					"line": 1421,
 					"column": 13
 				},
 				"attribute": "title"
@@ -55495,10 +55726,10 @@
 			}
 		},
 		{
-			"id": "webviews:webviews.timeline.timeline.imperative-property-title-362-11.text.611811e18b#text",
+			"id": "webviews:webviews.timeline.timeline.imperative-property-title-377-11.text.5b6298be9f#text",
 			"domain": "webviews",
 			"scope": "webviews.timeline.runtime",
-			"anchor": "webviews.timeline.timeline.imperative-property-title-362-11.text.611811e18b",
+			"anchor": "webviews.timeline.timeline.imperative-property-title-377-11.text.5b6298be9f",
 			"slot": "text",
 			"authorityId": "message.436933dcc0a175a57634b2e7c0729ed0112bb7fe462795ddfd3967b47de91b8e",
 			"pattern": {
@@ -55512,18 +55743,18 @@
 				"file": "src/webviews/apps/plus/timeline/actions.ts",
 				"syntax": "ts",
 				"start": {
-					"line": 362,
+					"line": 377,
 					"column": 11
 				},
 				"end": {
-					"line": 362,
+					"line": 377,
 					"column": 49
 				}
 			},
 			"output": {
 				"kind": "runtime-key",
 				"bundle": "timeline",
-				"key": "timeline.imperative-property-title-362-11.text.611811e18b"
+				"key": "timeline.imperative-property-title-377-11.text.5b6298be9f"
 			}
 		},
 		{

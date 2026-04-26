@@ -8,17 +8,32 @@ import type {
 } from './model.mts';
 import { cloneOutputReference, cloneSourceReference, nowIso, outputReferenceId, stableStringify } from './model.mts';
 
+export interface CatalogScopeOptions {
+	readonly occurrenceIdPrefix?: string;
+	readonly catalogDomain?: I18nDomain;
+	readonly deferredDomains?: readonly I18nDomain[];
+}
+
 export function reconcileCatalog(
 	previousCatalog: SourceCatalogFile,
 	currentOccurrences: readonly SourceOccurrence[],
+	options: CatalogScopeOptions = {},
 ): SourceCatalogFile {
+	const currentIds = new Set(currentOccurrences.map(occurrence => occurrence.id));
+	const scopedOccurrences = [
+		...previousCatalog.occurrences.filter(
+			occurrence => !isOccurrenceInScope(occurrence, options) && !currentIds.has(occurrence.id),
+		),
+		...currentOccurrences,
+	];
+
 	return {
 		$schema: previousCatalog.$schema,
 		version: 3,
-		domain: previousCatalog.domain,
+		domain: options.catalogDomain ?? previousCatalog.domain,
 		generatedAt: nowIso(),
-		deferredDomains: [...previousCatalog.deferredDomains],
-		occurrences: [...currentOccurrences].sort(compareOccurrences),
+		deferredDomains: [...(options.deferredDomains ?? previousCatalog.deferredDomains)],
+		occurrences: scopedOccurrences.sort(compareOccurrences),
 	};
 }
 
@@ -114,6 +129,13 @@ export function createReconciliationReport(
 	};
 }
 
+export function filterCatalogOccurrencesByScope(
+	occurrences: readonly SourceOccurrence[],
+	options: CatalogScopeOptions = {},
+): SourceOccurrence[] {
+	return occurrences.filter(occurrence => isOccurrenceInScope(occurrence, options));
+}
+
 function summarize(
 	entries: readonly CatalogReconciliationEntry[],
 ): Record<CatalogReconciliationEntry['change'], number> {
@@ -134,6 +156,10 @@ function summarize(
 
 function compareOccurrences(left: SourceOccurrence, right: SourceOccurrence): number {
 	return left.id.localeCompare(right.id);
+}
+
+function isOccurrenceInScope(occurrence: SourceOccurrence, options: CatalogScopeOptions): boolean {
+	return options.occurrenceIdPrefix == null || occurrence.id.startsWith(options.occurrenceIdPrefix);
 }
 
 function getOutputId(output: SourceOccurrence['output']): string | undefined {

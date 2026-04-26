@@ -1,10 +1,22 @@
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 
-import type { PendingReportFile } from '../../core/model.mts';
+import type { PendingReportFile, TranslationWorksetEntry } from '../../core/model.mts';
 import { nowIso } from '../../core/model.mts';
-import { promoteApprovedEntries, resolveOccurrenceTranslation, syncWorkset } from '../../core/authority.mts';
-import { createReconciliationReport, reconcileCatalog } from '../../core/reconcile.mts';
+import {
+	filterOccurrenceIdsByScope,
+	filterWorksetEntriesByScope,
+	promoteApprovedEntries,
+	resolveOccurrenceTranslation,
+	syncWorkset,
+	type WorksetScopeOptions,
+} from '../../core/authority.mts';
+import {
+	createReconciliationReport,
+	filterCatalogOccurrencesByScope,
+	reconcileCatalog,
+	type CatalogScopeOptions,
+} from '../../core/reconcile.mts';
 import { ensureAuthorityFiles, ensureDomainFiles } from '../../core/store.mts';
 
 import {
@@ -50,21 +62,27 @@ export function syncRuntimeDynamicI18n(options: RuntimeDynamicWorkflowOptions): 
 	const previousWorkset = loadRuntimeDynamicWorkset(context);
 	const bundle = loadAuthorityBundle(context);
 	const extraction = extractRuntimeDynamicOccurrences(loadRuntimeDynamicSourceTargets(context));
-	const catalog = reconcileCatalog(previousCatalog, extraction.occurrences);
-	const reconciliation = createReconciliationReport(previousCatalog, catalog, extraction.issues, {
-		domain: context.domain,
-		schemaPath: '../schemas/reconciliationReport.schema.json',
-	});
-	const workset = syncWorkset(previousWorkset, catalog.occurrences, bundle);
+	const catalogScope = getCatalogScope(context);
+	const scopedPreviousCatalog = withCatalogScope(previousCatalog, catalogScope);
+	const catalog = reconcileCatalog(previousCatalog, extraction.occurrences, catalogScope);
+	const scopedCatalog = withCatalogScope(catalog, catalogScope);
+	const scope = getWorksetScope(context);
+	const workset = syncWorkset(previousWorkset, scopedCatalog.occurrences, bundle, scope);
 
 	saveRuntimeDynamicCatalog(context, catalog);
-	saveRuntimeDynamicReconciliationReport(context, reconciliation);
+	saveRuntimeDynamicReconciliationReport(
+		context,
+		createReconciliationReport(scopedPreviousCatalog, scopedCatalog, extraction.issues, {
+			domain: context.domain,
+			schemaPath: '../schemas/reconciliationReport.schema.json',
+		}),
+	);
 	saveRuntimeDynamicWorkset(context, workset);
 
 	return {
 		context: context,
-		occurrenceCount: catalog.occurrences.length,
-		worksetCount: workset.entries.length,
+		occurrenceCount: scopedCatalog.occurrences.length,
+		worksetCount: filterWorksetEntriesByScope(workset.entries, scope).length,
 	};
 }
 
@@ -77,7 +95,7 @@ export function promoteRuntimeDynamicAuthority(options: RuntimeDynamicWorkflowOp
 
 	const workset = loadRuntimeDynamicWorkset(context);
 	const bundle = loadAuthorityBundle(context);
-	const promoted = promoteApprovedEntries(workset, bundle);
+	const promoted = promoteApprovedEntries(workset, bundle, getWorksetScope(context));
 
 	saveAuthorityBundle(context, promoted.bundle);
 	saveRuntimeDynamicWorkset(context, promoted.workset);
@@ -121,8 +139,11 @@ export function createPendingReport(options: RuntimeDynamicWorkflowOptions): Pen
 	const bundle = loadAuthorityBundle(context);
 	const catalog = loadRuntimeDynamicCatalog(context);
 	const workset = loadRuntimeDynamicWorkset(context);
+	const scope = getWorksetScope(context);
+	const scopedOccurrences = filterCatalogOccurrencesByScope(catalog.occurrences, getCatalogScope(context));
+	const scopedEntries = filterWorksetEntriesByScope(workset.entries, scope);
 	const counts = {
-		total: workset.entries.length,
+		total: scopedEntries.length,
 		pending: 0,
 		translated: 0,
 		needsReview: 0,
@@ -130,7 +151,7 @@ export function createPendingReport(options: RuntimeDynamicWorkflowOptions): Pen
 		promotable: 0,
 	};
 
-	for (const entry of workset.entries) {
+	for (const entry of scopedEntries) {
 		counts[entry.status] += 1;
 		if (entry.status === 'approved') {
 			counts.promotable += 1;
@@ -138,7 +159,7 @@ export function createPendingReport(options: RuntimeDynamicWorkflowOptions): Pen
 	}
 
 	let resolvedOccurrences = 0;
-	for (const occurrence of catalog.occurrences) {
+	for (const occurrence of scopedOccurrences) {
 		if (resolveOccurrenceTranslation(occurrence, bundle) != null) {
 			resolvedOccurrences += 1;
 		}
@@ -150,7 +171,7 @@ export function createPendingReport(options: RuntimeDynamicWorkflowOptions): Pen
 			: diffWorksetAgainstBase(
 				context,
 				options.baseRef,
-				workset.entries.map(entry => entry.id),
+				scopedEntries.map(entry => entry.id),
 			);
 	const report: PendingReportFile = {
 		$schema: '../schemas/pendingReport.schema.json',
@@ -161,17 +182,17 @@ export function createPendingReport(options: RuntimeDynamicWorkflowOptions): Pen
 		baseRef: options.baseRef,
 		counts: counts,
 		coverage: {
-			catalogOccurrences: catalog.occurrences.length,
+			catalogOccurrences: scopedOccurrences.length,
 			resolvedOccurrences: resolvedOccurrences,
-			unresolvedOccurrences: catalog.occurrences.length - resolvedOccurrences,
+			unresolvedOccurrences: scopedOccurrences.length - resolvedOccurrences,
 			readyForGeneration:
-				workset.entries.every(entry => entry.status !== 'pending') &&
-				catalog.occurrences.length === resolvedOccurrences,
+				scopedEntries.every(entry => entry.status !== 'pending') &&
+				scopedOccurrences.length === resolvedOccurrences,
 		},
-		items: workset.entries.map(entry => ({
+		items: scopedEntries.map(entry => ({
 			id: entry.id,
 			status: entry.status,
-			occurrenceIds: entry.occurrenceIds,
+			occurrenceIds: filterOccurrenceIdsByScope(entry.occurrenceIds, scope),
 		})),
 		...(sinceBase == null ? {} : { sinceBase: sinceBase }),
 	};
@@ -221,9 +242,12 @@ function diffWorksetAgainstBase(
 
 	try {
 		const previous = JSON.parse(result.stdout) as {
-			readonly entries?: Array<{ readonly id: string }>;
+			readonly entries?: TranslationWorksetEntry[];
 		};
-		const previousIds = new Set((previous.entries ?? []).map(entry => entry.id));
+		const scope = getWorksetScope(context);
+		const previousIds = new Set(
+			filterWorksetEntriesByScope(previous.entries ?? [], scope).map(entry => entry.id),
+		);
 		const currentIds = new Set(currentEntryIds);
 		let added = 0;
 		let removed = 0;
@@ -241,6 +265,35 @@ function diffWorksetAgainstBase(
 	} catch {
 		return undefined;
 	}
+}
+
+function getWorksetScope(context: RuntimeDynamicDomainContext): WorksetScopeOptions {
+	return context.domain === 'webviewHost'
+		? {
+				occurrenceIdPrefix: 'webviewHost:',
+				worksetDomain: 'webviews',
+			}
+		: {};
+}
+
+function getCatalogScope(context: RuntimeDynamicDomainContext): CatalogScopeOptions {
+	return context.domain === 'webviewHost'
+		? {
+				occurrenceIdPrefix: 'webviewHost:',
+				catalogDomain: 'webviews',
+				deferredDomains: ['quickpicks', 'formatter'],
+			}
+		: {};
+}
+
+function withCatalogScope(
+	catalog: ReturnType<typeof loadRuntimeDynamicCatalog>,
+	scope: CatalogScopeOptions,
+): ReturnType<typeof loadRuntimeDynamicCatalog> {
+	return {
+		...catalog,
+		occurrences: filterCatalogOccurrencesByScope(catalog.occurrences, scope),
+	};
 }
 
 function exists(filePath: string): boolean {

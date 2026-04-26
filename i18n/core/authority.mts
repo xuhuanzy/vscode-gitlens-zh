@@ -2,6 +2,7 @@ import type {
 	AuthorityBundle,
 	AuthorityMessageEntry,
 	AuthorityOverrideEntry,
+	I18nDomain,
 	MessagePattern,
 	SourceOccurrence,
 	TranslationWorksetEntry,
@@ -28,6 +29,11 @@ export interface ResolvedTranslation {
 		| 'scopeOverride'
 		| 'authorityMessage'
 		| 'authorityTerm';
+}
+
+export interface WorksetScopeOptions {
+	readonly occurrenceIdPrefix?: string;
+	readonly worksetDomain?: I18nDomain;
 }
 
 export function canonicalAuthorityId(authorityId: string, bundle: AuthorityBundle): string {
@@ -120,16 +126,24 @@ export function syncWorkset(
 	previousWorkset: TranslationWorksetFile,
 	occurrences: readonly SourceOccurrence[],
 	bundle: AuthorityBundle,
+	options: WorksetScopeOptions = {},
 ): TranslationWorksetFile {
 	const previousEntries = new Map(previousWorkset.entries.map(entry => [entry.id, entry]));
 	const groupedOccurrences = groupUnresolvedOccurrences(occurrences, bundle);
 	const entries: TranslationWorksetEntry[] = [];
+	const updatedEntryIds = new Set<string>();
 
 	for (const [authorityId, grouped] of groupedOccurrences) {
+		updatedEntryIds.add(authorityId);
 		const previous = previousEntries.get(authorityId);
 		const sourcePattern = clonePattern(grouped[0].pattern);
 		const sourceHash = grouped[0].sourceHash;
-		const occurrenceIds = grouped.map(occurrence => occurrence.id).sort((left, right) => left.localeCompare(right));
+		const occurrenceIds = [
+			...(previous?.occurrenceIds.filter(id => !isOccurrenceIdInScope(id, options)) ?? []),
+			...grouped.map(occurrence => occurrence.id),
+		]
+			.filter((id, index, ids) => ids.indexOf(id) === index)
+			.sort((left, right) => left.localeCompare(right));
 
 		if (previous == null) {
 			entries.push({
@@ -161,11 +175,25 @@ export function syncWorkset(
 		});
 	}
 
+	for (const previous of previousWorkset.entries) {
+		if (updatedEntryIds.has(previous.id)) continue;
+
+		const occurrenceIds = previous.occurrenceIds
+			.filter(id => !isOccurrenceIdInScope(id, options))
+			.sort((left, right) => left.localeCompare(right));
+		if (occurrenceIds.length === 0) continue;
+
+		entries.push({
+			...previous,
+			occurrenceIds: occurrenceIds,
+		});
+	}
+
 	return {
 		$schema: '../schemas/translationWorkset.schema.json',
 		version: 2,
 		locale: previousWorkset.locale,
-		domain: previousWorkset.domain,
+		domain: options.worksetDomain ?? previousWorkset.domain,
 		generatedAt: nowIso(),
 		entries: entries.sort((left, right) => left.id.localeCompare(right.id)),
 	};
@@ -174,6 +202,7 @@ export function syncWorkset(
 export function promoteApprovedEntries(
 	workset: TranslationWorksetFile,
 	bundle: AuthorityBundle,
+	options: WorksetScopeOptions = {},
 ): { readonly workset: TranslationWorksetFile; readonly bundle: AuthorityBundle; readonly promoted: string[] } {
 	const promoted: string[] = [];
 	const updatedMessages = [...bundle.messages.entries];
@@ -182,7 +211,7 @@ export function promoteApprovedEntries(
 	let messagesChanged = false;
 
 	for (const entry of workset.entries) {
-		if (entry.status !== 'approved' || !hasTranslation(entry)) {
+		if (!isWorksetEntryInScope(entry, options) || entry.status !== 'approved' || !hasTranslation(entry)) {
 			retainedEntries.push(entry);
 			continue;
 		}
@@ -233,6 +262,30 @@ export function promoteApprovedEntries(
 		},
 		promoted: promoted,
 	};
+}
+
+export function filterWorksetEntriesByScope(
+	entries: readonly TranslationWorksetEntry[],
+	options: WorksetScopeOptions = {},
+): TranslationWorksetEntry[] {
+	return entries.filter(entry => isWorksetEntryInScope(entry, options));
+}
+
+export function filterOccurrenceIdsByScope(
+	occurrenceIds: readonly string[],
+	options: WorksetScopeOptions = {},
+): string[] {
+	return occurrenceIds
+		.filter(id => isOccurrenceIdInScope(id, options))
+		.sort((left, right) => left.localeCompare(right));
+}
+
+function isWorksetEntryInScope(entry: TranslationWorksetEntry, options: WorksetScopeOptions): boolean {
+	return entry.occurrenceIds.some(id => isOccurrenceIdInScope(id, options));
+}
+
+function isOccurrenceIdInScope(id: string, options: WorksetScopeOptions): boolean {
+	return options.occurrenceIdPrefix == null || id.startsWith(options.occurrenceIdPrefix);
 }
 
 function groupUnresolvedOccurrences(

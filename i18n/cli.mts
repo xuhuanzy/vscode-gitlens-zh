@@ -28,6 +28,7 @@ import {
 	generateWebviewsLocalizedOutputs,
 	generateWebviewsLocalizedSettingsShell,
 	promoteWebviewsAuthority,
+	snapshotSettingsSourceShell,
 	syncWebviewsI18n,
 } from './domains/webviews/workflow.mts';
 import { execute as executeAuthorityMessagesReview } from './authority/messagesReview.mts';
@@ -330,6 +331,9 @@ function runWebviews(action: string | undefined, args: readonly string[]): void 
 			return;
 		}
 		case 'generate': {
+			if (readBooleanFlag(args, '--settings-shell-only') && fs.existsSync(context.settingsBuildFile)) {
+				snapshotSettingsSourceShell({ rootDir: context.rootDir });
+			}
 			const generator = readBooleanFlag(args, '--dynamic-sources-only')
 				? generateWebviewsLocalizedDynamicSources
 				: readBooleanFlag(args, '--settings-shell-only')
@@ -441,7 +445,7 @@ function getRunnableWebviewsContext(
 	}
 
 	const context = createWebviewsDomainContext(rootDir);
-	if (fs.existsSync(context.settingsBuildFile)) {
+	if (fs.existsSync(context.settingsSourceFile) || fs.existsSync(context.settingsBuildFile)) {
 		return {
 			skipped: false,
 			context: context,
@@ -450,8 +454,8 @@ function getRunnableWebviewsContext(
 
 	return {
 		skipped: true,
-		reason: `${context.settingsBuildFile} does not exist`,
-		requiredFile: context.settingsBuildFile,
+		reason: `${context.settingsSourceFile} and ${context.settingsBuildFile} do not exist`,
+		requiredFile: context.settingsSourceFile,
 	};
 }
 

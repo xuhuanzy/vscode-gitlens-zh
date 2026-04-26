@@ -87,7 +87,7 @@ export { loadAuthorityBundle, saveAuthorityBundle, savePendingReport };
 export function createEmptyRuntimeDynamicCatalogFile(context: RuntimeDynamicDomainContext) {
 	return createEmptyCatalogFile({
 		schemaPath: '../schemas/sourceCatalog.schema.json',
-		domain: context.domain,
+		domain: context.domain === 'webviewHost' ? 'webviews' : context.domain,
 		deferredDomains: getDeferredDomains(context.domain),
 	});
 }
@@ -104,7 +104,7 @@ export function createEmptyRuntimeDynamicReconciliationReportFile(
 export function createEmptyRuntimeDynamicWorksetFile(context: RuntimeDynamicDomainContext) {
 	return createEmptyWorksetFile({
 		schemaPath: '../schemas/translationWorkset.schema.json',
-		domain: context.domain,
+		domain: context.domain === 'webviewHost' ? 'webviews' : context.domain,
 		locale: context.locale,
 	});
 }
@@ -116,6 +116,6 @@ function getDeferredDomains(domain: RuntimeDynamicDomainContext['domain']): I18n
 		case 'quickpicks':
 			return ['formatter', 'webviewHost'];
 		case 'webviewHost':
-			return ['formatter', 'quickpicks'];
+			return ['quickpicks', 'formatter'];
 	}
 }

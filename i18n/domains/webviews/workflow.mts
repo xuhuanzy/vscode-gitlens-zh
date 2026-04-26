@@ -4,10 +4,22 @@ import fs from 'node:fs';
 import path from 'node:path';
 import * as ts from 'typescript';
 
-import type { PendingReportFile } from '../../core/model.mts';
+import type { PendingReportFile, TranslationWorksetEntry } from '../../core/model.mts';
 import { nowIso } from '../../core/model.mts';
-import { promoteApprovedEntries, resolveOccurrenceTranslation, syncWorkset } from '../../core/authority.mts';
-import { createReconciliationReport, reconcileCatalog } from '../../core/reconcile.mts';
+import {
+	filterOccurrenceIdsByScope,
+	filterWorksetEntriesByScope,
+	promoteApprovedEntries,
+	resolveOccurrenceTranslation,
+	syncWorkset,
+	type WorksetScopeOptions,
+} from '../../core/authority.mts';
+import {
+	createReconciliationReport,
+	filterCatalogOccurrencesByScope,
+	reconcileCatalog,
+	type CatalogScopeOptions,
+} from '../../core/reconcile.mts';
 import { ensureAuthorityFiles, ensureDomainFiles } from '../../core/store.mts';
 
 import { createWebviewsDomainContext, type WebviewsDomainContext } from './context.mts';
@@ -18,8 +30,9 @@ import {
 	createEmptyWebviewsReconciliationReportFile,
 	createEmptyWebviewsWorksetFile,
 	deleteLocalizedDynamicSource,
+	isLocalizedSettingsShell,
 	loadAuthorityBundle,
-	loadSettingsBuildHtml,
+	loadSettingsSourceHtml,
 	loadSourceTargetContents,
 	loadWebviewsCatalog,
 	loadWebviewsWorkset,
@@ -27,6 +40,7 @@ import {
 	saveLocalizedDynamicSource,
 	saveLocalizedSettingsShell,
 	savePendingReport,
+	saveSettingsSourceHtml,
 	saveWebviewsCatalog,
 	saveWebviewsReconciliationReport,
 	saveWebviewsWorkset,
@@ -116,17 +130,21 @@ export function syncWebviewsI18n(options: WorkflowOptions = {}): {
 		{
 			kind: 'html',
 			file: 'dist/webviews/settings.html',
-			html: loadSettingsBuildHtml(context),
+			html: loadSettingsSourceHtml(context),
 			shell: 'settings',
 		},
 		...loadDynamicExtractionTargets(context),
 	]);
-	const catalog = reconcileCatalog(previousCatalog, extraction.occurrences);
-	const reconciliation = createReconciliationReport(previousCatalog, catalog, extraction.issues, {
+	const catalogScope = getWebviewsCatalogScope();
+	const scopedPreviousCatalog = withCatalogScope(previousCatalog, catalogScope);
+	const catalog = reconcileCatalog(previousCatalog, extraction.occurrences, catalogScope);
+	const scopedCatalog = withCatalogScope(catalog, catalogScope);
+	const reconciliation = createReconciliationReport(scopedPreviousCatalog, scopedCatalog, extraction.issues, {
 		domain: 'webviews',
 		schemaPath: '../schemas/reconciliationReport.schema.json',
 	});
-	const workset = syncWorkset(previousWorkset, catalog.occurrences, bundle);
+	const scope = getWebviewsWorksetScope();
+	const workset = syncWorkset(previousWorkset, scopedCatalog.occurrences, bundle, scope);
 
 	saveWebviewsCatalog(context, catalog);
 	saveWebviewsReconciliationReport(context, reconciliation);
@@ -134,8 +152,8 @@ export function syncWebviewsI18n(options: WorkflowOptions = {}): {
 
 	return {
 		context: context,
-		occurrenceCount: catalog.occurrences.length,
-		worksetCount: workset.entries.length,
+		occurrenceCount: scopedCatalog.occurrences.length,
+		worksetCount: filterWorksetEntriesByScope(workset.entries, scope).length,
 	};
 }
 
@@ -152,7 +170,7 @@ export function promoteWebviewsAuthority(options: WorkflowOptions = {}): {
 
 	const workset = loadWebviewsWorkset(context);
 	const bundle = loadAuthorityBundle(context);
-	const promoted = promoteApprovedEntries(workset, bundle);
+	const promoted = promoteApprovedEntries(workset, bundle, getWebviewsWorksetScope());
 
 	saveAuthorityBundle(context, promoted.bundle);
 	saveWebviewsWorkset(context, promoted.workset);
@@ -214,9 +232,13 @@ function generateWebviewsLocalizedSettingsShellCore(context: WebviewsDomainConte
 	readonly translatedCount: number;
 	readonly unresolvedCount: number;
 } {
+	if (!fs.existsSync(context.settingsSourceFile)) {
+		snapshotSettingsSourceShell({ rootDir: context.rootDir });
+	}
+
 	const catalog = loadWebviewsCatalog(context);
 	const bundle = loadAuthorityBundle(context);
-	const englishHtml = loadSettingsBuildHtml(context);
+	const englishHtml = loadSettingsSourceHtml(context);
 	const generated = generateLocalizedSettingsShell(englishHtml, catalog.occurrences, bundle);
 	saveLocalizedSettingsShell(context, generated.localizedHtml);
 
@@ -292,8 +314,11 @@ export function createPendingReport(options: WorkflowOptions = {}): PendingRepor
 	const bundle = loadAuthorityBundle(context);
 	const catalog = loadWebviewsCatalog(context);
 	const workset = loadWebviewsWorkset(context);
+	const scope = getWebviewsWorksetScope();
+	const scopedOccurrences = filterCatalogOccurrencesByScope(catalog.occurrences, getWebviewsCatalogScope());
+	const scopedEntries = filterWorksetEntriesByScope(workset.entries, scope);
 	const counts = {
-		total: workset.entries.length,
+		total: scopedEntries.length,
 		pending: 0,
 		translated: 0,
 		needsReview: 0,
@@ -301,7 +326,7 @@ export function createPendingReport(options: WorkflowOptions = {}): PendingRepor
 		promotable: 0,
 	};
 
-	for (const entry of workset.entries) {
+	for (const entry of scopedEntries) {
 		counts[entry.status] += 1;
 		if (entry.status === 'approved') {
 			counts.promotable += 1;
@@ -309,7 +334,7 @@ export function createPendingReport(options: WorkflowOptions = {}): PendingRepor
 	}
 
 	let resolvedOccurrences = 0;
-	for (const occurrence of catalog.occurrences) {
+	for (const occurrence of scopedOccurrences) {
 		if (resolveOccurrenceTranslation(occurrence, bundle) != null) {
 			resolvedOccurrences += 1;
 		}
@@ -321,7 +346,7 @@ export function createPendingReport(options: WorkflowOptions = {}): PendingRepor
 			: diffWorksetAgainstBase(
 				context,
 				options.baseRef,
-				workset.entries.map(entry => entry.id),
+				scopedEntries.map(entry => entry.id),
 			);
 	const report: PendingReportFile = {
 		$schema: '../schemas/pendingReport.schema.json',
@@ -332,17 +357,17 @@ export function createPendingReport(options: WorkflowOptions = {}): PendingRepor
 		baseRef: options.baseRef,
 		counts: counts,
 		coverage: {
-			catalogOccurrences: catalog.occurrences.length,
+			catalogOccurrences: scopedOccurrences.length,
 			resolvedOccurrences: resolvedOccurrences,
-			unresolvedOccurrences: catalog.occurrences.length - resolvedOccurrences,
+			unresolvedOccurrences: scopedOccurrences.length - resolvedOccurrences,
 			readyForGeneration:
-				workset.entries.every(entry => entry.status !== 'pending') &&
-				catalog.occurrences.length === resolvedOccurrences,
+				scopedEntries.every(entry => entry.status !== 'pending') &&
+				scopedOccurrences.length === resolvedOccurrences,
 		},
-		items: workset.entries.map(entry => ({
+		items: scopedEntries.map(entry => ({
 			id: entry.id,
 			status: entry.status,
-			occurrenceIds: entry.occurrenceIds,
+			occurrenceIds: filterOccurrenceIdsByScope(entry.occurrenceIds, scope),
 		})),
 		...(sinceBase == null ? {} : { sinceBase: sinceBase }),
 	};
@@ -353,6 +378,31 @@ export function createPendingReport(options: WorkflowOptions = {}): PendingRepor
 	}
 
 	return report;
+}
+
+function getWebviewsWorksetScope(): WorksetScopeOptions {
+	return {
+		occurrenceIdPrefix: 'webviews:',
+		worksetDomain: 'webviews',
+	};
+}
+
+function getWebviewsCatalogScope(): CatalogScopeOptions {
+	return {
+		occurrenceIdPrefix: 'webviews:',
+		catalogDomain: 'webviews',
+		deferredDomains: ['quickpicks', 'formatter'],
+	};
+}
+
+function withCatalogScope(
+	catalog: ReturnType<typeof loadWebviewsCatalog>,
+	scope: CatalogScopeOptions,
+): ReturnType<typeof loadWebviewsCatalog> {
+	return {
+		...catalog,
+		occurrences: filterCatalogOccurrencesByScope(catalog.occurrences, scope),
+	};
 }
 
 export function ensureControlledWebviewFiles(options: WorkflowOptions = {}): WebviewsDomainContext {
@@ -438,6 +488,17 @@ function loadDynamicSourceTargets(
 	}
 
 	return [...results.values()].sort((left, right) => left.file.localeCompare(right.file));
+}
+
+export function snapshotSettingsSourceShell(options: WorkflowOptions = {}): WebviewsDomainContext {
+	const context = createWebviewsDomainContext(options.rootDir);
+	const html = fs.readFileSync(context.settingsBuildFile, 'utf8');
+	if (isLocalizedSettingsShell(html) && fs.existsSync(context.settingsSourceFile)) {
+		return context;
+	}
+
+	saveSettingsSourceHtml(context, html);
+	return context;
 }
 
 function loadSourceTarget(
@@ -528,9 +589,12 @@ function diffWorksetAgainstBase(
 
 	try {
 		const previous = JSON.parse(result.stdout) as {
-			readonly entries?: Array<{ readonly id: string; readonly sourceHash?: string }>;
+			readonly entries?: TranslationWorksetEntry[];
 		};
-		const previousIds = new Set((previous.entries ?? []).map(entry => entry.id));
+		const scope = getWebviewsWorksetScope();
+		const previousIds = new Set(
+			filterWorksetEntriesByScope(previous.entries ?? [], scope).map(entry => entry.id),
+		);
 		const currentIds = new Set(currentEntryIds);
 		let added = 0;
 		let removed = 0;

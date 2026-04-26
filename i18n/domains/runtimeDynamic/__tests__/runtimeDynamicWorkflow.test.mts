@@ -23,6 +23,7 @@ run();
 
 function run(): void {
 	testWebviewHostRegistrationTitlesAreLocalized();
+	testWebviewHostEntriesAreStoredWithWebviewsFiles();
 	testQuickPickLowLevelStringsAreExtracted();
 	testQuickPickNullishAssignmentStringsAreLocalized();
 	testQuickPickTemplateLabelsAreLocalizedWithPlaceholders();
@@ -66,7 +67,7 @@ function testWebviewHostRegistrationTitlesAreLocalized(): void {
 		const context = createRuntimeDynamicDomainContext('webviewHost', rootDir);
 		const catalog = loadRuntimeDynamicCatalog(context);
 		const workset = loadRuntimeDynamicWorkset(context);
-		assert.equal(catalog.domain, 'webviewHost');
+		assert.equal(catalog.domain, 'webviews');
 		assert.equal(
 			workset.entries.some(entry => entry.source === 'Home'),
 			true,
@@ -93,6 +94,122 @@ function testWebviewHostRegistrationTitlesAreLocalized(): void {
 			),
 			true,
 		);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testWebviewHostEntriesAreStoredWithWebviewsFiles(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-runtime-webview-host-shared-webviews-files-'));
+	try {
+		writeFile(
+			rootDir,
+			'src/webviews/home/registration.ts',
+			[
+				'export function registerHomeWebviewView(controller: { registerWebviewView: (...args: unknown[]) => unknown }) {',
+				'\treturn controller.registerWebviewView(',
+				'\t\t{',
+				"\t\t\tid: 'gitlens.views.home',",
+				"\t\t\tfileName: 'home.html',",
+				"\t\t\ttitle: 'Home',",
+				'\t\t},',
+				'\t\tasync () => undefined,',
+				'\t);',
+				'}',
+				'',
+			].join('\n'),
+		);
+
+		const context = createRuntimeDynamicDomainContext('webviewHost', rootDir);
+		assert.equal(path.basename(context.catalogFile), 'webviews.catalog.json');
+		assert.equal(path.basename(context.worksetFile), 'webviews.zh-cn.json');
+
+		fs.mkdirSync(path.dirname(context.catalogFile), { recursive: true });
+		fs.writeFileSync(
+			context.catalogFile,
+			JSON.stringify(
+				{
+					$schema: '../schemas/sourceCatalog.schema.json',
+					version: 3,
+					domain: 'webviews',
+					generatedAt: new Date(0).toISOString(),
+					deferredDomains: ['quickpicks', 'formatter'],
+					occurrences: [
+						{
+							id: 'webviews:webviews.home.home.lit-template-1-root.text.123#text',
+							domain: 'webviews',
+							scope: 'webviews.home',
+							anchor: 'webviews.home.home.lit-template-1-root.text.123',
+							slot: 'text',
+							authorityId: 'message.webviews-only',
+							pattern: {
+								kind: 'literal',
+								text: 'Webview Only',
+							},
+							sourceText: 'Webview Only',
+							sourceHash: 'hash-webviews-only',
+							reference: {
+								kind: 'source',
+								file: 'src/webviews/apps/home/home.ts',
+								syntax: 'ts',
+								start: { line: 1, column: 1 },
+								end: { line: 1, column: 13 },
+							},
+							output: {
+								kind: 'runtime-key',
+								bundle: 'home',
+								key: 'home.lit-template-1-root.text.123',
+							},
+						},
+					],
+				},
+				undefined,
+				'\t',
+			),
+			'utf8',
+		);
+		fs.mkdirSync(path.dirname(context.worksetFile), { recursive: true });
+		fs.writeFileSync(
+			context.worksetFile,
+			JSON.stringify(
+				{
+					$schema: '../schemas/translationWorkset.schema.json',
+					version: 2,
+					locale: 'zh-cn',
+					domain: 'webviews',
+					generatedAt: new Date(0).toISOString(),
+					entries: [
+						{
+							id: 'message.webviews-only',
+							kind: 'literal',
+							source: 'Webview Only',
+							translation: null,
+							sourceHash: 'hash-webviews-only',
+							occurrenceIds: ['webviews:webviews.home.home.lit-template-1-root.text.123#text'],
+							status: 'pending',
+						},
+					],
+				},
+				undefined,
+				'\t',
+			),
+			'utf8',
+		);
+
+		const result = syncRuntimeDynamicI18n({ rootDir: rootDir, domain: 'webviewHost' });
+		assert.equal(result.worksetCount, 1);
+
+		const catalog = loadRuntimeDynamicCatalog(context);
+		assert.equal(catalog.domain, 'webviews');
+		assert.equal(catalog.occurrences.some(occurrence => occurrence.sourceText === 'Webview Only'), true);
+		assert.equal(catalog.occurrences.some(occurrence => occurrence.sourceText === 'Home'), true);
+		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'catalog', 'webviewHost.catalog.json')), false);
+
+		const workset = loadRuntimeDynamicWorkset(context);
+		assert.equal(workset.domain, 'webviews');
+		assert.equal(workset.entries.some(entry => entry.id === 'message.webviews-only'), true);
+		assert.equal(workset.entries.some(entry => entry.source === 'Home'), true);
+		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'webviewHost.zh-cn.json')), false);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}
