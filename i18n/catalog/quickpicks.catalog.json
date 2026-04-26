@@ -2,12 +2,571 @@
 	"$schema": "../schemas/sourceCatalog.schema.json",
 	"version": 3,
 	"domain": "quickpicks",
-	"generatedAt": "2026-04-26T00:33:46.809Z",
+	"generatedAt": "2026-04-26T15:16:53.903Z",
 	"deferredDomains": [
 		"formatter",
 		"webviewHost"
 	],
 	"occurrences": [
+		{
+			"id": "quickpicks:quickpicks.gitReset.gitReset.string-160-15.label.3de75d8fe8#label",
+			"domain": "quickpicks",
+			"scope": "quickpicks.gitReset",
+			"anchor": "quickpicks.gitReset.gitReset.string-160-15.label.3de75d8fe8",
+			"slot": "label",
+			"authorityId": "message.6220f762d079085406dfd7c66c3dc1f73f58ff83e3fdb17fde6e91eb17b7bad4",
+			"pattern": {
+				"kind": "literal",
+				"text": "OK"
+			},
+			"sourceText": "OK",
+			"sourceHash": "565339bc4d33d72817b583024112eb7f5cdf3e5eef0252d6ec1b9c9a94e12bb3",
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/reset.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 160,
+					"column": 15
+				},
+				"end": {
+					"line": 160,
+					"column": 19
+				},
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitReset.string-160-15.label.3de75d8fe8"
+			}
+		},
+		{
+			"id": "quickpicks:quickpicks.gitReset.gitReset.string-207-19.description.e459e91843#description",
+			"domain": "quickpicks",
+			"scope": "quickpicks.gitReset",
+			"anchor": "quickpicks.gitReset.gitReset.string-207-19.description.e459e91843",
+			"slot": "description",
+			"authorityId": "message.2eacacc8e08d9344993709a6de505189420472f0d40601e9b39611761457b150",
+			"pattern": {
+				"kind": "literal",
+				"text": "--mixed • unstages your changes and reset changes"
+			},
+			"sourceText": "--mixed • unstages your changes and reset changes",
+			"sourceHash": "add91573d4046a727c0a1f3b0f407d66f50406c8b79f24942f6f03a516b7b884",
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/reset.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 207,
+					"column": 19
+				},
+				"end": {
+					"line": 207,
+					"column": 75
+				},
+				"attribute": "description"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitReset.string-207-19.description.e459e91843"
+			}
+		},
+		{
+			"id": "quickpicks:quickpicks.gitReset.gitReset.string-214-19.description.e4d00e3ef3#description",
+			"domain": "quickpicks",
+			"scope": "quickpicks.gitReset",
+			"anchor": "quickpicks.gitReset.gitReset.string-214-19.description.e4d00e3ef3",
+			"slot": "description",
+			"authorityId": "message.24841485531b1fef1c94cfd5a85ce1fe95949ae437d99f18e4a9793bbc7f27f1",
+			"pattern": {
+				"kind": "literal",
+				"text": "--soft • keeps your changes and stages reset changes"
+			},
+			"sourceText": "--soft • keeps your changes and stages reset changes",
+			"sourceHash": "21db22e16c29afb9d4a16715aedce6efd649d9d63d374b715d0b6598b4cce109",
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/reset.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 214,
+					"column": 19
+				},
+				"end": {
+					"line": 214,
+					"column": 78
+				},
+				"attribute": "description"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitReset.string-214-19.description.e4d00e3ef3"
+			}
+		},
+		{
+			"id": "quickpicks:quickpicks.gitReset.gitReset.string-222-7.description.c60fecf7c1#description",
+			"domain": "quickpicks",
+			"scope": "quickpicks.gitReset",
+			"anchor": "quickpicks.gitReset.gitReset.string-222-7.description.c60fecf7c1",
+			"slot": "description",
+			"authorityId": "message.6ee43997b4c068c70881b52d26bc4d79ed63423d145597ef037f4b2a8b302482",
+			"pattern": {
+				"kind": "literal",
+				"text": "--keep • keeps your changes and discards reset changes; aborts if reset changes would overwrite them"
+			},
+			"sourceText": "--keep • keeps your changes and discards reset changes; aborts if reset changes would overwrite them",
+			"sourceHash": "856728b02d92d56ad31544429cd64dffbc79f35113259b6ff343d428984e80aa",
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/reset.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 222,
+					"column": 7
+				},
+				"end": {
+					"line": 222,
+					"column": 114
+				},
+				"attribute": "description"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitReset.string-222-7.description.c60fecf7c1"
+			}
+		},
+		{
+			"id": "quickpicks:quickpicks.gitReset.gitReset.string-229-19.description.248ba0e7b2#description",
+			"domain": "quickpicks",
+			"scope": "quickpicks.gitReset",
+			"anchor": "quickpicks.gitReset.gitReset.string-229-19.description.248ba0e7b2",
+			"slot": "description",
+			"authorityId": "message.db40510f878dc3b4d9af7220873410429f9725a19538cb3d2089ed55c0df791e",
+			"pattern": {
+				"kind": "literal",
+				"text": "$(warning) --hard • discards ALL changes"
+			},
+			"sourceText": "$(warning) --hard • discards ALL changes",
+			"sourceHash": "90409d25754503edfc1c747fd9bc93ff679a8772cc77cd28f671567595fc7728",
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/reset.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 229,
+					"column": 19
+				},
+				"end": {
+					"line": 229,
+					"column": 66
+				},
+				"attribute": "description"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitReset.string-229-19.description.248ba0e7b2"
+			}
+		},
+		{
+			"id": "quickpicks:quickpicks.gitReset.gitReset.string-61-38.label.c168238c9f#label",
+			"domain": "quickpicks",
+			"scope": "quickpicks.gitReset",
+			"anchor": "quickpicks.gitReset.gitReset.string-61-38.label.c168238c9f",
+			"slot": "label",
+			"authorityId": "message.c0c734c0ebfc37d5cc3545fc0edd523abeec77abf9401432f5414e7539449340",
+			"pattern": {
+				"kind": "literal",
+				"text": "Reset"
+			},
+			"sourceText": "Reset",
+			"sourceHash": "daee7606b339f3c339076fe2c9f372a3ff40c8ee896005d829c7481b64ca5303",
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/reset.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 61,
+					"column": 38
+				},
+				"end": {
+					"line": 61,
+					"column": 45
+				},
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitReset.string-61-38.label.c168238c9f"
+			}
+		},
+		{
+			"id": "quickpicks:quickpicks.gitReset.gitReset.string-61-62.description.3227bd4e42#description",
+			"domain": "quickpicks",
+			"scope": "quickpicks.gitReset",
+			"anchor": "quickpicks.gitReset.gitReset.string-61-62.description.3227bd4e42",
+			"slot": "description",
+			"authorityId": "message.0e5c9f54410c038cb6ed7a11e9cfe351898cad13febc4e8a163def2c3ca6a42f",
+			"pattern": {
+				"kind": "literal",
+				"text": "resets the current branch to a specified commit"
+			},
+			"sourceText": "resets the current branch to a specified commit",
+			"sourceHash": "b52d7d3279df84af2e82f1cbc5d83c6a9215e725521bf0a2c90b82e7fb34e73f",
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/reset.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 61,
+					"column": 62
+				},
+				"end": {
+					"line": 61,
+					"column": 111
+				},
+				"attribute": "description"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitReset.string-61-62.description.3227bd4e42"
+			}
+		},
+		{
+			"id": "quickpicks:quickpicks.gitReset.gitReset.template-161-16.detail.b0e8f124c0#detail",
+			"domain": "quickpicks",
+			"scope": "quickpicks.gitReset",
+			"anchor": "quickpicks.gitReset.gitReset.template-161-16.detail.b0e8f124c0",
+			"slot": "detail",
+			"authorityId": "message.5cb88bab0d7685c62783a6f00f3ede92bcd73988e227d15af36ba30cf706ff4d",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} has no commits",
+				"slots": [
+					"slot1"
+				]
+			},
+			"sourceText": "${slot1} has no commits",
+			"sourceHash": "4d7dc32f17e1dc8f1376a105bb475a5df391beb91f6ba82407d1573fb04da6ce",
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/reset.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 161,
+					"column": 16
+				},
+				"end": {
+					"line": 161,
+					"column": 60
+				},
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitReset.template-161-16.detail.b0e8f124c0"
+			}
+		},
+		{
+			"id": "quickpicks:quickpicks.gitReset.gitReset.template-203-23.appendReposToTitle-argument-1.e344608abc#appendReposToTitle-argument-1",
+			"domain": "quickpicks",
+			"scope": "quickpicks.gitReset",
+			"anchor": "quickpicks.gitReset.gitReset.template-203-23.appendReposToTitle-argument-1.e344608abc",
+			"slot": "appendReposToTitle-argument-1",
+			"authorityId": "message.9872a52c94c1a27becc36b1ee3897f63ece32b70a480be81704816132a625f49",
+			"pattern": {
+				"kind": "template",
+				"text": "Confirm ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"sourceText": "Confirm ${slot1}",
+			"sourceHash": "7dd7cacf2faafc60b856095ea62e3bd97b05f46267baae1815bb571a076e66cb",
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/reset.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 203,
+					"column": 23
+				},
+				"end": {
+					"line": 203,
+					"column": 49
+				},
+				"attribute": "appendReposToTitle-argument-1"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitReset.template-203-23.appendReposToTitle-argument-1.e344608abc"
+			}
+		},
+		{
+			"id": "quickpicks:quickpicks.gitReset.gitReset.template-208-14.detail.5d802d267b#detail",
+			"domain": "quickpicks",
+			"scope": "quickpicks.gitReset",
+			"anchor": "quickpicks.gitReset.gitReset.template-208-14.detail.5d802d267b",
+			"slot": "detail",
+			"authorityId": "message.cd72d3f6bcfc7c27f674ca457b656a3e00f29f6542a34bae7eb063213a0227f7",
+			"pattern": {
+				"kind": "template",
+				"text": "Will unstage your changes and reset ${slot1} to ${slot2}",
+				"slots": [
+					"slot1",
+					"slot2"
+				]
+			},
+			"sourceText": "Will unstage your changes and reset ${slot1} to ${slot2}",
+			"sourceHash": "a95a8796ec7b3f6a8521109c7929bd54f5b0f780967a1fd0ee711aef2858f244",
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/reset.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 208,
+					"column": 14
+				},
+				"end": {
+					"line": 210,
+					"column": 9
+				},
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitReset.template-208-14.detail.5d802d267b"
+			}
+		},
+		{
+			"id": "quickpicks:quickpicks.gitReset.gitReset.template-213-13.label.82bd6fde9e#label",
+			"domain": "quickpicks",
+			"scope": "quickpicks.gitReset",
+			"anchor": "quickpicks.gitReset.gitReset.template-213-13.label.82bd6fde9e",
+			"slot": "label",
+			"authorityId": "message.fa48bd9dc57bdf724a4fcd71265445629cdf76a66d8688ef00f27ee5f588b12b",
+			"pattern": {
+				"kind": "template",
+				"text": "Soft ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"sourceText": "Soft ${slot1}",
+			"sourceHash": "b36523aa5027a3e0ae1aa3efac092c24a3ae66f3778717634f3ebff5eb8b5c5f",
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/reset.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 213,
+					"column": 13
+				},
+				"end": {
+					"line": 213,
+					"column": 33
+				},
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitReset.template-213-13.label.82bd6fde9e"
+			}
+		},
+		{
+			"id": "quickpicks:quickpicks.gitReset.gitReset.template-215-14.detail.ddae112139#detail",
+			"domain": "quickpicks",
+			"scope": "quickpicks.gitReset",
+			"anchor": "quickpicks.gitReset.gitReset.template-215-14.detail.ddae112139",
+			"slot": "detail",
+			"authorityId": "message.45f8d3b3eb4c695e7862580c107d154e9943a66218d68618eaf7367dc4a4d093",
+			"pattern": {
+				"kind": "template",
+				"text": "Will keep your changes and reset ${slot1} to ${slot2}",
+				"slots": [
+					"slot1",
+					"slot2"
+				]
+			},
+			"sourceText": "Will keep your changes and reset ${slot1} to ${slot2}",
+			"sourceHash": "91920bd68db5b1c2364853527921e26e508a130760cd7f21ec721d1b4bb6439c",
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/reset.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 215,
+					"column": 14
+				},
+				"end": {
+					"line": 217,
+					"column": 9
+				},
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitReset.template-215-14.detail.ddae112139"
+			}
+		},
+		{
+			"id": "quickpicks:quickpicks.gitReset.gitReset.template-220-13.label.b123c4ec61#label",
+			"domain": "quickpicks",
+			"scope": "quickpicks.gitReset",
+			"anchor": "quickpicks.gitReset.gitReset.template-220-13.label.b123c4ec61",
+			"slot": "label",
+			"authorityId": "message.0a42844b138761b052410661d46c6d022b9321ac4e1384a820ddd8cb48329d44",
+			"pattern": {
+				"kind": "template",
+				"text": "Safe Hard ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"sourceText": "Safe Hard ${slot1}",
+			"sourceHash": "422596a5dbfada17a4ef02aecdcd797aa4843d6431109fe37cc880d73b75126d",
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/reset.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 220,
+					"column": 13
+				},
+				"end": {
+					"line": 220,
+					"column": 38
+				},
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitReset.template-220-13.label.b123c4ec61"
+			}
+		},
+		{
+			"id": "quickpicks:quickpicks.gitReset.gitReset.template-223-14.detail.1f77173635#detail",
+			"domain": "quickpicks",
+			"scope": "quickpicks.gitReset",
+			"anchor": "quickpicks.gitReset.gitReset.template-223-14.detail.1f77173635",
+			"slot": "detail",
+			"authorityId": "message.7fa3234adb53374a4dced17c63c72c97da75da60c7fc74f2d408bbd3f0576b08",
+			"pattern": {
+				"kind": "template",
+				"text": "Will safely hard reset ${slot1} to ${slot2}",
+				"slots": [
+					"slot1",
+					"slot2"
+				]
+			},
+			"sourceText": "Will safely hard reset ${slot1} to ${slot2}",
+			"sourceHash": "b8d72df4542a163316ec0fd3f4550c9ae1e941217aaa886000b8d86eb2315641",
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/reset.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 223,
+					"column": 14
+				},
+				"end": {
+					"line": 225,
+					"column": 9
+				},
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitReset.template-223-14.detail.1f77173635"
+			}
+		},
+		{
+			"id": "quickpicks:quickpicks.gitReset.gitReset.template-228-13.label.81d137b9ca#label",
+			"domain": "quickpicks",
+			"scope": "quickpicks.gitReset",
+			"anchor": "quickpicks.gitReset.gitReset.template-228-13.label.81d137b9ca",
+			"slot": "label",
+			"authorityId": "message.538c039218e0a0b3e13b7eba3388e9723f8d93beba4a317b95832bd7a6961669",
+			"pattern": {
+				"kind": "template",
+				"text": "Hard ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"sourceText": "Hard ${slot1}",
+			"sourceHash": "d4bda94d0a3c70978a919b67963a6bb74b96f16a6b27d3f8fd9bd2c10bf60850",
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/reset.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 228,
+					"column": 13
+				},
+				"end": {
+					"line": 228,
+					"column": 33
+				},
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitReset.template-228-13.label.81d137b9ca"
+			}
+		},
+		{
+			"id": "quickpicks:quickpicks.gitReset.gitReset.template-230-14.detail.ad0dc2e4c5#detail",
+			"domain": "quickpicks",
+			"scope": "quickpicks.gitReset",
+			"anchor": "quickpicks.gitReset.gitReset.template-230-14.detail.ad0dc2e4c5",
+			"slot": "detail",
+			"authorityId": "message.65ddfca094ddf234f783cbc28bf8ce3c11fb20ff4181fa5849a5f6b1801d1dd4",
+			"pattern": {
+				"kind": "template",
+				"text": "Will discard ALL changes and reset ${slot1} to ${slot2}",
+				"slots": [
+					"slot1",
+					"slot2"
+				]
+			},
+			"sourceText": "Will discard ALL changes and reset ${slot1} to ${slot2}",
+			"sourceHash": "231478b5752b81762b78078b95dd31acd4c94f3d994b9b9cfae0825aa4100389",
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/reset.ts",
+				"syntax": "ts",
+				"start": {
+					"line": 230,
+					"column": 14
+				},
+				"end": {
+					"line": 232,
+					"column": 9
+				},
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitReset.template-230-14.detail.ad0dc2e4c5"
+			}
+		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-162-9.label.988c82f963#label",
 			"domain": "quickpicks",

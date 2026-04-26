@@ -42,6 +42,10 @@ const targetsByDomain: Record<RuntimeDynamicDomain, readonly TargetDefinition[]>
 			group: 'quickWizardCommits',
 			files: ['src/commands/quick-wizard/steps/commits.ts'],
 		},
+		{
+			group: 'gitReset',
+			files: ['src/commands/git/reset.ts'],
+		},
 	],
 	webviewHost: [
 		{

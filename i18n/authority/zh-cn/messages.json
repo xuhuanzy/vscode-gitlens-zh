@@ -3,7 +3,7 @@
 	"version": 2,
 	"kind": "messages",
 	"locale": "zh-cn",
-	"updatedAt": "2026-04-26T12:22:35.352Z",
+	"updatedAt": "2026-04-26T15:16:19.114Z",
 	"entries": [
 		{
 			"id": "message.000d1a29b2365349f8762064ef86edc1f548f435002395035bdc26f6c87754fc",
@@ -720,6 +720,15 @@
 			"translation": "你的 Pro 试用已结束。请升级以完整访问启动台和其他 Pro 功能。"
 		},
 		{
+			"id": "message.0a42844b138761b052410661d46c6d022b9321ac4e1384a820ddd8cb48329d44",
+			"kind": "template",
+			"source": "Safe Hard ${slot1}",
+			"translation": "安全硬${slot1}",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.0a53df978d41dd405dfdc9c0541bf1c8643cba536a064dab018e1cb0a2aa0f55",
 			"kind": "literal",
 			"source": "Hides the label",
@@ -950,6 +959,12 @@
 			"kind": "literal",
 			"source": "A robot with different colors, faces, etc",
 			"translation": "不同颜色、表情等的机器人"
+		},
+		{
+			"id": "message.0e5c9f54410c038cb6ed7a11e9cfe351898cad13febc4e8a163def2c3ca6a42f",
+			"kind": "literal",
+			"source": "resets the current branch to a specified commit",
+			"translation": "将当前分支重置到指定提交"
 		},
 		{
 			"id": "message.0e9edd246c22758d780b9c2b7c7a2da76c278a5ec5b4da1163f4f5b394d9ef2a",
@@ -2366,6 +2381,12 @@
 			]
 		},
 		{
+			"id": "message.24841485531b1fef1c94cfd5a85ce1fe95949ae437d99f18e4a9793bbc7f27f1",
+			"kind": "literal",
+			"source": "--soft • keeps your changes and stages reset changes",
+			"translation": "--soft • 保留你的更改并暂存重置产生的更改"
+		},
+		{
 			"id": "message.24ab6be77227a1a898188357398a30ba072be861849d2274300857aa3b400cc9",
 			"kind": "literal",
 			"source": "Share as Cloud Patch",
@@ -3025,6 +3046,12 @@
 			"kind": "literal",
 			"source": "Connect Integrations",
 			"translation": "连接集成"
+		},
+		{
+			"id": "message.2eacacc8e08d9344993709a6de505189420472f0d40601e9b39611761457b150",
+			"kind": "literal",
+			"source": "--mixed • unstages your changes and reset changes",
+			"translation": "--mixed • 取消暂存更改并重置索引"
 		},
 		{
 			"id": "message.2ebb84b017d3aae48949f5bdd045dfdc3b7ad136c67708e06eeea16f789a2f4e",
@@ -4534,6 +4561,16 @@
 			"translation": "按提交时间戳倒序显示提交，但避免将多条历史线交错在一起"
 		},
 		{
+			"id": "message.45f8d3b3eb4c695e7862580c107d154e9943a66218d68618eaf7367dc4a4d093",
+			"kind": "template",
+			"source": "Will keep your changes and reset ${slot1} to ${slot2}",
+			"translation": "将保留你的更改，并将 ${slot1} 重置到 ${slot2}",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
+		},
+		{
 			"id": "message.46044e52c6d396de7d99e1c421736a50272f1545edcb41e4b5214587b37e34ce",
 			"kind": "literal",
 			"source": "File History view",
@@ -5443,6 +5480,15 @@
 			"translation": "以相对方式显示部分日期，例如 1 天前"
 		},
 		{
+			"id": "message.538c039218e0a0b3e13b7eba3388e9723f8d93beba4a317b95832bd7a6961669",
+			"kind": "template",
+			"source": "Hard ${slot1}",
+			"translation": "硬${slot1}",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.53a8f97ef8c133cc1365c3076e7347b823288e9a81af6fb1ab29ef7a162ed6fd",
 			"kind": "literal",
 			"source": "Toggles each file individually",
@@ -6148,6 +6194,15 @@
 			"translation": "无法检测冲突"
 		},
 		{
+			"id": "message.5cb88bab0d7685c62783a6f00f3ede92bcd73988e227d15af36ba30cf706ff4d",
+			"kind": "template",
+			"source": "${slot1} has no commits",
+			"translation": "${slot1} 没有提交",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.5cbd3e96e2916397ca87e8d47e1a9af1d38cbe989c473b18560a44e43f410b2f",
 			"kind": "literal",
 			"source": "Specifies where to reveal commits and references",
@@ -6707,6 +6762,16 @@
 			"kind": "template",
 			"source": "${slot1} Leverage Git and Integration information from GitLens in AI chat. ${slot2}",
 			"translation": "${slot1} 在 AI 聊天中利用 GitLens 提供的 Git 和集成信息。${slot2}",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
+		},
+		{
+			"id": "message.65ddfca094ddf234f783cbc28bf8ce3c11fb20ff4181fa5849a5f6b1801d1dd4",
+			"kind": "template",
+			"source": "Will discard ALL changes and reset ${slot1} to ${slot2}",
+			"translation": "将丢弃所有更改，并将 ${slot1} 重置到 ${slot2}",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -7363,6 +7428,12 @@
 			"kind": "literal",
 			"source": "Specifies additional markers to show on the scrollbar in the _Commit Graph_",
 			"translation": "指定在 _提交图_ 的滚动条上显示的附加标记"
+		},
+		{
+			"id": "message.6ee43997b4c068c70881b52d26bc4d79ed63423d145597ef037f4b2a8b302482",
+			"kind": "literal",
+			"source": "--keep • keeps your changes and discards reset changes; aborts if reset changes would overwrite them",
+			"translation": "--keep • 保留你的更改并丢弃重置产生的更改；若会覆盖你的更改则中止"
 		},
 		{
 			"id": "message.6f1878540a82e8f625f37a6355ec176372cf9ea9868ebd2e2fd7adaf2fc0d245",
@@ -8512,6 +8583,16 @@
 			"kind": "literal",
 			"source": "Rebase Current Branch onto Commit...",
 			"translation": "将当前分支变基到提交..."
+		},
+		{
+			"id": "message.7fa3234adb53374a4dced17c63c72c97da75da60c7fc74f2d408bbd3f0576b08",
+			"kind": "template",
+			"source": "Will safely hard reset ${slot1} to ${slot2}",
+			"translation": "将以安全方式将 ${slot1} 硬重置到 ${slot2}",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.7faebab2a9f134b29f9aabaa4d488929a54ea0b7562c966b7598139ed9422479",
@@ -10066,6 +10147,15 @@
 			"kind": "literal",
 			"source": "You are all caught up!",
 			"translation": "你已全部处理完成！"
+		},
+		{
+			"id": "message.9872a52c94c1a27becc36b1ee3897f63ece32b70a480be81704816132a625f49",
+			"kind": "template",
+			"source": "Confirm ${slot1}",
+			"translation": "确认${slot1}",
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.9881094055d905360ccf5e31dad89c17943944736023ca3c8f006bb849022d92",
@@ -13457,6 +13547,16 @@
 			"translation": "打开与工作文件比较的更改"
 		},
 		{
+			"id": "message.cd72d3f6bcfc7c27f674ca457b656a3e00f29f6542a34bae7eb063213a0227f7",
+			"kind": "template",
+			"source": "Will unstage your changes and reset ${slot1} to ${slot2}",
+			"translation": "将取消暂存你的更改，并将 ${slot1} 重置到 ${slot2}",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
+		},
+		{
 			"id": "message.cd784a4601702d900c5b926d848e711cf1f7137cc322ee81e629cec8095eeaae",
 			"kind": "literal",
 			"source": "only when opening",
@@ -14283,6 +14383,12 @@
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Launchpad_ view",
 			"translation": "指定是否在 _启动台_ 视图中显示头像图像而不是提交（或状态）图标"
+		},
+		{
+			"id": "message.db40510f878dc3b4d9af7220873410429f9725a19538cb3d2089ed55c0df791e",
+			"kind": "literal",
+			"source": "$(warning) --hard • discards ALL changes",
+			"translation": "$(warning) --hard • 丢弃所有更改"
 		},
 		{
 			"id": "message.db4c84ffa735c83d2f1219a7a572ad1998b6b539461f59e41bb7a668f0f40beb",
@@ -16339,6 +16445,15 @@
 			"kind": "literal",
 			"source": "Visual File History",
 			"translation": "可视文件历史"
+		},
+		{
+			"id": "message.fa48bd9dc57bdf724a4fcd71265445629cdf76a66d8688ef00f27ee5f588b12b",
+			"kind": "template",
+			"source": "Soft ${slot1}",
+			"translation": "软${slot1}",
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.fa6f31e04a107b8218e80ff836e725eec9833e5a9c5119da28c4cfc710b84896",

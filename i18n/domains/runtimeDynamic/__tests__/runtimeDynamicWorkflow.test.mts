@@ -31,6 +31,7 @@ function run(): void {
 	testQuickWizardConstructorLabelsAreLocalizedWithPlaceholders();
 	testQuickPickSeparatorLabelsAreExtracted();
 	testQuickWizardFallbackAndHintStringsAreLocalized();
+	testQuickCommandConfirmTitlesAreLocalizedWithPlaceholders();
 	testFormatterMarkdownTitlesAreLocalizedWithoutChangingCommandSyntax();
 	testFormatterMarkdownLabelsAreLocalizedWithoutChangingCommandSyntax();
 	testFormatterDynamicMarkdownTitlesAreLocalizedWithPlaceholders();
@@ -606,6 +607,74 @@ function testQuickWizardFallbackAndHintStringsAreLocalized(): void {
 			),
 			true,
 		);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testQuickCommandConfirmTitlesAreLocalizedWithPlaceholders(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-runtime-quick-command-confirm-'));
+	try {
+		writeFile(
+			rootDir,
+			'src/commands/git/reset.ts',
+			[
+				'export class QuickCommand<State> {',
+				'\tconstructor(container: unknown, key: string, label: string, title: string) {}',
+				'}',
+				'export function appendReposToTitle(title: string, state: unknown, context: unknown): string {',
+				'\treturn title;',
+				'}',
+				'interface State {}',
+				'export class ResetGitCommand extends QuickCommand<State> {',
+				'\tconstructor(container: unknown) {',
+				"\t\tsuper(container, 'reset', 'reset', 'Reset');",
+				'\t}',
+				'\tconfirmStep(state: unknown, context: { title: string }) {',
+				'\t\treturn appendReposToTitle(`Confirm ${context.title}`, state, context);',
+				'\t}',
+				'}',
+				'',
+			].join('\n'),
+		);
+
+		const result = syncRuntimeDynamicI18n({ rootDir: rootDir, domain: 'quickpicks' });
+		assert.equal(result.occurrenceCount, 2);
+
+		const context = createRuntimeDynamicDomainContext('quickpicks', rootDir);
+		const workset = loadRuntimeDynamicWorkset(context);
+		assert.equal(
+			workset.entries.some(entry => entry.source === 'Reset'),
+			true,
+		);
+		assert.equal(
+			workset.entries.some(entry => entry.source === 'Confirm ${slot1}'),
+			true,
+		);
+
+		saveRuntimeDynamicWorkset(context, {
+			...workset,
+			entries: workset.entries.map(entry => {
+				switch (entry.source) {
+					case 'Reset':
+						return { ...entry, status: 'approved', translation: '重置' };
+					case 'Confirm ${slot1}':
+						return { ...entry, status: 'approved', translation: '确认${slot1}' };
+					default:
+						return entry;
+				}
+			}),
+		});
+		const promoted = promoteRuntimeDynamicAuthority({ rootDir: rootDir, domain: 'quickpicks' });
+		assert.equal(promoted.promoted.length, 2);
+
+		const generated = generateRuntimeDynamicLocalizedOutputs({ rootDir: rootDir, domain: 'quickpicks' });
+		assert.equal(generated.translatedCount, 2);
+
+		const localized = loadLocalizedRuntimeDynamicSource(context, 'src/commands/git/reset.ts');
+		assert.notEqual(localized, undefined);
+		assert.equal(localized!.includes("super(container, 'reset', 'reset', '重置');"), true);
+		assert.equal(localized!.includes('return appendReposToTitle(`确认${context.title}`, state, context);'), true);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}

@@ -59,11 +59,18 @@ const uiPropertyNames = new Set([
 ]);
 const uiVariableNames = new Set(['description', 'detail', 'label', 'message', 'tooltip']);
 const uiFunctionNamesByArgument = new Map([
+	['appendReposToTitle', new Set([0])],
 	['createQuickPickSeparator', new Set([0])],
 	['formatAuthor', new Set([0])],
 	['showInformationMessage', new Set([0])],
 ]);
 const uiConstructorNamesByArgument = new Map([['GitWizardQuickPickItem', new Set([0])]]);
+const uiSuperArgumentsByEnclosingClass = new Map([
+	['ActionQuickPickItem', new Set([0])],
+	['CommandQuickPickItem', new Set([0])],
+	['QuickCommand', new Set([3])],
+	['QuickCommandWithSubcommands', new Set([3])],
+]);
 const uiReturnFunctionNames = new Set(['getNameFromRemoteResource']);
 const nonTranslatableUiText = new Set(['HEAD', 'actions-row', 'footnote']);
 
@@ -596,7 +603,8 @@ function isSupportedStringLiteralSlot(
 		ts.isCallExpression(parent) &&
 		parent.expression.kind === ts.SyntaxKind.SuperKeyword
 	) {
-		return parent.arguments[0] === node;
+		const supportedArgs = getSupportedSuperArguments(parent);
+		return supportedArgs?.has(parent.arguments.indexOf(node)) === true;
 	}
 
 	if (ts.isPropertyAssignment(parent) && parent.initializer === node) {
@@ -672,7 +680,7 @@ function getSupportedNestedFallbackStringLiteralSlot(
 			if (argumentIndex === -1) return undefined;
 
 			if (ts.isCallExpression(parent) && parent.expression.kind === ts.SyntaxKind.SuperKeyword) {
-				return argumentIndex === 0 ? 'fallback' : undefined;
+				return getSupportedSuperArguments(parent)?.has(argumentIndex) === true ? 'fallback' : undefined;
 			}
 
 			const name = getCallIdentifier(parent.expression);
@@ -957,4 +965,28 @@ function dedupeMatches(matches: readonly RuntimeDynamicMatch[]): RuntimeDynamicM
 
 function getArgumentIndex(argumentsList: ts.NodeArray<ts.Expression> | undefined, node: ts.Node): number {
 	return argumentsList?.findIndex(argument => argument === node) ?? -1;
+}
+
+function getSupportedSuperArguments(node: ts.CallExpression): Set<number> | undefined {
+	const declaration = getEnclosingClassDeclaration(node);
+	if (declaration == null) return undefined;
+
+	const heritage = declaration.heritageClauses?.flatMap(clause => [...clause.types]) ?? [];
+	for (const type of heritage) {
+		const name = getExpressionName(type.expression);
+		if (name == null) continue;
+
+		const supported = uiSuperArgumentsByEnclosingClass.get(name);
+		if (supported != null) return supported;
+	}
+
+	return undefined;
+}
+
+function getEnclosingClassDeclaration(node: ts.Node): ts.ClassDeclaration | undefined {
+	for (let current = node.parent; current != null; current = current.parent) {
+		if (ts.isClassDeclaration(current)) return current;
+	}
+
+	return undefined;
 }
