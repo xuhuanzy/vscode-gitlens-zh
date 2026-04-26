@@ -52,35 +52,6 @@ export function saveWebviewsWorkset(
 	saveWorkset(context, workset);
 }
 
-export function loadSettingsBuildHtml(context: WebviewsDomainContext): string {
-	return fs.readFileSync(context.settingsBuildFile, 'utf8');
-}
-
-export function loadSettingsSourceHtml(context: WebviewsDomainContext): string {
-	if (fs.existsSync(context.settingsSourceFile)) {
-		return fs.readFileSync(context.settingsSourceFile, 'utf8');
-	}
-
-	const html = loadSettingsBuildHtml(context);
-	if (isLocalizedSettingsShell(html)) {
-		throw new Error(
-			`Cannot use localized settings shell as webview i18n source: ${context.settingsBuildFile}. Rebuild the settings webview to refresh ${context.settingsSourceFile}.`,
-		);
-	}
-
-	return html;
-}
-
-export function saveSettingsSourceHtml(context: WebviewsDomainContext, html: string): void {
-	if (isLocalizedSettingsShell(html)) {
-		throw new Error(
-			`Cannot snapshot localized settings shell as webview i18n source: ${context.settingsBuildFile}. Rebuild the settings webview before generating localized settings output.`,
-		);
-	}
-
-	writeTextFile(context.settingsSourceFile, html);
-}
-
 export function loadSourceTargetContents(context: WebviewsDomainContext, relativeFile: string): string | undefined {
 	try {
 		return fs.readFileSync(path.join(context.rootDir, ...relativeFile.split('/')), 'utf8');
@@ -89,13 +60,13 @@ export function loadSourceTargetContents(context: WebviewsDomainContext, relativ
 	}
 }
 
-export function saveLocalizedSettingsShell(context: WebviewsDomainContext, html: string): void {
-	writeTextFile(context.settingsBuildFile, html);
+export function saveLocalizedHtmlSource(context: WebviewsDomainContext, relativeFile: string, contents: string): void {
+	writeTextFile(path.join(context.localizedDynamicSourceDir, ...relativeFile.split('/')), contents);
 }
 
-export function loadLocalizedSettingsShell(context: WebviewsDomainContext): string | undefined {
+export function loadLocalizedHtmlSource(context: WebviewsDomainContext, relativeFile: string): string | undefined {
 	try {
-		return fs.readFileSync(context.settingsBuildFile, 'utf8');
+		return fs.readFileSync(path.join(context.localizedDynamicSourceDir, ...relativeFile.split('/')), 'utf8');
 	} catch {
 		return undefined;
 	}
@@ -122,10 +93,6 @@ export function deleteLocalizedDynamicSource(context: WebviewsDomainContext, rel
 	try {
 		fs.rmSync(filePath, { force: true });
 	} catch {}
-}
-
-export function isLocalizedSettingsShell(html: string): boolean {
-	return /<html\b[^>]*\blang=["']zh-CN["']/u.test(html);
 }
 
 export { loadAuthorityBundle, saveAuthorityBundle, savePendingReport };

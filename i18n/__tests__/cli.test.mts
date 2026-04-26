@@ -9,10 +9,10 @@ run();
 
 function run(): void {
 	testManifestCliGeneratesStagedPackageOutputs();
-	testAggregateSyncSkipsWebviewsWhenSettingsShellIsMissing();
+	testAggregateSyncIncludesWebviewsFromSourceHtml();
 	testAggregateReportWritesDomainReportsAndAggregateSummary();
 	testAggregatePromoteRunsAllDomains();
-	testAggregateGenerateDoesNotRequireBuiltSettingsShell();
+	testAggregateGenerateDoesNotRequireSettingsDist();
 	testLegacyCliDomainAliasesAreRejected();
 	testDisableStagedPrepublishScript();
 	testWriteStagedPackageIgnoreFileIgnoresLinkedRootDirectories();
@@ -64,10 +64,11 @@ function testManifestCliGeneratesStagedPackageOutputs(): void {
 	}
 }
 
-function testAggregateSyncSkipsWebviewsWhenSettingsShellIsMissing(): void {
+function testAggregateSyncIncludesWebviewsFromSourceHtml(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-i18n-cli-'));
 	try {
 		writeMinimalManifest(rootDir);
+		writeSettingsSource(rootDir);
 
 		const logs = captureConsoleLog(() => execute(['sync', '--root', rootDir]));
 
@@ -79,7 +80,7 @@ function testAggregateSyncSkipsWebviewsWhenSettingsShellIsMissing(): void {
 		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'catalog', 'webviewHost.catalog.json')), false);
 		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'catalog', 'webviews.catalog.json')), true);
 		assert.equal(
-			logs.some(log => log.includes('Skipped webview i18n sync')),
+			logs.some(log => log.includes('Synchronized webview i18n')),
 			true,
 		);
 	} finally {
@@ -91,7 +92,7 @@ function testAggregateReportWritesDomainReportsAndAggregateSummary(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-i18n-cli-'));
 	try {
 		writeMinimalManifest(rootDir);
-		writeSettingsShell(rootDir);
+		writeSettingsSource(rootDir);
 
 		const logs = captureConsoleLog(() =>
 			execute(['report', '--root', rootDir, '--write', 'aggregate-pending.json']),
@@ -157,13 +158,13 @@ function testAggregatePromoteRunsAllDomains(): void {
 	}
 }
 
-function testAggregateGenerateDoesNotRequireBuiltSettingsShell(): void {
+function testAggregateGenerateDoesNotRequireSettingsDist(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-i18n-cli-'));
 	try {
 		execute(['generate', '--root', rootDir]);
 
 		assert.equal(
-			fs.existsSync(path.join(rootDir, '.work', 'i18n', 'runtime-dynamic-sources', 'zh-cn', 'formatter')),
+			fs.existsSync(path.join(rootDir, '.work', 'i18n', 'generated', 'zh-cn', 'src', 'git', 'formatters')),
 			false,
 		);
 		assert.equal(fs.existsSync(path.join(rootDir, 'dist', 'webviews', 'settings.html')), false);
@@ -249,8 +250,8 @@ function writeMinimalManifest(rootDir: string): void {
 	);
 }
 
-function writeSettingsShell(rootDir: string): void {
-	const directory = path.join(rootDir, 'dist', 'webviews');
+function writeSettingsSource(rootDir: string): void {
+	const directory = path.join(rootDir, 'src', 'webviews', 'apps', 'settings');
 	fs.mkdirSync(directory, { recursive: true });
 	fs.writeFileSync(
 		path.join(directory, 'settings.html'),

@@ -1,6 +1,7 @@
 import path from 'node:path';
 
 import { createDomainContext, createI18nWorkspaceContext, type DomainContext } from '../../core/context.mts';
+import { getGeneratedI18nRootDir } from '../../core/generated.mts';
 
 export type RuntimeDynamicDomain = 'formatter' | 'quickpicks' | 'webviewHost';
 
@@ -31,13 +32,6 @@ export function createRuntimeDynamicDomainContext(
 			domainName === 'webviewHost'
 				? path.join(domain.worksetDir, `webviews.${domain.locale}.json`)
 				: domain.worksetFile,
-		localizedSourceDir: path.join(
-			domain.rootDir,
-			'.work',
-			'i18n',
-			'runtime-dynamic-sources',
-			domain.locale,
-			domainName,
-		),
+		localizedSourceDir: getGeneratedI18nRootDir(domain.rootDir, domain.locale),
 	};
 }

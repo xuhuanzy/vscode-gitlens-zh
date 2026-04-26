@@ -29,6 +29,8 @@ run();
 function run(): void {
 	testPromotionWorkflow();
 	testStagedPackageRuntimeDirectoriesAreMaterialized();
+	testStagedPackageRuntimeDirectoriesRefreshInPlace();
+	testStagedPackageRuntimeDirectorySymlinksAreReplaced();
 	testRootTokenizedManifestIsRejected();
 	testDuplicateViewsWelcomeKeys();
 	testOverridesDoNotRemainPending();
@@ -210,6 +212,89 @@ function testStagedPackageRuntimeDirectoriesAreMaterialized(): void {
 		assert.equal(fs.lstatSync(stagedWalkthroughsDir).isSymbolicLink(), false);
 		assert.equal(normalizePath(fs.realpathSync.native(stagedWalkthrough)), normalizePath(stagedWalkthrough));
 		assert.equal(fs.lstatSync(path.join(context.stagedManifestRootDir, 'src')).isSymbolicLink(), true);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testStagedPackageRuntimeDirectoriesRefreshInPlace(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-package-nls-'));
+	try {
+		fs.writeFileSync(
+			path.join(rootDir, 'package.json'),
+			JSON.stringify(
+				{
+					name: 'fixture',
+					displayName: 'Fixture Git UI',
+					description: 'Review Git history quickly',
+					main: './dist/gitlens.js',
+					icon: 'images/gitlens-icon.png',
+				},
+				undefined,
+				'\t',
+			),
+			'utf8',
+		);
+		fs.mkdirSync(path.join(rootDir, 'dist'), { recursive: true });
+		fs.writeFileSync(path.join(rootDir, 'dist', 'gitlens.js'), 'first\n', 'utf8');
+		fs.mkdirSync(path.join(rootDir, 'images'), { recursive: true });
+		fs.writeFileSync(path.join(rootDir, 'images', 'gitlens-icon.png'), 'first\n', 'utf8');
+
+		syncManifestI18n({ rootDir });
+		const context = createManifestDomainContext(rootDir);
+		generateManifestLocalizedOutputs({ rootDir });
+
+		fs.writeFileSync(path.join(rootDir, 'dist', 'gitlens.js'), 'second\n', 'utf8');
+		fs.writeFileSync(path.join(rootDir, 'images', 'gitlens-icon.png'), 'second\n', 'utf8');
+		generateManifestLocalizedOutputs({ rootDir });
+
+		assert.equal(
+			fs.readFileSync(path.join(context.stagedManifestRootDir, 'dist', 'gitlens.js'), 'utf8'),
+			'second\n',
+		);
+		assert.equal(
+			fs.readFileSync(path.join(context.stagedManifestRootDir, 'images', 'gitlens-icon.png'), 'utf8'),
+			'second\n',
+		);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testStagedPackageRuntimeDirectorySymlinksAreReplaced(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-package-nls-'));
+	try {
+		fs.writeFileSync(
+			path.join(rootDir, 'package.json'),
+			JSON.stringify(
+				{
+					name: 'fixture',
+					displayName: 'Fixture Git UI',
+					description: 'Review Git history quickly',
+					main: './dist/gitlens.js',
+				},
+				undefined,
+				'\t',
+			),
+			'utf8',
+		);
+		fs.mkdirSync(path.join(rootDir, 'dist'), { recursive: true });
+		fs.writeFileSync(path.join(rootDir, 'dist', 'gitlens.js'), 'source\n', 'utf8');
+
+		syncManifestI18n({ rootDir });
+		const context = createManifestDomainContext(rootDir);
+		const externalTarget = path.join(rootDir, 'external-dist-target');
+		fs.mkdirSync(externalTarget);
+		fs.writeFileSync(path.join(externalTarget, 'keep.txt'), 'keep\n', 'utf8');
+		fs.mkdirSync(context.stagedManifestRootDir, { recursive: true });
+		fs.symlinkSync(externalTarget, path.join(context.stagedManifestRootDir, 'dist'), 'junction');
+
+		generateManifestLocalizedOutputs({ rootDir });
+
+		const stagedDist = path.join(context.stagedManifestRootDir, 'dist');
+		assert.equal(fs.lstatSync(stagedDist).isSymbolicLink(), false);
+		assert.equal(fs.readFileSync(path.join(stagedDist, 'gitlens.js'), 'utf8'), 'source\n');
+		assert.equal(fs.readFileSync(path.join(externalTarget, 'keep.txt'), 'utf8'), 'keep\n');
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}

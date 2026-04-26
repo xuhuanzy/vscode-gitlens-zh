@@ -13,6 +13,7 @@ import {
 	syncManifestI18n,
 } from './domains/manifest/workflow.mts';
 import {
+	assertRuntimeDynamicGeneratedMirrorPaths,
 	createPendingReport as createRuntimeDynamicPendingReport,
 	ensureRuntimeDynamicDomainFiles,
 	generateRuntimeDynamicLocalizedOutputs,
@@ -26,9 +27,8 @@ import {
 	ensureControlledWebviewFiles,
 	generateWebviewsLocalizedDynamicSources,
 	generateWebviewsLocalizedOutputs,
-	generateWebviewsLocalizedSettingsShell,
+	generateWebviewsLocalizedSettingsSources,
 	promoteWebviewsAuthority,
-	snapshotSettingsSourceShell,
 	syncWebviewsI18n,
 } from './domains/webviews/workflow.mts';
 import { execute as executeAuthorityMessagesReview } from './authority/messagesReview.mts';
@@ -48,7 +48,6 @@ type AggregatePendingReportEntry =
 			readonly domain: I18nDomain;
 			readonly skipped: true;
 			readonly reason: string;
-			readonly requiredFile?: string;
 	  };
 
 if (isDirectExecution()) {
@@ -174,7 +173,6 @@ function runReport(args: readonly string[]): void {
 			domain: 'webviews',
 			skipped: true,
 			reason: webviews.reason,
-			...(webviews.requiredFile == null ? {} : { requiredFile: webviews.requiredFile }),
 		});
 	} else {
 		reports.push(
@@ -199,7 +197,6 @@ function runReport(args: readonly string[]): void {
 function runGenerate(args: readonly string[]): void {
 	const rootDir = readOption(args, '--root');
 	const includeManifest = readBooleanFlag(args, '--with-manifest');
-	const skipSettingsShell = readBooleanFlag(args, '--skip-settings-shell');
 
 	if (includeManifest) {
 		const manifest = generateManifestLocalizedOutputs({
@@ -211,6 +208,7 @@ function runGenerate(args: readonly string[]): void {
 		);
 	}
 
+	assertRuntimeDynamicGeneratedMirrorPaths(rootDir);
 	for (const domain of runtimeDynamicDomains) {
 		const result = generateRuntimeDynamicLocalizedOutputs({
 			rootDir: rootDir,
@@ -227,17 +225,9 @@ function runGenerate(args: readonly string[]): void {
 		`Generated localized webview dynamic sources: translated=${dynamicSources.translatedCount}, unresolved=${dynamicSources.unresolvedCount}`,
 	);
 
-	if (skipSettingsShell) return;
-
-	const webviewsContext = createWebviewsDomainContext(rootDir);
-	if (!fs.existsSync(webviewsContext.settingsBuildFile)) {
-		console.log(`Skipped localized webview settings shell: ${webviewsContext.settingsBuildFile} does not exist`);
-		return;
-	}
-
-	const settingsShell = generateWebviewsLocalizedSettingsShell({ rootDir: rootDir });
+	const settingsSources = generateWebviewsLocalizedSettingsSources({ rootDir: rootDir });
 	console.log(
-		`Generated localized webview settings shell: translated=${settingsShell.translatedCount}, unresolved=${settingsShell.unresolvedCount}`,
+		`Generated localized webview settings sources: translated=${settingsSources.translatedCount}, unresolved=${settingsSources.unresolvedCount}`,
 	);
 }
 
@@ -331,13 +321,10 @@ function runWebviews(action: string | undefined, args: readonly string[]): void 
 			return;
 		}
 		case 'generate': {
-			if (readBooleanFlag(args, '--settings-shell-only') && fs.existsSync(context.settingsBuildFile)) {
-				snapshotSettingsSourceShell({ rootDir: context.rootDir });
-			}
 			const generator = readBooleanFlag(args, '--dynamic-sources-only')
 				? generateWebviewsLocalizedDynamicSources
-				: readBooleanFlag(args, '--settings-shell-only')
-					? generateWebviewsLocalizedSettingsShell
+				: readBooleanFlag(args, '--settings-sources-only')
+					? generateWebviewsLocalizedSettingsSources
 					: generateWebviewsLocalizedOutputs;
 			const result = generator({ rootDir: context.rootDir });
 			console.log(
@@ -435,7 +422,6 @@ function getRunnableWebviewsContext(
 	| {
 			readonly skipped: true;
 			readonly reason: string;
-			readonly requiredFile?: string;
 	  } {
 	if (readBooleanFlag(args, '--skip-webviews')) {
 		return {
@@ -444,18 +430,9 @@ function getRunnableWebviewsContext(
 		};
 	}
 
-	const context = createWebviewsDomainContext(rootDir);
-	if (fs.existsSync(context.settingsSourceFile) || fs.existsSync(context.settingsBuildFile)) {
-		return {
-			skipped: false,
-			context: context,
-		};
-	}
-
 	return {
-		skipped: true,
-		reason: `${context.settingsSourceFile} and ${context.settingsBuildFile} do not exist`,
-		requiredFile: context.settingsSourceFile,
+		skipped: false,
+		context: createWebviewsDomainContext(rootDir),
 	};
 }
 
@@ -561,7 +538,7 @@ function printUsageAndExit(message: string): never {
 			'  node ./i18n/cli.mts sync [--root <path>] [--skip-webviews]',
 			'  node ./i18n/cli.mts promote [--root <path>] [--skip-webviews]',
 			'  node ./i18n/cli.mts report [--root <path>] [--base <ref>] [--write <path>] [--skip-webviews]',
-			'  node ./i18n/cli.mts generate [--root <path>] [--with-manifest] [--out-root <path>] [--skip-settings-shell]',
+			'  node ./i18n/cli.mts generate [--root <path>] [--with-manifest] [--out-root <path>]',
 			'  node ./i18n/cli.mts manifest sync|generate|promote|report|package [--root <path>] [--out-root <path>] [-- <vsce args>]',
 			'  node ./i18n/cli.mts webviews sync|generate|promote|report [--root <path>]',
 			'  node ./i18n/cli.mts formatter|quickpicks|webviewHost sync|generate|promote|report [--root <path>]',

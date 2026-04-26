@@ -17,6 +17,7 @@ import {
 	reconcileCatalog,
 	type CatalogScopeOptions,
 } from '../../core/reconcile.mts';
+import { assertUniqueGeneratedMirrorPaths } from '../../core/generated.mts';
 import { ensureAuthorityFiles, ensureDomainFiles } from '../../core/store.mts';
 
 import {
@@ -48,6 +49,20 @@ export interface RuntimeDynamicWorkflowOptions {
 	readonly baseRef?: string;
 	readonly writeTo?: string;
 	readonly dynamicSourcesOnly?: boolean;
+}
+
+const runtimeDynamicDomains: readonly RuntimeDynamicDomain[] = ['formatter', 'quickpicks', 'webviewHost'];
+
+export function assertRuntimeDynamicGeneratedMirrorPaths(rootDir?: string): void {
+	assertUniqueGeneratedMirrorPaths(
+		runtimeDynamicDomains.flatMap(domain => {
+			const context = createRuntimeDynamicDomainContext(domain, rootDir);
+			return loadRuntimeDynamicSourceTargets(context).map(target => ({
+				owner: `runtimeDynamic:${target.domain}:${target.group}`,
+				relativePath: target.file,
+			}));
+		}),
+	);
 }
 
 export function syncRuntimeDynamicI18n(options: RuntimeDynamicWorkflowOptions): {
@@ -118,8 +133,16 @@ export function generateRuntimeDynamicLocalizedOutputs(options: RuntimeDynamicWo
 	const bundle = loadAuthorityBundle(context);
 	let translatedCount = 0;
 	let unresolvedCount = 0;
+	const targets = loadRuntimeDynamicSourceTargets(context);
 
-	for (const target of loadRuntimeDynamicSourceTargets(context)) {
+	assertUniqueGeneratedMirrorPaths(
+		targets.map(target => ({
+			owner: `runtimeDynamic:${target.domain}:${target.group}`,
+			relativePath: target.file,
+		})),
+	);
+
+	for (const target of targets) {
 		const generated = generateLocalizedRuntimeDynamicSourceFile(target, catalog.occurrences, bundle);
 		saveLocalizedRuntimeDynamicSource(context, target.file, generated.contents);
 		translatedCount += generated.translatedCount;

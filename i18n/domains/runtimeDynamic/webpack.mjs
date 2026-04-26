@@ -1,8 +1,6 @@
 import { spawnSync } from 'child_process';
 import path from 'path';
 
-const runtimeDynamicDomains = ['formatter', 'quickpicks', 'webviewHost'];
-
 export class GenerateLocalizedRuntimeDynamicSourcesPlugin {
 	/** @type {Promise<void> | undefined} */
 	static _generationPromise;
@@ -61,7 +59,8 @@ export class GenerateLocalizedRuntimeDynamicSourcesPlugin {
 	}
 
 	generate() {
-		for (const domain of runtimeDynamicDomains) {
+		const domains = ['formatter', 'quickpicks', 'webviewHost'];
+		for (const domain of domains) {
 			const result = spawnSync(
 				process.execPath,
 				[

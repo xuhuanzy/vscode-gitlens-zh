@@ -10,7 +10,7 @@ import {
 	loadWebviewsReconciliationReport,
 	loadWebviewsWorkset,
 	loadLocalizedDynamicSource,
-	loadLocalizedSettingsShell,
+	loadLocalizedHtmlSource,
 	saveWebviewsCatalog,
 	saveWebviewsWorkset,
 } from '../store.mts';
@@ -18,21 +18,28 @@ import {
 	createPendingReport,
 	generateWebviewsLocalizedDynamicSources,
 	generateWebviewsLocalizedOutputs,
-	generateWebviewsLocalizedSettingsShell,
+	generateWebviewsLocalizedSettingsSources,
 	promoteWebviewsAuthority,
 	syncWebviewsI18n,
 } from '../workflow.mts';
-import { createLocalizedWebviewConfig, GenerateLocalizedDynamicSourcesPlugin } from '../webpack.mjs';
+import {
+	createLocalizedWebviewConfig,
+	GenerateLocalizedDynamicSourcesPlugin,
+	isLocalizedDynamicWebview,
+	LocalizedWebviewSourcePlugin,
+} from '../webpack.mjs';
 
 run();
 
 function run(): void {
 	testSettingsWorkflow();
-	testSettingsSourceSnapshotPreventsLocalizedResync();
+	testSettingsSourceGenerationDoesNotReadLocalizedDist();
 	testWebviewsSyncPreservesSharedWebviewHostEntries();
 	testWelcomeLocalizedSourceWorkflow();
-	testDynamicSourceGenerationDoesNotRequireBuiltSettingsShell();
+	testDynamicSourceGenerationDoesNotRequireSettingsSource();
 	testLocalizedWebpackWatchIgnoresGeneratedArtifacts();
+	testSettingsIsLocalizedWebpackTarget();
+	testLocalizedSourcePluginUpdatesModuleContext();
 	testWriteTextFileSkipsUnchangedWrites();
 	testSupportedDynamicBundlesGenerateLocalizedSources();
 	testRebaseShortcutFooterIsNotExtracted();
@@ -51,15 +58,15 @@ function run(): void {
 	testLocalizedSourcePreservesNamedSlotSubtrees();
 	testLocalizedSourcePreservesWalkthroughAnchorStructure();
 	testGraphLocalizedSourcePreservesPopoverMenuStructure();
-	testLocalizedSettingsShellPreservesRuntimeAnchors();
+	testLocalizedSettingsSourcePreservesRuntimeAnchors();
 }
 
 function testSettingsWorkflow(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-nls-'));
 	try {
-		fs.mkdirSync(path.join(rootDir, 'dist', 'webviews'), { recursive: true });
-		fs.writeFileSync(
-			path.join(rootDir, 'dist', 'webviews', 'settings.html'),
+		writeTextFile(
+			rootDir,
+			'src/webviews/apps/settings/settings.html',
 			[
 				'<!doctype html>',
 				'<html lang="en">',
@@ -71,7 +78,6 @@ function testSettingsWorkflow(): void {
 				'</html>',
 				'',
 			].join('\n'),
-			'utf8',
 		);
 
 		const syncResult = syncWebviewsI18n({ rootDir });
@@ -112,7 +118,7 @@ function testSettingsWorkflow(): void {
 		const generateResult = generateWebviewsLocalizedOutputs({ rootDir });
 		assert.equal(generateResult.translatedCount >= 3, true);
 
-		const localizedHtml = loadLocalizedSettingsShell(context);
+		const localizedHtml = loadLocalizedHtmlSource(context, 'src/webviews/apps/settings/settings.html');
 		assert.notEqual(localizedHtml, undefined);
 		assert.equal(localizedHtml!.includes('设置'), true);
 		assert.equal(localizedHtml!.includes('title="打开设置"'), true);
@@ -133,12 +139,12 @@ function testSettingsWorkflow(): void {
 	}
 }
 
-function testSettingsSourceSnapshotPreventsLocalizedResync(): void {
-	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-settings-source-snapshot-'));
+function testSettingsSourceGenerationDoesNotReadLocalizedDist(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-settings-source-'));
 	try {
 		writeTextFile(
 			rootDir,
-			'dist/webviews/settings.html',
+			'src/webviews/apps/settings/settings.html',
 			[
 				'<!doctype html>',
 				'<html lang="en">',
@@ -158,12 +164,19 @@ function testSettingsSourceSnapshotPreventsLocalizedResync(): void {
 			'Toggles file changes from the commit': '切换该提交的文件更改',
 		});
 		promoteWebviewsAuthority({ rootDir });
-		generateWebviewsLocalizedSettingsShell({ rootDir });
+		generateWebviewsLocalizedSettingsSources({ rootDir });
 
-		assert.match(fs.readFileSync(context.settingsBuildFile, 'utf8'), /<html lang="zh-CN">/u);
-		assert.match(fs.readFileSync(context.settingsBuildFile, 'utf8'), /切换该提交的文件更改/u);
-		assert.match(fs.readFileSync(context.settingsSourceFile, 'utf8'), /<html lang="en">/u);
-		assert.match(fs.readFileSync(context.settingsSourceFile, 'utf8'), /Toggles file changes from the commit/u);
+		const localizedHtml = loadLocalizedHtmlSource(context, 'src/webviews/apps/settings/settings.html');
+		assert.match(localizedHtml ?? '', /<html lang="zh-CN">/u);
+		assert.match(localizedHtml ?? '', /切换该提交的文件更改/u);
+		assert.match(
+			fs.readFileSync(path.join(rootDir, 'src', 'webviews', 'apps', 'settings', 'settings.html'), 'utf8'),
+			/<html lang="en">/u,
+		);
+		assert.match(
+			fs.readFileSync(path.join(rootDir, 'src', 'webviews', 'apps', 'settings', 'settings.html'), 'utf8'),
+			/Toggles file changes from the commit/u,
+		);
 
 		syncWebviewsI18n({ rootDir });
 		const catalog = loadWebviewsCatalog(context);
@@ -190,7 +203,7 @@ function testWebviewsSyncPreservesSharedWebviewHostEntries(): void {
 	try {
 		writeTextFile(
 			rootDir,
-			'dist/webviews/settings.html',
+			'src/webviews/apps/settings/settings.html',
 			['<!doctype html>', '<html lang="en">', '<body>', '\t<h1>Settings</h1>', '</body>', '</html>', ''].join(
 				'\n',
 			),
@@ -282,7 +295,7 @@ function testWebviewsSyncPreservesSharedWebviewHostEntries(): void {
 function testWelcomeLocalizedSourceWorkflow(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-welcome-source-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeWelcomeFixture(rootDir, {
 			welcomeTs: [
 				"import './welcome.scss';",
@@ -356,7 +369,7 @@ function testLocalizedWebpackWatchIgnoresGeneratedArtifacts(): void {
 						rootDir,
 						'.work',
 						'i18n',
-						'webviews-sources',
+						'generated',
 						'zh-cn',
 						'src',
 						'webviews',
@@ -382,7 +395,7 @@ function testLocalizedWebpackWatchIgnoresGeneratedArtifacts(): void {
 		assert.ok(Array.isArray(config.watchOptions?.ignored));
 		assert.deepEqual(config.watchOptions!.ignored, [
 			'**/node_modules/**',
-			path.join(rootDir, '.work', 'i18n', 'webviews-sources').replaceAll('\\', '/'),
+			path.join(rootDir, '.work', 'i18n', 'generated', 'zh-cn').replaceAll('\\', '/'),
 			path.join(rootDir, 'i18n', 'catalog').replaceAll('\\', '/'),
 			path.join(rootDir, 'i18n', 'worksets').replaceAll('\\', '/'),
 			path.join(rootDir, 'i18n', 'reports').replaceAll('\\', '/'),
@@ -399,6 +412,55 @@ function testLocalizedWebpackWatchIgnoresGeneratedArtifacts(): void {
 			path.join(rootDir, 'src', 'webviews', 'apps'),
 			path.join(rootDir, 'i18n', 'authority'),
 		]);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testSettingsIsLocalizedWebpackTarget(): void {
+	assert.equal(isLocalizedDynamicWebview('settings'), true);
+}
+
+function testLocalizedSourcePluginUpdatesModuleContext(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-source-plugin-'));
+	try {
+		const sourceRelativePath = 'src/webviews/apps/shared/components/feature-badge.ts';
+		writeTextFile(rootDir, sourceRelativePath, 'export const source = true;\n');
+		writeTextFile(rootDir, `.work/i18n/generated/zh-cn/${sourceRelativePath}`, 'export const source = false;\n');
+
+		const sourceResource = path.join(rootDir, ...sourceRelativePath.split('/'));
+		const localizedResource = path.join(
+			rootDir,
+			'.work',
+			'i18n',
+			'generated',
+			'zh-cn',
+			...sourceRelativePath.split('/'),
+		);
+		const plugin = new LocalizedWebviewSourcePlugin({ rootDir: rootDir, locale: 'zh-cn' });
+		const resolveData: {
+			context: string;
+			createData: {
+				resource: string;
+				request: string;
+				userRequest: string;
+				context?: string;
+			};
+		} = {
+			context: path.dirname(sourceResource),
+			createData: {
+				resource: sourceResource,
+				request: `loader!${sourceResource}`,
+				userRequest: sourceResource,
+			},
+		};
+
+		assert.equal(plugin.localizeResolveData(resolveData as never), true);
+		assert.equal(resolveData.createData.resource, localizedResource);
+		assert.equal(resolveData.createData.context, path.dirname(localizedResource));
+		assert.equal(resolveData.context, path.dirname(localizedResource));
+		assert.equal(resolveData.createData.request, `loader!${localizedResource}`);
+		assert.equal(resolveData.createData.userRequest, localizedResource);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}
@@ -421,10 +483,10 @@ function testWriteTextFileSkipsUnchangedWrites(): void {
 	}
 }
 
-function testDynamicSourceGenerationDoesNotRequireBuiltSettingsShell(): void {
+function testDynamicSourceGenerationDoesNotRequireSettingsSource(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-dynamic-clean-dist-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeWelcomeFixture(rootDir, {
 			welcomeTs: [
 				"import { html } from 'lit';",
@@ -451,7 +513,6 @@ function testDynamicSourceGenerationDoesNotRequireBuiltSettingsShell(): void {
 		});
 		promoteWebviewsAuthority({ rootDir });
 
-		fs.rmSync(path.join(rootDir, 'dist', 'webviews', 'settings.html'), { force: true });
 		const generateResult = generateWebviewsLocalizedDynamicSources({ rootDir });
 		assert.equal(generateResult.translatedCount >= 1, true);
 		assert.equal(
@@ -468,7 +529,7 @@ function testDynamicSourceGenerationDoesNotRequireBuiltSettingsShell(): void {
 function testSupportedDynamicBundlesGenerateLocalizedSources(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-supported-bundles-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
 			rootDir,
 			'src/webviews/apps/rebase/rebase.ts',
@@ -553,7 +614,7 @@ function testSupportedDynamicBundlesGenerateLocalizedSources(): void {
 function testRebaseShortcutFooterIsNotExtracted(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-rebase-shortcuts-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
 			rootDir,
 			'src/webviews/apps/rebase/rebase.ts',
@@ -605,7 +666,7 @@ function testRebaseShortcutFooterIsNotExtracted(): void {
 function testStructuralSlotOnlyTemplatesAreNotExtracted(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-structural-templates-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
 			rootDir,
 			'src/webviews/apps/rebase/components/rebase-entry.ts',
@@ -685,7 +746,7 @@ function testStructuralSlotOnlyTemplatesAreNotExtracted(): void {
 function testLaunchpadGrammarHelpersAreNotExtracted(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-launchpad-grammar-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
 			rootDir,
 			'src/webviews/apps/plus/home/components/launchpad.ts',
@@ -786,7 +847,7 @@ function testLaunchpadGrammarHelpersAreNotExtracted(): void {
 function testWelcomeLocalizedSourceRewritesImportsBackToSourceTree(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-welcome-imports-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeWelcomeFixture(rootDir, {
 			welcomeTs: [
 				"import './welcome.scss';",
@@ -849,7 +910,7 @@ function testWelcomeLocalizedSourceRewritesImportsBackToSourceTree(): void {
 function testGraphBundleGeneratesLocalizedSource(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-graph-source-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
 			rootDir,
 			'src/webviews/apps/plus/graph/graph.ts',
@@ -917,7 +978,7 @@ function testGraphBundleGeneratesLocalizedSource(): void {
 function testWelcomeWorkflowPreservesTemplateArgumentSeparators(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-welcome-separators-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeWelcomeFixture(rootDir, {
 			welcomeTs: [
 				"import './welcome.scss';",
@@ -967,7 +1028,7 @@ function testWelcomeWorkflowPreservesTemplateArgumentSeparators(): void {
 function testWelcomeWorkflowSkipsObviousNonUiImperativeStrings(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-welcome-noise-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeWelcomeFixture(rootDir, {
 			welcomeTs: [
 				"import './welcome.scss';",
@@ -1014,7 +1075,7 @@ function testWelcomeWorkflowSkipsObviousNonUiImperativeStrings(): void {
 function testCommitDetailsWorkflowLocalizesDisplayOnlyImperativeStrings(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-commit-details-logic-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
 			rootDir,
 			'src/webviews/apps/commitDetails/components/gl-inspect-nav.ts',
@@ -1117,7 +1178,7 @@ function testCommitDetailsWorkflowLocalizesDisplayOnlyImperativeStrings(): void 
 function testSearchInputPlaceholderGetterIsLocalized(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-search-placeholder-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
 			rootDir,
 			'src/webviews/apps/home/home.ts',
@@ -1207,7 +1268,7 @@ function testSearchInputPlaceholderGetterIsLocalized(): void {
 function testReturnedDisplayTemplateSlotsLocalizeVariableInitializers(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-returned-label-slots-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
 			rootDir,
 			'src/webviews/apps/shared/components/rich/pr-icon.ts',
@@ -1270,7 +1331,7 @@ function testReturnedDisplayTemplateSlotsLocalizeVariableInitializers(): void {
 function testGraphBranchVisibilityOptionsAreLocalized(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-graph-branch-visibility-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
 			rootDir,
 			'src/webviews/apps/plus/graph/graph-header.ts',
@@ -1379,7 +1440,7 @@ function testGraphBranchVisibilityOptionsAreLocalized(): void {
 function testDeferredRuntimeBoundariesAreReported(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-deferred-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
 			rootDir,
 			'src/webviews/apps/plus/graph/graph-wrapper/gl-graph.react.tsx',
@@ -1430,12 +1491,12 @@ function testDeferredRuntimeBoundariesAreReported(): void {
 	}
 }
 
-function testLocalizedSettingsShellPreservesRuntimeAnchors(): void {
+function testLocalizedSettingsSourcePreservesRuntimeAnchors(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-settings-anchors-'));
 	try {
 		writeTextFile(
 			rootDir,
-			'dist/webviews/settings.html',
+			'src/webviews/apps/settings/settings.html',
 			[
 				'<!doctype html>',
 				'<html lang="en">',
@@ -1457,9 +1518,9 @@ function testLocalizedSettingsShellPreservesRuntimeAnchors(): void {
 			'Open CHANGELOG': '打开 CHANGELOG',
 		});
 		promoteWebviewsAuthority({ rootDir });
-		generateWebviewsLocalizedSettingsShell({ rootDir });
+		generateWebviewsLocalizedSettingsSources({ rootDir });
 
-		const localizedHtml = loadLocalizedSettingsShell(context);
+		const localizedHtml = loadLocalizedHtmlSource(context, 'src/webviews/apps/settings/settings.html');
 		assert.notEqual(localizedHtml, undefined);
 		for (const marker of [
 			'id="version"',
@@ -1471,7 +1532,7 @@ function testLocalizedSettingsShellPreservesRuntimeAnchors(): void {
 			assert.equal(
 				localizedHtml!.includes(marker),
 				true,
-				`localized settings shell must preserve runtime marker ${marker}`,
+				`localized settings source must preserve runtime marker ${marker}`,
 			);
 		}
 	} finally {
@@ -1482,9 +1543,9 @@ function testLocalizedSettingsShellPreservesRuntimeAnchors(): void {
 function testGeneratorPreservesStructuralNodes(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-structure-'));
 	try {
-		fs.mkdirSync(path.join(rootDir, 'dist', 'webviews'), { recursive: true });
-		fs.writeFileSync(
-			path.join(rootDir, 'dist', 'webviews', 'settings.html'),
+		writeTextFile(
+			rootDir,
+			'src/webviews/apps/settings/settings.html',
 			[
 				'<!doctype html>',
 				'<html lang="en">',
@@ -1497,7 +1558,6 @@ function testGeneratorPreservesStructuralNodes(): void {
 				'</html>',
 				'',
 			].join('\n'),
-			'utf8',
 		);
 
 		syncWebviewsI18n({ rootDir });
@@ -1524,7 +1584,7 @@ function testGeneratorPreservesStructuralNodes(): void {
 		promoteWebviewsAuthority({ rootDir });
 		generateWebviewsLocalizedOutputs({ rootDir });
 
-		const localizedHtml = loadLocalizedSettingsShell(context);
+		const localizedHtml = loadLocalizedHtmlSource(context, 'src/webviews/apps/settings/settings.html');
 		assert.notEqual(localizedHtml, undefined);
 		assert.equal(localizedHtml!.includes('<gitlens-logo></gitlens-logo>'), true);
 		assert.equal(localizedHtml!.includes('id="version"'), true);
@@ -1540,7 +1600,7 @@ function testGeneratorPreservesStructuralNodes(): void {
 function testLocalizedSourcePreservesNamedSlotSubtrees(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-slot-structure-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
 			rootDir,
 			'src/webviews/apps/home/home.ts',
@@ -1595,7 +1655,7 @@ function testLocalizedSourcePreservesNamedSlotSubtrees(): void {
 function testLocalizedSourcePreservesWalkthroughAnchorStructure(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-walkthrough-anchor-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
 			rootDir,
 			'src/webviews/apps/home/home.ts',
@@ -1651,7 +1711,7 @@ function testLocalizedSourcePreservesWalkthroughAnchorStructure(): void {
 function testGraphLocalizedSourcePreservesPopoverMenuStructure(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-graph-popover-structure-'));
 	try {
-		writeDefaultSettingsShell(rootDir);
+		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
 			rootDir,
 			'src/webviews/apps/plus/graph/graph-header.ts',
@@ -1748,10 +1808,10 @@ function testGraphLocalizedSourcePreservesPopoverMenuStructure(): void {
 	}
 }
 
-function writeDefaultSettingsShell(rootDir: string): void {
+function writeDefaultSettingsSource(rootDir: string): void {
 	writeTextFile(
 		rootDir,
-		'dist/webviews/settings.html',
+		'src/webviews/apps/settings/settings.html',
 		['<!doctype html>', '<html lang="en">', '<body></body>', '</html>', ''].join('\n'),
 	);
 }

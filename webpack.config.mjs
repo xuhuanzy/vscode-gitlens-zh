@@ -25,11 +25,7 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import webpack from 'webpack';
 import WebpackRequireFromPlugin from 'webpack-require-from';
 
-import {
-	createLocalizedWebviewConfig,
-	GenerateLocalizedSettingsShellPlugin,
-	getLocalizedWebviewEntries,
-} from './i18n/domains/webviews/webpack.mjs';
+import { createLocalizedWebviewConfig, getLocalizedWebviewEntries } from './i18n/domains/webviews/webpack.mjs';
 import { GenerateLocalizedRuntimeDynamicSourcesPlugin } from './i18n/domains/runtimeDynamic/webpack.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -535,10 +531,7 @@ function getWebviewsConfigs(mode, env) {
 				locale: 'zh-cn',
 				config: getWebviewConfig(localizedEntries, {}, mode, env),
 				dependencies: webviewConfig?.name != null ? [String(webviewConfig.name)] : undefined,
-				excludePlugin: plugin =>
-					plugin instanceof ESLintLitePlugin ||
-					plugin instanceof ForkTsCheckerPlugin ||
-					plugin instanceof GenerateLocalizedSettingsShellPlugin,
+				excludePlugin: plugin => plugin instanceof ESLintLitePlugin || plugin instanceof ForkTsCheckerPlugin,
 			}),
 		);
 	}
@@ -640,7 +633,9 @@ function getWebviewConfig(webviews, overrides, mode, env) {
 		}),
 		new WebpackRequireFromPlugin({ variableName: 'webpackResourceBasePath' }),
 		new MiniCssExtractPlugin({ filename: '[name].css' }),
-		...Object.entries(webviews).map(([name, config]) => getHtmlPlugin(name, Boolean(config.plus), mode, env)),
+		...Object.entries(webviews).map(([name, config]) =>
+			getHtmlPlugin(name, Boolean(config.plus), mode, env, config.template),
+		),
 		getCspHtmlPlugin(mode, env),
 	];
 
@@ -648,10 +643,6 @@ function getWebviewConfig(webviews, overrides, mode, env) {
 	if ('composer' in webviews) {
 		plugins.push(new CompileComposerTemplatesPlugin());
 	}
-	if ('settings' in webviews) {
-		plugins.push(new GenerateLocalizedSettingsShellPlugin({ rootDir: __dirname, WebpackError: WebpackError }));
-	}
-
 	let name = '';
 	let filePrefix = '';
 	if (Object.keys(webviews).length > 1) {
@@ -802,7 +793,7 @@ function getWebviewConfig(webviews, overrides, mode, env) {
 					include: [
 						path.join(__dirname, 'src'),
 						path.join(__dirname, 'packages'),
-						path.join(__dirname, '.work', 'i18n', 'webviews-sources'),
+						path.join(__dirname, '.work', 'i18n', 'generated'),
 					],
 					test: /\.tsx?$/,
 					use: [
@@ -925,11 +916,12 @@ function getImageMinimizerConfig(mode, env) {
  * @param { boolean } plus
  * @param { GlMode } mode
  * @param {GlEnv} env
+ * @param { string | undefined } template
  * @returns { HtmlPlugin }
  */
-function getHtmlPlugin(name, plus, mode, env) {
+function getHtmlPlugin(name, plus, mode, env, template) {
 	return new HtmlPlugin({
-		template: plus ? path.join('plus', name, `${name}.html`) : path.join(name, `${name}.html`),
+		template: template ?? (plus ? path.join('plus', name, `${name}.html`) : path.join(name, `${name}.html`)),
 		chunks: [name],
 		filename: path.join(__dirname, 'dist', 'webviews', `${name}.html`),
 		inject: true,

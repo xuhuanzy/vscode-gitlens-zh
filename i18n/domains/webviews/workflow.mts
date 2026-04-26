@@ -20,27 +20,25 @@ import {
 	reconcileCatalog,
 	type CatalogScopeOptions,
 } from '../../core/reconcile.mts';
+import { assertUniqueGeneratedMirrorPaths } from '../../core/generated.mts';
 import { ensureAuthorityFiles, ensureDomainFiles } from '../../core/store.mts';
 
 import { createWebviewsDomainContext, type WebviewsDomainContext } from './context.mts';
 import { extractSupportedWebviewOccurrences } from './extractor.mts';
-import { generateLocalizedSettingsShell, generateLocalizedSourceFile } from './generator.mts';
+import { generateLocalizedHtmlSourceFile, generateLocalizedSourceFile } from './generator.mts';
 import {
 	createEmptyWebviewsCatalogFile,
 	createEmptyWebviewsReconciliationReportFile,
 	createEmptyWebviewsWorksetFile,
 	deleteLocalizedDynamicSource,
-	isLocalizedSettingsShell,
 	loadAuthorityBundle,
-	loadSettingsSourceHtml,
 	loadSourceTargetContents,
 	loadWebviewsCatalog,
 	loadWebviewsWorkset,
 	saveAuthorityBundle,
 	saveLocalizedDynamicSource,
-	saveLocalizedSettingsShell,
+	saveLocalizedHtmlSource,
 	savePendingReport,
-	saveSettingsSourceHtml,
 	saveWebviewsCatalog,
 	saveWebviewsReconciliationReport,
 	saveWebviewsWorkset,
@@ -56,6 +54,11 @@ interface DeferredRuntimeTarget {
 	readonly bundle: 'patchDetails';
 	readonly reason: string;
 	readonly directories: readonly string[];
+}
+
+interface StaticHtmlTarget {
+	readonly shell: 'settings';
+	readonly file: string;
 }
 
 const supportedDynamicSourceTargets: readonly DynamicSourceTarget[] = [
@@ -105,6 +108,10 @@ const deferredRuntimeTargets: readonly DeferredRuntimeTarget[] = [
 		directories: ['src/webviews/apps/plus/patchDetails'],
 	},
 ];
+
+const settingsHtmlSourceFile = 'src/webviews/apps/settings/settings.html';
+const settingsHtmlPartialsDirectory = 'src/webviews/apps/settings/partials';
+
 export interface WorkflowOptions {
 	readonly rootDir?: string;
 	readonly baseRef?: string;
@@ -127,12 +134,7 @@ export function syncWebviewsI18n(options: WorkflowOptions = {}): {
 	const previousWorkset = loadWebviewsWorkset(context);
 	const bundle = loadAuthorityBundle(context);
 	const extraction = extractSupportedWebviewOccurrences([
-		{
-			kind: 'html',
-			file: 'dist/webviews/settings.html',
-			html: loadSettingsSourceHtml(context),
-			shell: 'settings',
-		},
+		...loadStaticHtmlExtractionTargets(context),
 		...loadDynamicExtractionTargets(context),
 	]);
 	const catalogScope = getWebviewsCatalogScope();
@@ -188,13 +190,13 @@ export function generateWebviewsLocalizedOutputs(options: WorkflowOptions = {}):
 } {
 	const syncResult = syncWebviewsI18n(options);
 	const context = syncResult.context;
-	const settingsShell = generateWebviewsLocalizedSettingsShellCore(context);
+	const settingsSources = generateWebviewsLocalizedSettingsSourcesCore(context);
 	const dynamicSources = generateWebviewsLocalizedDynamicSourcesCore(context);
 
 	return {
 		context: context,
-		translatedCount: settingsShell.translatedCount + dynamicSources.translatedCount,
-		unresolvedCount: settingsShell.unresolvedCount + dynamicSources.unresolvedCount,
+		translatedCount: settingsSources.translatedCount + dynamicSources.translatedCount,
+		unresolvedCount: settingsSources.unresolvedCount + dynamicSources.unresolvedCount,
 	};
 }
 
@@ -213,38 +215,50 @@ export function generateWebviewsLocalizedDynamicSources(options: WorkflowOptions
 	};
 }
 
-export function generateWebviewsLocalizedSettingsShell(options: WorkflowOptions = {}): {
+export function generateWebviewsLocalizedSettingsSources(options: WorkflowOptions = {}): {
 	readonly context: WebviewsDomainContext;
 	readonly translatedCount: number;
 	readonly unresolvedCount: number;
 } {
 	const context = ensureControlledWebviewFiles(options);
-	const settingsShell = generateWebviewsLocalizedSettingsShellCore(context);
+	const settingsSources = generateWebviewsLocalizedSettingsSourcesCore(context);
 
 	return {
 		context: context,
-		translatedCount: settingsShell.translatedCount,
-		unresolvedCount: settingsShell.unresolvedCount,
+		translatedCount: settingsSources.translatedCount,
+		unresolvedCount: settingsSources.unresolvedCount,
 	};
 }
 
-function generateWebviewsLocalizedSettingsShellCore(context: WebviewsDomainContext): {
+function generateWebviewsLocalizedSettingsSourcesCore(context: WebviewsDomainContext): {
 	readonly translatedCount: number;
 	readonly unresolvedCount: number;
 } {
-	if (!fs.existsSync(context.settingsSourceFile)) {
-		snapshotSettingsSourceShell({ rootDir: context.rootDir });
-	}
-
 	const catalog = loadWebviewsCatalog(context);
 	const bundle = loadAuthorityBundle(context);
-	const englishHtml = loadSettingsSourceHtml(context);
-	const generated = generateLocalizedSettingsShell(englishHtml, catalog.occurrences, bundle);
-	saveLocalizedSettingsShell(context, generated.localizedHtml);
+	let translatedCount = 0;
+	let unresolvedCount = 0;
+	const staticTargets = loadStaticHtmlTargets(context);
+
+	assertUniqueGeneratedMirrorPaths(
+		staticTargets.map(target => ({ owner: `webviews:${target.shell}`, relativePath: target.file })),
+	);
+
+	for (const target of staticTargets) {
+		const html = loadSourceTargetContents(context, target.file);
+		if (html == null) continue;
+
+		const generated = generateLocalizedHtmlSourceFile(html, target.file, catalog.occurrences, bundle, {
+			htmlLang: target.file === settingsHtmlSourceFile ? 'zh-CN' : undefined,
+		});
+		saveLocalizedHtmlSource(context, target.file, generated.localizedHtml);
+		translatedCount += generated.translatedCount;
+		unresolvedCount += generated.unresolvedCount;
+	}
 
 	return {
-		translatedCount: generated.translatedCount,
-		unresolvedCount: generated.unresolvedCount,
+		translatedCount: translatedCount,
+		unresolvedCount: unresolvedCount,
 	};
 }
 
@@ -265,41 +279,34 @@ function generateWebviewsLocalizedDynamicSourcesCore(context: WebviewsDomainCont
 			])
 			.map(normalizePath),
 	);
+	assertUniqueGeneratedMirrorPaths([
+		...loadStaticHtmlTargets(context).map(target => ({
+			owner: `webviews:${target.shell}`,
+			relativePath: target.file,
+		})),
+		...[...allLocalizedSourceFiles].map(file => ({ owner: 'webviews:source', relativePath: file })),
+	]);
 
-	for (const target of supportedDynamicSourceTargets) {
-		const targetFiles = [
-			...(target.files ?? []),
-			...(target.directories?.flatMap(directory => enumerateSourceFiles(context, directory)) ?? []),
-		]
-			.filter((file, index, files) => files.indexOf(file) === index)
-			.sort((left, right) => left.localeCompare(right));
-		for (const file of targetFiles) {
-			const source = loadSourceTargetContents(context, file);
-			if (source == null) {
-				deleteLocalizedDynamicSource(context, file);
-				continue;
-			}
+	for (const file of [...allLocalizedSourceFiles].sort((left, right) => left.localeCompare(right))) {
+		const source = loadSourceTargetContents(context, file);
+		if (source == null) {
+			deleteLocalizedDynamicSource(context, file);
+			continue;
+		}
 
-			const localizedSource = generateLocalizedSourceFile(
-				source,
-				file,
-				target.bundle,
-				catalog.occurrences,
-				bundle,
-			);
-			saveLocalizedDynamicSource(
+		const localizedSource = generateLocalizedSourceFile(source, file, catalog.occurrences, bundle);
+		saveLocalizedDynamicSource(
+			context,
+			file,
+			rewriteRelativeModuleSpecifiersForLocalizedCopy(
 				context,
 				file,
-				rewriteRelativeModuleSpecifiersForLocalizedCopy(
-					context,
-					file,
-					localizedSource.contents,
-					allLocalizedSourceFiles,
-				),
-			);
-			localizedSourceTranslatedCount += localizedSource.translatedCount;
-			localizedSourceUnresolvedCount += localizedSource.unresolvedCount;
-		}
+				localizedSource.contents,
+				allLocalizedSourceFiles,
+			),
+		);
+		localizedSourceTranslatedCount += localizedSource.translatedCount;
+		localizedSourceUnresolvedCount += localizedSource.unresolvedCount;
 	}
 
 	return {
@@ -459,6 +466,32 @@ function loadDynamicExtractionTargets(context: WebviewsDomainContext) {
 	];
 }
 
+function loadStaticHtmlExtractionTargets(context: WebviewsDomainContext) {
+	return loadStaticHtmlTargets(context)
+		.map(target => {
+			const html = loadSourceTargetContents(context, target.file);
+			if (html == null) return undefined;
+
+			return {
+				kind: 'html' as const,
+				file: target.file,
+				html: html,
+				shell: target.shell,
+			};
+		})
+		.filter((target): target is Exclude<typeof target, undefined> => target != null);
+}
+
+function loadStaticHtmlTargets(context: WebviewsDomainContext): StaticHtmlTarget[] {
+	return [
+		{ shell: 'settings', file: settingsHtmlSourceFile },
+		...enumerateHtmlFiles(context, settingsHtmlPartialsDirectory).map(file => ({
+			shell: 'settings' as const,
+			file: file,
+		})),
+	];
+}
+
 function loadDynamicSourceTargets(
 	context: WebviewsDomainContext,
 	target: {
@@ -488,17 +521,6 @@ function loadDynamicSourceTargets(
 	}
 
 	return [...results.values()].sort((left, right) => left.file.localeCompare(right.file));
-}
-
-export function snapshotSettingsSourceShell(options: WorkflowOptions = {}): WebviewsDomainContext {
-	const context = createWebviewsDomainContext(options.rootDir);
-	const html = fs.readFileSync(context.settingsBuildFile, 'utf8');
-	if (isLocalizedSettingsShell(html) && fs.existsSync(context.settingsSourceFile)) {
-		return context;
-	}
-
-	saveSettingsSourceHtml(context, html);
-	return context;
 }
 
 function loadSourceTarget(
@@ -534,22 +556,41 @@ function enumerateSourceFiles(context: WebviewsDomainContext, directory: string)
 	);
 }
 
+function enumerateHtmlFiles(context: WebviewsDomainContext, directory: string): string[] {
+	const absoluteDirectory = path.join(context.rootDir, ...directory.split('/'));
+	if (!fs.existsSync(absoluteDirectory)) return [];
+
+	return enumerateFilesCore(context.rootDir, absoluteDirectory, fileName => fileName.endsWith('.html')).sort(
+		(left, right) => left.localeCompare(right),
+	);
+}
+
 function enumerateSourceFilesCore(rootDir: string, currentDirectory: string): string[] {
+	return enumerateFilesCore(
+		rootDir,
+		currentDirectory,
+		fileName => !shouldSkipSourceFile(fileName) && getSourceSyntax(fileName) != null,
+	);
+}
+
+function enumerateFilesCore(
+	rootDir: string,
+	currentDirectory: string,
+	includeFile: (fileName: string) => boolean,
+): string[] {
 	const results: string[] = [];
 	for (const entry of fs.readdirSync(currentDirectory, { withFileTypes: true })) {
 		if (entry.name === '__tests__') continue;
 
 		const absolute = path.join(currentDirectory, entry.name);
 		if (entry.isDirectory()) {
-			results.push(...enumerateSourceFilesCore(rootDir, absolute));
+			results.push(...enumerateFilesCore(rootDir, absolute, includeFile));
 			continue;
 		}
 
-		if (shouldSkipSourceFile(entry.name)) continue;
+		if (!includeFile(entry.name)) continue;
 
 		const relative = path.relative(rootDir, absolute).replaceAll('\\', '/');
-		if (getSourceSyntax(relative) == null) continue;
-
 		results.push(relative);
 	}
 

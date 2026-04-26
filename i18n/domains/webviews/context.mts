@@ -1,6 +1,5 @@
-import path from 'node:path';
-
 import { createDomainContext, createI18nWorkspaceContext } from '../../core/context.mts';
+import { getGeneratedI18nRootDir } from '../../core/generated.mts';
 
 export type WebviewsDomainContext = ReturnType<typeof createWebviewsDomainContext>;
 
@@ -24,8 +23,6 @@ export function createWebviewsDomainContext(rootDir?: string): {
 	readonly reconciliationReportFile: string;
 	readonly worksetFile: string;
 	readonly pendingReportFile: string;
-	readonly settingsBuildFile: string;
-	readonly settingsSourceFile: string;
 	readonly localizedDynamicSourceDir: string;
 } {
 	const workspace = createI18nWorkspaceContext(rootDir);
@@ -34,21 +31,12 @@ export function createWebviewsDomainContext(rootDir?: string): {
 		artifactId: 'webviews',
 		pendingReportName: 'webviews-pending.json',
 	});
-	const localizedDynamicSourceDir = path.join(domain.rootDir, '.work', 'i18n', 'webviews-sources', domain.locale);
+	const localizedDynamicSourceDir = getGeneratedI18nRootDir(domain.rootDir, domain.locale);
 
 	return {
 		...domain,
 		domain: 'webviews',
 		artifactId: 'webviews',
-		settingsBuildFile: path.join(domain.rootDir, 'dist', 'webviews', 'settings.html'),
-		settingsSourceFile: path.join(
-			domain.rootDir,
-			'.work',
-			'i18n',
-			'webviews-settings-shell',
-			'en',
-			'settings.html',
-		),
 		localizedDynamicSourceDir: localizedDynamicSourceDir,
 	};
 }

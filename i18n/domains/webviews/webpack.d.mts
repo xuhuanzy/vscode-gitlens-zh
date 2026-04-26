@@ -1,9 +1,10 @@
-import type { Compiler, Configuration, WebpackError } from 'webpack';
+import type { Compiler, Configuration } from 'webpack';
 
 export interface WebviewEntry {
 	readonly entry: string;
 	readonly plus?: boolean;
 	readonly alias?: Record<string, string>;
+	readonly template?: string;
 }
 
 export type WebviewEntries = Record<string, WebviewEntry>;
@@ -35,15 +36,6 @@ export class GenerateLocalizedDynamicSourcesPlugin {
 	apply(compiler: Compiler): void;
 }
 
-export class GenerateLocalizedSettingsShellPlugin {
-	readonly pluginName: string;
-	readonly rootDir: string;
-	readonly WebpackError: typeof WebpackError;
-
-	constructor(options: { readonly rootDir: string; readonly WebpackError: typeof WebpackError });
-	apply(compiler: Compiler): void;
-}
-
 export class LocalizedWebviewSourcePlugin {
 	readonly pluginName: string;
 	readonly sourceAppRoot: string;
@@ -51,5 +43,6 @@ export class LocalizedWebviewSourcePlugin {
 
 	constructor(options: { readonly rootDir: string; readonly locale: string });
 	apply(compiler: Compiler): void;
+	localizeResolveData(resolveData: import('webpack').ResolveData): boolean;
 	getLocalizedResource(resource: string): string | undefined;
 }

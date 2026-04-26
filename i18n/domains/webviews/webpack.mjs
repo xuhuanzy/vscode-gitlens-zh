@@ -7,7 +7,7 @@ import path from 'path';
  */
 
 /**
- * @typedef {{ entry: string; plus?: boolean; alias?: Record<string, string> }} WebviewEntry
+ * @typedef {{ entry: string; plus?: boolean; alias?: Record<string, string>; template?: string }} WebviewEntry
  * @typedef {Record<string, WebviewEntry>} WebviewEntries
  */
 
@@ -21,17 +21,28 @@ export function getLocalizedWebviewEntries(options) {
 
 	for (const [name, config] of Object.entries(options.webviews)) {
 		const localizedEntry = getLocalizedWebviewEntry(name);
-		if (localizedEntry == null) continue;
+		const localizedTemplate = getLocalizedWebviewTemplate(name);
+		if (localizedEntry == null && localizedTemplate == null) continue;
 
-		const absoluteEntry = path.join(
-			options.rootDir,
-			'.work',
-			'i18n',
-			'webviews-sources',
-			options.locale,
-			...localizedEntry.split('/'),
-		);
-		localized[name] = { ...config, entry: absoluteEntry };
+		localized[name] = {
+			...config,
+			...(localizedEntry == null
+				? {}
+				: {
+						entry: path.join(
+							getGeneratedRootDir(options.rootDir, options.locale),
+							...localizedEntry.split('/'),
+						),
+					}),
+			...(localizedTemplate == null
+				? {}
+				: {
+						template: path.join(
+							getGeneratedRootDir(options.rootDir, options.locale),
+							...localizedTemplate.split('/'),
+						),
+					}),
+		};
 	}
 
 	return localized;
@@ -42,7 +53,7 @@ export function getLocalizedWebviewEntries(options) {
  * @returns {boolean}
  */
 export function isLocalizedDynamicWebview(name) {
-	return getLocalizedWebviewEntry(name) != null;
+	return getLocalizedWebviewEntry(name) != null || getLocalizedWebviewTemplate(name) != null;
 }
 
 /**
@@ -74,7 +85,7 @@ export function createLocalizedWebviewConfig(options) {
 		watchOptions: {
 			...(options.config.watchOptions ?? {}),
 			ignored: addIgnoredPaths(options.config.watchOptions?.ignored, [
-				path.join(options.rootDir, '.work', 'i18n', 'webviews-sources'),
+				getGeneratedRootDir(options.rootDir, options.locale),
 				path.join(options.rootDir, 'i18n', 'catalog'),
 				path.join(options.rootDir, 'i18n', 'worksets'),
 				path.join(options.rootDir, 'i18n', 'reports'),
@@ -111,6 +122,28 @@ function getLocalizedWebviewEntry(name) {
 	}
 }
 
+/**
+ * @param {string} name
+ * @returns {string | undefined}
+ */
+function getLocalizedWebviewTemplate(name) {
+	switch (name) {
+		case 'settings':
+			return 'src/webviews/apps/settings/settings.html';
+		default:
+			return undefined;
+	}
+}
+
+/**
+ * @param {string} rootDir
+ * @param {string} locale
+ * @returns {string}
+ */
+function getGeneratedRootDir(rootDir, locale) {
+	return path.join(rootDir, '.work', 'i18n', 'generated', locale);
+}
+
 export class GenerateLocalizedDynamicSourcesPlugin {
 	pluginName = 'GenerateLocalizedDynamicSourcesPlugin';
 
@@ -131,29 +164,8 @@ export class GenerateLocalizedDynamicSourcesPlugin {
 	 */
 	apply(compiler) {
 		const runGeneration = async () => {
-			const result = spawnSync(
-				process.execPath,
-				[
-					path.join(this.rootDir, 'i18n', 'cli.mts'),
-					'webviews',
-					'generate',
-					'--root',
-					this.rootDir,
-					'--dynamic-sources-only',
-				],
-				{
-					cwd: this.rootDir,
-					stdio: 'inherit',
-					env: {
-						...process.env,
-						NODE_FORCE_COLORS: '1',
-						FORCE_COLOR: '1',
-					},
-				},
-			);
-			if (result.status !== 0) {
-				throw new Error(`localized dynamic source generation failed with exit code ${result.status}`);
-			}
+			runWebviewGeneration(this.rootDir, ['--dynamic-sources-only'], 'localized dynamic source generation');
+			runWebviewGeneration(this.rootDir, ['--settings-sources-only'], 'localized settings source generation');
 		};
 
 		compiler.hooks.beforeRun.tapPromise(this.pluginName, runGeneration);
@@ -163,6 +175,30 @@ export class GenerateLocalizedDynamicSourcesPlugin {
 				compilation.contextDependencies.add(watchedPath);
 			}
 		});
+	}
+}
+
+/**
+ * @param {string} rootDir
+ * @param {string[]} flags
+ * @param {string} description
+ */
+function runWebviewGeneration(rootDir, flags, description) {
+	const result = spawnSync(
+		process.execPath,
+		[path.join(rootDir, 'i18n', 'cli.mts'), 'webviews', 'generate', '--root', rootDir, ...flags],
+		{
+			cwd: rootDir,
+			stdio: 'inherit',
+			env: {
+				...process.env,
+				NODE_FORCE_COLORS: '1',
+				FORCE_COLOR: '1',
+			},
+		},
+	);
+	if (result.status !== 0) {
+		throw new Error(`${description} failed with exit code ${result.status}`);
 	}
 }
 
@@ -178,51 +214,6 @@ function addIgnoredPaths(ignored, paths) {
 	return [ignored, ...normalizedPaths];
 }
 
-export class GenerateLocalizedSettingsShellPlugin {
-	pluginName = 'GenerateLocalizedSettingsShellPlugin';
-
-	/**
-	 * @param {{ rootDir: string; WebpackError: typeof import('webpack').WebpackError }} options
-	 */
-	constructor(options) {
-		this.rootDir = options.rootDir;
-		this.WebpackError = options.WebpackError;
-	}
-
-	/**
-	 * @param {import('webpack').Compiler} compiler
-	 */
-	apply(compiler) {
-		compiler.hooks.afterEmit.tap(this.pluginName, compilation => {
-			const result = spawnSync(
-				process.execPath,
-				[
-					path.join(this.rootDir, 'i18n', 'cli.mts'),
-					'webviews',
-					'generate',
-					'--root',
-					this.rootDir,
-					'--settings-shell-only',
-				],
-				{
-					cwd: this.rootDir,
-					stdio: 'inherit',
-					env: {
-						...process.env,
-						NODE_FORCE_COLORS: '1',
-						FORCE_COLOR: '1',
-					},
-				},
-			);
-			if (result.status !== 0) {
-				compilation.errors.push(
-					new this.WebpackError(`localized settings shell generation failed with exit code ${result.status}`),
-				);
-			}
-		});
-	}
-}
-
 export class LocalizedWebviewSourcePlugin {
 	/**
 	 * @param {{ rootDir: string; locale: string }} options
@@ -231,11 +222,7 @@ export class LocalizedWebviewSourcePlugin {
 		this.pluginName = 'LocalizedWebviewSourcePlugin';
 		this.sourceAppRoot = path.join(options.rootDir, 'src', 'webviews', 'apps');
 		this.localizedAppRoot = path.join(
-			options.rootDir,
-			'.work',
-			'i18n',
-			'webviews-sources',
-			options.locale,
+			getGeneratedRootDir(options.rootDir, options.locale),
 			'src',
 			'webviews',
 			'apps',
@@ -248,15 +235,31 @@ export class LocalizedWebviewSourcePlugin {
 	apply(compiler) {
 		compiler.hooks.normalModuleFactory.tap(this.pluginName, normalModuleFactory => {
 			normalModuleFactory.hooks.afterResolve.tap(this.pluginName, resolveData => {
-				const resource = resolveData.createData?.resource;
-				if (resource == null) return;
-
-				const localizedResource = this.getLocalizedResource(resource);
-				if (localizedResource == null) return;
-
-				resolveData.createData.resource = localizedResource;
+				this.localizeResolveData(resolveData);
 			});
 		});
+	}
+
+	/**
+	 * @param {import('webpack').ResolveData} resolveData
+	 * @returns {boolean}
+	 */
+	localizeResolveData(resolveData) {
+		const createData = resolveData.createData;
+		const resource = createData?.resource;
+		if (resource == null) return false;
+
+		const localizedResource = this.getLocalizedResource(resource);
+		if (localizedResource == null) return false;
+
+		const localizedContext = path.dirname(localizedResource);
+		createData.resource = localizedResource;
+		createData.context = localizedContext;
+		createData.request = replaceResourceInRequest(createData.request, resource, localizedResource);
+		createData.userRequest = replaceResourceInRequest(createData.userRequest, resource, localizedResource);
+		resolveData.context = localizedContext;
+
+		return true;
 	}
 
 	/**
@@ -271,4 +274,14 @@ export class LocalizedWebviewSourcePlugin {
 		const localized = path.join(this.localizedAppRoot, relative);
 		return fs.existsSync(localized) ? localized : undefined;
 	}
+}
+
+/**
+ * @param {string | undefined} value
+ * @param {string} resource
+ * @param {string} localizedResource
+ * @returns {string | undefined}
+ */
+function replaceResourceInRequest(value, resource, localizedResource) {
+	return value == null ? value : value.split(resource).join(localizedResource);
 }

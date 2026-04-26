@@ -145,6 +145,13 @@
 			"problemMatcher": []
 		},
 		{
+			"label": "i18n: debug generate",
+			"dependsOrder": "sequence",
+			"dependsOn": ["npm: build:webviews:quick", "i18n: manifest generate"],
+			"group": "build",
+			"problemMatcher": []
+		},
+		{
 			"label": "i18n: watch",
 			"dependsOrder": "sequence",
 			"dependsOn": ["npm: watch", "i18n: manifest generate"],

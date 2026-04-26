@@ -25,7 +25,7 @@
 			},
 			"outFiles": ["${workspaceFolder}/dist/**/*.js"],
 			"pauseForSourceMap": true,
-			"preLaunchTask": "i18n: manifest generate",
+			"preLaunchTask": "i18n: debug generate",
 			"runtimeSourcemapPausePatterns": ["${workspaceFolder}/dist/**/*.js"],
 			"presentation": {
 				"group": "2_run",

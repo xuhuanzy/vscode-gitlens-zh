@@ -30,12 +30,18 @@ const env = {
 };
 
 const shouldBuildWebviews = Boolean(build?.includes('webviews')) || Boolean(webviews?.length) || build == null;
+const localizedWebviews = webviews?.filter(webview => isLocalizedDynamicWebview(webview));
 const regularWebviews = webviews?.filter(webview => !isLocalizedDynamicWebview(webview));
 const shouldBuildLocalizedWebviews =
-	shouldBuildWebviews &&
-	(webviews == null || webviews.length === 0 || webviews.some(webview => isLocalizedDynamicWebview(webview)));
+	shouldBuildWebviews && (webviews == null || webviews.length === 0 || (localizedWebviews?.length ?? 0) !== 0);
 const shouldBuildRegularWebviews =
 	shouldBuildWebviews && (webviews == null || regularWebviews == null || regularWebviews.length !== 0);
+const webviewsEnv =
+	webviews == null
+		? undefined
+		: shouldBuildLocalizedWebviews && !shouldBuildRegularWebviews
+			? localizedWebviews?.join(',')
+			: webviews.join(',');
 
 function appendRegularWebviewConfigName() {
 	if (!shouldBuildRegularWebviews) return;
@@ -73,8 +79,8 @@ if (build?.length || webviews?.length) {
 			cmd += ` --config-name webviews:i18n:zh-cn`;
 		}
 
-		if (webviews?.length) {
-			cmd += ` --env webviews=${webviews.join(',')}`;
+		if (webviewsEnv) {
+			cmd += ` --env webviews=${webviewsEnv}`;
 		}
 	}
 
@@ -94,8 +100,8 @@ if (build?.length || webviews?.length) {
 		cmd += ` --config-name webviews:i18n:zh-cn`;
 	}
 
-	if (webviews?.length) {
-		cmd += ` --env webviews=${webviews.join(',')}`;
+	if (webviewsEnv) {
+		cmd += ` --env webviews=${webviewsEnv}`;
 	}
 }
 

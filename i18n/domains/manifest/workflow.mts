@@ -280,26 +280,99 @@ function prepareStagedExtensionRoot(context: ManifestDomainContext): void {
 }
 
 function materializeStagedDirectory(source: string, target: string): void {
-	fs.rmSync(target, { recursive: true, force: true });
+	removeIfSymbolicLink(target);
 	fs.mkdirSync(target, { recursive: true });
+
+	const sourceEntryNames = new Set(fs.readdirSync(source, { withFileTypes: true }).map(entry => entry.name));
+	for (const entry of fs.readdirSync(target, { withFileTypes: true })) {
+		if (sourceEntryNames.has(entry.name)) continue;
+
+		removeStagedPath(path.join(target, entry.name));
+	}
 
 	for (const entry of fs.readdirSync(source, { withFileTypes: true })) {
 		const sourcePath = path.join(source, entry.name);
 		const targetPath = path.join(target, entry.name);
 
 		if (entry.isDirectory()) {
+			removeIfNotDirectory(targetPath);
 			materializeStagedDirectory(sourcePath, targetPath);
 		} else if (entry.isFile()) {
+			removeIfDirectory(targetPath);
 			linkOrCopyFile(sourcePath, targetPath);
 		}
 	}
 }
 
+function removeIfNotDirectory(target: string): void {
+	try {
+		const stats = fs.lstatSync(target);
+		if (stats.isSymbolicLink()) {
+			fs.rmSync(target, { force: true });
+			return;
+		}
+		if (stats.isDirectory()) return;
+	} catch {
+		return;
+	}
+
+	fs.rmSync(target, { recursive: true, force: true });
+}
+
+function removeIfDirectory(target: string): void {
+	try {
+		const stats = fs.lstatSync(target);
+		if (!stats.isSymbolicLink() && !stats.isDirectory()) return;
+	} catch {
+		return;
+	}
+
+	fs.rmSync(target, { recursive: true, force: true });
+}
+
 function linkOrCopyFile(source: string, target: string): void {
+	if (isSameMaterializedFile(source, target)) return;
+
+	try {
+		fs.rmSync(target, { force: true });
+	} catch {}
+
 	try {
 		fs.linkSync(source, target);
 	} catch {
 		fs.copyFileSync(source, target);
+	}
+}
+
+function removeIfSymbolicLink(target: string): void {
+	try {
+		if (!fs.lstatSync(target).isSymbolicLink()) return;
+	} catch {
+		return;
+	}
+
+	fs.rmSync(target, { force: true });
+}
+
+function removeStagedPath(target: string): void {
+	try {
+		if (fs.lstatSync(target).isSymbolicLink()) {
+			fs.rmSync(target, { force: true });
+			return;
+		}
+	} catch {}
+
+	fs.rmSync(target, { recursive: true, force: true });
+}
+
+function isSameMaterializedFile(left: string, right: string): boolean {
+	try {
+		if (fs.lstatSync(right).isSymbolicLink()) return false;
+		const leftStats = fs.statSync(left);
+		const rightStats = fs.statSync(right);
+		return leftStats.dev === rightStats.dev && leftStats.ino === rightStats.ino;
+	} catch {
+		return false;
 	}
 }
 

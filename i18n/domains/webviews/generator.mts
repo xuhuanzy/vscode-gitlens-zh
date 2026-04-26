@@ -19,7 +19,7 @@ import {
 	getSyntheticHtmlTemplateSlotContext,
 } from './template.mts';
 
-export interface GeneratedWebviewShellOutputs {
+export interface GeneratedWebviewHtmlSourceOutputs {
 	readonly localizedHtml: string;
 	readonly translatedCount: number;
 	readonly unresolvedCount: number;
@@ -51,17 +51,19 @@ const translatableJsxAttributeNames = new Set([
 ]);
 const translatableAttributesByTag = new Map([['gl-tooltip', new Set(['content'])]]);
 
-export function generateLocalizedSettingsShell(
+export function generateLocalizedHtmlSourceFile(
 	englishHtml: string,
+	sourceFilePath: string,
 	occurrences: readonly SourceOccurrence[],
 	bundle: AuthorityBundle,
-): GeneratedWebviewShellOutputs {
+	options?: { readonly htmlLang?: string },
+): GeneratedWebviewHtmlSourceOutputs {
 	const resolvedOccurrences: ResolvedHtmlOccurrence[] = [];
 	let unresolvedCount = 0;
 
 	for (const occurrence of occurrences) {
-		if (occurrence.reference.kind !== 'source') continue;
-		if (occurrence.output?.kind !== 'runtime-key' || occurrence.output.bundle !== 'settings') continue;
+		if (occurrence.reference.kind !== 'source' || occurrence.reference.file !== sourceFilePath) continue;
+		if (occurrence.output?.kind !== 'runtime-key') continue;
 
 		const resolved = resolveOccurrenceTranslation(occurrence, bundle);
 		if (resolved == null) {
@@ -78,7 +80,7 @@ export function generateLocalizedSettingsShell(
 	}
 
 	return localizeHtmlFragment(englishHtml, resolvedOccurrences, {
-		htmlLang: 'zh-CN',
+		htmlLang: options?.htmlLang,
 		unresolvedCount: unresolvedCount,
 	});
 }
@@ -86,14 +88,12 @@ export function generateLocalizedSettingsShell(
 export function generateLocalizedSourceFile(
 	sourceText: string,
 	sourceFilePath: string,
-	bundleName: string,
 	occurrences: readonly SourceOccurrence[],
 	bundle: AuthorityBundle,
 ): GeneratedWebviewLocalizedSourceFile {
 	const relevantOccurrences = occurrences.filter(
 		occurrence =>
 			occurrence.output?.kind === 'runtime-key' &&
-			occurrence.output.bundle === bundleName &&
 			occurrence.reference.kind === 'source' &&
 			occurrence.reference.file === sourceFilePath,
 	);
@@ -226,7 +226,7 @@ function localizeHtmlFragment(
 		readonly htmlLang?: string;
 		readonly unresolvedCount?: number;
 	},
-): GeneratedWebviewShellOutputs {
+): GeneratedWebviewHtmlSourceOutputs {
 	const root = parseHtmlDocument(englishHtml);
 	const elements: HtmlElementNode[] = [];
 	const contentNodes = new Map<string, HtmlElementNode>();

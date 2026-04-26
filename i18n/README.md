@@ -27,7 +27,7 @@ node ./i18n/cli.mts generate
 - `promote` 将已批准 workset 条目提升到 authority
 - `generate` 基于既有 catalog 与 authority 生成运行时产物
 
-`sync` / `report` 默认覆盖 manifest、formatter、quickpicks、webviewHost；如果 `dist/webviews/settings.html` 已存在，也会覆盖 webviews。缺少该 settings shell 时会跳过 webviews 并说明原因；如果本次需要刷新 webviews catalog/report，先运行 webview 构建生成 settings shell，或只在明确不需要 webviews 时加 `--skip-webviews`。
+`sync` / `report` 默认覆盖 manifest、formatter、quickpicks、webviewHost 与 webviews。webviews 静态 HTML 从 `src/webviews/apps/settings/settings.html` 及其 `partials/*.html` 提取，不依赖预先构建出的 `dist/webviews/settings.html`；只在明确不需要 webviews 时加 `--skip-webviews`。
 
 ### 手动修改 authority 后
 
@@ -43,7 +43,7 @@ node ./i18n/cli.mts generate
 - quickpicks runtime dynamic 本地化源码
 - webviewHost runtime dynamic 本地化源码
 - webviews 动态源码
-- 已存在 `dist/webviews/settings.html` 时，顺手刷新 settings 静态壳页
+- webviews settings HTML 源镜像
 
 如果手动修改的 authority 也影响 manifest / `package.nls*` staging，使用：
 
@@ -101,15 +101,15 @@ node ./i18n/cli.mts generate
 - `i18n/catalog/webviews.catalog.json` 保留 webviews domain 的 occurrence、source reference 与 runtime output reference
 - `i18n/worksets/webviews.zh-cn.json` 保留 webviews 翻译工作状态与 `occurrenceIds`
 - `i18n/reports/webviews-pending.json` 是 webviews 域的派生进度视图
-- `dist/webviews/settings.html` 是构建后由 workflow 覆盖写入的本地化静态壳页运行时产物；构建流程会先产出英文 shell，再由本地化 workflow 覆盖同一个 canonical 运行时路径
-- `--dynamic-sources-only` 与 `--settings-shell-only` 只根据既有 catalog / authority 生成对应运行时产物，不重跑全量 sync，避免构建过程刷新翻译根源数据
-- `.work/i18n/webviews-sources/zh-cn/src/webviews/apps/welcome/**` 是由 workflow 基于上游英文源码 AST 派生的本地化动态源码中间产物，webpack 会再将其编译为 canonical `dist/webviews/welcome.js`
+- `.work/i18n/generated/zh-cn/src/webviews/apps/**` 是由 workflow 基于上游英文源码 AST/HTML 派生的本地化源码镜像；webpack 会再将其编译为 canonical `dist/webviews/*` 运行时产物
+- `settings` 静态 HTML 按 `src/webviews/apps/settings/settings.html` 与 `src/webviews/apps/settings/partials/*.html` 分别生成镜像，不在 i18n workflow 中预聚合 partials；最终聚合由 HtmlWebpackPlugin/html-loader 在构建阶段完成
+- `--dynamic-sources-only` 与 `--settings-sources-only` 只根据既有 catalog / authority 生成对应 webview 源镜像，不重跑全量 sync，避免构建过程刷新翻译根源数据
 - `patchDetails` 与其余尚未接入的 mixed-renderer / follow-up 页面当前不会生成本地化脚本产物，而是通过 catalog reconciliation 中的 deferred issues 暴露后续范围
 
 常用命令：
 
 1. 常规刷新使用顶层 `node ./i18n/cli.mts sync` / `report --base HEAD` / `promote`
-2. `node ./i18n/cli.mts generate` 刷新 webviews 动态源码与已存在的 settings shell；仅排查 webviews 时使用 `node ./i18n/cli.mts webviews generate`
+2. `node ./i18n/cli.mts generate` 刷新 webviews 动态源码与 settings HTML 源镜像；仅排查 webviews 时使用 `node ./i18n/cli.mts webviews generate`
 3. `pnpm run build:webviews`
 
 ## Runtime Dynamic Domain
@@ -117,7 +117,7 @@ node ./i18n/cli.mts generate
 - `i18n/catalog/formatter.catalog.json` / `i18n/catalog/quickpicks.catalog.json` / `i18n/catalog/webviewHost.catalog.json` 保留 runtime dynamic domain 的 occurrence、source reference、runtime output reference 与对账信息
 - `i18n/worksets/formatter.zh-cn.json` / `i18n/worksets/quickpicks.zh-cn.json` / `i18n/worksets/webviewHost.zh-cn.json` 保留对应翻译工作状态与 `occurrenceIds`
 - `i18n/reports/formatter-pending.json` / `i18n/reports/quickpicks-pending.json` / `i18n/reports/webviewHost-pending.json` 是对应域的派生进度视图
-- `.work/i18n/runtime-dynamic-sources/zh-cn/{formatter,quickpicks,webviewHost}/**` 是由 workflow 基于上游英文源码 AST 派生的本地化源码产物；构建时通过 `i18n/domains/runtimeDynamic/localizedRuntimeDynamicSourceLoader.cjs` 以内存替换方式注入 extension bundle, 不直接修改或替代 `src/**`
+- `.work/i18n/generated/zh-cn/<repo-relative-path>` 是由 workflow 基于上游英文源码 AST 派生的本地化源码镜像；构建时通过 `i18n/domains/runtimeDynamic/localizedRuntimeDynamicSourceLoader.cjs` 以内存替换方式注入 extension bundle, 不直接修改或替代 `src/**`
 - `webviewHost` 当前覆盖 `src/webviews/**/registration.ts` 中的 WebviewView descriptor 标题，用于避免 VS Code manifest 本地化标题在视图 resolve 后被英文 runtime descriptor 覆盖。
 - 任何需要改动应用源码以消费 runtime dynamic 产物的路径, 必须先通过 source-touchpoint review; 禁止为了本地化在上层 commands、picker flows、views、services 中大面积添加调用点
 - `node ./i18n/cli.mts generate` / `pnpm run build:quick` / `pnpm run watch:quick` 会触发 runtime dynamic source generation；如果 VS Code Extension Host 已启动, 需要重新加载窗口才能看到新的 bundle
