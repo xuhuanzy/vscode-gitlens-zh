@@ -3,7 +3,10 @@
 	"version": 3,
 	"domain": "quickpicks",
 	"generatedAt": "2026-04-26T00:33:46.809Z",
-	"deferredDomains": ["formatter", "webviewHost"],
+	"deferredDomains": [
+		"formatter",
+		"webviewHost"
+	],
 	"occurrences": [
 		{
 			"id": "quickpicks:quickpicks.items.items.string-162-9.label.988c82f963#label",
@@ -1632,7 +1635,10 @@
 			"pattern": {
 				"kind": "template",
 				"text": "Browse Repository from${slot1} Here${slot2}",
-				"slots": ["slot1", "slot2"]
+				"slots": [
+					"slot1",
+					"slot2"
+				]
 			},
 			"sourceText": "Browse Repository from${slot1} Here${slot2}",
 			"sourceHash": "14a763c369d58b70cc523f76217af9961a9fe4d43a4cd6e7b95a2cd86c97b829",
@@ -1666,7 +1672,9 @@
 			"pattern": {
 				"kind": "template",
 				"text": "${slot1} Message copied to the clipboard",
-				"slots": ["slot1"]
+				"slots": [
+					"slot1"
+				]
 			},
 			"sourceText": "${slot1} Message copied to the clipboard",
 			"sourceHash": "b6ef5e26f75dfa64ea728b722073af0446f78779009e168ba3d9cf6a3dfb693a",
@@ -1700,7 +1708,9 @@
 			"pattern": {
 				"kind": "template",
 				"text": "Range ${slot1}",
-				"slots": ["slot1"]
+				"slots": [
+					"slot1"
+				]
 			},
 			"sourceText": "Range ${slot1}",
 			"sourceHash": "be45561a1aa69550459205ef44fc1bf840c503e0b2f4370c79821b2c79c524e6",
@@ -1734,7 +1744,9 @@
 			"pattern": {
 				"kind": "template",
 				"text": "Commit ${slot1}",
-				"slots": ["slot1"]
+				"slots": [
+					"slot1"
+				]
 			},
 			"sourceText": "Commit ${slot1}",
 			"sourceHash": "3e21788d8c59a4135e23355ba8ad29c430ff8f9d5c6368759bd6294bfe42c0bd",
@@ -2626,7 +2638,9 @@
 			"pattern": {
 				"kind": "template",
 				"text": "Click to see ${slot1} actions",
-				"slots": ["slot1"]
+				"slots": [
+					"slot1"
+				]
 			},
 			"sourceText": "Click to see ${slot1} actions",
 			"sourceHash": "5a87f9265fd49f4f1ce8d31c6e0ca75ce2503418bb475b840d0c0b0b36336bdc",
@@ -2660,7 +2674,9 @@
 			"pattern": {
 				"kind": "template",
 				"text": "Reset ${slot1} to Commit...",
-				"slots": ["slot1"]
+				"slots": [
+					"slot1"
+				]
 			},
 			"sourceText": "Reset ${slot1} to Commit...",
 			"sourceHash": "5b78f4326c1c2518cd4513310fab364583563c08618e3a4d6014da08a0dca4b7",
@@ -2694,7 +2710,9 @@
 			"pattern": {
 				"kind": "template",
 				"text": "Reset ${slot1} to Previous Commit...",
-				"slots": ["slot1"]
+				"slots": [
+					"slot1"
+				]
 			},
 			"sourceText": "Reset ${slot1} to Previous Commit...",
 			"sourceHash": "e1fac6c86fa8e220ca9106558a963b5bc4a5aa395a61a1bb6bb8c1f3e09cc444",
@@ -2728,7 +2746,9 @@
 			"pattern": {
 				"kind": "template",
 				"text": "Rebase ${slot1} onto Commit...",
-				"slots": ["slot1"]
+				"slots": [
+					"slot1"
+				]
 			},
 			"sourceText": "Rebase ${slot1} onto Commit...",
 			"sourceHash": "84f12433d617bef06e6beeb0c4b77d232adc5382c6feab00dffc2564ddaca9d5",
@@ -2861,7 +2881,9 @@
 			"pattern": {
 				"kind": "template",
 				"text": "Connect to ${slot1}...",
-				"slots": ["slot1"]
+				"slots": [
+					"slot1"
+				]
 			},
 			"sourceText": "Connect to ${slot1}...",
 			"sourceHash": "723df4057756513a8618e7661d88e15bfe93dc1b7e56357face6e47a839d106b",
@@ -2895,7 +2917,9 @@
 			"pattern": {
 				"kind": "template",
 				"text": "Connect an integration with ${slot1} to create cross-repository pull requests",
-				"slots": ["slot1"]
+				"slots": [
+					"slot1"
+				]
 			},
 			"sourceText": "Connect an integration with ${slot1} to create cross-repository pull requests",
 			"sourceHash": "4b7ba758492353b409f0212cee72f913a0148fc151ad6c3c508b0dca50fb8cea",
@@ -2929,7 +2953,11 @@
 			"pattern": {
 				"kind": "template",
 				"text": "Copy Link to ${slot1} for ${slot2}${slot3}",
-				"slots": ["slot1", "slot2", "slot3"]
+				"slots": [
+					"slot1",
+					"slot2",
+					"slot3"
+				]
 			},
 			"sourceText": "Copy Link to ${slot1} for ${slot2}${slot3}",
 			"sourceHash": "629c1f9a1f3dbd4fb3bcb667ca3df513babe7ad791cdcb1950eda2768a7fa301",
@@ -2963,7 +2991,10 @@
 			"pattern": {
 				"kind": "template",
 				"text": "Open ${slot1} on ${slot2}",
-				"slots": ["slot1", "slot2"]
+				"slots": [
+					"slot1",
+					"slot2"
+				]
 			},
 			"sourceText": "Open ${slot1} on ${slot2}",
 			"sourceHash": "82f3a282cea38d3d7338d40e77681e10ecbb0e4fa4ce9bf8e56bcbedb872ca38",
@@ -2997,7 +3028,9 @@
 			"pattern": {
 				"kind": "template",
 				"text": "$(repo) ${slot1}",
-				"slots": ["slot1"]
+				"slots": [
+					"slot1"
+				]
 			},
 			"sourceText": "$(repo) ${slot1}",
 			"sourceHash": "c80251049ad2f7c6c174b96280b478228e9875e26ffbb6115a0d16da87584b2c",

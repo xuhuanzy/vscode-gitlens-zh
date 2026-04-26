@@ -518,7 +518,14 @@ function getWebviewsConfigs(mode, env) {
 
 	const configs = [];
 	const webviewConfig =
-		Object.keys(webviewEntries).length === 0 ? undefined : getWebviewConfig(webviewEntries, {}, mode, env);
+		Object.keys(webviewEntries).length === 0
+			? undefined
+			: getWebviewConfig(
+					webviewEntries,
+					env.webviews == null ? { name: 'webviews', filePrefix: 'webviews' } : {},
+					mode,
+					env,
+				);
 	if (webviewConfig != null) {
 		configs.push(webviewConfig);
 	}
@@ -616,7 +623,7 @@ function getWebviewsCommonConfig(mode, env) {
 
 /**
  * @param {GlWebviews} webviews
- * @param {{ alias?: { [key:string]: string }}} overrides
+ * @param {{ alias?: { [key:string]: string }; name?: string; filePrefix?: string }} overrides
  * @param { GlMode } mode
  * @param {GlEnv} env
  * @returns { WebpackConfig }
@@ -645,7 +652,10 @@ function getWebviewConfig(webviews, overrides, mode, env) {
 	}
 	let name = '';
 	let filePrefix = '';
-	if (Object.keys(webviews).length > 1) {
+	if (overrides.name != null) {
+		name = overrides.name;
+		filePrefix = overrides.filePrefix ?? overrides.name;
+	} else if (Object.keys(webviews).length > 1) {
 		name = 'webviews';
 		filePrefix = 'webviews';
 	} else {

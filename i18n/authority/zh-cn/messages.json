@@ -3,14 +3,16 @@
 	"version": 2,
 	"kind": "messages",
 	"locale": "zh-cn",
-	"updatedAt": "2026-04-26T02:52:07.738Z",
+	"updatedAt": "2026-04-26T12:22:35.352Z",
 	"entries": [
 		{
 			"id": "message.000d1a29b2365349f8762064ef86edc1f548f435002395035bdc26f6c87754fc",
 			"kind": "template",
 			"source": "Showing all ${slot1}",
 			"translation": "显示全部 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.0023f3c58c4917dbc27fc29aec00fd461f14d8abb2ed57f9cbf5af23c053238b",
@@ -75,6 +77,21 @@
 			"translation": "GitLens — 强化 Git 能力"
 		},
 		{
+			"id": "message.017e546d105c2d2d43b537a3e5ae109de8e39ac7452e84dafb6bedb419d72bc4",
+			"kind": "template",
+			"source": "${slot1} commits have been generated successfully!",
+			"translation": "已成功生成 ${slot1} 个提交！",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
+			"id": "message.018d535fda08d405c043e3567fc830a2e239ff85739b239ab150fd9485c7a372",
+			"kind": "literal",
+			"source": "Drop hunks here to create new commit",
+			"translation": "将代码块拖到此处以创建新提交"
+		},
+		{
 			"id": "message.0192616ac38884375ea5d6464e7580673610ed6c8e3c4180beb4dfaf2cb9cf28",
 			"kind": "literal",
 			"source": "Specifies whether to show a comparison of the branch with a user-selected reference (branch, tag, etc) in the _Branches_ view",
@@ -109,7 +126,13 @@
 			"kind": "template",
 			"source": "${slot1} ${slot2} ${slot3} behind ${slot4} ${slot5}",
 			"translation": "${slot1} 比 ${slot5} ${slot2} 落后 ${slot3}${slot4}",
-			"slots": ["slot1", "slot2", "slot3", "slot4", "slot5"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4",
+				"slot5"
+			]
 		},
 		{
 			"id": "message.0204fc9a5ed89e95a1f8266751c04ccb896e165afdcf41fb5c62e9fd4a61e587",
@@ -134,7 +157,11 @@
 			"kind": "template",
 			"source": "Your current branch ${slot1} has ${slot2} been merged into its merge target ${slot3}.",
 			"translation": "你当前的分支 ${slot1} ${slot2}被合并到其合并目标 ${slot3}。",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.0279864c72f7a744baf9f260ab0957d6daf04e27dd247a3a05b611d095510455",
@@ -147,21 +174,33 @@
 			"kind": "template",
 			"source": "${slot1} connected &mdash; automatic rich ${slot2} autolinks are enabled",
 			"translation": "${slot1} 已连接 &mdash; 已启用 ${slot2} 自动富链接",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.02a4ab4dac236ef7003cd4664df387e3fb67ee9758e49183749001e62a047bd7",
 			"kind": "template",
 			"source": "(${slot1} other pull requests)",
 			"translation": "（另外 ${slot1} 个拉取请求）",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.02a8bcb25109550d4669bee85ba42987f0851a10b835da2ad8415eb15eac63d9",
 			"kind": "template",
 			"source": "Push ${slot1} to ${slot2} ${slot3} ${slot4} ${slot5} ahead of ${slot6}",
 			"translation": "将 ${slot1} 推送到 ${slot2}${slot3}，${slot4} 比 ${slot6} 超前 ${slot5}",
-			"slots": ["slot1", "slot2", "slot3", "slot4", "slot5", "slot6"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4",
+				"slot5",
+				"slot6"
+			]
 		},
 		{
 			"id": "message.02ca20ab7bc5a3fa02c00a88b131d053b2cdf160b132e79932076002b54992d8",
@@ -240,7 +279,10 @@
 			"kind": "template",
 			"source": "${slot1} Fetch Merge Target ${slot2}",
 			"translation": "${slot1} 获取合并目标 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.04d22af477f6a56642a01bd79707515280b1d1b4d854159b837bbff04326ae88",
@@ -259,7 +301,10 @@
 			"kind": "template",
 			"source": "${slot1}/${slot2} steps complete",
 			"translation": "${slot1}/${slot2} 个步骤已完成",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.05101b098de5daddb50a17c3171c3b8f8b9b95477a562bcca47cd63ed0854c0e",
@@ -280,6 +325,12 @@
 			"translation": "点击查看所有更改的文件"
 		},
 		{
+			"id": "message.0544fa4b69a0705f6a147d1f5186652634ead66e2fa0ab498eb87196dd2c0d5e",
+			"kind": "literal",
+			"source": "Auto-composition Summary:",
+			"translation": "自动编排摘要："
+		},
+		{
 			"id": "message.055b95d1698a29e02ce12715c1e3dd81544e44b5e629cca6d2595baad1fb2f39",
 			"kind": "literal",
 			"source": "Sort by Score",
@@ -290,7 +341,11 @@
 			"kind": "template",
 			"source": "?disabled= ${slot1} href= ${slot2} appearance=\"secondary\" density=\"compact\" > Force Push ${slot3}",
 			"translation": "?disabled= ${slot1} href= ${slot2} appearance=\"secondary\" density=\"compact\" > 强制推送 ${slot3}",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.05a2f3e5afad22d5c6cd574ef8bf2a81c1d62c2e93ac857fb66a13893b0d9065",
@@ -347,7 +402,15 @@
 			"kind": "template",
 			"source": "${slot1} rop",
 			"translation": "${slot1} rop",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
+		},
+		{
+			"id": "message.0666b65eea4c993fee02c21afdf7ccf53bec6b437ebd9e1ec4a55a50014bf63b",
+			"kind": "literal",
+			"source": "Commit Composer Feedback",
+			"translation": "提交编排器反馈"
 		},
 		{
 			"id": "message.06b61e65da7b02d958a07775a4ba509a709ab8fd8202595259e0097046708566",
@@ -372,6 +435,18 @@
 			"kind": "literal",
 			"source": "Reinstall GitKraken MCP",
 			"translation": "重新安装 GitKraken MCP"
+		},
+		{
+			"id": "message.070f05829cf5a36c44615e7204ea491f74df23c955b01b76eca6aaf2545c147e",
+			"kind": "literal",
+			"source": "File Rename",
+			"translation": "文件重命名"
+		},
+		{
+			"id": "message.0718dd97e96107f02c9234dbd27114b9c45c18b288c214f205cbbb67fb83034e",
+			"kind": "literal",
+			"source": "Composition Summary",
+			"translation": "编排摘要"
 		},
 		{
 			"id": "message.0724fc69c493af007d280bebb2fb83c52483eec437c0e4f8d769f25245fa1519",
@@ -456,7 +531,9 @@
 			"kind": "template",
 			"source": "found ${slot1} in existing rows",
 			"translation": "在现有行中找到 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.07fe69f67848c680b3412df6ceb4a8623729e4d2fabd943f8cb4297f2be0f8f0",
@@ -476,7 +553,10 @@
 			"source": "$(git-branch) `${slot1}/${slot2}`",
 			"translation": "$(git-branch) `${slot1}/${slot2}`",
 			"format": "markdown",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.081ebe2cea75e6d829bd6d030a4b6d8a88285265aab79e903b1e1155d0def53a",
@@ -617,7 +697,9 @@
 			"kind": "template",
 			"source": "Use the GitLens: Toggle File Blame Annotations ${slot1} command to turn the annotations on or off",
 			"translation": "使用 GitLens: 切换文件追溯注解 ${slot1} 命令来开启或关闭这些注解",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.0a078a441faf44ec3bf62d3541a6ca5c48ca1b3b8dd7da52f2f8180d2244059d",
@@ -660,7 +742,9 @@
 			"kind": "template",
 			"source": "${slot1} changes",
 			"translation": "${slot1}更改",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.0ab650bd86d40b5fb16252a350cbba00f469a1f71293c4956bd9486b6f0dd2ba",
@@ -733,7 +817,16 @@
 			"kind": "template",
 			"source": "${slot1} based (${slot2} on macOS) shortcuts. Not great for non-English keyboard layouts",
 			"translation": "基于 ${slot1} 的快捷键（在 macOS 上为 ${slot2}）。对非英文键盘布局不太友好",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
+		},
+		{
+			"id": "message.0c0e507b7903e3a8c5bcbe7429af56513c95b04dce20079492769b7e5bc5079a",
+			"kind": "literal",
+			"source": "conventional commits format",
+			"translation": "Conventional Commits 格式"
 		},
 		{
 			"id": "message.0c2a28b1c32add72d2b19ec272e3426975c08df7192bba88ce7757812698090e",
@@ -742,11 +835,19 @@
 			"translation": "文本编辑器中的行"
 		},
 		{
+			"id": "message.0c592051f2f2e7b52c65c88d69775d85f7ce5a3096722a6a559f48bb5815b7f3",
+			"kind": "literal",
+			"source": "Committing...",
+			"translation": "正在提交..."
+		},
+		{
 			"id": "message.0c66a95e630638dca5dccb76ed6ee905a81a3ff960bc8c97f866bfe2f16a0317",
 			"kind": "template",
 			"source": "${slot1} in the working tree",
 			"translation": "工作树中有 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.0c6e1381f8bda9bcc6d95e107bb25d26c9e3412c438a2e2ae5d9d948ad6e65e7",
@@ -759,7 +860,10 @@
 			"kind": "template",
 			"source": "Commit is on ${slot1} ${slot2}",
 			"translation": "此提交位于 ${slot1} 个 ${slot2} 上",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.0ceb2c753e03c1ae4a5b1feea215eece337171272c9461a83b6a37c8e5e5ad5c",
@@ -912,7 +1016,9 @@
 			"kind": "template",
 			"source": "${slot1} plan (trial)",
 			"translation": "${slot1} 套餐（试用）",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.0f9c9e6903c09af8124b364d2c45db49f053ffb0444ef89ae788c88dc2cf3514",
@@ -931,7 +1037,9 @@
 			"kind": "template",
 			"source": "You're using ${slot1} edition. Track code changes and see who made them with features like in-editor blame annotations, hovers, CodeLens, and more—completely free.",
 			"translation": "你当前使用的是 ${slot1} 版本。借助编辑器内追溯注解、悬停提示、CodeLens 等功能来跟踪代码更改并查看修改者，而且完全免费。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.0ff43a7e827af720f8f7f86899f4421bc8871512f37ab2432fd20a5d56bd5d7b",
@@ -968,7 +1076,9 @@
 			"kind": "template",
 			"source": "With ${slot1} (Free 14-Day Trial), you’ll get full access to advanced visualization, collaboration, and built-in AI:",
 			"translation": "通过 ${slot1}（免费试用 14 天），你将完整使用高级可视化、协作和内置 AI 功能：",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.109fdfa2db9fec4be97be71f8ea8d86e6fe028d871dfe4b977d0092e10ab4a3b",
@@ -999,14 +1109,19 @@
 			"kind": "template",
 			"source": "${slot1} has diverged from ${slot2}",
 			"translation": "${slot1} 已与 ${slot2} 分叉",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.11a10881d2b514952f2f61f209c0d824e4a7e76751a3a2b1111f9ee9868dd63b",
 			"kind": "template",
 			"source": "Unlock advanced features and workflows for private repos, accelerate reviews, and streamline collaboration with ${slot1}.",
 			"translation": "借助 ${slot1} 解锁私有仓库的高级功能与工作流，加快评审并简化协作。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.11d7ea9cdfe0602b8682411c69a69d51a5ac5e554526ab5361e619713a16df58",
@@ -1037,7 +1152,9 @@
 			"kind": "template",
 			"source": "Rebase paused for editing at ${slot1}",
 			"translation": "变基已暂停以编辑 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.120f32fc0c9494a06c52e7a8ca0580a840dc006fd947e8aa493294a33ed1f6ba",
@@ -1080,7 +1197,9 @@
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, explore, and manage Git branches",
 			"translation": "添加一个 ${slot1}，用于可视化、浏览和管理 Git 分支",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.1294b9fdbfa1668c9b17355eb388cfd7fdd2db2d917ed10421c532affa5ceffc",
@@ -1231,7 +1350,10 @@
 			"kind": "template",
 			"source": "Showing ${slot1} of ${slot2} files\nClick to show all files",
 			"translation": "正在显示 ${slot2} 个文件中的 ${slot1} 个\\n点击显示全部文件",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.154198154c91a98c2f9d0e3aa7fe8b8063b58662d421dd0132e39586c5872565",
@@ -1244,7 +1366,10 @@
 			"kind": "template",
 			"source": "Copy ${slot1} [${slot2}] Copy Message",
 			"translation": "复制 ${slot1} [${slot2}] 复制消息",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.156c43657f78e39d4432b805f1098b74b1cfd1d56379a8ee0817c1ee2ca912c0",
@@ -1287,11 +1412,19 @@
 			"slots": []
 		},
 		{
+			"id": "message.15f2374128a002aec6523bd3a94007bb9270246f5a7aeba4f72b9aaa8a5622d2",
+			"kind": "literal",
+			"source": "Unincluded changes (unstaged)",
+			"translation": "未包含的更改（未暂存）"
+		},
+		{
 			"id": "message.15fb97e74d22186c40875af77fc13f775c82e7245127f238c1e45c6cf1e4f2f9",
 			"kind": "template",
 			"source": "${slot1} &mdash; organizes your pull requests into actionable groups to help you focus and keep your team unblocked",
 			"translation": "${slot1} &mdash; 将你的拉取请求组织为可执行的分组，帮助你聚焦工作并让团队保持畅通",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.161a0c7d4ab3584580581ef4b53ff7db7b9e469e0982362d7ff5f1f4c2b1eecb",
@@ -1498,14 +1631,18 @@
 			"kind": "template",
 			"source": "Can use ${slot1} to follow the system locale, or enter a locale language tag, e.g. en-US",
 			"translation": "可使用 ${slot1} 以跟随系统区域设置，或输入区域设置语言标签，例如 en-US",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.1a3c4892d3a60bc685e9e1523524cb3c9c348d706757a5138035d2c0de488eb2",
 			"kind": "template",
 			"source": "Open Commit on ${slot1}",
 			"translation": "在 ${slot1} 上打开提交",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.1a8ce446f0da559de2e066be483760ca1d236307cd3c9bd83cbf4f58f481adf6",
@@ -1520,7 +1657,9 @@
 			"kind": "template",
 			"source": "graph-icon icon--${slot1}",
 			"translation": "graph-icon icon--${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.1aab36fe82ae722594b44f8558422baadd85b10650df9531e52f2b1652b74e55",
@@ -1551,7 +1690,9 @@
 			"kind": "template",
 			"source": "${slot1} &mdash; visualize the evolution of a file and quickly identify when the most impactful changes were made and by whom. Quickly see unmerged changes in files or folders, when slicing by branch.",
 			"translation": "${slot1} &mdash; 可视化文件的演变，并快速识别最有影响的更改是在何时、由谁完成的。按分支切片时，还可快速查看文件或文件夹中尚未合并的更改。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.1b1aa6f1c18c74e102f55d97d49b0a1ded89668e2e07ebc924437febd4f19ea9",
@@ -1624,7 +1765,10 @@
 			"kind": "template",
 			"source": "Use ${slot1} for the system locale, or a locale language tag, e.g. en-US Example date: ${slot2}",
 			"translation": "使用 ${slot1} 表示系统区域设置，或填写语言区域标签，例如 en-US。示例日期：${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.1c32f01894374def7b77b19b5924c62efafcf0c3284b4c66f4f698b0325c473c",
@@ -1673,7 +1817,10 @@
 			"kind": "template",
 			"source": "${slot1} (Current), ${slot2} (Incoming)",
 			"translation": "${slot1}（当前），${slot2}（传入）",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.1ccad4b4141d65af8de90fee9512ba2b5df45701915b5068764ceda15ec7cdd3",
@@ -1704,6 +1851,12 @@
 			"kind": "literal",
 			"source": "Add to the Source Control groups context menu",
 			"translation": "添加到源代码管理分组上下文菜单"
+		},
+		{
+			"id": "message.1d69a662d765c7a87e384174b195a9e85a7e746eb2f63148a45fd9aeb0c93a4c",
+			"kind": "literal",
+			"source": "Include Unassigned Changes",
+			"translation": "包含未分配的更改"
 		},
 		{
 			"id": "message.1d6b9255b06ecab9a34a0fec1890e4cf9da8a505f660cfe30e05ac5033605f39",
@@ -1794,6 +1947,15 @@
 			"translation": "打开修订中的文件..."
 		},
 		{
+			"id": "message.1e5c71abdd13646e4effa577bbfa6cf320f7ac3eae6f1cb3715f241f95720d14",
+			"kind": "template",
+			"source": "Providing additional instructions can help steer the AI composition for this session. Potential instructions include: conventional commits format size of commits focus on certain changes You can also specify custom instructions that apply to all composer sessions with the following setting: ${slot1}",
+			"translation": "提供额外指令有助于引导本次 AI 编排。可用指令包括：Conventional Commits 格式、提交大小、聚焦特定更改。你也可以通过以下设置指定适用于所有提交编排器会话的自定义指令：${slot1}",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.1e87df643864120dada4b365db4f7abd99c9c23d25fbe27fded7bcacf5d6f9c4",
 			"kind": "literal",
 			"source": "Rebase Current Branch onto Branch...",
@@ -1870,7 +2032,9 @@
 			"kind": "template",
 			"source": "${slot1} found",
 			"translation": "找到 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.1f9da2644a0dd4576a3844c927ad01f5fa199f21be2949e939979d6123371d1b",
@@ -1971,7 +2135,9 @@
 			"kind": "template",
 			"source": "setting to ${slot1} rows",
 			"translation": "设置为 ${slot1} 行",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.213ec93050a21ac414fd3aeca0ffb7be6f8e649d4b58164f830bce34dcf1c81b",
@@ -1990,7 +2156,10 @@
 			"kind": "template",
 			"source": "GitKraken MCP is active in your AI chat, leveraging Git and your integrations to provide context and perform actions. <a href=\"${slot1}\">Learn more</a>${slot2}",
 			"translation": "GitKraken MCP 已在你的 AI 聊天中启用，可利用 Git 与你的集成为其提供上下文并执行操作。<a href=\"${slot1}\">了解更多</a>${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.217482e910800d62c6c77858fa8ef4d83754d3f2e670ce1b79fc20758c381f55",
@@ -2143,7 +2312,10 @@
 			"kind": "template",
 			"source": "Your current branch ${slot1} is up to date with its merge target ${slot2}.",
 			"translation": "你当前的分支 ${slot1} 与其合并目标 ${slot2} 保持最新。",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.23ffed3efb32f2994bfc5febc38311e50d27263aabdc3a012a8de55d1cb6fc27",
@@ -2156,7 +2328,9 @@
 			"kind": "template",
 			"source": "You're now on the ${slot1} edition. Track code changes and see who made them with features like in-editor blame annotations, hovers, CodeLens, and more—completely free.",
 			"translation": "你现在使用的是 ${slot1} 版本。借助编辑器内追溯注解、悬停提示、CodeLens 等功能来跟踪代码更改并查看修改者，而且完全免费。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.2421fcc44bd476b1fcbd13a7cb3b2455d1402d8015da9a2c85e6f5dad76d3329",
@@ -2187,7 +2361,9 @@
 			"kind": "template",
 			"source": "${slot1} conflicts",
 			"translation": "${slot1} 存在冲突",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.24ab6be77227a1a898188357398a30ba072be861849d2274300857aa3b400cc9",
@@ -2206,7 +2382,9 @@
 			"kind": "template",
 			"source": "Switch Branch... ${slot1}",
 			"translation": "切换分支... ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.24c73565c6aa536cd0f927f44a5ead61499f05a01f1f6a217b80894ba206215f",
@@ -2237,14 +2415,20 @@
 			"kind": "template",
 			"source": "${slot1} deleted",
 			"translation": "${slot1}已删除",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.2594e615d5f37b9c7ea56718598faa71482cd1c220b3cb7e7dcd8083d7fdadbe",
 			"kind": "template",
 			"source": "Integrations ${slot1} ${slot2} ${slot3}",
 			"translation": "集成 ${slot1} ${slot2} ${slot3}",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.25f1662ad310068091aec0ca959243421d47152f9bff4ca4738485453ba8711a",
@@ -2313,7 +2497,14 @@
 			"kind": "template",
 			"source": "${slot1} ${slot2} ${slot3} behind and ${slot4} ahead of ${slot5} ${slot6}",
 			"translation": "${slot1} 比 ${slot5} ${slot2} 落后 ${slot3}，并超前 ${slot4}${slot6}",
-			"slots": ["slot1", "slot2", "slot3", "slot4", "slot5", "slot6"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4",
+				"slot5",
+				"slot6"
+			]
 		},
 		{
 			"id": "message.268fd64fa355276cb1888c5cd871506b96a725695b4bae0255497385b26fdf31",
@@ -2326,7 +2517,9 @@
 			"kind": "template",
 			"source": "Hidden Branches / Tags ${slot1}",
 			"translation": "隐藏的分支 / 标签 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.26b3013f88c8f8f4be4323bbd3050a886522caf25d75ded90c7b7114e7d2489b",
@@ -2347,6 +2540,12 @@
 			"translation": "分离贮藏视图"
 		},
 		{
+			"id": "message.26e02fddbc9a9907c3201e3a82748346c257c7b63946389985dd61d4f4588938",
+			"kind": "literal",
+			"source": "Experimental",
+			"translation": "实验性"
+		},
+		{
 			"id": "message.26e822be66a6eff6081216ed44900ccc23c54fe20b5daa2582b508d4d5cdcd75",
 			"kind": "literal",
 			"source": "Delete Workspace...",
@@ -2363,7 +2562,10 @@
 			"kind": "template",
 			"source": "class=\"launchpad-action launchpad-action--attention\"> ${slot1} ${slot2} your review",
 			"translation": "class=\"launchpad-action launchpad-action--attention\"> ${slot1} ${slot2} 需要你审查",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.270561025a96860a4d15a698d5895a097f9702ab9bc5e458c762affd89beddeb",
@@ -2384,6 +2586,12 @@
 			"translation": "按名称降序排序分支"
 		},
 		{
+			"id": "message.271e68e3cfd37cb99f6fff6e1e28c706512aacd44979b992d390e902d5320d6b",
+			"kind": "literal",
+			"source": "When working directory changes are present, draft commits will appear here.",
+			"translation": "存在工作目录更改时，草稿提交会显示在这里。"
+		},
+		{
 			"id": "message.2723c8592f8f2ca030d083dc6dc96b95408ac840bf44a4117e6256b0b14285b3",
 			"kind": "literal",
 			"source": "Fetch All",
@@ -2394,7 +2602,10 @@
 			"kind": "template",
 			"source": "Get ${slot1} of ${slot2} for free — no credit card required.",
 			"translation": "免费获取 ${slot1} 的 ${slot2}，无需信用卡。",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.276ad4fee9ab569a3aa6ab4bc1e832f7c75458cb07334db10d65da6f0ceea82a",
@@ -2459,7 +2670,12 @@
 			"kind": "template",
 			"source": "state= ${slot1} pr-id= ${slot2} > ${slot3} # ${slot4}",
 			"translation": "state= ${slot1} pr-id= ${slot2} > ${slot3} # ${slot4}",
-			"slots": ["slot1", "slot2", "slot3", "slot4"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4"
+			]
 		},
 		{
 			"id": "message.282e086427cff34111535d737d610f77f5a09f2008e94eefe1aa6f7ba1fcf2fc",
@@ -2578,6 +2794,12 @@
 			"translation": "远程仓库"
 		},
 		{
+			"id": "message.2a2a54b7eac3b4697860ba91d78f570ec905541957b6d52977d084d882bf373c",
+			"kind": "literal",
+			"source": "Reset to initial state",
+			"translation": "重置为初始状态"
+		},
+		{
 			"id": "message.2a2b35a8ef1c50a5dacb89d5883b60ee4887fb92d19434ed28d3ed0e7c1bf999",
 			"kind": "literal",
 			"source": "Open Repository",
@@ -2618,14 +2840,18 @@
 			"kind": "template",
 			"source": "Thanks for starting your ${slot1} trial.",
 			"translation": "感谢你开始试用 ${slot1}。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.2b8752d0b1817c729ddb72b101c0c5a054eb09aec5052a8c4f68b8bd14e484ab",
 			"kind": "template",
 			"source": "${slot1} understand changes without wasting time diving into the diffs",
 			"translation": "${slot1} 无需花时间钻研 diff 也能理解更改",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.2b9b47ea56d04f394831eaffc5fba588bda32cafaa434e8b7e1a61c08bae1d30",
@@ -2680,7 +2906,9 @@
 			"kind": "template",
 			"source": "Connect to ${slot1}",
 			"translation": "连接到 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.2c729d243bee1f77846b982398a2f5aa8ab22bbbd65dd34c6b6e011934257537",
@@ -2743,7 +2971,10 @@
 			"kind": "template",
 			"source": "class=\"launchpad-action launchpad-action--blocked\"> ${slot1} ${slot2}",
 			"translation": "class=\"launchpad-action launchpad-action--blocked\"> ${slot1} ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.2d439d9c2688fd3eddaff66b17679dacebc03b25eaa0149a5249c07d02643b11",
@@ -2806,20 +3037,35 @@
 			"kind": "template",
 			"source": "Create ${slot1}",
 			"translation": "创建 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.2f49bed4577bf8660c4258ae56d88bb93ace9e4659146a9a7eff1bd0baeb754d",
 			"kind": "template",
 			"source": "Publish (push) ${slot1} to ${slot2}",
 			"translation": "将 ${slot1} 发布（push）到 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.2f67e1a6de6a1ad8b6eece0af8629c68793a788a20459ad5c1abf8fe6ae617ee",
 			"kind": "literal",
 			"source": "Streamline your workflow — effortlessly track, manage, and collaborate on your branches and pull requests, all in one intuitive hub.",
 			"translation": "简化工作流，在一个直观的中心轻松跟踪、管理并协作处理你的分支和拉取请求。"
+		},
+		{
+			"id": "message.2f79c521e8dd5da66b6f9de686129b946e652f2853f985116c682b3b0bd1d0d7",
+			"kind": "template",
+			"source": "Create ${slot1} ${slot2}",
+			"translation": "创建 ${slot1} 个${slot2}",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.2f9029929d373c63fe37c27cf3e281887ded569fea8fcce522ac519c776c9e74",
@@ -2832,7 +3078,9 @@
 			"kind": "template",
 			"source": "The \"merge target\" is the branch that ${slot1} is most likely to be merged into.",
 			"translation": "“合并目标”是 ${slot1} 最可能被合并到的分支。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.2fc4971c643d99ab29fac2a3d75496759e6cce35a6eded27c0e1975b64a13c9c",
@@ -2863,7 +3111,15 @@
 			"kind": "template",
 			"source": "Open Walkthrough ${slot1}",
 			"translation": "打开演练 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
+		},
+		{
+			"id": "message.30671cda35bd144085640b3c421660e7bddc73dd2c7d283c6343539790bcba82",
+			"kind": "literal",
+			"source": "Auto-Compose Commits",
+			"translation": "自动编排提交"
 		},
 		{
 			"id": "message.30772031809238cb1177227fe4a02a5fd61fe787e600c9ccb4104c028e5c987b",
@@ -2876,7 +3132,10 @@
 			"kind": "template",
 			"source": "For more options, open the ${slot1} and search for ${slot2}",
 			"translation": "如需更多选项，请打开 ${slot1} 并搜索 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.308b839165cb0e54b27434c3337097f935998cbb66c252e5072eabff57c43d03",
@@ -2995,7 +3254,9 @@
 			"kind": "template",
 			"source": "${slot1} dit",
 			"translation": "${slot1} dit",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.3254415c3c8471a3c5e8d298dc65634f203631fe74ed1f55f6133af88c402a70",
@@ -3028,7 +3289,13 @@
 			"kind": "template",
 			"source": "?disabled= ${slot1} href= ${slot2} appearance=\"secondary\" density=\"compact\" > ${slot3} Publish (push) ${slot4} to ${slot5}",
 			"translation": "?disabled= ${slot1} href= ${slot2} appearance=\"secondary\" density=\"compact\" > ${slot3}将 ${slot4} 发布（push）到 ${slot5}",
-			"slots": ["slot1", "slot2", "slot3", "slot4", "slot5"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4",
+				"slot5"
+			]
 		},
 		{
 			"id": "message.331fc77f855f3cb04f074b5bf2738626ffd60ad5570c828032b068529b5c9b2e",
@@ -3229,13 +3496,21 @@
 			"kind": "template",
 			"source": "This rebase will cause conflicts in ${slot1}:",
 			"translation": "此次变基会在 ${slot1} 中引发冲突：",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.35b4f7a8d33ec31aa4deafbfadf0b1bbb394e181e41404552a95a4ccc2df48f0",
 			"kind": "literal",
 			"source": "Group into GitLens View",
 			"translation": "编组到 GitLens 视图"
+		},
+		{
+			"id": "message.360f408087f9949e60020b39edb15c8369710491764b2747f6a7b55c2b0e59fb",
+			"kind": "literal",
+			"source": "Finish & Commit",
+			"translation": "完成并提交"
 		},
 		{
 			"id": "message.361b7d39f9ddd4c4bba495a744d9390ee1ad930665af8a8ef3f026393b140f6d",
@@ -3266,7 +3541,9 @@
 			"kind": "template",
 			"source": "You have ${slot1} in your Pro trial. Once your trial ends, you will only be able to use Pro features on publicly-hosted repos.",
 			"translation": "你的 Pro 试用还剩 ${slot1}。试用结束后，你将只能在公开托管的仓库上使用 Pro 功能。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.369be7a13c7c7320ccb7141748df0faf4e45a3ee31bb17f78ac10a79a88eb324",
@@ -3293,6 +3570,12 @@
 			"translation": "选择要筛选的文件夹"
 		},
 		{
+			"id": "message.36e2b050137cd4a2c160d4a7e7bc6d6c81548f8678d43b36dedb58eb699d586b",
+			"kind": "literal",
+			"source": "Operation Failed",
+			"translation": "操作失败"
+		},
+		{
 			"id": "message.3704d38b675f4e2a7ad7cbc226572afeb0a904fb1d2a9766d3cfd489d23d5de4",
 			"kind": "literal",
 			"source": " —   GitLens Pro is required to use this feature",
@@ -3303,7 +3586,9 @@
 			"kind": "template",
 			"source": "GitKraken MCP has been disabled ${slot1}",
 			"translation": "GitKraken MCP 已${slot1}禁用",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.371db0eed96b560243d5630ef2453dd2b32fb8a2d2c8a8e4b484a3778c63aec5",
@@ -3400,6 +3685,12 @@
 			"translation": "冲突检测不可用"
 		},
 		{
+			"id": "message.38eb3d6406d7858915e64814125de5f4364214e3fff40f53731d177b37828e58",
+			"kind": "literal",
+			"source": "Generate commit message with AI",
+			"translation": "使用 AI 生成提交消息"
+		},
+		{
 			"id": "message.390db997ac9a8c977d6501d43c0f24f36475cb96a929546871b8406d37d2fcc2",
 			"kind": "literal",
 			"source": "Checkout Pull Request in Worktree (GitLens)...",
@@ -3422,14 +3713,20 @@
 			"kind": "template",
 			"source": "Issue ${slot1} is ${slot2}",
 			"translation": "Issue ${slot1} 状态为 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.3932447e91fba2f70e290fb81f288331308a6cee085ef7a4f0c9aed0fa3b9695",
 			"kind": "template",
 			"source": "You have ${slot1} in your ${slot2} trial. Once your trial ends, you will only be able to use Pro features on publicly-hosted repos.",
 			"translation": "你的 ${slot2} 试用还剩 ${slot1}。试用结束后，你将只能在公开托管的仓库上使用 Pro 功能。",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.394426dc5247a8cbe5d7fb3f3da6d9bff1255eb2a61bd2933d6d15b6778ab071",
@@ -3482,7 +3779,9 @@
 			"kind": "template",
 			"source": "GitLens won't bind any keyboard shortcuts. Configure your own via the ${slot1} editor",
 			"translation": "GitLens 不会绑定任何键盘快捷方式。请通过 ${slot1} 编辑器自行配置",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.39edea9e74593609b72bf37b05a071dc8d485c15bd6f249727c9d20bbfd46c4e",
@@ -3543,7 +3842,9 @@
 			"kind": "template",
 			"source": "Rebase paused due to conflicts at ${slot1}",
 			"translation": "变基因在 ${slot1} 处发生冲突而暂停",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.3ada3138362cbd2585b2629d835b19e4eb6dbe95b6b1796ad90ba26bf4a3285d",
@@ -3582,7 +3883,9 @@
 			"kind": "template",
 			"source": "No Conflicts Detected This rebase should complete without conflicts. ${slot1}",
 			"translation": "未检测到冲突。此次变基应可在无冲突的情况下完成。${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.3bfafeea65e2c7db1662fff2608ba6115b10d388e802ca2960265fea0ba7d534",
@@ -3657,7 +3960,9 @@
 			"kind": "template",
 			"source": "Adds a ${slot1}, hidden by default, to visualize, navigate, and explore contributors",
 			"translation": "添加一个默认隐藏的 ${slot1}，用于可视化、导航和浏览贡献者",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.3d7d78aadef9be43f4d47ba2fc8fa611aec671b973cbbf9f8024597c88ee12de",
@@ -3702,7 +4007,9 @@
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, explore, and manage Git stashes",
 			"translation": "添加一个 ${slot1}，用于可视化、浏览和管理 Git 贮藏",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.3df0793b37645bccc9e55bbc5a67636ef5f50ead1b9d0a5e4b2534fe62057181",
@@ -3715,7 +4022,15 @@
 			"kind": "template",
 			"source": "Stay in control. Review and edit AI suggestions before finalizing, and ${slot1} and model to fit your needs.",
 			"translation": "保持掌控。在最终确定前先审阅并编辑 AI 建议，并 ${slot1} 和模型以满足你的需求。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
+		},
+		{
+			"id": "message.3e2d867de7feac0c00138b7d678899ef0b315c2081225480e163893d21d74bce",
+			"kind": "literal",
+			"source": "Changes",
+			"translation": "更改"
 		},
 		{
 			"id": "message.3e432a92037dd33c956151059694c353f7261a64728240d07d497ff5617184aa",
@@ -3728,21 +4043,34 @@
 			"kind": "template",
 			"source": "Add an ${slot1} submenu",
 			"translation": "添加 ${slot1} 子菜单",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.3e7cd87c123282f4fb58d21cc639ddb766eb14ee6795e053c7d0f566ec849efa",
 			"kind": "template",
 			"source": "Home: _onRpcReady phase \"${slot1}\" timed out after ${slot2}ms",
 			"translation": "主页：_onRpcReady 阶段“${slot1}”在 ${slot2}ms 后超时",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.3ebd9095ca68042420f2db0120c64bd039991a46a5e09a6d54dd0f69e8ea6b48",
 			"kind": "template",
 			"source": "graph-icon mini-icon icon--${slot1}",
 			"translation": "graph-icon mini-icon icon--${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
+		},
+		{
+			"id": "message.3ed3f733fecf8d1278edb0cd02112f8cb11cc7665b0f99035962c02593dde75b",
+			"kind": "literal",
+			"source": "Collapse All",
+			"translation": "全部折叠"
 		},
 		{
 			"id": "message.3edb5da13134d5c3b89ae16d2ab1cf25cb468f1a56630b1b32d09d2bd94cc020",
@@ -3773,7 +4101,9 @@
 			"kind": "template",
 			"source": "Example: ${slot1}",
 			"translation": "示例：${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.3f825d1c19982e716c2caaaa749aa58841bcfeae547f9964b10f9c7b961e2038",
@@ -3800,7 +4130,9 @@
 			"kind": "template",
 			"source": "Timeframe ${slot1}",
 			"translation": "时间范围 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.3fd959958cdadbc7db9c76da339f0a6bd6773550d143c08fd4d9e4e434a8623d",
@@ -3819,7 +4151,9 @@
 			"kind": "template",
 			"source": "Add to the ${slot1} submenu",
 			"translation": "添加到 ${slot1} 子菜单",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.3fee7a42ab7655538d602549ebc5be4d8866a5f8958be06a77520809310869f5",
@@ -3882,7 +4216,12 @@
 			"kind": "template",
 			"source": "?disabled= ${slot1} href= ${slot2} appearance=\"secondary\" density=\"compact\" > Compose Commits... ${slot3} (Preview) ${slot4}",
 			"translation": "?disabled= ${slot1} href= ${slot2} appearance=\"secondary\" density=\"compact\" > 编排提交... ${slot3}（预览）${slot4}",
-			"slots": ["slot1", "slot2", "slot3", "slot4"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4"
+			]
 		},
 		{
 			"id": "message.4153e06dab70c4d14b7bbcdb7f5dc812c112b6da9ccc164fda3582eb3cf2823d",
@@ -3901,7 +4240,11 @@
 			"kind": "template",
 			"source": "Showing ${slot1} of ${slot2}${slot3}",
 			"translation": "显示 ${slot1} / ${slot2}${slot3}",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.41bec0fd54bfc103aadb82a9048ef75b0c165ed2e217e1cbc640bbe0b36cf246",
@@ -3954,7 +4297,9 @@
 			"kind": "template",
 			"source": "Merging will cause conflicts in ${slot1} that will need to be resolved.",
 			"translation": "合并将导致 ${slot1} 出现需要解决的冲突。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.428f1e0fdf37504fba9147230b98d187fc59b58ccc62d990bb8c2f9c601ecc0b",
@@ -4153,7 +4498,10 @@
 			"kind": "template",
 			"source": "Chorded shortcuts that start with ${slot1} (${slot2} on macOS). Better for non-English keyboard layouts",
 			"translation": "以 ${slot1} 开头的和弦快捷方式（在 macOS 上为 ${slot2}）。更适合非英语键盘布局",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.45af4d4b55f31828cf02294992b3f220d5552cefb16cc31cbccd77194de0a5b7",
@@ -4222,6 +4570,12 @@
 			"translation": "按上次获取日期降序"
 		},
 		{
+			"id": "message.4697b7cdd54219cd6b10a7f7dc68a4d8dfff07be01af43afd5b7914463211f98",
+			"kind": "literal",
+			"source": "Let AI organize your changes into well-formed commits with clear messages and descriptions that help reviewers.",
+			"translation": "让 AI 将你的更改整理为结构良好的提交，并生成清晰、有助于审查的消息和描述。"
+		},
+		{
 			"id": "message.469a0de47384615ccb46d2998faea385023f89fa68e6c18f34290efd09701355",
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with commits in the _Cloud Workspaces_ view. Requires a connection to a supported remote service (e.g. GitHub)",
@@ -4250,6 +4604,12 @@
 			"kind": "literal",
 			"source": "Compare Working Tree with...",
 			"translation": "将工作区与...比较"
+		},
+		{
+			"id": "message.4702faf391e3660cbb6becb8acabd3c3d30002573522c6a973a180bd702404f1",
+			"kind": "literal",
+			"source": "Exit Composer",
+			"translation": "退出提交编排器"
 		},
 		{
 			"id": "message.475f0b9d16c461b7d91e377aab89bd45c50c0d2fba62b4111217e24d309bfeba",
@@ -4300,7 +4660,9 @@
 			"kind": "template",
 			"source": "Commit ${slot1}",
 			"translation": "提交 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.47eaeca7166cbe58c42a626ac9c58a07f50c02852f10bde49539c42a63925433",
@@ -4313,6 +4675,12 @@
 			"kind": "literal",
 			"source": "Cloud Workspaces View (ᴘʀᴇᴠɪᴇᴡ)",
 			"translation": "云工作区视图 (ᴘʀᴇᴠɪᴇᴡ)"
+		},
+		{
+			"id": "message.4824834cb85c1d9426b1c6fbc3429a7896902120776cc27f2f08430e1c0bfec7",
+			"kind": "literal",
+			"source": "No content available",
+			"translation": "无可用内容"
 		},
 		{
 			"id": "message.482dd35a7ccdb5a03582f8241db6af799c85a88d6e31fe9cce3c8d36d0b3996e",
@@ -4361,7 +4729,9 @@
 			"kind": "template",
 			"source": "${slot1} behind",
 			"translation": "落后 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.49253aa687e00b67868a27043afb4b872fa6820fa4be815c710efb808d19869a",
@@ -4386,7 +4756,10 @@
 			"kind": "template",
 			"source": "Search for ${slot1} in the ${slot2} editor to see the shortcuts and to customize them further",
 			"translation": "在 ${slot2} 编辑器中搜索 ${slot1}，以查看这些快捷方式并进一步自定义",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.49a6e8d98d5316b967ca36c2c18bb0ec667e7269be69a5b5f5a9de972c1d0c73",
@@ -4411,7 +4784,9 @@
 			"kind": "template",
 			"source": "Upgrade to the Advanced plan for access to self-hosted integrations, advanced AI features @ 1M tokens/week, and more ${slot1}",
 			"translation": "升级到 Advanced 计划，即可访问自托管集成、高级 AI 功能（每周 100 万 tokens）等更多内容 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.49cb3882bf6b2306b3bee74e4c2b3369587b812ec1213d4cfabcc8d430f7f7b3",
@@ -4424,6 +4799,12 @@
 			"kind": "literal",
 			"source": "Up to 3mo ago",
 			"translation": "最多 3 个月前"
+		},
+		{
+			"id": "message.4a2e145e2135d9c7f6930cacb12a193927f011e9af6e08f4d63d25e75c557ad7",
+			"kind": "literal",
+			"source": "New commits will be added to your current branch.",
+			"translation": "新提交将添加到当前分支。"
 		},
 		{
 			"id": "message.4a42e8391271ace6dfae7c3b347d345a3194e06b218e884f763482aae1878612",
@@ -4442,7 +4823,11 @@
 			"kind": "template",
 			"source": "Setting this to ${slot1} will inhibit the hovers from showing over the annotation; Set ${slot2} to ${slot3} to enable the hovers to show anywhere over the line.",
 			"translation": "将此项设为${slot1}会阻止悬停提示在注解上显示；将${slot2}设为${slot3}可让悬停提示在整行任意位置显示。",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.4a8805c8d86f184351e84469c89422192a13131ecdfd33fa3ccae0fbb6ac96f4",
@@ -4517,7 +4902,11 @@
 			"kind": "template",
 			"source": "For more options, open the ${slot1} and search for ${slot2} or ${slot3}",
 			"translation": "如需更多选项，请打开 ${slot1} 并搜索 ${slot2} 或 ${slot3}",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.4bf4a0032d3d84a53a7942179f42627ed6f1e3135eac762dee0dbad844734dab",
@@ -4530,6 +4919,12 @@
 			"kind": "literal",
 			"source": "No Conflicts Detected",
 			"translation": "未检测到冲突"
+		},
+		{
+			"id": "message.4c23ed7045d290ac439c232754bf59b2875f5301aa3fc8f0c77049eb1c51525b",
+			"kind": "literal",
+			"source": "Include Staged Changes",
+			"translation": "包含已暂存的更改"
 		},
 		{
 			"id": "message.4c2601bcda437c29eb95a132f4e1bb747d9acd8bebfa4f18df4c9c3d0d179de1",
@@ -4554,7 +4949,11 @@
 			"kind": "template",
 			"source": "${slot1} You may have a duplicate entry in your Cursor ${slot2} from a previous install. Remove ${slot3} to clean it up.",
 			"translation": "${slot1} 你的 Cursor ${slot2} 中可能保留了上次安装留下的重复条目。删除 ${slot3} 即可清理。",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.4c96ba5a87241c8c80b57192b38fdddd46b5a62f3dbec5f0fd04eb312f684ad7",
@@ -4629,7 +5028,9 @@
 			"kind": "template",
 			"source": "Reactivate your Pro trial and experience all the new Pro features — free for another ${slot1}!",
 			"translation": "重新激活你的 Pro 试用，再免费体验全部新的 Pro 功能，时长为 ${slot1}！",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.4dfe179e6845149e58191907b2a2fb5f11c518350bebaf530992418c7069e4ec",
@@ -4642,7 +5043,9 @@
 			"kind": "template",
 			"source": "Shows dates absolutely, e.g. ${slot1}",
 			"translation": "以绝对方式显示日期，例如 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.4e41a5ae1861863f5cbeadb89e9ba5aafe925a21987bd0d6955da8246291f417",
@@ -4737,6 +5140,12 @@
 			"translation": "添加 gutter 指示器"
 		},
 		{
+			"id": "message.4f7e663460735c6d895e4cdf76ae7503223e1af4eb12fa00a314ad2d4501b828",
+			"kind": "literal",
+			"source": "Auto Compose Commits with AI",
+			"translation": "使用 AI 自动编排提交"
+		},
+		{
 			"id": "message.4f902c8e98fb5cd801f3ac9c7d370925e623829626e4d5575e786b58c797e7f0",
 			"kind": "literal",
 			"source": "Specifies how the _Search & Compare_ view will display files",
@@ -4797,14 +5206,18 @@
 			"kind": "template",
 			"source": "Inspect Commit ${slot1}",
 			"translation": "查看提交 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.50f192adf792065e4c77c04aa9a7cf6dc8e487e08b01fb6ad006e9f68ce7753b",
 			"kind": "template",
 			"source": "${slot1} — track, manage, and collaborate on your branches and pull requests, all in one intuitive hub",
 			"translation": "${slot1} — 在一个直观的中心中跟踪、管理并协作处理你的分支和拉取请求",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.5137ef564fc65acb8d7fe5c9376ad95183df98494806986055be6002c82b400b",
@@ -4847,7 +5260,9 @@
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, explore, and manage a Git repository",
 			"translation": "添加一个 ${slot1}，用于可视化、浏览和管理 Git 仓库",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.518c37b72a3eeec10f2398383905a08782172b76e855d91bb888a1535a8b75f5",
@@ -4902,7 +5317,9 @@
 			"kind": "template",
 			"source": "Pull Request # ${slot1}",
 			"translation": "拉取请求 #${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.5204267f260f8afdd8b0d5a461fcd05d0bf0e0d7e4fb6c385291da6e6a5a8240",
@@ -4983,7 +5400,11 @@
 			"kind": "template",
 			"source": "Your current branch ${slot1} is ${slot2} behind its merge target ${slot3}.",
 			"translation": "你当前的分支 ${slot1} 比其合并目标 ${slot3} 落后 ${slot2}。",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.53358b0eaa2d5c7e51b7481bb682fd981d20988a4a70011e23e8067d95162888",
@@ -5070,6 +5491,12 @@
 			"translation": "添加到编辑器标签页上下文菜单"
 		},
 		{
+			"id": "message.5402e825cfcce7785fa193845b535c0fdaabb92f3d2b4693025fff6032ee54c3",
+			"kind": "literal",
+			"source": "Review the auto-generated draft commits below to inspect diffs and modify commit messages.",
+			"translation": "审查下方自动生成的草稿提交，以检查 diff 并修改提交消息。"
+		},
+		{
 			"id": "message.5425698b20cd41f376a7a3600e1267d2d8b67885970975d1f5435ea65e97c31d",
 			"kind": "literal",
 			"source": "Specifies whether to include working tree file status for each repository in the _Cloud Workspaces_ view",
@@ -5128,7 +5555,9 @@
 			"kind": "template",
 			"source": "Includes access to ${slot1}",
 			"translation": "包含对 ${slot1} 的访问权限",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.554351d54eaae67d7e248f0a61c556c7382d151f64776ec71c443dfa06adf248",
@@ -5165,14 +5594,20 @@
 			"kind": "template",
 			"source": "Compose Commits... ${slot1} (Preview) ${slot2}",
 			"translation": "编排提交... ${slot1}（预览）${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.55c6a2bde9547b0c82961ca821cfdeb8961c565e34d1198a11511a4f6e8774a7",
 			"kind": "template",
 			"source": "Compare Branch with Merge Target ${slot1} ${slot2}",
 			"translation": "比较分支与合并目标 ${slot1} ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.55c72e8825b9f5d4ed29610f9b47e17a727bdc331f792da4d0dfa4b041806ff0",
@@ -5203,7 +5638,9 @@
 			"kind": "template",
 			"source": "Once your trial ends, you'll return to ${slot1} — where you can still leverage features like in-editor blame annotations, hovers, CodeLens, and more.",
 			"translation": "试用结束后，你将回到 ${slot1}，但依然可以继续使用编辑器内追溯注解、悬停提示、CodeLens 等功能。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.560d46003f53916af4d7c3b94824b3643140679c86f5f5aaa9b2dea25d60f5b3",
@@ -5236,6 +5673,12 @@
 			"kind": "literal",
 			"source": "Cloud Workspaces",
 			"translation": "云工作区"
+		},
+		{
+			"id": "message.56d4a211b0ba20817d628d67d98bb27da8fbb545e3b4231c8bd4fe9a8fc20270",
+			"kind": "literal",
+			"source": "Auto-Compose Commits with AI (Preview)",
+			"translation": "使用 AI 自动编排提交（预览）"
 		},
 		{
 			"id": "message.56dd3f381cc3699d4fe34fdd4d9e07fdd02ed8e27118550002845ff7871dcdf8",
@@ -5278,6 +5721,12 @@
 			"slots": []
 		},
 		{
+			"id": "message.5734717ea2ddc38101b8334361f525ca760b9d5b821d8de31f2ef5c57b66a689",
+			"kind": "literal",
+			"source": "Draft commit (add a commit message)",
+			"translation": "草稿提交（添加提交消息）"
+		},
+		{
 			"id": "message.5743a25ad32d879dc06ef146382cf43729d718f44d2a9e16606a02216e19d35b",
 			"kind": "literal",
 			"source": "Copy Link to Commit",
@@ -5312,7 +5761,9 @@
 			"kind": "template",
 			"source": "Branch ${slot1}Merged Locally into Merge Target",
 			"translation": "分支 ${slot1} 已在本地合并到合并目标",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.5801e1c7580ca6ef0729ca5561d3f3e1ba2abab74e73954c2fa71553c2e41fd9",
@@ -5367,14 +5818,18 @@
 			"kind": "template",
 			"source": "Reset ${slot1} to Previous Commit...",
 			"translation": "将 ${slot1} 重置到上一个提交...",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.5860a8dc60cc1b7a3ec8e567d2dddc437b1f5defc4c6ecd3f2fc03bd5ce800e0",
 			"kind": "template",
 			"source": "Use the ${slot1} command to toggle Zen mode",
 			"translation": "使用 ${slot1} 命令来切换禅模式",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.587114ce0ba26663f02f56a54d2e11cbdb79535951f9d742da6ed81e12c0b725",
@@ -5409,14 +5864,19 @@
 			"kind": "template",
 			"source": "${slot1} code, test, and review on multiple branches in parallel",
 			"translation": "${slot1} 在多个分支上并行编码、测试和审查",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.58da97fabbcbed72df611189ba13dff86217d419e7b53c89670388731cd7e059",
 			"kind": "template",
 			"source": "${slot1} ${slot2} follow-up",
 			"translation": "${slot1} ${slot2} 需要后续跟进",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.58ec5e99f4068eb4d968be71c1002be4af2419da9c5bfb3a7a5cc5c917b5c7a3",
@@ -5429,7 +5889,20 @@
 			"kind": "template",
 			"source": "Your current branch ${slot1} has ${slot2} been merged into its merge target's local branch ${slot3}.",
 			"translation": "你当前的分支 ${slot1} ${slot2}已被合并到其合并目标的本地分支 ${slot3}。",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
+		},
+		{
+			"id": "message.5919c7692f75629daeba84e85ac1c82683850f942d8e5fd25a64b93ef0e85a37",
+			"kind": "template",
+			"source": "Files Changed (${slot1})",
+			"translation": "已更改文件（${slot1}）",
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.592bb97e6e33eb8d6f1b822e4b12188b32d6c5fc94db9c004eb55364a4ae7b8b",
@@ -5442,7 +5915,10 @@
 			"kind": "template",
 			"source": "For access to all Pro features: Start ${slot1} -day Pro Trial or ${slot2}",
 			"translation": "如需访问所有 Pro 功能：开始 ${slot1} 天 Pro 试用或 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.59869ab2cd41e8949f892f7afd4f56e60d409187ca86ab07aaa42a9931514b8f",
@@ -5473,7 +5949,13 @@
 			"kind": "template",
 			"source": "Overview of ${slot1} ${slot2} ${slot3} ${slot4} ${slot5}",
 			"translation": "概览：${slot1} ${slot2} ${slot3} ${slot4} ${slot5}",
-			"slots": ["slot1", "slot2", "slot3", "slot4", "slot5"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4",
+				"slot5"
+			]
 		},
 		{
 			"id": "message.5a4cbbef21e1a9c6fdc5c8b91b5f00744e56453d852980320baf5371979fe583",
@@ -5520,7 +6002,9 @@
 			"kind": "template",
 			"source": "searching for ${slot1} in existing rows",
 			"translation": "在现有行中搜索 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.5af1a66a294330508812812961aff6ebbae4ef8d46a8337210478efe69fcbe8c",
@@ -5633,7 +6117,11 @@
 			"kind": "template",
 			"source": "${slot1} ${slot2} blocked (${slot3})",
 			"translation": "${slot1} ${slot2} 已阻塞（${slot3}）",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.5c485d4e8488241eb05da84ddc4b83132023bb75c5e468253a8a875d934b9555",
@@ -5670,7 +6158,11 @@
 			"kind": "template",
 			"source": "Use a reference to filter, e.g. ${slot1} or ${slot2}, or a range to compare, e.g. ${slot3} (commits in feature but not in main)",
 			"translation": "使用引用进行筛选，例如 ${slot1} 或 ${slot2}；也可以使用比较范围，例如 ${slot3}（feature 中有但 main 中没有的提交）",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.5cf01187c4397e3579aebe8b87c882b54d58606e6628721235882027b85296a3",
@@ -5721,7 +6213,9 @@
 			"kind": "template",
 			"source": "${slot1} connect PRs and issues from GitHub, GitLab, Jira, Azure DevOps & more",
 			"translation": "${slot1} 连接来自 GitHub、GitLab、Jira、Azure DevOps 等平台的 PR 和 Issue",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.5df55fa148a427aa30d35df0dde2bbd3c6e9ace80175aa2792fe523a412e9a9a",
@@ -5740,14 +6234,19 @@
 			"kind": "template",
 			"source": "Open Pull Request \\#${slot1} on ${slot2}",
 			"translation": "在 ${slot2} 上打开拉取请求 \\#${slot1}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.5e53aaf2ea789cf8ea6ad1180b346ce20151078a944beec4e868d3ee2dfb17a2",
 			"kind": "template",
 			"source": "${slot1} (Author)",
 			"translation": "${slot1}（作者）",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.5e5952c80270e4bce2a3316ab61b623c88f07757f3d57d13ec2cbb2ca0065bd5",
@@ -5760,7 +6259,9 @@
 			"kind": "template",
 			"source": "${slot1} save reviewers 10+ minutes per review",
 			"translation": "${slot1} 每次审查可为审阅者节省 10 分钟以上",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.5e82e645ae65e25f3e9283c92ead5f34030f271328c74cdbf4cc7c4f50ae4f18",
@@ -5785,7 +6286,9 @@
 			"kind": "template",
 			"source": "$(repo) ${slot1}",
 			"translation": "$(repo) ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.5ed5b5cc746e0e40b6508364fb1b00840029beaaaf0ba2e8f83bdcc98c977971",
@@ -5806,11 +6309,19 @@
 			"translation": "指定是否在 _云工作区_ 视图中显示每个仓库的远程"
 		},
 		{
+			"id": "message.5ee5d0664ff40d8979f6d46d0c80e1e9898b1825e10de2497550c6e29b4f7174",
+			"kind": "literal",
+			"source": "Loading Error",
+			"translation": "加载错误"
+		},
+		{
 			"id": "message.5f0da027366ba5b4190f68992af53da3a31915b548c06f14a02376ffd40fdca6",
 			"kind": "template",
 			"source": "Add a ${slot1} submenu",
 			"translation": "添加 ${slot1} 子菜单",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.5f5073173cbe7e9c247535b81e419ec47037737498b5368e5b02472f9d51d79b",
@@ -5885,7 +6396,10 @@
 			"kind": "template",
 			"source": "Reactivate your GitLens Pro trial and experience ${slot1} all the new Pro features — free for another ${slot2}!",
 			"translation": "重新激活你的 GitLens Pro 试用，再免费体验${slot1}全部新的 Pro 功能，时长为 ${slot2}！",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.6065117f6211cb993fa962603881b36c9cea16cc8d716d74c428b3ce2fb1f85a",
@@ -6008,11 +6522,19 @@
 			"translation": "拒绝"
 		},
 		{
+			"id": "message.6220f762d079085406dfd7c66c3dc1f73f58ff83e3fdb17fde6e91eb17b7bad4",
+			"kind": "literal",
+			"source": "OK",
+			"translation": "确定"
+		},
+		{
 			"id": "message.622f0a5a4a9b7d59c2154dbb658ee5934665c15062ca3794d041ef26bb632c39",
 			"kind": "template",
 			"source": "${slot1} added",
 			"translation": "${slot1} 已添加",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.623993ec60474b1097a58d00bd0825191c73bf591c3ed49afb4e6cb8ff5577d5",
@@ -6061,6 +6583,12 @@
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Cloud Patches_ view",
 			"translation": "指定是否在 _云补丁_ 视图中显示头像图像而不是提交（或状态）图标"
+		},
+		{
+			"id": "message.63829b633664f1b3ff1ec44d1167a734ce94a6e1e660f8342eb55c4b80d9da04",
+			"kind": "literal",
+			"source": "The branch will be updated with the new commit structure.",
+			"translation": "该分支将使用新的提交结构进行更新。"
 		},
 		{
 			"id": "message.63be5d211e0cf838fc7920b5b0d6f7e872d0cf0c99c3b7225f7fc4ca48ed255f",
@@ -6149,7 +6677,9 @@
 			"kind": "template",
 			"source": "Press ${slot1} to turn off the annotations",
 			"translation": "按 ${slot1} 可关闭这些注解",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.6558d4b5b1d2ab20465e431cc1641cfe6baf7715170b22576398b6c832812d69",
@@ -6162,7 +6692,9 @@
 			"kind": "template",
 			"source": "stashes in the ${slot1}",
 			"translation": "${slot1} 中的贮藏",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.65a65cb9c33d98cde2fbcea928a969d86d92f70a138845f02e96e122535ba237",
@@ -6175,14 +6707,19 @@
 			"kind": "template",
 			"source": "${slot1} Leverage Git and Integration information from GitLens in AI chat. ${slot2}",
 			"translation": "${slot1} 在 AI 聊天中利用 GitLens 提供的 Git 和集成信息。${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.65f176a7f0970410101dc076695c50c0c1121d9cd02c12e270212eef64c73c43",
 			"kind": "template",
 			"source": "See ${slot1} in GitLens.",
 			"translation": "在 GitLens 中查看 ${slot1}。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.660187b9c0c528e0453eb4f6063a60b5678c12cdd8c5c9da9c782d687984e054",
@@ -6207,7 +6744,9 @@
 			"kind": "template",
 			"source": "Combine filters to build powerful searches, e.g. ${slot1}",
 			"translation": "组合筛选条件以构建强大的搜索，例如 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.6662e54f5616da58d3af4f13f60c90f7556d9dab6fedc1b5c25bd8365d915e92",
@@ -6320,13 +6859,21 @@
 			"kind": "template",
 			"source": "Use the ${slot1} command to quickly switch the active mode",
 			"translation": "使用 ${slot1} 命令快速切换当前活动模式",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.67904830552e9b04679418c73eea7768877ede43bb5b12f417aa4b2944a86680",
 			"kind": "literal",
 			"source": "Group Search & Compare View",
 			"translation": "编组搜索与比较视图"
+		},
+		{
+			"id": "message.67b94ab294fe53fa175ff9bfae610b2f87f4553824fa1d2fdad33ee0004875f4",
+			"kind": "literal",
+			"source": "Select AI Model",
+			"translation": "选择 AI 模型"
 		},
 		{
 			"id": "message.67c4fa44d8dc95338f9f8bb8e79f50651f98ad4021cc0a9560a4218e7aa30ba2",
@@ -6341,6 +6888,12 @@
 			"translation": "切换文件热度图"
 		},
 		{
+			"id": "message.68032cf02897d3d45eb4532b640892cbb1e82f169035fd10fb820eea6f90eb61",
+			"kind": "literal",
+			"source": "Generating...",
+			"translation": "正在生成..."
+		},
+		{
 			"id": "message.681028955dc00615d3dacd6ac6c095f0be5c5315dd2aeb9d589b4489c8fc8f03",
 			"kind": "literal",
 			"source": "Open File History in Commit Graph",
@@ -6351,6 +6904,12 @@
 			"kind": "literal",
 			"source": "Shows an Inspect quick pick menu",
 			"translation": "显示检查快速选择菜单"
+		},
+		{
+			"id": "message.68416247ff7ed1cd496605e349cd4719246448dd5f26cdf038472df7ba783782",
+			"kind": "literal",
+			"source": "Include Changes",
+			"translation": "包含更改"
 		},
 		{
 			"id": "message.685a2f3d0425503fcbd3514a4d4caffae451b77ac3a47f57e334bb6ceff12482",
@@ -6371,6 +6930,12 @@
 			"kind": "literal",
 			"source": "⚠ Worktrees are not supported by your version of Git. Please upgrade to a more recent version.",
 			"translation": "⚠ 你的 Git 版本不支持工作树。请升级到较新的版本。"
+		},
+		{
+			"id": "message.68678c222b831cc278bd7744a3354e408389b61251cf715a0a70f5d008486f55",
+			"kind": "literal",
+			"source": "Unassigned Changes",
+			"translation": "未分配的更改"
 		},
 		{
 			"id": "message.6868ecb8125470ff469cdbb76b72a5bf5ed166ce1ac2730a5519bf3245d86231",
@@ -6435,6 +7000,12 @@
 			"translation": "分离分支视图"
 		},
 		{
+			"id": "message.696458fe4c2bc2981474b51bfb00c10dda30691769a7ce4b9cd2f25697ba0f71",
+			"kind": "literal",
+			"source": "Recompose Commits with AI (Preview)",
+			"translation": "使用 AI 重新编排提交（预览）"
+		},
+		{
 			"id": "message.69a44ceb7354cd2abb4c442e45fcb4ab880960c919b1f1ad71cebd3c5981e12d",
 			"kind": "literal",
 			"source": "Specifies whether to show the contributors for each repository in the _Cloud Workspaces_ view",
@@ -6445,7 +7016,9 @@
 			"kind": "template",
 			"source": "Open Repository on ${slot1}",
 			"translation": "在 ${slot1} 上打开仓库",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.69a96f032a621c06910c1aac4390614e3896097abf19cb528fb3e9d29c2e2711",
@@ -6482,7 +7055,9 @@
 			"kind": "template",
 			"source": "Reset ${slot1} to Commit...",
 			"translation": "将 ${slot1} 重置到提交...",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.69ff5f2bb47df4a21ff6eae6f3eb65e2921a060f56aa2a3e6dec0bc7065cae78",
@@ -6537,7 +7112,10 @@
 			"kind": "template",
 			"source": "Add ${slot1} and ${slot2} commands",
 			"translation": "添加 ${slot1} 和 ${slot2} 命令",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.6b0c1d25f453ce48f3e18f88ed24811619e123661a3a04b2f4455baa26167ad8",
@@ -6768,7 +7346,11 @@
 			"kind": "template",
 			"source": "${slot1} &mdash; ${slot2} get access to automatic rich ${slot3} autolinks",
 			"translation": "${slot1} &mdash; ${slot2}即可使用 ${slot3} 自动富链接",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.6ebf1bb808cbd77e8ab2703b12da8c9f42a1035ded2fc369e1462fc279a7bf57",
@@ -6851,6 +7433,12 @@
 			"translation": "Issue"
 		},
 		{
+			"id": "message.70930a25174ea10a382c4f654bce399930f43311af156862ccfd85e1efc0c055",
+			"kind": "literal",
+			"source": "Was this composition helpful?",
+			"translation": "这次编排有帮助吗？"
+		},
+		{
 			"id": "message.70957480893cd81c00caee4a2e323ffe6166f97cfcd890cebc810a70e32b9d0b",
 			"kind": "literal",
 			"source": "Copy Link to Comparison",
@@ -6899,6 +7487,12 @@
 			"translation": "切换该提交中的文件更改"
 		},
 		{
+			"id": "message.7110049fca8e511cbef358c80048e84a0ad38dc9e42aacd76f0935c8edaca3ec",
+			"kind": "literal",
+			"source": "Enter commit message...",
+			"translation": "输入提交消息..."
+		},
+		{
 			"id": "message.7123318ac7861623aa3bfc37a2398bde769771b865e1f3edd07fcb51adf07cc5",
 			"kind": "literal",
 			"source": "1 week",
@@ -6943,6 +7537,12 @@
 			"slots": []
 		},
 		{
+			"id": "message.719e54b9af05b8e35f23a7f30876ac1b6193731270bec8a99614438892ae88e2",
+			"kind": "literal",
+			"source": "Expand All",
+			"translation": "全部展开"
+		},
+		{
 			"id": "message.719f2934af623d46fa6b4c7efa0433e2137800536373bfa2d6dbe2c96bf7a881",
 			"kind": "literal",
 			"source": "Uses the date when the changes were authored (i.e. originally written)",
@@ -6967,7 +7567,9 @@
 			"kind": "template",
 			"source": "Visualize Repository History ${slot1}",
 			"translation": "可视化仓库历史 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.71ec0bafe61381ce0179f9719e7dc06a6ec288f870b47b95206b66b97fe621d3",
@@ -6994,25 +7596,37 @@
 			"translation": "指定日期的默认显示方式"
 		},
 		{
+			"id": "message.7236c4c46208468b72be5d6d9e504a0428ce5e5bc9ea6b8f3d4d0d4d032380eb",
+			"kind": "literal",
+			"source": "Drop hunks here to unassign",
+			"translation": "将代码块拖到此处以取消分配"
+		},
+		{
 			"id": "message.726321efa3a064fcd3a36899a211333ea510ab90ec463c21d7a63412d633ed06",
 			"kind": "template",
 			"source": "Change Reference... ${slot1}",
 			"translation": "更改引用... ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.72687aebfda9fcc28333acb052ecaeae24720808f5c0cc79ba5dc73a6644fdd4",
 			"kind": "template",
 			"source": "${slot1} is in an unknown state",
 			"translation": "${slot1} 处于未知状态",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.72852a0ce302a55f5e8a7bd302bd6243d4451cf60d1ea056d097aa152d11b60f",
 			"kind": "template",
 			"source": "Rebase paused at ${slot1}",
 			"translation": "变基已在 ${slot1} 处暂停",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.72cf49e819363082522920521f8ffe557fe19b0b4c74a71ba4faa96423d47d5b",
@@ -7037,7 +7651,9 @@
 			"kind": "template",
 			"source": "${slot1} visualize every branch and commit relationship",
 			"translation": "${slot1} 可视化每个分支与提交之间的关系",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.7317ad06b6ec761a58dafd23bd2e6da7fa212dc71d2c355009982be41328de29",
@@ -7062,7 +7678,9 @@
 			"kind": "template",
 			"source": "You also have access to the ${slot1}, unleashing powerful Git visualization & productivity capabilities everywhere you work: IDE, desktop, browser, and terminal.",
 			"translation": "你还可以使用 ${slot1}，在 IDE、桌面端、浏览器和终端等各处获得强大的 Git 可视化与效率能力。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.736f059742b241d8270b81da0235049f656818f2efe43d75399cc369684eaae5",
@@ -7103,7 +7721,10 @@
 			"kind": "template",
 			"source": "Delete ${slot1} ${slot2}",
 			"translation": "删除 ${slot1} ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.73faae844a630f1e2fcabf41f9104f43e9254360b043bab99f683c4635820efc",
@@ -7142,7 +7763,10 @@
 			"kind": "template",
 			"source": "> GitLens Walkthrough (${slot1}/${slot2}) >",
 			"translation": "> GitLens 演练 (${slot1}/${slot2}) >",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.750b9a61e8fedda37e536874e097572619b8a8de4201a1a7c545085abe2c096d",
@@ -7150,7 +7774,9 @@
 			"source": "class=\"scrollable\" tabindex=\"0\" role=\"tree\" aria-label=__GL_I18N_SLOT_slot2__ aria-multiselectable=\"false\" aria-activedescendant=__GL_I18N_SLOT_slot3__ @keydown=__GL_I18N_SLOT_slot4__ @focus=__GL_I18N_SLOT_slot5__ @blur=__GL_I18N_SLOT_slot6__ > ${slot1}",
 			"translation": "class=\"scrollable\" tabindex=\"0\" role=\"tree\" aria-label=__GL_I18N_SLOT_slot2__ aria-multiselectable=\"false\" aria-activedescendant=__GL_I18N_SLOT_slot3__ @keydown=__GL_I18N_SLOT_slot4__ @focus=__GL_I18N_SLOT_slot5__ @blur=__GL_I18N_SLOT_slot6__ > ${slot1}",
 			"format": "markdown",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.7518db7a2acfe0adc8e8cc78be48b5006083f7cee255b29779af938c7edd6a88",
@@ -7171,6 +7797,12 @@
 			"kind": "literal",
 			"source": "Failed to load",
 			"translation": "加载失败"
+		},
+		{
+			"id": "message.7564501f83964749403725969241e6496e5e8f1ab4fef5ec82b4f89ae07e50ff",
+			"kind": "literal",
+			"source": "Include additional instructions",
+			"translation": "包含额外指令"
 		},
 		{
 			"id": "message.7568532af2d10acc38273318bb68756eb03fc9a42f72bb9aa8de5604cbf24e65",
@@ -7195,7 +7827,11 @@
 			"kind": "template",
 			"source": "class=\"launchpad-action launchpad-action--blocked\"> ${slot1} ${slot2} blocked (${slot3})",
 			"translation": "class=\"launchpad-action launchpad-action--blocked\"> ${slot1} ${slot2} 已阻塞（${slot3}）",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.75c7efc2f03e90095c46965c951c0ef92e8ed5ca734301468a22dac9dac928f0",
@@ -7250,7 +7886,10 @@
 			"kind": "template",
 			"source": "${slot1} ${slot2} your review",
 			"translation": "${slot1} ${slot2} 需要你审查",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.766721e0599b79606b7b4867f6813afd13494a9271c6cbb7538f64725396fd18",
@@ -7307,7 +7946,11 @@
 			"kind": "template",
 			"source": "Pull ${slot1} from ${slot2} ${slot3}",
 			"translation": "从 ${slot2}${slot3} 拉取 ${slot1}",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.7715a415ef0f632bf5a5a749e4201def5228d60df3f8a383a07f1b02ad4b7886",
@@ -7332,7 +7975,10 @@
 			"kind": "template",
 			"source": "Open ${slot1} on ${slot2}",
 			"translation": "在 ${slot2} 上打开${slot1}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.775474af13ef299008b45da1a7487bef1d024bdbc18afeaff156db5c9c163c64",
@@ -7387,6 +8033,12 @@
 			"translation": "文件历史视图"
 		},
 		{
+			"id": "message.77adb2ace6862f6b7ad5b7709277806967b2aba32971d28b26536357142fbaa4",
+			"kind": "literal",
+			"source": "Select a commit or unassigned changes to view details",
+			"translation": "选择一个提交或未分配的更改以查看详情"
+		},
+		{
 			"id": "message.77b2504ef93c0464d1362d151c836312b9fbb6a7d062109c8d7dc7d311b5e058",
 			"kind": "literal",
 			"source": "Choose a folder…",
@@ -7423,6 +8075,12 @@
 			"kind": "literal",
 			"source": "Specifies whether to provide information about the Pull Request (if any) that introduced the commit in the status bar. Requires a connection to a supported remote service (e.g. GitHub)",
 			"translation": "指定是否在状态栏中提供引入该提交的拉取请求（如果有）信息。需要连接到受支持的远程服务（例如 GitHub）"
+		},
+		{
+			"id": "message.784c0ddfae09279af56f89f95c8cfa895a92c636c2898088635d2316dc67037a",
+			"kind": "literal",
+			"source": "The repository state has changed since Commit Composer was opened. Please reload to update with new changes.",
+			"translation": "提交编排器打开后，仓库状态已更改。请重新加载以更新新的更改。"
 		},
 		{
 			"id": "message.78649452bcca698db75b78a5795c1e5cd3787c35eaad46f740c58a5f9eff3b75",
@@ -7473,7 +8131,10 @@
 			"kind": "template",
 			"source": "Search matched ${slot1} of ${slot2} files\nClick to highlight matching files",
 			"translation": "搜索匹配了 ${slot2} 个文件中的 ${slot1} 个\\n点击高亮匹配文件",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.78adc912ee36caa5447745a871341090bc9c07287698dd80b5dfaceaeb44229a",
@@ -7508,6 +8169,12 @@
 			"translation": "指定 _提交图_ 上分支的可见性"
 		},
 		{
+			"id": "message.792e9450ecdf2b6eaaa5e1793ffe888d6eb391bae02f96a22f116bd109ae4371",
+			"kind": "literal",
+			"source": "Commits Generated",
+			"translation": "已生成提交"
+		},
+		{
 			"id": "message.79339be863afd53d6f46af84c41a62c9effc351d247d089e90f6a9876b2930d1",
 			"kind": "literal",
 			"source": "Jump to Worktrees view settings",
@@ -7524,14 +8191,18 @@
 			"kind": "template",
 			"source": "<span class=\"deletions\">-${slot1}</span>",
 			"translation": "<span class=\"deletions\">-${slot1}</span>",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.79bec0a085c286748ef1a9b8df88a5cae0ca8848576e24e64d39b96a90d53d4e",
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, explore, and manage Git tags",
 			"translation": "添加一个 ${slot1}，用于可视化、浏览和管理 Git 标签",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.79bfc34d8719c933abdf99cb715c24ac5ff793c75e4adc0fb00c83b1196a73a3",
@@ -7568,14 +8239,19 @@
 			"kind": "template",
 			"source": "Publish Branch Publish (push) ${slot1} to ${slot2}",
 			"translation": "发布分支 发布（push）${slot1} 到 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.7a59b54b7c71719d75b3742aaffa48afe15c2e18a651d92fca7d312f9bc9d2ed",
 			"kind": "template",
 			"source": "<a href=\"${slot1}\">Configure autolinks</a> to linkify external references, like Jira or Zendesk tickets, in commit messages.",
 			"translation": "在提交消息中，将 Jira 或 Zendesk 工单等外部引用自动链接化，请<a href=\"${slot1}\">配置自动链接</a>。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.7b6d1e6c97b1f75e05f0cf0570cc4969a8068f8856c416c41a0ef3a701aabc04",
@@ -7594,7 +8270,10 @@
 			"kind": "template",
 			"source": "For advanced customizations, refer to the ${slot1} and edit your ${slot2}",
 			"translation": "如需高级自定义，请参阅 ${slot1} 并编辑你的 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.7b9314a02798800ae156922ec2e84097f9e098b38c35a85f0d8bbde38a323443",
@@ -7621,18 +8300,28 @@
 			"translation": "复制分支链接"
 		},
 		{
+			"id": "message.7c55c1aa2e8d22fc03925e14c7e415dbf60d5c60dfd6671cf0b50d65497735c6",
+			"kind": "literal",
+			"source": "Welcome to Commit Composer",
+			"translation": "欢迎使用提交编排器"
+		},
+		{
 			"id": "message.7c73dee261ca17e33b2d00e1f12c91af955c54b2665890a69e5b229a745cb9d4",
 			"kind": "template",
 			"source": "${slot1} view and manage all your PRs and branches from one hub",
 			"translation": "${slot1} 在一个中心查看并管理所有 PR 和分支",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.7c777f3ba896e7a88778b7401f61f42ea31976c5c81b364e59e45ab053355a34",
 			"kind": "template",
 			"source": "${slot1} left",
 			"translation": "${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.7cd1592b72982c0030fe8207bec9cb9435224fccd849ba920f41ee0c77abdf00",
@@ -7669,6 +8358,12 @@
 			"kind": "literal",
 			"source": "Tip:",
 			"translation": "提示："
+		},
+		{
+			"id": "message.7d380d875feb82cb529118bcbf3fa0242a392a02b1907468cbc5de419b8981d4",
+			"kind": "literal",
+			"source": "Composer actions",
+			"translation": "提交编排器操作"
 		},
 		{
 			"id": "message.7d5f42fcc14a6fc9275508d59c6a91939311396ae8d4f8fe3d17d6092301ff09",
@@ -7875,7 +8570,9 @@
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, explore, and manage Git remotes and remote branches",
 			"translation": "添加一个 ${slot1}，用于可视化、浏览和管理 Git 远程与远程分支",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.8079b81d457f9def20bae222ee3ee8015a09279537ef85f9d1e4a1591338e2d1",
@@ -8076,7 +8773,16 @@
 			"kind": "template",
 			"source": "<div class=\"bb-tooltip\">\n\t\t\t\t\t\t\t\t\t<div class=\"author\">${slot1}</div>\n\t\t\t\t\t\t\t\t\t<div>\n\t\t\t\t\t\t\t\t\t\t<span class=\"sha\"><span class=\"icon\"></span> ${slot2}</span>\n\t\t\t\t\t\t\t\t\t\t<span class=\"changes\">${slot3}${slot4}</span>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"date\">\n\t\t\t\t\t\t\t\t\t\t<span class=\"icon\"></span><span class=\"date--relative\">${slot5}</span><span class=\"date--absolute\">(${slot6})</span>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t${slot7}\n\t\t\t\t\t\t\t\t\t<div class=\"message\"><span class=\"message__content\">${slot8}</span></div>\n\t\t\t\t\t\t\t\t</div>",
 			"translation": "<div class=\"bb-tooltip\">\n\t\t\t\t\t\t\t\t\t<div class=\"author\">${slot1}</div>\n\t\t\t\t\t\t\t\t\t<div>\n\t\t\t\t\t\t\t\t\t\t<span class=\"sha\"><span class=\"icon\"></span> ${slot2}</span>\n\t\t\t\t\t\t\t\t\t\t<span class=\"changes\">${slot3}${slot4}</span>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t<div class=\"date\">\n\t\t\t\t\t\t\t\t\t\t<span class=\"icon\"></span><span class=\"date--relative\">${slot5}</span><span class=\"date--absolute\">(${slot6})</span>\n\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t${slot7}\n\t\t\t\t\t\t\t\t\t<div class=\"message\"><span class=\"message__content\">${slot8}</span></div>\n\t\t\t\t\t\t\t\t</div>",
-			"slots": ["slot1", "slot2", "slot3", "slot4", "slot5", "slot6", "slot7", "slot8"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4",
+				"slot5",
+				"slot6",
+				"slot7",
+				"slot8"
+			]
 		},
 		{
 			"id": "message.844564efba666c325801425e09524ca8ef5568d7d6644d716dc08762e4996b35",
@@ -8195,6 +8901,12 @@
 			"translation": ".graph-header .resizable.resizing"
 		},
 		{
+			"id": "message.85f0abf07316eff2d5ed3b08c5e46286e32080329b520d87526494e8c15945d0",
+			"kind": "literal",
+			"source": "Review and Compose Working Changes",
+			"translation": "审查并编排工作区更改"
+		},
+		{
 			"id": "message.860f0759d7d0123418f30e5eefcf1c7bfa787253feb0d0cdc55607151d8be9d7",
 			"kind": "literal",
 			"source": "Stash Staged Changes...",
@@ -8223,20 +8935,41 @@
 			"kind": "template",
 			"source": "After continuing, you will have ${slot1} to preview ${slot2} privately hosted repos. ${slot3} For full access to all GitLens Pro features, ${slot4} — no credit card required.",
 			"translation": "继续后，你将还有 ${slot1} 可预览${slot2}私有托管仓库。${slot3} 如需完整访问所有 GitLens Pro 功能，${slot4}，无需信用卡。",
-			"slots": ["slot1", "slot2", "slot3", "slot4"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4"
+			]
 		},
 		{
 			"id": "message.86761dd54759cf944eff862c6832871727012e1d262a95765bc45178d4059def",
 			"kind": "template",
 			"source": "Commit is on ${slot1} ${slot2} ${slot3}",
 			"translation": "此提交位于 ${slot1} 个${slot2}${slot3}",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.8677c5459fafcd228259f9e602ae2972e03b7e7b3a7762d0f536365919c14f88",
 			"kind": "literal",
 			"source": "Hide Tags View",
 			"translation": "隐藏标签视图"
+		},
+		{
+			"id": "message.86a1be553cccdaf1db0eeccc2aa9e6c11432938155e7222ba48b7a061ab7b081",
+			"kind": "literal",
+			"source": "Make some working directory changes and Reload or come back to this view to see how it works.",
+			"translation": "进行一些工作目录更改，然后重新加载或返回此视图以查看其工作方式。"
+		},
+		{
+			"id": "message.86d2fa007d22b2d69c919e53764e370a2790e951cf7af10d661ff3e6370a4915",
+			"kind": "literal",
+			"source": "size of commits",
+			"translation": "提交大小"
 		},
 		{
 			"id": "message.86eb418cf7bc3c13fdbf363829838a8b184569d77d836bbb2789254e2f465d33",
@@ -8249,7 +8982,13 @@
 			"kind": "template",
 			"source": "?disabled= ${slot1} href= ${slot2} appearance=\"secondary\" density=\"compact\" > ${slot3}.behind= ${slot4} slot=\"suffix\" > Push ${slot5}",
 			"translation": "?disabled= ${slot1} href= ${slot2} appearance=\"secondary\" density=\"compact\" > ${slot3}.behind= ${slot4} slot=\"suffix\" > 推送 ${slot5}",
-			"slots": ["slot1", "slot2", "slot3", "slot4", "slot5"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4",
+				"slot5"
+			]
 		},
 		{
 			"id": "message.8768982a31607dfdfd120101812546cd435e516556a61fddf9e28b1c27636b24",
@@ -8257,7 +8996,21 @@
 			"source": "class=\"branch-item__name branch-item__name--secondary\" > ${slot1}",
 			"translation": "class=\"branch-item__name branch-item__name--secondary\" > ${slot1}",
 			"format": "markdown",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
+		},
+		{
+			"id": "message.87719a4b77d49c1da17fdcab67908b2d79b39cf324eed935114c568149d39636",
+			"kind": "literal",
+			"source": "Commit Composer helps you organize changes into meaningful commits before committing them and can leverage AI to do this automatically.",
+			"translation": "提交编排器可帮助你在提交前将更改整理为有意义的提交，并可利用 AI 自动完成此操作。"
+		},
+		{
+			"id": "message.87fa48b35f5f5b2124c6c3fa0239c2037979afcde87506bfc9fcb349a8f5d7a2",
+			"kind": "literal",
+			"source": "Unknown Model",
+			"translation": "未知模型"
 		},
 		{
 			"id": "message.88160394dcdf9c9c458df577408ed7cb4041fcfcb0c14603cc9b149491d5125b",
@@ -8392,14 +9145,18 @@
 			"kind": "template",
 			"source": "${slot1} remaining",
 			"translation": "${slot1} 剩余",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.8a2592b3e0ddece2fee7e86321d13e4b278841bfb744a0767d5415b3e7949a21",
 			"kind": "template",
 			"source": "Your ${slot1} will be securely stored in your organization's self-hosted storage",
 			"translation": "你的 ${slot1} 将安全地存储在你组织的自托管存储中",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.8a39d6ba3ed972f835d52da6dece5c0cdfae1bd510665b82726e426cb5caf894",
@@ -8418,6 +9175,16 @@
 			"kind": "literal",
 			"source": "Repositories View",
 			"translation": "仓库视图"
+		},
+		{
+			"id": "message.8a69e9c03208146ce701288847531d0abf494598cc5ea565739defe655971df0",
+			"kind": "template",
+			"source": "Recompose ${slot1} ${slot2}",
+			"translation": "重新编排 ${slot1} 个${slot2}",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.8a720b05fd5e0054d52d6cc2e5c25e470670d4c6c6b05d3bf5a9ee55e1690a5e",
@@ -8442,7 +9209,9 @@
 			"kind": "template",
 			"source": "${slot1} quash",
 			"translation": "${slot1} quash",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.8abdfa9bfe80669784f2abdfeaa99e1be61c752b78f4d20c6ee33b1e8822fb15",
@@ -8481,7 +9250,9 @@
 			"kind": "template",
 			"source": "${slot1} Message copied to the clipboard",
 			"translation": "${slot1}消息已复制到剪贴板",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.8b4ba480944410b583007eecaf4244503f3d225cbe088ce097e778be0695ac5e",
@@ -8580,7 +9351,10 @@
 			"kind": "template",
 			"source": "Use a code snippet or regex, e.g. ${slot1} or ${slot2}",
 			"translation": "使用代码片段或正则表达式，例如 ${slot1} 或 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.8d0116e34a014ee0e6d495f65aee2615e17958385dbbdf6c0463d048a3e741fc",
@@ -8709,13 +9483,21 @@
 			"kind": "template",
 			"source": "${slot1} can be merged",
 			"translation": "${slot1} 可合并",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.8f29f70e1c720281ef7a8ac775ba3b4d0692a56f588948a1c7b41284d4eb1385",
 			"kind": "literal",
 			"source": "Author",
 			"translation": "作者"
+		},
+		{
+			"id": "message.8f4d8cd8ed4a319d42ebbcf9f60270f7d12399917730159737b6679838b6a48e",
+			"kind": "literal",
+			"source": "focus on certain changes",
+			"translation": "聚焦特定更改"
 		},
 		{
 			"id": "message.8f683d62b678c816aeeeb616aefb381e0b5430b0fcc241e25444923d78fdfd07",
@@ -8764,7 +9546,9 @@
 			"kind": "template",
 			"source": "Push ${slot1}",
 			"translation": "推送 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.905f32f52ff0f60c466ede24acdb2e7c01d601e4dd87b3361239cc800c290348",
@@ -8789,7 +9573,9 @@
 			"kind": "template",
 			"source": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"Open in Commit Graph\" href= ${slot1} >",
 			"translation": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"在提交图中打开\" href= ${slot1} >",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.90b2971f33b6510bf4623779e720bed9414288d48f0cbce1ce20b8e696133902",
@@ -8802,7 +9588,10 @@
 			"kind": "template",
 			"source": "${slot1} is up to date with ${slot2}",
 			"translation": "${slot1} 与 ${slot2} 保持最新",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.90ef2083f28025e94dc625998c76564793a52ff05da90dd929f5d865e78b5e72",
@@ -8828,7 +9617,9 @@
 			"source": "Specifies how to format absolute dates (e.g. using the `${date}` token) in the blame information in the status bar, when not specified `#gitlens.defaultDateFormat#` is used. Use `full`, `long`, `medium`, `short`, or a custom format, e.g. `MMMM Do, YYYY h:mma`, similar to [Moment.js formats](https://momentjs.com/docs/#/displaying/format/)",
 			"translation": "指定状态栏追溯信息中绝对日期（例如使用 `${date}` token）的格式；未指定时使用 `#gitlens.defaultDateFormat#`。可使用 `full`、`long`、`medium`、`short` 或自定义格式，例如 `MMMM Do, YYYY h:mma`，其写法类似于 [Moment.js 格式](https://momentjs.com/docs/#/displaying/format/)",
 			"format": "markdown",
-			"slots": ["date"]
+			"slots": [
+				"date"
+			]
 		},
 		{
 			"id": "message.91a2aea75aac83a0242ec85e547d69b705cdd926a055cca749a3183343ce674d",
@@ -8853,6 +9644,12 @@
 			"kind": "literal",
 			"source": "Toggles file changes annotations",
 			"translation": "切换文件更改注解"
+		},
+		{
+			"id": "message.9243003e197898868e19e630375557943092516d30484416fb2def0c8af196b8",
+			"kind": "literal",
+			"source": "Commit the changes in this draft.",
+			"translation": "提交此草稿中的更改。"
 		},
 		{
 			"id": "message.9256e89e64aade52964324313f0b688b82d15272eaa9beb999a464efda1388cf",
@@ -8889,7 +9686,9 @@
 			"kind": "template",
 			"source": "Start ${slot1} -day Pro Trial",
 			"translation": "开始 ${slot1} 天 Pro 试用",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.92cd2e945b19696db88c134a26baadb95a1a181c37f10f8c8128d0bcb0bb8d9f",
@@ -8926,7 +9725,10 @@
 			"kind": "template",
 			"source": "Custom Autolink ${slot1}${slot2}",
 			"translation": "自定义自动链接 ${slot1}${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.93175672968f066121dab8acdab273ead76b1893189784d751656686de5103f8",
@@ -9033,6 +9835,12 @@
 			"translation": "跳转到仓库视图设置"
 		},
 		{
+			"id": "message.94e393dc66a977de50c64cc94145b3d977b7243b6a3673be14a627dd1dd47027",
+			"kind": "literal",
+			"source": "You will be able to review before committing",
+			"translation": "提交前可以先审查"
+		},
+		{
 			"id": "message.95210315c0db68b348823ea863724bd1eb121f3bdc40bee58d7b7d60bb07ec1f",
 			"kind": "literal",
 			"source": "Specifies the command to be executed when the blame status bar item is clicked",
@@ -9125,7 +9933,9 @@
 			"kind": "template",
 			"source": "Connect to ${slot1} to enable the display of the Pull Request (if any) that introduced this commit",
 			"translation": "连接到 ${slot1} 以显示引入此提交的拉取请求（如果有）",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.966f59dc6a4762da76e182bd5f42c9ba49dd6be1c941c7d840afc9f9f9416338",
@@ -9214,7 +10024,10 @@
 			"kind": "template",
 			"source": "${slot1} is behind ${slot2}",
 			"translation": "${slot1} 落后于 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.97c5fc314e7665b9c3548c0bc7f5d686c2979f9376276ed8825ba5a3bc649d23",
@@ -9235,6 +10048,12 @@
 			"kind": "literal",
 			"source": "Show Author Column",
 			"translation": "显示作者列"
+		},
+		{
+			"id": "message.9809fd092d66265dec6086c9f0d84fb9fb5d8b1443587b31f66ce2e713a4490a",
+			"kind": "literal",
+			"source": "Recompose Commits",
+			"translation": "重新编排提交"
 		},
 		{
 			"id": "message.982fc5fac57ac73293a4dcf26bb37702a147681a8fca5d98be7fc379174f1714",
@@ -9295,7 +10114,9 @@
 			"kind": "template",
 			"source": "<div class=\"branches\"><span class=\"icon\"></span> ${slot1}</div>",
 			"translation": "<div class=\"branches\"><span class=\"icon\"></span> ${slot1}</div>",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.994d4d884753b747fa26a0bd2aba68d51160de1f6cbc805fe0a563082dd1071e",
@@ -9394,7 +10215,9 @@
 			"kind": "template",
 			"source": "Force Push ${slot1}",
 			"translation": "强制推送 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.9a496933c579d8ec1bbac162b6e65c5df3e1db9af9f0b0b1018f78fc899faa21",
@@ -9413,7 +10236,10 @@
 			"kind": "template",
 			"source": "Browse Repository from${slot1} Here${slot2}",
 			"translation": "浏览此处${slot1}的仓库${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.9a8d5f16878371a8b9648fb53161e5f3883d5ffc128dfd812c7c926698e1b2e6",
@@ -9432,7 +10258,9 @@
 			"kind": "template",
 			"source": "If you have opened a folder with a repository, please let us know by ${slot1}.",
 			"translation": "如果你已经打开了包含仓库的文件夹，请通过 ${slot1} 告诉我们。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.9aa1d60f1eadeb0979b38d1a2c9a83b41b9c13dd1d4d403ccc6dd376b6b75b4e",
@@ -9509,6 +10337,19 @@
 			"translation": "指纹"
 		},
 		{
+			"id": "message.9b6ff8d776e4601879843f27f78e79b3968b4eb5bf5656a78ce09eb43bdf45b5",
+			"kind": "template",
+			"source": "Providing additional instructions can help steer the AI composition for this session. ${slot1} ${slot2} Potential instructions include: ${slot3} ${slot4} You can also specify custom instructions that apply to all composer sessions with the following setting: ${slot5}",
+			"translation": "提供额外指令有助于引导本次 AI 编排。${slot1}${slot2}可用指令包括：${slot3}${slot4}你也可以通过以下设置指定适用于所有提交编排器会话的自定义指令：${slot5}",
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4",
+				"slot5"
+			]
+		},
+		{
 			"id": "message.9b78c65f0acd44db1bad292935bc1a9a08de1d532c41ea1246034ebb1f750aa9",
 			"kind": "literal",
 			"source": "Inspect Details",
@@ -9525,7 +10366,10 @@
 			"kind": "template",
 			"source": "For more options or to add your own custom modes, open the ${slot1} and search for ${slot2}",
 			"translation": "如需更多选项，或添加你自己的自定义模式，请打开 ${slot1} 并搜索 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.9c442cd9c531b013644149724f23ee9518fe0a9fa33d32416c3208626175ce0a",
@@ -9538,7 +10382,10 @@
 			"kind": "template",
 			"source": "Walkthrough Progress (${slot1}/${slot2})",
 			"translation": "演练进度 (${slot1}/${slot2})",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.9c86307fa962bb8030badf1b14febe70c26c7ed7f2d95aa8ea429a4419bce7d5",
@@ -9771,7 +10618,10 @@
 			"kind": "template",
 			"source": "${slot1} are ${slot2} by GitKraken.",
 			"translation": "${slot1}由 GitKraken ${slot2}。",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.9fb12aa4116715e4cf34a7cbc7d1c0f83549d412427dbffcfa49561a4583fc03",
@@ -9826,7 +10676,9 @@
 			"kind": "template",
 			"source": "${slot1} manage PRs and branches in one hub",
 			"translation": "${slot1} 在一个中心管理 PR 和分支",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.a0789c52bb92f68609c49b17905d3e3610f7d821cdf88f4b5e627e3a9261188d",
@@ -9853,11 +10705,19 @@
 			"translation": "（已固定）固定期间自动跟随已暂停"
 		},
 		{
+			"id": "message.a0fd87c444ca89d391e4cfa75c7ab6d8b4b9c526e34f166e16b7f7583d36c7e0",
+			"kind": "literal",
+			"source": "Generate Message",
+			"translation": "生成提交消息"
+		},
+		{
 			"id": "message.a122a2bc837eade0a5275d91f138890356dcbfdfbf77a48f4aa8a79d5db0a75a",
 			"kind": "template",
 			"source": "Example time: ${slot1}",
 			"translation": "示例时间：${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.a143fa711be16c290d10d04e1a6f685f14b8d24c2341998d0238da7db6ea4a38",
@@ -9870,7 +10730,10 @@
 			"kind": "template",
 			"source": "class=\"launchpad-action launchpad-action--attention\"> ${slot1} ${slot2} follow-up",
 			"translation": "class=\"launchpad-action launchpad-action--attention\"> ${slot1} ${slot2} 需要后续跟进",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.a16e58a8a8dda16d0fbcbd0985b74be2050096184e6f61bbbca58eb615e84d31",
@@ -9889,14 +10752,19 @@
 			"kind": "template",
 			"source": "Use a path or filename, e.g. ${slot1}, or a glob, e.g. ${slot2}",
 			"translation": "使用路径或文件名，例如 ${slot1}，或使用 glob，例如 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.a1aa490b28b5209b62e6da239ba5178748e1afdb9dcea408263f61479b6fbc22",
 			"kind": "template",
 			"source": "Switch Active Organization You are in ${slot1}",
 			"translation": "切换当前组织 你当前位于 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.a1b0b818c024b1c1703f8ec371f89bcc5444f7a580e47c8be90db93ff685bb99",
@@ -10023,6 +10891,12 @@
 			"slots": []
 		},
 		{
+			"id": "message.a43e94170843263bcd3e771203b5058bac678416e5d188a2090a523dac22383b",
+			"kind": "literal",
+			"source": "Combined commit",
+			"translation": "合并后的提交"
+		},
+		{
 			"id": "message.a47e96b6663ffee407e0b40bea3dab70da971a166431c5ddfead1995662b4402",
 			"kind": "literal",
 			"source": "Show File History",
@@ -10063,14 +10937,18 @@
 			"kind": "template",
 			"source": "Get ${slot1} days of GitLens Pro for free — no credit card required.",
 			"translation": "免费获取 ${slot1} 天 GitLens Pro，无需信用卡。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.a5354cb4f2c32105dce10c69612014f6b5ee104f18296751da24ee8ef0a55431",
 			"kind": "template",
 			"source": "Use ${slot1} key to dismiss the active file annotations",
 			"translation": "使用 ${slot1} 键关闭当前活动的文件注解",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.a55f8b9c2f5890a7c475116296353376a59f9f278dddf739472466c5eb526dec",
@@ -10101,7 +10979,10 @@
 			"kind": "template",
 			"source": "${slot1}/${slot2} commits",
 			"translation": "${slot1}/${slot2} 个提交",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.a5b7c44958633e6ef0778cb632fbd06817ca017ef8e08036b5a3d7376db47442",
@@ -10162,14 +11043,21 @@
 			"kind": "template",
 			"source": "Use a name or email, e.g. ${slot1}, ${slot2}, or ${slot3} for your own commits",
 			"translation": "使用姓名或邮箱，例如 ${slot1}、${slot2}，或使用 ${slot3} 表示你自己的提交",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.a6689afaab2112a44797c8805a3425ab9026b732f05fde5fa504b95f78b38948",
 			"kind": "template",
 			"source": "Connect to ${slot1}${slot2}",
 			"translation": "连接到 ${slot1}${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.a66e240bf6704f6892cdd80cdd8508f119d38c299ce2c2d7a5aad1bdbca32a83",
@@ -10290,14 +11178,18 @@
 			"kind": "template",
 			"source": "Last fetched ${slot1}",
 			"translation": "上次获取于 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.a891e3d687caac0e08f9f8b28aabf668f678dfc8bfdf73f11a48371b4ceabce4",
 			"kind": "template",
 			"source": "Home initialization timed out in phase: ${slot1}",
 			"translation": "主页初始化在阶段 ${slot1} 时超时",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.a893fc267358c2ebb673e4f3a8062b1ebd7b6aa65636e361df47c134f61e9158",
@@ -10329,7 +11221,9 @@
 			"source": "Specifies how to format absolute dates (e.g. using the `${date}` token) in file blame annotations, when not specified `#gitlens.defaultDateFormat#` is used. Use `full`, `long`, `medium`, `short`, or a custom format, e.g. `MMMM Do, YYYY h:mma`, similar to [Moment.js formats](https://momentjs.com/docs/#/displaying/format/)",
 			"translation": "指定文件追溯注解中绝对日期（例如使用 `${date}` token）的格式；未指定时使用 `#gitlens.defaultDateFormat#`。可使用 `full`、`long`、`medium`、`short` 或自定义格式，例如 `MMMM Do, YYYY h:mma`，其写法类似于 [Moment.js 格式](https://momentjs.com/docs/#/displaying/format/)",
 			"format": "markdown",
-			"slots": ["date"]
+			"slots": [
+				"date"
+			]
 		},
 		{
 			"id": "message.a920ad8565d6077c4899debc295bf94a8f12e97bc5e57c8de3db658912f01176",
@@ -10384,7 +11278,9 @@
 			"kind": "template",
 			"source": "Example date: ${slot1}",
 			"translation": "示例日期：${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.a9c51154e0ecfab0a79d9322001a516cb2572a35ac54465b4890333407fd5a3b",
@@ -10409,14 +11305,19 @@
 			"kind": "template",
 			"source": "${slot1} is missing its upstream ${slot2}",
 			"translation": "${slot1} 缺少其上游分支 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.a9f8086a7ce65b7f0e863b179070401f6cce445d0b16d3820b2e735dc14d7602",
 			"kind": "template",
 			"source": "<span class=\"additions\">+${slot1}</span>",
 			"translation": "<span class=\"additions\">+${slot1}</span>",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.aa09b915b5bd7d65f11b0b672405c0543025322ff968a614b84553c7991d3496",
@@ -10467,7 +11368,9 @@
 			"kind": "template",
 			"source": "Fetch ${slot1}",
 			"translation": "获取 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.ab2305f99dcc66265392830ce790dd3267f43590476fa1dde72fb5317a8237b3",
@@ -10492,7 +11395,9 @@
 			"kind": "template",
 			"source": "Connect to ${slot1} View pull requests and issues in Home, Commit Graph, Launchpad, autolinks, and more",
 			"translation": "连接到 ${slot1} 后，可在主页、Commit Graph、启动台、自动链接等位置查看拉取请求和 Issue",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.ab57deb1909b9076a7fa591341e657fae286c1e729f2c7d472566166655dcf17",
@@ -10553,14 +11458,18 @@
 			"kind": "template",
 			"source": "Home initialization aborted during phase: ${slot1}",
 			"translation": "主页初始化在阶段 ${slot1} 时已中止",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.ac4738d13b298ea92b6697143a2c34745d6b8d7429be4b9cac9cbd28ae82e48e",
 			"kind": "template",
 			"source": "${slot1} To get the most out of your GitLens Pro experience, complete the walkthrough and visit our Help Center for in-depth guides.",
 			"translation": "${slot1} 为了充分发挥 GitLens Pro 的价值，请完成此引导并访问帮助中心以获取更深入的使用指南。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.ac5ee54aeb42dde7f0b157a863cf17ce2038cf0ca9d5885b078671fa514454c7",
@@ -10611,7 +11520,9 @@
 			"kind": "template",
 			"source": "${slot1} command",
 			"translation": "${slot1} 命令",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.adc8c62012305d722c6500ef8f29d9d7cf018495a3e5970f264e37349da59c59",
@@ -10630,21 +11541,31 @@
 			"kind": "template",
 			"source": "${slot1} &mdash; easily visualize your repository and keep track of all work in progress. Use the rich commit search to find a specific commit, message, author, a changed file or files, or even a specific code change.",
 			"translation": "${slot1} &mdash; 轻松将你的仓库可视化，并跟踪所有进行中的工作。使用强大的提交搜索来查找特定提交、消息、作者、某个已更改文件或文件集，甚至特定代码更改。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.ade4d0a07370e070e6e61d76bcba9f1d04a774233019b5bfdc1eedf329b82e36",
 			"kind": "template",
 			"source": "?disabled= ${slot1} href= ${slot2} appearance=\"secondary\" density=\"compact\" > ${slot3}.behind= ${slot4} slot=\"suffix\" > Pull ${slot5}",
 			"translation": "?disabled= ${slot1} href= ${slot2} appearance=\"secondary\" density=\"compact\" > ${slot3}.behind= ${slot4} slot=\"suffix\" > 拉取 ${slot5}",
-			"slots": ["slot1", "slot2", "slot3", "slot4", "slot5"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4",
+				"slot5"
+			]
 		},
 		{
 			"id": "message.adf6924d83016b8004066c70201d013b134717d042002341d4622c396eb66e78",
 			"kind": "template",
 			"source": "Shows only relevant branches ${slot1}",
 			"translation": "仅显示相关分支 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.ae0d9a9662d433be0686af8fc09ae9eeb17840f1ca50ce5da06088e4298a7ff2",
@@ -10695,6 +11616,12 @@
 			"translation": "指定 _启动台_ 中要忽略的仓库"
 		},
 		{
+			"id": "message.af1a12d9979ef2b53625193144fb0b00e3d268218ba594372a2014af02b2dd60",
+			"kind": "literal",
+			"source": "Redo",
+			"translation": "重做"
+		},
+		{
 			"id": "message.af27b62a54da4d654545890215a52ef752ca028616acfb32a61f764ecbabcd1c",
 			"kind": "literal",
 			"source": "Dim merge commit rows",
@@ -10717,7 +11644,9 @@
 			"kind": "template",
 			"source": "Inspect Stash # ${slot1}",
 			"translation": "查看贮藏 #${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.af83af14ae0b4cf69ecb833299bc6ecea93f7472ced5b3e968c66db526c2cf68",
@@ -10736,7 +11665,11 @@
 			"kind": "template",
 			"source": "${slot1} is ${slot2} behind ${slot3}",
 			"translation": "${slot1} 比 ${slot3} 落后 ${slot2}",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.afbbdd755bf7c4326cc4e9c95c66a081b6d8d82455378e3d10e466bb2327747c",
@@ -10823,7 +11756,9 @@
 			"kind": "template",
 			"source": "${slot1} see how a file has evolved with a graph of what changed and when",
 			"translation": "${slot1} 通过图表查看文件如何演进，以及何时发生了哪些更改",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.b13e477a5cdb3e6b11031db3a2218d612711b7b9b0e6a803a18591c64f7b9446",
@@ -10854,6 +11789,15 @@
 			"kind": "literal",
 			"source": "Apply to a Branch",
 			"translation": "应用到分支"
+		},
+		{
+			"id": "message.b1cc15d8b280b742daec82b2f390adcd9ff9ca9c011c01e454f84bab4c9b19b7",
+			"kind": "template",
+			"source": "Combine ${slot1} Commits",
+			"translation": "合并 ${slot1} 个提交",
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.b1de792507069cb9801530e2d59aeb7b3febb81470b14118e93e399e37e25d99",
@@ -10934,7 +11878,11 @@
 			"kind": "template",
 			"source": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"Fetch All\" href= ${slot1} > class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"Visualize Repo History\" href= ${slot2} > class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"Open in Commit Graph\" href= ${slot3} >",
 			"translation": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"全部抓取\" href= ${slot1} > class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"可视化仓库历史\" href= ${slot2} > class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"在提交图中打开\" href= ${slot3} >",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.b33c1d24e2c23b9f42e4ddf9b6e2fcf375c77f19165573525fd6fb967d4be0f0",
@@ -10943,11 +11891,21 @@
 			"translation": "Git 删除工作树..."
 		},
 		{
+			"id": "message.b34e911d5e78d9ec80ea786c7e53f6ea9b2040775e15d29200cf92354433175a",
+			"kind": "literal",
+			"source": "Create Commits",
+			"translation": "创建提交"
+		},
+		{
 			"id": "message.b35ceee789023f4d753d9c92293ebfaa9012eca15e7cc60f9b40ca51abbd37cd",
 			"kind": "template",
 			"source": "commits in the ${slot1}, ${slot2}, or ${slot3}",
 			"translation": "${slot1}、${slot2} 或 ${slot3} 中的提交",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.b35d24285bea2d1b05119e4e35a053fdd6e8ebbbd9e400236881fa5a7a355e33",
@@ -10992,7 +11950,10 @@
 			"kind": "template",
 			"source": "Use a full or short commit SHA, e.g. ${slot1} or ${slot2}",
 			"translation": "使用完整或简短的提交 SHA，例如 ${slot1} 或 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.b4214c2af87fa25823856e911f3526f3f2c939d138eb0c4994c896e09cfb036f",
@@ -11017,7 +11978,9 @@
 			"kind": "template",
 			"source": "Switch to Another Repository... ${slot1}",
 			"translation": "切换到另一个仓库... ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.b4c24aef00a4e3b9d941e2e07b689450232123bb6cbbf34848689997ebe1aa59",
@@ -11036,7 +11999,9 @@
 			"kind": "template",
 			"source": "${slot1} instantly generate a sequence of commits with descriptive summaries in an interactive editor",
 			"translation": "${slot1} 在交互式编辑器中即时生成一组带描述性摘要的提交",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.b535725b903d558d205dbdaa63c82d13ae27daa131a2ba69283d6bf7f807d50f",
@@ -11044,7 +12009,9 @@
 			"source": "Specifies how to format absolute dates (e.g. using the `${date}` token) for the inline blame annotation, when not specified `#gitlens.defaultDateFormat#` is used. Use `full`, `long`, `medium`, `short`, or a custom format, e.g. `MMMM Do, YYYY h:mma`, similar to [Moment.js formats](https://momentjs.com/docs/#/displaying/format/)",
 			"translation": "指定行内追溯注解中绝对日期（例如使用 `${date}` token）的格式；未指定时使用 `#gitlens.defaultDateFormat#`。可使用 `full`、`long`、`medium`、`short` 或自定义格式，例如 `MMMM Do, YYYY h:mma`，其写法类似于 [Moment.js 格式](https://momentjs.com/docs/#/displaying/format/)",
 			"format": "markdown",
-			"slots": ["date"]
+			"slots": [
+				"date"
+			]
 		},
 		{
 			"id": "message.b56a12bc180a24304b1a0ec31b1f57f0bf09eb52157d06abd639b367127fbfec",
@@ -11129,14 +12096,20 @@
 			"kind": "template",
 			"source": "${slot1} ick",
 			"translation": "${slot1} ick",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.b6f1ac3f95f355b30ebfc96271e4a86be100c0cad070ac0849bc45f16f5f6ea5",
 			"kind": "template",
 			"source": "Potential Conflicts Detected This rebase will cause conflicts in ${slot1}: ${slot2} ${slot3}",
 			"translation": "检测到潜在冲突。此次变基将在 ${slot1} 中产生冲突：${slot2} ${slot3}",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.b7249a8dde1c8958cd93d6a7443f1ef8daea45f9c036a05edcdceb586fe8d466",
@@ -11247,7 +12220,9 @@
 			"kind": "template",
 			"source": "Reactivate your GitLens Pro trial and experience all the new Pro features — free for another ${slot1}.",
 			"translation": "重新激活你的 GitLens Pro 试用，再免费体验全部新的 Pro 功能，时长为 ${slot1}。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.b876085dfc7f625fcd5af8a7f193abfad575901037f87627935b728eb7d37893",
@@ -11266,6 +12241,12 @@
 			"kind": "literal",
 			"source": "Show associated pull requests on remote branches",
 			"translation": "在远程分支上显示关联的拉取请求"
+		},
+		{
+			"id": "message.b904c38937bcae65efbbc51c29fcc8ed449e224c5d8916be5857b3092290a373",
+			"kind": "literal",
+			"source": "Auto-Compose Commits is disabled",
+			"translation": "自动编排提交已禁用"
 		},
 		{
 			"id": "message.b91154ab6bd4342b982ae85b236ad1a398675dfc6ff1a3b72cac1c6c3f45dc72",
@@ -11296,7 +12277,9 @@
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, explore, and manage Git commits",
 			"translation": "添加一个 ${slot1}，用于可视化、浏览和管理 Git 提交",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.b9b009495c24c1455fcd247a97da4998835122277cae38f5a04d1c701c32057a",
@@ -11341,6 +12324,12 @@
 			"translation": "贮藏"
 		},
 		{
+			"id": "message.ba69492daa0b1aee2217bc69098a1f8f33195f692d1beefd43039445f403ed97",
+			"kind": "literal",
+			"source": "AI features are disabled",
+			"translation": "AI 功能已禁用"
+		},
+		{
 			"id": "message.ba75312c6ff0d8872db4aa8747f45ab1dcd06616a6d5878bf0384c89cae0b82b",
 			"kind": "literal",
 			"source": "Working Changes",
@@ -11351,7 +12340,10 @@
 			"kind": "template",
 			"source": "${slot1} Conflict ${slot2} Detected",
 			"translation": "检测到 ${slot1} 个冲突",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.baad243f7e20551fc9a2bf2a9bba55666acb3a4e7f6df90ee15b98eee2e4d56a",
@@ -11370,14 +12362,18 @@
 			"kind": "template",
 			"source": "Add a ${slot1} command",
 			"translation": "添加一个 ${slot1} 命令",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.baf6f5fffbe3c5a56d1b1009a8a326a82699da0be7157b6e1a6de201b207be11",
 			"kind": "template",
 			"source": "${slot1} is a local branch which hasn't been published",
 			"translation": "${slot1} 是尚未发布的本地分支",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.bafc6f47970473217a1463e7d12f7acbb25d055f14e870b38c78eaedd626bbb4",
@@ -11494,6 +12490,15 @@
 			"translation": "提交 SHA 已复制到剪贴板"
 		},
 		{
+			"id": "message.bcb2cd2bb3c9ff2ba2b9dad05561500e9809c2e71368f2dbe363d4898c2c6ba1",
+			"kind": "template",
+			"source": "Recompose ${slot1}",
+			"translation": "重新编排 ${slot1}",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.bcc48123f486b15e44c8aff82f3edfd0aa56e901df03599d66e632936030c891",
 			"kind": "literal",
 			"source": "Detach Worktrees View",
@@ -11516,7 +12521,9 @@
 			"kind": "template",
 			"source": "Adds a ${slot1}, hidden by default, to visualize, navigate, and explore the revision history of the selected lines of current file",
 			"translation": "添加一个默认隐藏的 ${slot1}，用于可视化、导航和浏览当前文件所选行的修订历史",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.bdcbe0d091f878393abb4c45ded3c908b337412ca5561433b87f1f24a5888b9a",
@@ -11541,7 +12548,9 @@
 			"kind": "template",
 			"source": "Use the ${slot1} command to toggle Review mode",
 			"translation": "使用 ${slot1} 命令来切换审阅模式",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.be1b3d8efb97f5baa7c552a0fcfe8ef27f60e4533ce349ef825eacb74c33b555",
@@ -11596,13 +12605,21 @@
 			"kind": "template",
 			"source": "Conflict Detection Unavailable ${slot1}",
 			"translation": "冲突检测不可用 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.bf0ac4467924b85bef16c8ada44bc1046749f071360419755b1712be03e31185",
 			"kind": "literal",
 			"source": "Helpful",
 			"translation": "有帮助"
+		},
+		{
+			"id": "message.bf2ae1a6822309f36fc8dc3933c147e892c9ef011525708ad584116fe9c07e45",
+			"kind": "literal",
+			"source": "Draft Commits",
+			"translation": "草稿提交"
 		},
 		{
 			"id": "message.bf2cc4b09706ab803d4a24118497bd05e8dc6f98d16fde5801a930778e1b3eca",
@@ -11615,14 +12632,24 @@
 			"kind": "template",
 			"source": "GitLens AI features have been disabled ${slot1}",
 			"translation": "GitLens AI 功能已${slot1}禁用",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.bf65f427bd2e1227208f0796a3904299e120faaa7b06eb89ff7da6003dc0c02e",
 			"kind": "template",
 			"source": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"Visualize Repo History\" href= ${slot1} >",
 			"translation": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"可视化仓库历史\" href= ${slot1} >",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
+		},
+		{
+			"id": "message.bf9abe7fb6b35a417b79c6fece9557616bdb2747d69a3e3eec2bfa8c53b4c688",
+			"kind": "literal",
+			"source": "Commit Composer Needs Something to Compose",
+			"translation": "提交编排器需要可编排的内容"
 		},
 		{
 			"id": "message.bfa8893a5c3e816c78160a8f68bc90c8bf52305464b0b4e6eaa3003e15864ab2",
@@ -11659,7 +12686,10 @@
 			"kind": "template",
 			"source": "${slot1} is ahead of ${slot2}",
 			"translation": "${slot1} 领先于 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.c0d0bfced83fd7cde413bde51b752f64019a9d2081333a0b204ce072b98803e1",
@@ -11690,7 +12720,11 @@
 			"kind": "template",
 			"source": "Fetch from ${slot1} ${slot2} ${slot3}",
 			"translation": "从 ${slot1}${slot2}${slot3} 获取",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.c14b5f388966a0514e626c24a016a26e3ba3d087d370cd52aecbd3458b1d7005",
@@ -11709,7 +12743,9 @@
 			"kind": "template",
 			"source": "No ${slot1} branches",
 			"translation": "没有${slot1}分支",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.c171efceb1ec7413de7278b27bfc014e4547af69c13934bbcf4dfe319ec2a6ea",
@@ -11724,7 +12760,9 @@
 			"kind": "template",
 			"source": "Leverage Git and your integrations (issues, PRs, etc) to provide context and perform actions in AI chat. <a href=\"${slot1}\">Learn more</a>",
 			"translation": "利用 Git 与你的集成（Issue、PR 等）为 AI 聊天提供上下文并执行操作。<a href=\"${slot1}\">了解更多</a>",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.c1b6b02b98cf4a2eab3ab3a7d08fc764a5f182e2c8873ca331a958b69decb8d1",
@@ -11797,6 +12835,12 @@
 			"translation": "指定是否在 _贡献者_ 视图中显示头像图像而不是提交（或状态）图标"
 		},
 		{
+			"id": "message.c2a2fdf782929fbb9fb1396c7188c98bee5e9afad9258d690ba0ab7613ebf5c1",
+			"kind": "literal",
+			"source": "Redo last undone action",
+			"translation": "重做上次撤销的操作"
+		},
+		{
 			"id": "message.c2a9a4e94af306c10cebab7566bb7931c846b529037307ddc3d6c03e49dc1bc2",
 			"kind": "rich",
 			"source": "Specifies an optional external diff tool to use when comparing files. Must be a configured [Git difftool](https://git-scm.com/docs/git-config#Documentation/git-config.txt-difftool).",
@@ -11815,14 +12859,19 @@
 			"kind": "template",
 			"source": "Connect hosting services like ${slot1} and issue trackers like ${slot2} to track progress and take action on PRs and issues related to your branches.",
 			"translation": "连接 ${slot1} 等托管服务以及 ${slot2} 等 Issue 跟踪器，以跟踪进度，并处理与你的分支相关的 PR 和 Issue。",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.c32bd1353e4e85ce713f7ecc89f8854e43356a9decc04def63aac8da0fa44f0c",
 			"kind": "template",
 			"source": "class=\"launchpad-action launchpad-action--mergable\"> ${slot1} can be merged",
 			"translation": "class=\"launchpad-action launchpad-action--mergable\"> ${slot1} 可合并",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.c35eb0d5cc5fed40207686ac90a0b9387c190f84a0142853dabf3501f95dc77d",
@@ -11847,7 +12896,9 @@
 			"kind": "template",
 			"source": "Shows only branches that have been starred as favorites ${slot1}",
 			"translation": "仅显示已加星标为收藏的分支 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.c3b5218086590c086db9e3ca7f1c151be5c653cbf35f9f390a8e55d82d546e2a",
@@ -11886,7 +12937,9 @@
 			"kind": "template",
 			"source": "Unable to load branch data. ${slot1}",
 			"translation": "无法加载分支数据。${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.c485fd46bac5c80e0851db45ce6e30459057f80908977bdec28a42aca39e0289",
@@ -11954,7 +13007,9 @@
 			"source": "class=\"branch-item__name branch-item__name--secondary\"> ${slot1}",
 			"translation": "class=\"branch-item__name branch-item__name--secondary\"> ${slot1}",
 			"format": "markdown",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.c64a9584a40289defc9a542b7096c2d2e3f127043623df3f6ca0f814716bbc7c",
@@ -11967,7 +13022,9 @@
 			"kind": "template",
 			"source": "${slot1} &mdash; visualize the evolution of a repository, branch, folder, or file and identify when the most impactful changes were made and by whom. Quickly see unmerged changes in files or folders, when slicing by branch.",
 			"translation": "${slot1}，可视化仓库、分支、文件夹或文件的演变，识别最有影响的更改是在何时、由谁完成的。按分支切片时，还可快速查看文件或文件夹中尚未合并的更改。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.c6c417c376a5f2060caf7f03510ffefa598b639a1e71efad71d3636f34841a06",
@@ -11980,7 +13037,9 @@
 			"kind": "template",
 			"source": "Rebase ${slot1} onto Commit...",
 			"translation": "将 ${slot1} 变基到提交...",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.c6e9f7f807a1d7da25a007d1b4d8133b66b198fa9786ffaf4dc6be4841ee8dc1",
@@ -12005,7 +13064,9 @@
 			"kind": "template",
 			"source": "Click to see ${slot1} actions",
 			"translation": "点击查看 ${slot1} 操作",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.c71e1da97316dd0eede14835a744b7a1deac2f8cebd7eb22b78f0e223168a068",
@@ -12018,14 +13079,18 @@
 			"kind": "template",
 			"source": "Add ${slot1} commands",
 			"translation": "添加 ${slot1} 命令",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.c74b05f8e410aa2a370a6bba32b803a97358512933e2faa356b714848745be42",
 			"kind": "template",
 			"source": "Query: ${slot1}",
 			"translation": "查询：${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.c76627a65bb00e449769031faf63fe5c8f9cf4d25a3ec49df2ccad332bf819f7",
@@ -12038,14 +13103,19 @@
 			"kind": "template",
 			"source": "Advantages of GitLens Pro Upgrade to Pro ${slot1} Unlimited cloud integrations Smart AI features &mdash; 250K tokens/week Powerful tools &mdash; Commit Graph, Visual History, & Git Worktrees for private repos Streamlined workflows &mdash; start work from issues, pull request reviews Upgrade to Advanced ${slot2} Self-hosted integrations Advanced AI features &mdash; 1M tokens/week",
 			"translation": "GitLens Pro 的优势 升级到 Pro ${slot1} 无限云集成 智能 AI 功能 &mdash; 每周 25 万 tokens 强大工具 &mdash; 适用于私有仓库的提交图、可视历史和 Git 工作树 精简工作流 &mdash; 从 Issue 和拉取请求评审开始工作 升级到 Advanced ${slot2} 自托管集成 高级 AI 功能 &mdash; 每周 100 万 tokens",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.c783a8bf2263818256953083689fb81637da905135382829ba4969e97ae6dc51",
 			"kind": "template",
 			"source": "${slot1} Behind Merge Target",
 			"translation": "${slot1} 落后于合并目标",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.c7d34d56aa3c5c1b2edf3f508db64fc18082c86b65975f18a4d1458f16c49688",
@@ -12134,7 +13204,9 @@
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, navigate, and explore the revision history of the current file, a specified file or folder, or just the selected lines of the current file",
 			"translation": "添加一个 ${slot1}，用于可视化、导航和浏览当前文件、指定文件或文件夹，或仅当前文件所选行的修订历史",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.c97bc0d046b1b873046577763fd41c49d150c674763ecbb809a98198a0ce072e",
@@ -12155,10 +13227,25 @@
 			"translation": "登录"
 		},
 		{
+			"id": "message.ca052540bab1fb1f0ef650351f7cf277be65496a46464f22db01f90c4075917b",
+			"kind": "literal",
+			"source": "No commits yet",
+			"translation": "尚无提交"
+		},
+		{
 			"id": "message.ca14abb5becb4880aa3320aa6d2469e3f904ef19829669974460febf8932a506",
 			"kind": "literal",
 			"source": "Copy Remote File URL From...",
 			"translation": "复制来自...的远程文件 URL"
+		},
+		{
+			"id": "message.ca30cfd50df2c8b6e47297519f43cbbec91b26b2ed989353b55a491f1f61804e",
+			"kind": "template",
+			"source": "Commit Composer ${slot1}",
+			"translation": "提交编排器 ${slot1}",
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.ca3e5d111582a27fbd8cf1369b4f3ff58c73ae0fef2d1ec6ea96b1a66590978c",
@@ -12225,13 +13312,26 @@
 			"kind": "template",
 			"source": "${slot1} The \"merge target\" is the branch that ${slot2} is most likely to be merged into.",
 			"translation": "${slot1} “合并目标”是 ${slot2} 最可能被合并到的分支。",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.cb4efad47da64f302d79a84dafc5992503fb255ff98cef50fa95de4facfb9fe2",
 			"kind": "literal",
 			"source": "shows the current file history",
 			"translation": "显示当前文件历史"
+		},
+		{
+			"id": "message.cb738694036a36469b1e1117aeb1f1b6f7c8fd880eeb4b20fb9de8a48ad91938",
+			"kind": "template",
+			"source": "Providing additional instructions can help steer the AI composition for this session. Potential instructions include: ${slot1} You can also specify custom instructions that apply to all composer sessions with the following setting: ${slot2}",
+			"translation": "提供额外指令有助于引导本次 AI 编排。可用指令包括：${slot1} 你也可以通过以下设置指定适用于所有提交编排器会话的自定义指令：${slot2}",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.cb895c37c5f2d56f7831995db35967fc7c873de3d5d91facddf12b0fdfda3f34",
@@ -12262,7 +13362,9 @@
 			"kind": "template",
 			"source": "Slice By ${slot1}",
 			"translation": "切分方式 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.cbe5c7bf53b3b2d62014fe5cec8c8f21dbd19e8366e9282574d409f83928e3f2",
@@ -12281,21 +13383,30 @@
 			"kind": "template",
 			"source": "Pull ${slot1}",
 			"translation": "拉取 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.cbf25988c73435d117b35bf0a02dde67fa859731267814c9652bfe8ed85e9358",
 			"kind": "template",
 			"source": "issue-id= ${slot1} > ${slot2} ${slot3} ${slot4}",
 			"translation": "issue-id= ${slot1} > ${slot2} ${slot3} ${slot4}",
-			"slots": ["slot1", "slot2", "slot3", "slot4"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4"
+			]
 		},
 		{
 			"id": "message.cc1d9797879387582177356cd03f115ed5a53355caa2a6e1e825b928a9beff16",
 			"kind": "template",
 			"source": "Adds a ${slot1} to see rich details for a commit",
 			"translation": "添加一个 ${slot1}，以查看某个提交的丰富详情",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.cc3ccb45040e484344bce99bf01b1b42795da61d957499ab0726e12e813c09ac",
@@ -12368,7 +13479,9 @@
 			"kind": "template",
 			"source": "${slot1} reviewers",
 			"translation": "${slot1} 需要审查者",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.cd8ffdec97ce99bea18e30afc3d404a7348153368868eb6d615652660011d290",
@@ -12399,7 +13512,10 @@
 			"kind": "template",
 			"source": "Merge ${slot1} into ${slot2}",
 			"translation": "将 ${slot1} 合并到 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.cdf3cb7f3572d04b49cbc8185fbdf63165b7cae00d3ca84b41f2305195936189",
@@ -12482,7 +13598,9 @@
 			"kind": "template",
 			"source": "This ${slot1} is not currently visible in the Commit Graph.",
 			"translation": "此 ${slot1} 当前在提交图中不可见。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.cf74003540107640a9c916d1645c41e7118ff879157c8a56cd1230a04331e1b8",
@@ -12599,7 +13717,12 @@
 			"kind": "template",
 			"source": "Continue to preview ${slot1} privately hosted repos, or ${slot2}. ${slot3} For full access to all GitLens Pro features, ${slot4} — no credit card required.",
 			"translation": "继续预览${slot1}私有托管仓库，或 ${slot2}。${slot3} 如需完整访问所有 GitLens Pro 功能，${slot4}，无需信用卡。",
-			"slots": ["slot1", "slot2", "slot3", "slot4"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4"
+			]
 		},
 		{
 			"id": "message.d1ceaf85cca2acf0c6f649900ec3f8b845224208252bb159b35cc79a50e0d579",
@@ -12636,7 +13759,9 @@
 			"kind": "template",
 			"source": "Use the ${slot1} command to override this setting for the current window",
 			"translation": "使用 ${slot1} 命令可为当前窗口覆盖此设置",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.d29f059d00a1a0075b49370c330fe947425f36029b650395fe2679c8be9299f1",
@@ -12727,7 +13852,9 @@
 			"kind": "template",
 			"source": "Adds a ${slot1} to search and explore commit histories by message, author, files, id, etc, or visualize comparisons between branches, tags, commits, and more",
 			"translation": "添加一个 ${slot1}，用于按消息、作者、文件、ID 等搜索和浏览提交历史，或可视化分支、标签、提交等之间的比较",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.d3d12a59eb4b230834ca1b77a1c622e24d7c49297cdd2fa3117adfed82320a44",
@@ -12754,7 +13881,9 @@
 			"kind": "template",
 			"source": "${slot1} is in a detached state, i.e. checked out to a commit or tag",
 			"translation": "${slot1} 处于分离头状态，即已检出到某个提交或标签",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.d46dd0543adc4f77f12771a6b4f0922327db5ad0fa432df52e8ac0417da09666",
@@ -12883,14 +14012,18 @@
 			"kind": "template",
 			"source": "Connect an integration with ${slot1} to create cross-repository pull requests",
 			"translation": "连接 ${slot1} 集成以创建跨仓库拉取请求",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.d66f9dfc1c4b639d5aaa163d9747f71a0e5671b4cce32575d180f08f555ba008",
 			"kind": "template",
 			"source": "${slot1} free for another 14 days.",
 			"translation": "${slot1}，再免费试用 14 天。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.d68caee232552046d8cf829fd7cf9dde2bd73f83a62a0141404d63033197e4e6",
@@ -12945,7 +14078,9 @@
 			"kind": "template",
 			"source": "Range ${slot1}",
 			"translation": "范围 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.d7bc25a60a313e38427787aade0dbc6a9cc27ac4daf348ea64816d4cc1f2f07e",
@@ -12954,6 +14089,12 @@
 			"translation": "作为 **GitLens Pro** 用户，你可以使用强大的工具来加速拉取请求审查、获得更深入的代码历史可视化，并简化团队协作。\n\n[继续引导](command:gitlens.walkthrough.openWalkthrough)\n\n为了充分发挥 **GitLens Pro** 的价值，请完成引导并访问帮助中心以获取更深入的使用指南。\n\n**[在帮助中心了解更多](command:gitlens.walkthrough.openHelpCenter)**",
 			"format": "markdown",
 			"slots": []
+		},
+		{
+			"id": "message.d7bd041864bf773667c8cea6da13230b608cc980940562b2860124949574b28d",
+			"kind": "literal",
+			"source": "Undo last action",
+			"translation": "撤销上次操作"
 		},
 		{
 			"id": "message.d7d599237c3f0e6067cd39f787381a23e1bedfaf675e88a0a30683d526b71a23",
@@ -12966,7 +14107,12 @@
 			"kind": "template",
 			"source": "paging in ${slot1} rows into existing ${slot2} rows at ${slot3} (last existing row: ${slot4})",
 			"translation": "将 ${slot1} 行分页加载到现有 ${slot2} 行中的 ${slot3} 位置（最后一个现有行：${slot4}）",
-			"slots": ["slot1", "slot2", "slot3", "slot4"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4"
+			]
 		},
 		{
 			"id": "message.d7e9055f77d3e46701e876d98502aaa741b26f3ff12078a24ccadc15d3f54047",
@@ -13009,7 +14155,15 @@
 			"kind": "template",
 			"source": "Use the GitLens: Toggle File Heatmap Annotations ${slot1} command to turn the annotations on or off",
 			"translation": "使用 GitLens: 切换文件热度图注解 ${slot1} 命令来开启或关闭这些注解",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
+		},
+		{
+			"id": "message.d89675744425646be47ea5d0aa496841357eef54f29ea4b7d12a1384d5c2a76a",
+			"kind": "literal",
+			"source": "Undo",
+			"translation": "撤销"
 		},
 		{
 			"id": "message.d8d8458f33b9c5960b3eca670aa8c900e1d7d0ce282a03ebffb55c97cdcc3612",
@@ -13066,7 +14220,9 @@
 			"kind": "template",
 			"source": "Change Merge Target ${slot1}",
 			"translation": "更改合并目标 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.d9bfdb5a93f68df3711c17531da3d7a5739ff697fd126208ba0c599acab8157b",
@@ -13139,14 +14295,19 @@
 			"kind": "template",
 			"source": "${slot1} commits using natural language (↑↓ for history), e.g. my commits from last week",
 			"translation": "${slot1} 提交（使用自然语言，↑↓ 查看历史），例如 上周我的提交",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.db5ed8f75427f088e459650961b3be30739f0606f39e7a291e8d16af52cd6cb8",
 			"kind": "template",
 			"source": "Open Repository on ${slot1} ${slot2}",
 			"translation": "在 ${slot1} 上打开仓库 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.db736fa5ad8f9c737ede720eba3d0a03aab8483cc48dbff29da831d0d57b3ab3",
@@ -13167,7 +14328,9 @@
 			"kind": "template",
 			"source": "Adds a ${slot1}, hidden by default, to visualize, explore, and manage Git repositories",
 			"translation": "添加一个默认隐藏的 ${slot1}，用于可视化、浏览和管理 Git 仓库",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.dbb1f3810e9ea9717a0210fa7940010fa7317dd5e98c45a1d9644e1c50d4aa5d",
@@ -13180,7 +14343,11 @@
 			"kind": "template",
 			"source": "Force Push ${slot1} to ${slot2} ${slot3}",
 			"translation": "将 ${slot1} 强制推送到 ${slot2}${slot3}",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.dbd2b329491d35ddaa1db397c3f09270b3659f25b10db799c2d1a17c9cfb396d",
@@ -13293,14 +14460,18 @@
 			"kind": "template",
 			"source": "${slot1} ahead of",
 			"translation": "领先 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.dd484a0f4676e5bda681d46b4d3446a1063424ce7e0fbfe494a56193186a64a3",
 			"kind": "template",
 			"source": "${slot1} writes commits, PRs & changelogs for you.",
 			"translation": "${slot1} 为你编写提交、PR 和更改日志",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.dd7f419e66f405f062822c014c64e6c824be699946ee7e68efbb3861bb51bd42",
@@ -13313,7 +14484,9 @@
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, explore, and manage Git worktrees",
 			"translation": "添加一个 ${slot1}，用于可视化、浏览和管理 Git 工作树",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.ddb1ad1c1fb981d79b71cb965c5720960c36e8065948cc29536334d96365041c",
@@ -13338,7 +14511,11 @@
 			"kind": "template",
 			"source": "${slot1} is ${slot2} ahead of ${slot3}",
 			"translation": "${slot1} 比 ${slot3} 超前 ${slot2}",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.de38ea1a359e214c1b24e1484622f09477207a7efeea82f602357d113a65cbca",
@@ -13531,7 +14708,9 @@
 			"kind": "template",
 			"source": "${slot1} (Both)",
 			"translation": "${slot1}（双方）",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.e17ebc836f45167074fa66f73e3787b16d79a3d8c4b3d72ed71c863365f4c079",
@@ -13552,7 +14731,9 @@
 			"kind": "template",
 			"source": "${slot1} failed CI checks",
 			"translation": "${slot1} CI 检查未通过",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.e2229facdbaf1175421c985ff9323eb06ba5499e480b9fbea53fc7a51568d657",
@@ -13571,7 +14752,9 @@
 			"kind": "template",
 			"source": "Thank you for trying ${slot1}.",
 			"translation": "感谢你试用 ${slot1}。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.e27f069dce9f2483fd482379d5d8d00b059430e78c49c00cad8a007ebea0e9e4",
@@ -13622,7 +14805,9 @@
 			"kind": "template",
 			"source": "${slot1} commits (press Enter to search, ↑↓ for history), e.g. @me after:1.week.ago file:*.ts",
 			"translation": "${slot1}提交（按 Enter 搜索，↑↓ 查看历史），例如 @me after:1.week.ago file:*.ts",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.e33e12863f3f0a56934ea636590e2fcd574ed0ad012d549112831967abfb0caf",
@@ -13647,7 +14832,9 @@
 			"kind": "template",
 			"source": "Fetch Merge Target ${slot1}",
 			"translation": "获取合并目标 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.e3bf26a56fc2e97075f67eca97dec32c7dad7a613b4fcc05b8c8971b25861a03",
@@ -13660,7 +14847,9 @@
 			"kind": "template",
 			"source": "Use the GitLens: Toggle File Changes Annotations ${slot1} command to turn the annotations on or off",
 			"translation": "使用 GitLens: 切换文件更改注解 ${slot1} 命令来开启或关闭这些注解",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.e402fa74065dbe120cfea93bca46c09d5bd12dd363b67822c419a326d61dcbbe",
@@ -13703,14 +14892,23 @@
 			"kind": "template",
 			"source": "View Options ${slot1} ${slot2} ${slot3} ${slot4} ${slot5}",
 			"translation": "视图选项 ${slot1} ${slot2} ${slot3} ${slot4} ${slot5}",
-			"slots": ["slot1", "slot2", "slot3", "slot4", "slot5"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4",
+				"slot5"
+			]
 		},
 		{
 			"id": "message.e46a44b74054fef9e349d3bc224f43c235d0e558bc6ecb44df7f56f79e50788f",
 			"kind": "template",
 			"source": "${slot1} (Preview) ${slot2}",
 			"translation": "${slot1}（预览）${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.e477908760d010f250e37315affec60f64429ffb86a9f8535dfe8bea3b304a6e",
@@ -13725,7 +14923,11 @@
 			"kind": "template",
 			"source": "Copy Link to ${slot1} for ${slot2}${slot3}",
 			"translation": "复制 ${slot2}${slot3} 的${slot1}链接",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.e47cb191c5e6466283efb66fe4f74bc2d57cec2c4267ede1d1944992a7fae593",
@@ -13836,6 +15038,12 @@
 			"translation": "指定在生成代码建议标题和描述时提供给 AI 提供商的自定义指令"
 		},
 		{
+			"id": "message.e586982e53b1d534ef408007451ed1ca6b47ed548dec96d0542d10dd7c5693ee",
+			"kind": "literal",
+			"source": "Repository State Changed",
+			"translation": "仓库状态已更改"
+		},
+		{
 			"id": "message.e58710661eb10ae8c13dce452e57eacf0faaf00cb88233350f2a488a1cc19cc7",
 			"kind": "literal",
 			"source": "Toggle Minimap",
@@ -13870,7 +15078,9 @@
 			"kind": "template",
 			"source": "${slot1} is a remote branch",
 			"translation": "${slot1} 是远程分支",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.e615e5472d9f855d313bce6c1c83fbcd26a75b8755d692a9acb6251028fe3c98",
@@ -13903,7 +15113,10 @@
 			"kind": "template",
 			"source": "Use quotes to search for phrases, e.g. ${slot1} or ${slot2}",
 			"translation": "使用引号搜索短语，例如 ${slot1} 或 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.e7b7f52a4af706f6dc994be0a72b11ef4bce7c8692ba1ef55ddd4406dddabcf4",
@@ -13960,7 +15173,9 @@
 			"kind": "template",
 			"source": "Start Rebase ${slot1}",
 			"translation": "开始变基 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.e8a04e4b4684885eefde7a6316dfad6a6202b704ab49e3bd98c8c877f6781436",
@@ -14025,7 +15240,12 @@
 			"kind": "template",
 			"source": "${slot1} is ${slot2} behind and ${slot3} ahead of ${slot4}",
 			"translation": "${slot1} 比 ${slot4} 落后 ${slot2}，并超前 ${slot3}",
-			"slots": ["slot1", "slot2", "slot3", "slot4"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4"
+			]
 		},
 		{
 			"id": "message.e9868c739c18cabe55e8d77f36a43ab13c61571118f09640346eec65b78fd124",
@@ -14078,7 +15298,9 @@
 			"kind": "template",
 			"source": "${slot1} &mdash; give 50% off and get up to $20",
 			"translation": "${slot1} &mdash; 提供 5 折优惠，并最高获得 20 美元",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.ea6670b052d26b778dd7aef193cc70c9460d87e1b7a1f0c892652c6116927116",
@@ -14091,7 +15313,9 @@
 			"kind": "template",
 			"source": "${slot1} ixup",
 			"translation": "${slot1} ixup",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.ea9b5ba0818de05b519fd813b54d2111ccdd12af7d9bc5b5c9b95af0953c80d2",
@@ -14116,7 +15340,16 @@
 			"kind": "template",
 			"source": "GitLens Walkthrough (${slot1}/${slot2})",
 			"translation": "GitLens 演练 (${slot1}/${slot2})",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
+		},
+		{
+			"id": "message.eaecb1cb61e79359033b49726734f12da8b9ca7f20cfe4a212a990a5833a4edd",
+			"kind": "literal",
+			"source": "Regenerate Message",
+			"translation": "重新生成提交消息"
 		},
 		{
 			"id": "message.eb0be255a7fb0ebab354089e9a82209f1c53aa025514d042db94762415f51baf",
@@ -14157,11 +15390,24 @@
 			"translation": "解释提交和分支："
 		},
 		{
+			"id": "message.ebaee3f011520a97d5cce126696f54965cad62cdc008520616d961746ec764a1",
+			"kind": "template",
+			"source": "Failed to ${slot1}${slot2}",
+			"translation": "无法${slot1}${slot2}",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
+		},
+		{
 			"id": "message.ebd8d9de58f636017dd447e29dfbf65aef420e96e26720560c10034224180331",
 			"kind": "template",
 			"source": "${slot1}, ${slot2} changed",
 			"translation": "${slot1}，已更改 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.ebe42290575ab0ab4ae7c94cfdeaaac4335fc391ac402035fbcf4693bcbc788a",
@@ -14230,6 +15476,12 @@
 			"translation": "下一个更改"
 		},
 		{
+			"id": "message.ecef65b4056435dca46b85654b29d2bae4a78d514a8f31e8244b787da5e65fe2",
+			"kind": "literal",
+			"source": "Include Unstaged Changes",
+			"translation": "包含未暂存的更改"
+		},
+		{
 			"id": "message.ed032a4e8276b86411aba3d70e435cce54ee301cee7f7b5f4b9c96fda9e2e584",
 			"kind": "literal",
 			"source": "View Line History",
@@ -14240,7 +15492,10 @@
 			"kind": "template",
 			"source": "Rebase ${slot1} onto ${slot2}",
 			"translation": "将 ${slot1} 变基到 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.ed215306f903feae75b04c196fe788a7ff823da24756ff2c0e13e453c72f872b",
@@ -14271,6 +15526,12 @@
 			"kind": "literal",
 			"source": "Launchpad",
 			"translation": "启动台"
+		},
+		{
+			"id": "message.edd3b6ea6ad2bc25fe79bcc1bad29d73993f693d6c2589d87b80103f0a12acc8",
+			"kind": "literal",
+			"source": "Let AI reorganize work into logical commits with clear messages and descriptions that help reviewers.",
+			"translation": "让 AI 将工作重新整理为逻辑清晰的提交，并生成清晰、有助于审查的消息和描述。"
 		},
 		{
 			"id": "message.edd9adcaeb119dd3826b6c180b50d8127a44b84e31f3573191b8d3769c327ca3",
@@ -14335,6 +15596,12 @@
 			"translation": "仅当未打开任何文件夹时，才在当前窗口中打开新工作树"
 		},
 		{
+			"id": "message.eebfc9f9d7410893654b67e1d223a594b9be73a592e0cfce5642d33497b5b788",
+			"kind": "literal",
+			"source": "Reload",
+			"translation": "重新加载"
+		},
+		{
 			"id": "message.ef0240dd989e6431f7e7820f58058ebc29ceae495d66b51af40436a3ded77f4a",
 			"kind": "rich",
 			"source": "Specifies the base color of the file heatmap annotations when the most recent change is older (cold) than the `#gitlens.heatmap.ageThreshold#` value",
@@ -14365,7 +15632,9 @@
 			"kind": "template",
 			"source": "Manage ${slot1}",
 			"translation": "管理 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.efbc3005695b11b6e221f069b6a633368b3cca4391dd426e901cb68f2797a6d7",
@@ -14402,7 +15671,9 @@
 			"kind": "template",
 			"source": "Example short date: ${slot1}",
 			"translation": "示例短日期：${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f07706d8508142ddc4bd65158a90f59ef30daef16157b33b4a86ca2a93a4db33",
@@ -14433,7 +15704,9 @@
 			"kind": "template",
 			"source": "Learn more about the ${slot1}.",
 			"translation": "进一步了解 ${slot1}。",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f10378c278f22da2ec4a270148fbdbb3b35cf5c715366ad43b707523d345e6b4",
@@ -14446,7 +15719,9 @@
 			"kind": "template",
 			"source": "${slot1} changed",
 			"translation": "${slot1} 已更改",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f10edd98b62bb6e76a96ed7584cb599be972eff33c7827e6143991a9ab7871f3",
@@ -14483,7 +15758,9 @@
 			"kind": "template",
 			"source": "--skeleton-lines: ${slot1};",
 			"translation": "--skeleton-lines: ${slot1};",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f13dd7a0211d27c84c99c92a28a1e50cee0d29d46303136819d0ed1fec6368fc",
@@ -14502,7 +15779,9 @@
 			"kind": "template",
 			"source": "${slot1} plan",
 			"translation": "${slot1} 套餐",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f175016118df8d85a7de11a340453e1009951301010f3661480220dbfc911d13",
@@ -14529,7 +15808,11 @@
 			"kind": "template",
 			"source": "Use a date string, e.g. ${slot1}, or a relative date, e.g. ${slot2} or ${slot3}",
 			"translation": "使用日期字符串，例如 ${slot1}，或相对日期，例如 ${slot2} 或 ${slot3}",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.f1ff774b8385a587f0b8c84c93d6c18b65c65878fd1b10ecb4ac0246eced999d",
@@ -14542,21 +15825,27 @@
 			"kind": "template",
 			"source": "${slot1} — visualize the evolution of a repository, branch, folder, or file and identify when the most impactful changes were made and by whom",
 			"translation": "${slot1} — 将仓库、分支、文件夹或文件的演进过程可视化，并识别何时由谁做出了最有影响力的更改",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f23beffb9f508c40cf9517b5add303269d9a4850c60614c47d45a537dbe338d2",
 			"kind": "template",
 			"source": "Visualize Folder History ${slot1}",
 			"translation": "可视化文件夹历史 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f242c8d96cde67e8f1b7d5be0ee8c0cf1325cc17584556733c65643ced657e4f",
 			"kind": "template",
 			"source": "Connected to ${slot1}",
 			"translation": "已连接到 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f2606475869b3ebad15ed10fe27cc554a71cec38d777e8ceaec8e1a66d37f55d",
@@ -14569,7 +15858,9 @@
 			"kind": "template",
 			"source": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"Fetch All\" href= ${slot1} >",
 			"translation": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"全部抓取\" href= ${slot1} >",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f29f0c0a0490f4905bdc17123b78ac0369683d9a5a19219b32c010294c8cafb6",
@@ -14606,14 +15897,19 @@
 			"kind": "template",
 			"source": "Search matched ${slot1} of ${slot2} files\nClick to show only matching files",
 			"translation": "搜索匹配了 ${slot2} 个文件中的 ${slot1} 个\\n点击仅显示匹配文件",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.f3595b2681f28db8c9d1eaf7231d8d7c07e082e7c6f8facf2c736d7b3b756558",
 			"kind": "template",
 			"source": "start your free ${slot1} -day Pro trial",
 			"translation": "开始你的免费 ${slot1} 天 Pro 试用",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f372ff93c973c8b7198a3bb4714a0b03d0142ff7748ef0e81ed82fc52eae6228",
@@ -14662,14 +15958,18 @@
 			"kind": "template",
 			"source": "Switch to Another Branch... ${slot1}",
 			"translation": "切换到其他分支... ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f420120aced45f5c6b9ef640cfa4175796d23b50ae6bf6abf125bcd8db6c5238",
 			"kind": "template",
 			"source": "Rebase paused for rewording at ${slot1}",
 			"translation": "变基已暂停以改写 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f42124447a832b47283d312422e7d60941e7d4eac730101cfbd4961a6da761cc",
@@ -14696,6 +15996,12 @@
 			"translation": "使用展开图表列"
 		},
 		{
+			"id": "message.f47348ca6a5dcad7104eb64d4f2e45f6018e95333b87cfb161f704ee3a8edc39",
+			"kind": "literal",
+			"source": "Generating Commits...",
+			"translation": "正在生成提交..."
+		},
+		{
 			"id": "message.f4cf694708d8031795f6580eaef5b5146c13c20637f55ecf1b1a2fddc2b19e88",
 			"kind": "literal",
 			"source": "Inspect Commit Details",
@@ -14720,7 +16026,9 @@
 			"kind": "template",
 			"source": "Branch ${slot1}Merged into Merge Target",
 			"translation": "分支 ${slot1} 已合并到合并目标",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f507075414494e2d052bd744e2d2840bae6eb5b157c410c378406ee5304b4825",
@@ -14733,6 +16041,12 @@
 			"kind": "literal",
 			"source": "Enable AI Features...",
 			"translation": "启用 AI 功能..."
+		},
+		{
+			"id": "message.f524928bb4d671b77bf2338a94a6244e0a48345317976d8d173908f1761f821b",
+			"kind": "literal",
+			"source": "Choose AI Model",
+			"translation": "选择 AI 模型"
 		},
 		{
 			"id": "message.f5394f3bfcce9074ef3944a6013920c2fcc813835bf36a34b3a638c54d4bf13d",
@@ -14809,7 +16123,9 @@
 			"kind": "template",
 			"source": "Add an ${slot1} command",
 			"translation": "添加一个 ${slot1} 命令",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f714e661e31c16c323acb1f88f125ff3539c6631ef5deaf475f5f0b78ee3d2b7",
@@ -14822,7 +16138,9 @@
 			"kind": "template",
 			"source": "Explain Changes in this ${slot1}",
 			"translation": "解释此 ${slot1} 中的更改",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f7217725ad6ce2998fc2fdd31f7f074cc1dbdabeb8cb378bea52d09427a7aa55",
@@ -14853,7 +16171,9 @@
 			"kind": "template",
 			"source": "Smart Branches ${slot1}",
 			"translation": "智能分支 ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f7cee18d6322f660e5e87c03f1a182e0eb22765996125fab9c776e2d6a54be7c",
@@ -14874,7 +16194,11 @@
 			"kind": "template",
 			"source": "${slot1} Conflict ${slot2} Detected ${slot3}",
 			"translation": "检测到 ${slot1} 个冲突${slot2}${slot3}",
-			"slots": ["slot1", "slot2", "slot3"]
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.f7f6e90503dc68656f50455e76d231952a52680cb30c520782068d9aff3554a5",
@@ -14935,7 +16259,9 @@
 			"kind": "template",
 			"source": "${slot1} (Committer)",
 			"translation": "${slot1}（提交者）",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f905b68040656aa169614c72c2fe640f699f693ce3d0cfa87f85b27bee622c76",
@@ -14986,7 +16312,9 @@
 			"kind": "template",
 			"source": "Connect to ${slot1}...",
 			"translation": "连接到 ${slot1}...",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.f9ff4d27f9fbbb4869011e70feae1da01ef3ac436216b164113838d52a3527d7",
@@ -15067,6 +16395,12 @@
 			"translation": "工作树视图 (ᴘʀᴏ)"
 		},
 		{
+			"id": "message.fb6ee4c973680361de544c27cdb66de4a6dd4e62fd78465bbfc003056502236d",
+			"kind": "literal",
+			"source": "Auto-composition Summary",
+			"translation": "自动编排摘要"
+		},
+		{
 			"id": "message.fba4013cd16a7ae6456527c4bdf4c9aa4db8a891775fe1b21ef1134113179ea5",
 			"kind": "literal",
 			"source": "Sort Branches by Date",
@@ -15115,14 +16449,19 @@
 			"kind": "template",
 			"source": "class=\"launchpad__grouping\" > ${slot1}",
 			"translation": "class=\"launchpad__grouping\" > ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.fc55d873f0b4f8ad8bf7d5e6630efd8045b9b7beef16430822228fc30d6230b6",
 			"kind": "template",
 			"source": "Describe what you're looking for and let AI build the query, e.g. ${slot1} or ${slot2}",
 			"translation": "描述你要查找的内容，让 AI 构建查询，例如 ${slot1} 或 ${slot2}",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.fc5e210e3e13d4075f2014be52a2e03d16bbd4db63d827dd610e069cd88c4e88",
@@ -15191,7 +16530,9 @@
 			"kind": "template",
 			"source": "$(git-branch) ${slot1}",
 			"translation": "$(git-branch) ${slot1}",
-			"slots": ["slot1"]
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.fe4a7e5a21b29314016cbae3e1da33eff382c6edb09d8705aba160a91ea28de1",
@@ -15256,7 +16597,10 @@
 			"kind": "template",
 			"source": "?disabled= ${slot1} href= ${slot2} appearance=\"secondary\" tooltip=\"Share as Cloud Patch\" >",
 			"translation": "?disabled= ${slot1} href= ${slot2} appearance=\"secondary\" tooltip=\"共享为云补丁\" >",
-			"slots": ["slot1", "slot2"]
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.ff1c9c2ef99ef688e4147e178ddac1c45b3450f83e052e2f381be8c20af6f026",

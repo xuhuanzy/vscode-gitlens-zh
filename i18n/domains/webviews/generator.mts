@@ -50,6 +50,8 @@ const translatableJsxAttributeNames = new Set([
 	'secondary-button',
 ]);
 const translatableAttributesByTag = new Map([['gl-tooltip', new Set(['content'])]]);
+const translatablePropertyAssignmentNames = new Set(['title']);
+const translatablePropertyDeclarationNames = new Set(['explanationLabel', 'placeholder']);
 
 export function generateLocalizedHtmlSourceFile(
 	englishHtml: string,
@@ -180,6 +182,25 @@ export function generateLocalizedSourceFile(
 			unresolvedCount += localized.unresolvedCount;
 
 			if (localized.value != null) {
+				replacements.push({
+					start: node.initializer.getStart(sourceFile),
+					end: node.initializer.getEnd(),
+					value: localized.value,
+				});
+			}
+		}
+
+		if (ts.isPropertyDeclaration(node)) {
+			const localized = localizeImperativePropertyDeclaration(
+				node,
+				sourceFile,
+				availableSourceTexts,
+				resolvedBySourceText,
+			);
+			translatedCount += localized.translatedCount;
+			unresolvedCount += localized.unresolvedCount;
+
+			if (localized.value != null && node.initializer != null) {
 				replacements.push({
 					start: node.initializer.getStart(sourceFile),
 					end: node.initializer.getEnd(),
@@ -698,7 +719,7 @@ function localizeImperativePropertyAssignment(
 	resolvedBySourceText: ReadonlyMap<string, ResolvedTranslation>,
 ): { readonly value?: string; readonly translatedCount: number; readonly unresolvedCount: number } {
 	const propertyName = getPropertyName(node.name);
-	if (propertyName !== 'title') {
+	if (propertyName == null || !translatablePropertyAssignmentNames.has(propertyName)) {
 		return {
 			translatedCount: 0,
 			unresolvedCount: 0,
@@ -723,6 +744,54 @@ function localizeImperativePropertyAssignment(
 
 	const value = JSON.stringify(resolved.pattern.text);
 	const currentValue = sourceFile.text.slice(node.initializer.getStart(sourceFile), node.initializer.getEnd());
+
+	return {
+		value: value === currentValue ? undefined : value,
+		translatedCount: 1,
+		unresolvedCount: 0,
+	};
+}
+
+function localizeImperativePropertyDeclaration(
+	node: ts.PropertyDeclaration,
+	sourceFile: ts.SourceFile,
+	availableSourceTexts: ReadonlySet<string>,
+	resolvedBySourceText: ReadonlyMap<string, ResolvedTranslation>,
+): { readonly value?: string; readonly translatedCount: number; readonly unresolvedCount: number } {
+	const propertyName = getPropertyName(node.name);
+	if (propertyName == null || !translatablePropertyDeclarationNames.has(propertyName)) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+
+	const initializer = node.initializer;
+	if (initializer == null) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+
+	const text = getStaticStringValue(initializer);
+	if (text == null || !availableSourceTexts.has(text)) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+
+	const resolved = resolvedBySourceText.get(text);
+	if (resolved == null) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 1,
+		};
+	}
+
+	const value = JSON.stringify(resolved.pattern.text);
+	const currentValue = sourceFile.text.slice(initializer.getStart(sourceFile), initializer.getEnd());
 
 	return {
 		value: value === currentValue ? undefined : value,
@@ -1078,11 +1147,11 @@ function functionProducesDisplay(node: ts.Node, sourceFile: ts.SourceFile): bool
 }
 
 function looksLikeDisplayProducerName(name: string): boolean {
-	return /(label|message|placeholder|render|text|title|tooltip)/iu.test(name);
+	return /(displayName|label|message|placeholder|render|text|title|tooltip)/iu.test(name);
 }
 
 function looksLikeTextReturnProducerName(name: string): boolean {
-	return /(label|message|placeholder|text|title|tooltip)/iu.test(name);
+	return /(displayName|label|message|placeholder|text|title|tooltip)/iu.test(name);
 }
 
 function bodyContainsHtmlTemplate(node: ts.Node, sourceFile: ts.SourceFile): boolean {
@@ -1139,7 +1208,7 @@ function isDisplayAssignmentTarget(node: ts.Node): boolean {
 }
 
 function looksLikeDisplayAssignmentTargetName(name: string): boolean {
-	return /^(?:label|message|title|tooltip|placeholder|ariaLabel)$/iu.test(name);
+	return /^(?:label|message|title|tooltip|placeholder|ariaLabel|validityMessage)$/iu.test(name);
 }
 
 function variableDeclarationFlowsToDisplay(node: ts.VariableDeclaration, sourceFile: ts.SourceFile): boolean {

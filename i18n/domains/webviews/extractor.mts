@@ -74,7 +74,8 @@ const translatableAttributes = new Set([
 	'secondary-button',
 ]);
 const translatableAttributesByTag = new Map([['gl-tooltip', new Set(['content'])]]);
-const translatablePropertyNames = new Set(['title']);
+const translatablePropertyAssignmentNames = new Set(['title']);
+const translatablePropertyDeclarationNames = new Set(['explanationLabel', 'placeholder']);
 const localizationHelperNames = new Set(['localizeWebviewText', 'localizeWebviewTemplate']);
 const litTemplateTagNames = new Set(['html']);
 
@@ -170,6 +171,13 @@ function extractSourceMatches(target: RuntimeSourceTarget, issues: CatalogIssue[
 
 		if (ts.isPropertyAssignment(node)) {
 			const propertyMatches = extractImperativePropertyMatches(target, node, sourceFile);
+			if (propertyMatches.length !== 0) {
+				matches.push(...propertyMatches);
+			}
+		}
+
+		if (ts.isPropertyDeclaration(node)) {
+			const propertyMatches = extractImperativePropertyDeclarationMatches(target, node, sourceFile);
 			if (propertyMatches.length !== 0) {
 				matches.push(...propertyMatches);
 			}
@@ -460,7 +468,7 @@ function extractImperativePropertyMatches(
 	sourceFile: ts.SourceFile,
 ): MatchDefinition[] {
 	const propertyName = getPropertyName(node.name);
-	if (propertyName == null || !translatablePropertyNames.has(propertyName)) return [];
+	if (propertyName == null || !translatablePropertyAssignmentNames.has(propertyName)) return [];
 
 	const text = getStaticStringValue(node.initializer);
 	if (text == null || !isTranslatableSourceText(text)) return [];
@@ -471,6 +479,33 @@ function extractImperativePropertyMatches(
 			kind: 'text',
 			start: node.initializer.getStart(sourceFile),
 			end: node.initializer.getEnd(),
+			text: text,
+			context: `imperative.property-${propertyName}.${line + 1}.${character + 1}`,
+			sourceKind: 'imperative',
+		},
+	];
+}
+
+function extractImperativePropertyDeclarationMatches(
+	target: RuntimeSourceTarget,
+	node: ts.PropertyDeclaration,
+	sourceFile: ts.SourceFile,
+): MatchDefinition[] {
+	const propertyName = getPropertyName(node.name);
+	if (propertyName == null || !translatablePropertyDeclarationNames.has(propertyName)) return [];
+
+	const initializer = node.initializer;
+	if (initializer == null) return [];
+
+	const text = getStaticStringValue(initializer);
+	if (text == null || !isTranslatableSourceText(text)) return [];
+
+	const { line, character } = ts.getLineAndCharacterOfPosition(sourceFile, initializer.getStart(sourceFile));
+	return [
+		{
+			kind: 'text',
+			start: initializer.getStart(sourceFile),
+			end: initializer.getEnd(),
 			text: text,
 			context: `imperative.property-${propertyName}.${line + 1}.${character + 1}`,
 			sourceKind: 'imperative',
@@ -565,7 +600,7 @@ function shouldExtractImperativeDisplayNode(
 	if (ts.isJsxExpression(node.parent) && ts.isJsxAttribute(node.parent.parent)) return false;
 	if (ts.isPropertyAssignment(node.parent)) {
 		const propertyName = getPropertyName(node.parent.name);
-		if (propertyName != null && translatablePropertyNames.has(propertyName)) return false;
+		if (propertyName != null && translatablePropertyAssignmentNames.has(propertyName)) return false;
 	}
 	if (ts.isCallExpression(node.parent)) {
 		const helperName = getCallIdentifier(node.parent.expression);
@@ -667,11 +702,11 @@ function functionProducesDisplay(node: ts.Node, sourceFile: ts.SourceFile): bool
 }
 
 function looksLikeDisplayProducerName(name: string): boolean {
-	return /(label|message|placeholder|render|text|title|tooltip)/iu.test(name);
+	return /(displayName|label|message|placeholder|render|text|title|tooltip)/iu.test(name);
 }
 
 function looksLikeTextReturnProducerName(name: string): boolean {
-	return /(label|message|placeholder|text|title|tooltip)/iu.test(name);
+	return /(displayName|label|message|placeholder|text|title|tooltip)/iu.test(name);
 }
 
 function bodyContainsHtmlTemplate(node: ts.Node, sourceFile: ts.SourceFile): boolean {
@@ -729,7 +764,7 @@ function isDisplayAssignmentTarget(node: ts.Node): boolean {
 }
 
 function looksLikeDisplayAssignmentTargetName(name: string): boolean {
-	return /^(?:label|message|title|tooltip|placeholder|ariaLabel)$/iu.test(name);
+	return /^(?:label|message|title|tooltip|placeholder|ariaLabel|validityMessage)$/iu.test(name);
 }
 
 function variableDeclarationFlowsToDisplay(node: ts.VariableDeclaration, sourceFile: ts.SourceFile): boolean {
@@ -979,11 +1014,55 @@ function looksLikeImperativeDisplayText(text: string, node: ts.StringLiteralLike
 	if (/^[.#]?[a-z][\w-]*(?:--[\w-]+)+(?:\s+[.#]?[a-z][\w-]*(?:--[\w-]+)+)*$/u.test(trimmed)) return false;
 	if (/[<>=]/u.test(text) && /\b(?:class|role|aria-|tabindex|href|slot|style|content)\b/u.test(text)) return false;
 	if (/^(?:[.#]?[a-z][\w-]*)(?:\s+[.#]?[a-z][\w-]*)+$/u.test(trimmed)) return false;
-	if (/^[a-z0-9_.:/-]+$/u.test(text)) return false;
+	if (isFileCountUnitConditionalBranch(node)) return true;
+	if (/^[a-z0-9_.:/-]+$/u.test(trimmed)) return false;
+	if (/^[A-Z][A-Z0-9._-]*$/u.test(trimmed)) return false;
 	if (/^[A-Z][a-z]+[A-Z][A-Za-z]*$/u.test(text)) return false;
+	if (/^[A-Z][a-z]+ing(?:[.!?…]+)?$/u.test(trimmed)) return true;
 	if (/\s/u.test(text)) return true;
 	if (/^[A-Z][a-z]+(?:\s|$)/u.test(text)) return true;
 	if (isImperativeDisplayPropertyValue(node.parent)) return true;
+
+	return false;
+}
+
+function isFileCountUnitConditionalBranch(node: ts.StringLiteralLike | ts.TemplateExpression): boolean {
+	if (!ts.isStringLiteralLike(node)) return false;
+	if (node.text !== 'file' && node.text !== 'files') return false;
+
+	const conditional = node.parent;
+	if (!ts.isConditionalExpression(conditional)) return false;
+
+	const whenTrue = getStaticStringValue(conditional.whenTrue);
+	const whenFalse = getStaticStringValue(conditional.whenFalse);
+	if (whenTrue !== 'file' || whenFalse !== 'files') return false;
+
+	return expressionFlowsToLitText(conditional);
+}
+
+function expressionFlowsToLitText(expression: ts.Expression): boolean {
+	let current: ts.Node = expression;
+	let parent = expression.parent;
+
+	while (parent != null) {
+		if (ts.isParenthesizedExpression(parent) || ts.isAsExpression(parent) || ts.isNonNullExpression(parent)) {
+			current = parent;
+			parent = parent.parent;
+			continue;
+		}
+
+		if (ts.isTemplateSpan(parent) && parent.expression === current) {
+			return templateSpanDisplayContext(parent) === true;
+		}
+
+		if (ts.isConditionalExpression(parent) && (parent.whenTrue === current || parent.whenFalse === current)) {
+			current = parent;
+			parent = parent.parent;
+			continue;
+		}
+
+		return false;
+	}
 
 	return false;
 }

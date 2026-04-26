@@ -83,6 +83,8 @@ const translatableContentTags = new Set([
 	'gl-checkbox',
 	'gl-radio',
 ]);
+const preservedStructuralContentTags = new Set(['ol', 'ul']);
+const slottedStructuralSlotTags = new Set(['br', 'hr']);
 const slotOnlyTags = new Set(['a', 'button', 'kbd', 'code', 'select', 'textarea', 'input', 'b', 'strong', 'i', 'em']);
 const ignoredPatternTags = new Set(['img', 'svg']);
 
@@ -523,6 +525,14 @@ function shouldRepresentElementAsSlot(element: HtmlElementNode, parent: HtmlElem
 		return true;
 	}
 
+	if (preservedStructuralContentTags.has(element.tag)) {
+		return true;
+	}
+
+	if (slottedStructuralSlotTags.has(element.tag) && isStructuredPopoverContent(parent)) {
+		return true;
+	}
+
 	if (element.tag === 'div') {
 		return getClassList(element).includes('select-container');
 	}
@@ -550,6 +560,17 @@ function shouldRepresentElementAsSlot(element: HtmlElementNode, parent: HtmlElem
 function shouldPreserveAsDynamicSlot(element: HtmlElementNode): boolean {
 	return (
 		element.attributes['data-setting-preview'] != null || element.attributes['data-setting-preview-type'] != null
+	);
+}
+
+function isStructuredPopoverContent(element: HtmlElementNode): boolean {
+	return (
+		element.tag === 'div' &&
+		element.attributes.slot === 'content' &&
+		element.parent?.tag === 'gl-popover' &&
+		element.children.some(
+			child => child.kind === 'element' && preservedStructuralContentTags.has(child.tag),
+		)
 	);
 }
 

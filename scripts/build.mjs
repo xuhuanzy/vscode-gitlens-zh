@@ -29,24 +29,37 @@ const env = {
 	FORCE_COLOR: '1',
 };
 
+const allWebviews = [
+	'commitDetails',
+	'composer',
+	'graph',
+	'home',
+	'patchDetails',
+	'rebase',
+	'settings',
+	'timeline',
+	'welcome',
+];
+
 const shouldBuildWebviews = Boolean(build?.includes('webviews')) || Boolean(webviews?.length) || build == null;
-const localizedWebviews = webviews?.filter(webview => isLocalizedDynamicWebview(webview));
-const regularWebviews = webviews?.filter(webview => !isLocalizedDynamicWebview(webview));
+const selectedWebviews = webviews ?? allWebviews;
+const localizedWebviews = selectedWebviews.filter(webview => isLocalizedDynamicWebview(webview));
+const regularWebviews = selectedWebviews.filter(webview => !isLocalizedDynamicWebview(webview));
 const shouldBuildLocalizedWebviews =
-	shouldBuildWebviews && (webviews == null || webviews.length === 0 || (localizedWebviews?.length ?? 0) !== 0);
+	shouldBuildWebviews && (webviews == null || webviews.length === 0 || localizedWebviews.length !== 0);
 const shouldBuildRegularWebviews =
-	shouldBuildWebviews && (webviews == null || regularWebviews == null || regularWebviews.length !== 0);
+	shouldBuildWebviews && (webviews == null || regularWebviews.length !== 0);
 const webviewsEnv =
 	webviews == null
 		? undefined
 		: shouldBuildLocalizedWebviews && !shouldBuildRegularWebviews
-			? localizedWebviews?.join(',')
+			? localizedWebviews.join(',')
 			: webviews.join(',');
 
 function appendRegularWebviewConfigName() {
 	if (!shouldBuildRegularWebviews) return;
 
-	if (regularWebviews?.length === 1) {
+	if (webviews != null && regularWebviews.length === 1) {
 		cmd += ` --config-name webviews:${regularWebviews[0]}`;
 	} else {
 		cmd += ` --config-name webviews`;

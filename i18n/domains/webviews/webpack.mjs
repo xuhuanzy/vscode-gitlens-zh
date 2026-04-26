@@ -117,6 +117,8 @@ function getLocalizedWebviewEntry(name) {
 			return 'src/webviews/apps/plus/timeline/timeline.ts';
 		case 'graph':
 			return 'src/webviews/apps/plus/graph/graph.ts';
+		case 'composer':
+			return 'src/webviews/apps/plus/composer/composer.ts';
 		default:
 			return undefined;
 	}

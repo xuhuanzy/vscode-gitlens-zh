@@ -8,6 +8,54 @@
 		{
 			"selector": {
 				"kind": "occurrence",
+				"occurrenceId": "webviews:webviews.composer.composer.imperative-display-1164-59.text.0b8c8030cc#text"
+			},
+			"translationPattern": {
+				"kind": "literal",
+				"text": "个文件"
+			},
+			"updatedAt": "2026-04-26T10:37:32.854Z",
+			"note": "Narrows English file-count unit translation to composer count display."
+		},
+		{
+			"selector": {
+				"kind": "occurrence",
+				"occurrenceId": "webviews:webviews.composer.composer.imperative-display-1164-68.text.4088cc4ac8#text"
+			},
+			"translationPattern": {
+				"kind": "literal",
+				"text": "个文件"
+			},
+			"updatedAt": "2026-04-26T10:37:32.854Z",
+			"note": "Narrows English file-count unit translation to composer count display."
+		},
+		{
+			"selector": {
+				"kind": "occurrence",
+				"occurrenceId": "webviews:webviews.composer.composer.imperative-display-156-74.text.8c6b00790b#text"
+			},
+			"translationPattern": {
+				"kind": "literal",
+				"text": "个文件"
+			},
+			"updatedAt": "2026-04-26T10:37:32.854Z",
+			"note": "Narrows English file-count unit translation to composer count display."
+		},
+		{
+			"selector": {
+				"kind": "occurrence",
+				"occurrenceId": "webviews:webviews.composer.composer.imperative-display-156-83.text.a31968f73f#text"
+			},
+			"translationPattern": {
+				"kind": "literal",
+				"text": "个文件"
+			},
+			"updatedAt": "2026-04-26T10:37:32.854Z",
+			"note": "Narrows English file-count unit translation to composer count display."
+		},
+		{
+			"selector": {
+				"kind": "occurrence",
 				"occurrenceId": "webviews:webviews.home.home.imperative-display-255-17.text.236db107e2#text"
 			},
 			"translationPattern": {
@@ -52,7 +100,10 @@
 			"translationPattern": {
 				"kind": "template",
 				"text": "${slot1} 已阻塞（${slot3}）",
-				"slots": ["slot1", "slot3"]
+				"slots": [
+					"slot1",
+					"slot3"
+				]
 			},
 			"updatedAt": "2026-04-24T18:05:11.563Z",
 			"note": "Drops English agreement helper from Launchpad generated display text."
@@ -65,7 +116,9 @@
 			"translationPattern": {
 				"kind": "template",
 				"text": "${slot1} 需要后续跟进",
-				"slots": ["slot1"]
+				"slots": [
+					"slot1"
+				]
 			},
 			"updatedAt": "2026-04-24T18:05:11.563Z",
 			"note": "Drops English agreement helper from Launchpad generated display text."
@@ -78,7 +131,9 @@
 			"translationPattern": {
 				"kind": "template",
 				"text": "${slot1} 需要你审查",
-				"slots": ["slot1"]
+				"slots": [
+					"slot1"
+				]
 			},
 			"updatedAt": "2026-04-24T18:05:11.563Z",
 			"note": "Drops English agreement helper from Launchpad generated display text."
@@ -91,7 +146,10 @@
 			"translationPattern": {
 				"kind": "template",
 				"text": "检测到 ${slot1} 个冲突${slot3}",
-				"slots": ["slot1", "slot3"]
+				"slots": [
+					"slot1",
+					"slot3"
+				]
 			},
 			"updatedAt": "2026-04-24T18:05:11.563Z",
 			"note": "Drops English plural suffix helper from Rebase generated display text."

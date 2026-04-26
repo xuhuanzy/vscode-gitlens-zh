@@ -45,7 +45,7 @@ import {
 } from './store.mts';
 
 interface DynamicSourceTarget {
-	readonly bundle: 'welcome' | 'rebase' | 'home' | 'commitDetails' | 'timeline' | 'graph';
+	readonly bundle: 'welcome' | 'rebase' | 'home' | 'commitDetails' | 'timeline' | 'graph' | 'composer';
 	readonly directories?: readonly string[];
 	readonly files?: readonly string[];
 }
@@ -98,6 +98,10 @@ const supportedDynamicSourceTargets: readonly DynamicSourceTarget[] = [
 	{
 		bundle: 'graph',
 		directories: ['src/webviews/apps/plus/graph'],
+	},
+	{
+		bundle: 'composer',
+		directories: ['src/webviews/apps/plus/composer'],
 	},
 ];
 

@@ -3,14 +3,17 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
+import { createLiteralPattern } from '../../../core/model.mts';
 import { writeTextFile as writeStoreTextFile } from '../../../core/store.mts';
 import { createWebviewsDomainContext } from '../context.mts';
 import {
+	loadAuthorityBundle,
 	loadWebviewsCatalog,
 	loadWebviewsReconciliationReport,
 	loadWebviewsWorkset,
 	loadLocalizedDynamicSource,
 	loadLocalizedHtmlSource,
+	saveAuthorityBundle,
 	saveWebviewsCatalog,
 	saveWebviewsWorkset,
 } from '../store.mts';
@@ -42,6 +45,7 @@ function run(): void {
 	testLocalizedSourcePluginUpdatesModuleContext();
 	testWriteTextFileSkipsUnchangedWrites();
 	testSupportedDynamicBundlesGenerateLocalizedSources();
+	testComposerLocalizedSourceWorkflow();
 	testRebaseShortcutFooterIsNotExtracted();
 	testStructuralSlotOnlyTemplatesAreNotExtracted();
 	testLaunchpadGrammarHelpersAreNotExtracted();
@@ -419,6 +423,7 @@ function testLocalizedWebpackWatchIgnoresGeneratedArtifacts(): void {
 
 function testSettingsIsLocalizedWebpackTarget(): void {
 	assert.equal(isLocalizedDynamicWebview('settings'), true);
+	assert.equal(isLocalizedDynamicWebview('composer'), true);
 }
 
 function testLocalizedSourcePluginUpdatesModuleContext(): void {
@@ -606,6 +611,232 @@ function testSupportedDynamicBundlesGenerateLocalizedSources(): void {
 			),
 			true,
 		);
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+}
+
+function testComposerLocalizedSourceWorkflow(): void {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-webview-composer-source-'));
+	try {
+		writeDefaultSettingsSource(rootDir);
+		writeTextFile(
+			rootDir,
+			'src/webviews/apps/plus/composer/composer.ts',
+			[
+				"import { html } from 'lit';",
+				"import './components/commits-panel.js';",
+				'export function renderComposer() {',
+				'\treturn html`<gl-commits-panel></gl-commits-panel>`;',
+				'}',
+				'',
+			].join('\n'),
+		);
+		writeTextFile(
+			rootDir,
+			'src/webviews/apps/plus/composer/components/commit-item.ts',
+			[
+				"import { html } from 'lit';",
+				'export class CommitItem {',
+				'\tfileCount = 0;',
+				"\tmessage = '';",
+				'\trender() {',
+				'\t\tconst isPlaceholder = !this.message;',
+				"\t\treturn html`<div><span>${isPlaceholder ? 'Draft commit (add a commit message)' : this.message}</span><span>${this.fileCount} ${this.fileCount === 1 ? 'file' : 'files'}</span></div>`;",
+				'\t}',
+				'}',
+				'',
+			].join('\n'),
+		);
+		writeTextFile(
+			rootDir,
+			'src/webviews/apps/plus/composer/components/commit-message.ts',
+			[
+				"import { html } from 'lit';",
+				"import { when } from 'lit/directives/when.js';",
+				'export class CommitMessage {',
+				'\taiGenerated = false;',
+				'\taiEnabled = false;',
+				'\taiDisabledReason: string | null = null;',
+				'\tgenerating = false;',
+				"\texplanation = '';",
+				"\tmessage = '';",
+				"\texplanationLabel?: string = 'Auto-composition Summary:';",
+				"\tplaceholder: string = 'Enter commit message...';",
+				'\tprivate onGenerateCommitMessageClick() {}',
+				'\tprivate renderHelpText() {',
+				'\t\treturn html`<div class="message" id="help-text" aria-live="polite"></div>`;',
+				'\t}',
+				'\tprivate renderEditable() {',
+				'\t\treturn html`',
+				'\t\t\t<div class="commit-message__field">',
+				'\t\t\t\t<textarea',
+				'\t\t\t\t\tclass="commit-message__input"',
+				'\t\t\t\t\t.value=${this.message ?? \'\'}',
+				'\t\t\t\t\t.placeholder=${this.placeholder}',
+				'\t\t\t\t></textarea>',
+				'\t\t\t\t${this.renderHelpText()}',
+				'\t\t\t\t${when(',
+				'\t\t\t\t\tthis.aiEnabled,',
+				'\t\t\t\t\t() =>',
+				'\t\t\t\t\t\thtml`<gl-button',
+				'\t\t\t\t\t\t\tclass="commit-message__ai-button"',
+				'\t\t\t\t\t\t\tappearance="toolbar"',
+				'\t\t\t\t\t\t\t?disabled=${this.generating}',
+				"\t\t\t\t\t\t\t.tooltip=${this.generating ? 'Generating...' : 'Generate commit message with AI'}",
+				'\t\t\t\t\t\t\t@click=${() => this.onGenerateCommitMessageClick()}',
+				'\t\t\t\t\t\t>',
+				"\t\t\t\t\t\t\t${this.explanation || this.aiGenerated ? 'Regenerate Message' : 'Generate Message'}",
+				'\t\t\t\t\t\t</gl-button>`,',
+				'\t\t\t\t\t() =>',
+				'\t\t\t\t\t\thtml`<gl-button',
+				'\t\t\t\t\t\t\tclass="commit-message__ai-button"',
+				'\t\t\t\t\t\t\tappearance="toolbar"',
+				"\t\t\t\t\t\t\t.tooltip=${this.aiDisabledReason || 'AI features are disabled'}",
+				'\t\t\t\t\t\t>',
+				"\t\t\t\t\t\t\t${this.explanation || this.aiGenerated ? 'Regenerate Message' : 'Generate Message'}",
+				'\t\t\t\t\t\t</gl-button>`,',
+				'\t\t\t\t)}',
+				'\t\t\t</div>`;',
+				'\t}',
+				'}',
+				'',
+			].join('\n'),
+		);
+		writeTextFile(
+			rootDir,
+			'src/webviews/apps/plus/composer/components/commits-panel.ts',
+			[
+				"import { html } from 'lit';",
+				"import './commit-item.js';",
+				'export class CommitsPanel {',
+				'\taiModel?: { name?: string };',
+				'\tcommitting = false;',
+				'\tfileCount = 0;',
+				'\tprivate get aiModelDisplayName(): string {',
+				"\t\tif (!this.aiModel) return 'Choose AI Model';",
+				"\t\treturn this.aiModel.name || 'Unknown Model';",
+				'\t}',
+				'\trender() {',
+				'\t\treturn html`',
+				'\t\t\t<section>',
+				'\t\t\t\t<gl-button tooltip="Select AI Model">${this.aiModelDisplayName}</gl-button>',
+				"\t\t\t\t<span class=\"file-count\">${this.fileCount} ${this.fileCount === 1 ? 'file' : 'files'}</span>",
+				'\t\t\t\t<gl-popover>',
+				'\t\t\t\t\t<div slot="content">',
+				'\t\t\t\t\t\tProviding additional instructions can help steer the AI composition for this session.',
+				'\t\t\t\t\t\t<br /><br />',
+				'\t\t\t\t\t\tPotential instructions include:',
+				'\t\t\t\t\t\t<ul class="instructions-list">',
+				'\t\t\t\t\t\t\t<li>conventional commits format</li>',
+				'\t\t\t\t\t\t\t<li>size of commits</li>',
+				'\t\t\t\t\t\t\t<li>focus on certain changes</li>',
+				'\t\t\t\t\t\t</ul>',
+				'\t\t\t\t\t\t<hr />',
+				'\t\t\t\t\t\tYou can also specify custom instructions that apply to all composer sessions with the following setting:',
+				'\t\t\t\t\t\t<a href=${`command:workbench.action.openSettings?%22@id:gitlens.ai.generateCommits.customInstructions%22`}>gitlens.ai.generateCommits.customInstructions</a>',
+				'\t\t\t\t\t</div>',
+				'\t\t\t\t</gl-popover>',
+				"\t\t\t\t<gl-button>${this.committing ? 'Committing...' : 'Create Commits'}</gl-button>",
+				'\t\t\t\t<h3>Draft Commits</h3>',
+				'\t\t\t\t<span>Drop hunks here to create new commit</span>',
+				'\t\t\t\t<gl-commit-item></gl-commit-item>',
+				'\t\t\t</section>`;',
+				'\t}',
+				'}',
+				'',
+			].join('\n'),
+		);
+
+		syncWebviewsI18n({ rootDir });
+		const context = createWebviewsDomainContext(rootDir);
+		approveTranslations(context, {
+			'Choose AI Model': '选择 AI 模型',
+			'Unknown Model': '未知模型',
+			'Select AI Model': '选择 AI 模型',
+			'Draft commit (add a commit message)': '草稿提交（添加提交消息）',
+			'Providing additional instructions can help steer the AI composition for this session. ${slot1} ${slot2} Potential instructions include: ${slot3} ${slot4} You can also specify custom instructions that apply to all composer sessions with the following setting: ${slot5}':
+				'提供额外指令有助于引导本次 AI 编排。${slot1}${slot2}可用指令包括：${slot3}${slot4}你也可以通过以下设置指定适用于所有提交编排器会话的自定义指令：${slot5}',
+			'conventional commits format': 'Conventional Commits 格式',
+			'size of commits': '提交大小',
+			'focus on certain changes': '聚焦特定更改',
+			'Committing...': '正在提交...',
+			'Create Commits': '创建提交',
+			'Draft Commits': '草稿提交',
+			'Drop hunks here to create new commit': '将代码块拖到此处以创建新提交',
+			'AI features are disabled': 'AI 功能已禁用',
+			'Auto-composition Summary:': '自动编排摘要：',
+			'Enter commit message...': '输入提交消息...',
+			'Generate commit message with AI': '使用 AI 生成提交消息',
+			'Generate Message': '生成提交消息',
+			'Generating...': '正在生成...',
+			'Regenerate Message': '重新生成提交消息',
+		});
+		promoteWebviewsAuthority({ rootDir });
+		approveFileCountUnitOccurrenceOverrides(context, [
+			'src/webviews/apps/plus/composer/components/commits-panel.ts',
+			'src/webviews/apps/plus/composer/components/commit-item.ts',
+		]);
+		generateWebviewsLocalizedDynamicSources({ rootDir });
+
+		const localizedCommitsPanel = loadLocalizedDynamicSource(
+			context,
+			'src/webviews/apps/plus/composer/components/commits-panel.ts',
+		);
+		assert.notEqual(localizedCommitsPanel, undefined);
+		assert.equal(localizedCommitsPanel!.includes('选择 AI 模型'), true);
+		assert.equal(localizedCommitsPanel!.includes('未知模型'), true);
+		assert.equal(localizedCommitsPanel!.includes('正在提交...'), true);
+		assert.equal(
+			localizedCommitsPanel!.includes('${this.fileCount} ${this.fileCount === 1 ? "个文件" : "个文件"}'),
+			true,
+		);
+		assert.equal(
+			localizedCommitsPanel!.includes("${this.fileCount} ${this.fileCount === 1 ? 'file' : 'files'}"),
+			false,
+		);
+		assert.equal(localizedCommitsPanel!.includes('提供额外指令有助于引导本次 AI 编排。'), true);
+		assert.equal(localizedCommitsPanel!.includes('<ul class="instructions-list">'), true);
+		assert.equal(localizedCommitsPanel!.includes('<li>Conventional Commits 格式</li>'), true);
+		assert.equal(localizedCommitsPanel!.includes('<li>提交大小</li>'), true);
+		assert.equal(localizedCommitsPanel!.includes('<li>聚焦特定更改</li>'), true);
+		assert.equal(localizedCommitsPanel!.includes('<hr />'), true);
+		assert.equal(localizedCommitsPanel!.includes('gitlens.ai.generateCommits.customInstructions'), true);
+		assert.equal(
+			localizedCommitsPanel!.includes('Conventional Commits 格式、提交大小、聚焦特定更改'),
+			false,
+		);
+
+		const localizedCommitItem = loadLocalizedDynamicSource(
+			context,
+			'src/webviews/apps/plus/composer/components/commit-item.ts',
+		);
+		assert.notEqual(localizedCommitItem, undefined);
+		assert.equal(localizedCommitItem!.includes('草稿提交（添加提交消息）'), true);
+		assert.equal(
+			localizedCommitItem!.includes('${this.fileCount} ${this.fileCount === 1 ? "个文件" : "个文件"}'),
+			true,
+		);
+		assert.equal(
+			localizedCommitItem!.includes("${this.fileCount} ${this.fileCount === 1 ? 'file' : 'files'}"),
+			false,
+		);
+
+		const localizedCommitMessage = loadLocalizedDynamicSource(
+			context,
+			'src/webviews/apps/plus/composer/components/commit-message.ts',
+		);
+		assert.notEqual(localizedCommitMessage, undefined);
+		assert.equal(localizedCommitMessage!.includes('自动编排摘要：'), true);
+		assert.equal(localizedCommitMessage!.includes('输入提交消息...'), true);
+		assert.equal(localizedCommitMessage!.includes('正在生成...'), true);
+		assert.equal(localizedCommitMessage!.includes('使用 AI 生成提交消息'), true);
+		assert.equal(localizedCommitMessage!.includes('重新生成提交消息'), true);
+		assert.equal(localizedCommitMessage!.includes('生成提交消息'), true);
+		assert.equal(localizedCommitMessage!.includes('AI 功能已禁用'), true);
+		assert.equal(localizedCommitMessage!.includes('Generate Message'), false);
+		assert.equal(localizedCommitMessage!.includes('Regenerate Message'), false);
+		assert.equal(localizedCommitMessage!.includes('Generate commit message with AI'), false);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}
@@ -1851,6 +2082,44 @@ function approveTranslations(
 			const translation = translations[entry.source];
 			return translation == null ? entry : { ...entry, status: 'approved', translation: translation };
 		}),
+	});
+}
+
+function approveFileCountUnitOccurrenceOverrides(
+	context: ReturnType<typeof createWebviewsDomainContext>,
+	sourceFiles: readonly string[],
+): void {
+	const catalog = loadWebviewsCatalog(context);
+	const bundle = loadAuthorityBundle(context);
+	const sourceFileSet = new Set(sourceFiles);
+	const fileCountUnitOccurrences = catalog.occurrences.filter(
+		occurrence =>
+			occurrence.reference.kind === 'source' &&
+			sourceFileSet.has(occurrence.reference.file) &&
+			(occurrence.sourceText === 'file' || occurrence.sourceText === 'files'),
+	);
+
+	assert.equal(fileCountUnitOccurrences.length, sourceFiles.length * 2);
+
+	const updatedAt = new Date().toISOString();
+	saveAuthorityBundle(context, {
+		...bundle,
+		overrides: {
+			...bundle.overrides,
+			updatedAt: updatedAt,
+			entries: [
+				...bundle.overrides.entries,
+				...fileCountUnitOccurrences.map(occurrence => ({
+					selector: {
+						kind: 'occurrence' as const,
+						occurrenceId: occurrence.id,
+					},
+					translationPattern: createLiteralPattern('个文件'),
+					updatedAt: updatedAt,
+					note: 'Narrows English file-count unit translation to composer count display.',
+				})),
+			],
+		},
 	});
 }
 

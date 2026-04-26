@@ -3,7 +3,10 @@
 	"version": 3,
 	"domain": "formatter",
 	"generatedAt": "2026-04-26T00:33:46.770Z",
-	"deferredDomains": ["quickpicks", "webviewHost"],
+	"deferredDomains": [
+		"quickpicks",
+		"webviewHost"
+	],
 	"occurrences": [
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.html-title-788-17.html-title.a3b3efa810#html-title",
@@ -114,7 +117,10 @@
 			"pattern": {
 				"kind": "template",
 				"text": "Connect to ${slot1}${slot2}",
-				"slots": ["slot1", "slot2"]
+				"slots": [
+					"slot1",
+					"slot2"
+				]
 			},
 			"sourceText": "Connect to ${slot1}${slot2}",
 			"sourceHash": "08d13f606e709a213001d4f0c4e09d6c89ec8b19daa36194d6b8e277f8f5f37a",
@@ -511,7 +517,9 @@
 			"pattern": {
 				"kind": "template",
 				"text": "Open Commit on ${slot1}",
-				"slots": ["slot1"]
+				"slots": [
+					"slot1"
+				]
 			},
 			"sourceText": "Open Commit on ${slot1}",
 			"sourceHash": "4f59bf6e6f91eb28d3d8c4892859cf33d3ebf5b656f7b24a9aedc8cd9b6a6c15",
@@ -611,7 +619,9 @@
 			"pattern": {
 				"kind": "template",
 				"text": "Connect to ${slot1} to enable the display of the Pull Request (if any) that introduced this commit",
-				"slots": ["slot1"]
+				"slots": [
+					"slot1"
+				]
 			},
 			"sourceText": "Connect to ${slot1} to enable the display of the Pull Request (if any) that introduced this commit",
 			"sourceHash": "f32fe134c172ca64743d7e70480150e29c0dddc8cf0cea3772f3ea51f0b215ca",
@@ -744,7 +754,10 @@
 			"pattern": {
 				"kind": "template",
 				"text": "Open Pull Request \\#${slot1} on ${slot2}",
-				"slots": ["slot1", "slot2"]
+				"slots": [
+					"slot1",
+					"slot2"
+				]
 			},
 			"sourceText": "Open Pull Request \\#${slot1} on ${slot2}",
 			"sourceHash": "ba44e9e833373efaf07853403b13ca1de3d61a8fb4f59a1b67311884afdcb8ae",
@@ -976,7 +989,9 @@
 			"pattern": {
 				"kind": "template",
 				"text": "${slot1} changes",
-				"slots": ["slot1"]
+				"slots": [
+					"slot1"
+				]
 			},
 			"sourceText": "${slot1} changes",
 			"sourceHash": "787d2fcab90f517b9c163cc5063db6a47b9a90fd3cc3d282eaefc6d28366efb4",
