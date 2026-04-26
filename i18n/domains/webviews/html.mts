@@ -568,9 +568,7 @@ function isStructuredPopoverContent(element: HtmlElementNode): boolean {
 		element.tag === 'div' &&
 		element.attributes.slot === 'content' &&
 		element.parent?.tag === 'gl-popover' &&
-		element.children.some(
-			child => child.kind === 'element' && preservedStructuralContentTags.has(child.tag),
-		)
+		element.children.some(child => child.kind === 'element' && preservedStructuralContentTags.has(child.tag))
 	);
 }
 

@@ -2,7 +2,15 @@
 
 这是 GitLens 的中文本地化分支，目标是在尽量少改动上游源码的前提下，为 GitLens 提供中文界面与相关文案。本分支基于上游 [gitkraken/vscode-gitlens](https://github.com/gitkraken/vscode-gitlens) 持续同步，中文本地化维护源与工作流主要位于 `i18n/`；运行时与 VS Code 需要消费的本地化资源由编译/打包流程生成。
 
-使用编译期生成方案，在git层面上对上游`./src`的更改为0，这允许我们能够持续合并上游更改。
+使用编译期生成方案，在`git`上对上游`./src`与`package.json`的更改为0，这允许我们能够持续合并上游更改。
+
+## 效果预览
+
+![GitLens 中文界面预览 1](images/docs/i18n/1.png)
+
+![GitLens 中文界面预览 2](images/docs/i18n/2.png)
+
+![GitLens 中文界面预览 3](images/docs/i18n/3.png)
 
 ## 环境要求
 
@@ -37,7 +45,7 @@ pnpm install
 pnpm run build:quick
 ```
 
-注意：`pnpm run build:quick` 会生成并编译 runtime dynamic 与 webviews 的中文运行时产物，但不会生成 VS Code manifest 所需的 staged `package.json` / `package.nls*.json`，因此它不是完整中文安装包的打包步骤。
+注意：`pnpm run build:quick` 会生成并编译 runtime dynamic 与 webviews 的中文运行时产物，但不会生成扩展所需的 `package.json` / `package.nls*.json`，因此它不是完整中文安装包的打包步骤。
 
 ## 编译与打包
 
@@ -70,9 +78,13 @@ git apply .github/patch/pro.patch
 
 安装后建议重新加载 VS Code 窗口，确保扩展使用最新构建。
 
-## 自助翻译
+## 开发与翻译
 
-使用`codex`阅读`./i18n/README.md`，`codex`会指引你应该如何进行翻译，也可以自行查看`i18n`目录下的说明文件自行更新。
+本项目的本地化工作流、脚本维护、报告生成与源码集成主要由 `codex` 负责。
+
+用户侧通常只需要关注译文质量：根据专业语境校对、修订和补充权威翻译内容，即修改 `i18n/authority/zh-cn` 下的权威翻译文件。
+
+其他 `i18n` 目录内容属于工作流、生成数据或校验材料，除非明确知道影响范围，否则建议交由 `codex` 处理。
 
 ## 常用命令
 

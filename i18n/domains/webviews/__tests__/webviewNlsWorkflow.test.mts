@@ -672,7 +672,7 @@ function testComposerLocalizedSourceWorkflow(): void {
 				'\t\t\t<div class="commit-message__field">',
 				'\t\t\t\t<textarea',
 				'\t\t\t\t\tclass="commit-message__input"',
-				'\t\t\t\t\t.value=${this.message ?? \'\'}',
+				"\t\t\t\t\t.value=${this.message ?? ''}",
 				'\t\t\t\t\t.placeholder=${this.placeholder}',
 				'\t\t\t\t></textarea>',
 				'\t\t\t\t${this.renderHelpText()}',
@@ -802,10 +802,7 @@ function testComposerLocalizedSourceWorkflow(): void {
 		assert.equal(localizedCommitsPanel!.includes('<li>聚焦特定更改</li>'), true);
 		assert.equal(localizedCommitsPanel!.includes('<hr />'), true);
 		assert.equal(localizedCommitsPanel!.includes('gitlens.ai.generateCommits.customInstructions'), true);
-		assert.equal(
-			localizedCommitsPanel!.includes('Conventional Commits 格式、提交大小、聚焦特定更改'),
-			false,
-		);
+		assert.equal(localizedCommitsPanel!.includes('Conventional Commits 格式、提交大小、聚焦特定更改'), false);
 
 		const localizedCommitItem = loadLocalizedDynamicSource(
 			context,

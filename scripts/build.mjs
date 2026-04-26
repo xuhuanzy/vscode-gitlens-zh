@@ -47,8 +47,7 @@ const localizedWebviews = selectedWebviews.filter(webview => isLocalizedDynamicW
 const regularWebviews = selectedWebviews.filter(webview => !isLocalizedDynamicWebview(webview));
 const shouldBuildLocalizedWebviews =
 	shouldBuildWebviews && (webviews == null || webviews.length === 0 || localizedWebviews.length !== 0);
-const shouldBuildRegularWebviews =
-	shouldBuildWebviews && (webviews == null || regularWebviews.length !== 0);
+const shouldBuildRegularWebviews = shouldBuildWebviews && (webviews == null || regularWebviews.length !== 0);
 const webviewsEnv =
 	webviews == null
 		? undefined
