@@ -41,39 +41,27 @@ pnpm run build:quick
 
 ## 编译与打包
 
-开发时快速编译，用于检查扩展代码、runtime dynamic 与 webviews 构建：
-
-```bash
-pnpm run build:quick
-```
-
-完整开发构建，用于更完整的本地校验：
-
-```bash
-pnpm run build
-```
-
 生成完整中文 VSIX 扩展包：
 
 ```bash
 node ./i18n/cli.mts manifest package
 ```
 
-这个命令会先运行生产构建，再生成 staged `package.json`、`package.nls.json`、`package.nls.zh-cn.json`，最后从 `.work/i18n/extension-root/zh-cn` 这个 staged extension root 打包 VSIX。
+这个命令会先运行生产构建，再生成 staged `package.json`、`package.nls.json`、`package.nls.zh-cn.json`，最后从 `.work/i18n/extension-root/zh-cn` 这个编译期生成的目录打包 VSIX。
 
 打包成功后，VSIX 默认位于 `.work/i18n/extension-root/zh-cn` 目录下，文件名类似 `gitlens-17.12.0.vsix`。
 
-## 安装到 VS Code
+### gitlens pro
 
-如果你已经有打包好的 `.vsix` 文件，可以通过命令行安装：
+生成完整中文 VSIX 扩展包前执行
 
 ```bash
-code --install-extension ./.work/i18n/extension-root/zh-cn/gitlens-17.12.0.vsix
+git apply .github/patch/pro.patch
 ```
 
-请将上面的文件名替换为实际生成或下载的 VSIX 文件名。
+## 安装到 VS Code
 
-也可以在 VS Code 中安装：
+以在 VS Code 中安装：
 
 1. 打开 Extensions 视图
 2. 点击右上角 `...`
@@ -84,7 +72,7 @@ code --install-extension ./.work/i18n/extension-root/zh-cn/gitlens-17.12.0.vsix
 
 ## 自助翻译
 
-使用`codex`喂给他`./i18n/README.md`，`codex`会指引你应该如何进行翻译，也可以自行查看`i18n`目录下的说明文件自行更新。
+使用`codex`阅读`./i18n/README.md`，`codex`会指引你应该如何进行翻译，也可以自行查看`i18n`目录下的说明文件自行更新。
 
 ## 常用命令
 

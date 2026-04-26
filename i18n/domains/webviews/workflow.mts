@@ -344,10 +344,10 @@ export function createPendingReport(options: WorkflowOptions = {}): PendingRepor
 		options.baseRef == null
 			? undefined
 			: diffWorksetAgainstBase(
-				context,
-				options.baseRef,
-				scopedEntries.map(entry => entry.id),
-			);
+					context,
+					options.baseRef,
+					scopedEntries.map(entry => entry.id),
+				);
 	const report: PendingReportFile = {
 		$schema: '../schemas/pendingReport.schema.json',
 		version: 1,
@@ -592,9 +592,7 @@ function diffWorksetAgainstBase(
 			readonly entries?: TranslationWorksetEntry[];
 		};
 		const scope = getWebviewsWorksetScope();
-		const previousIds = new Set(
-			filterWorksetEntriesByScope(previous.entries ?? [], scope).map(entry => entry.id),
-		);
+		const previousIds = new Set(filterWorksetEntriesByScope(previous.entries ?? [], scope).map(entry => entry.id));
 		const currentIds = new Set(currentEntryIds);
 		let added = 0;
 		let removed = 0;

@@ -41,7 +41,14 @@ export function createWebviewsDomainContext(rootDir?: string): {
 		domain: 'webviews',
 		artifactId: 'webviews',
 		settingsBuildFile: path.join(domain.rootDir, 'dist', 'webviews', 'settings.html'),
-		settingsSourceFile: path.join(domain.rootDir, '.work', 'i18n', 'webviews-settings-shell', 'en', 'settings.html'),
+		settingsSourceFile: path.join(
+			domain.rootDir,
+			'.work',
+			'i18n',
+			'webviews-settings-shell',
+			'en',
+			'settings.html',
+		),
 		localizedDynamicSourceDir: localizedDynamicSourceDir,
 	};
 }

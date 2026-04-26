@@ -89,9 +89,9 @@ function testWebviewHostRegistrationTitlesAreLocalized(): void {
 		assert.notEqual(localized, undefined);
 		assert.equal(localized!.includes("title: '主页'"), true);
 		assert.equal(
-			fs.readFileSync(path.join(rootDir, 'src', 'webviews', 'home', 'registration.ts'), 'utf8').includes(
-				"title: 'Home'",
-			),
+			fs
+				.readFileSync(path.join(rootDir, 'src', 'webviews', 'home', 'registration.ts'), 'utf8')
+				.includes("title: 'Home'"),
 			true,
 		);
 	} finally {
@@ -201,14 +201,26 @@ function testWebviewHostEntriesAreStoredWithWebviewsFiles(): void {
 
 		const catalog = loadRuntimeDynamicCatalog(context);
 		assert.equal(catalog.domain, 'webviews');
-		assert.equal(catalog.occurrences.some(occurrence => occurrence.sourceText === 'Webview Only'), true);
-		assert.equal(catalog.occurrences.some(occurrence => occurrence.sourceText === 'Home'), true);
+		assert.equal(
+			catalog.occurrences.some(occurrence => occurrence.sourceText === 'Webview Only'),
+			true,
+		);
+		assert.equal(
+			catalog.occurrences.some(occurrence => occurrence.sourceText === 'Home'),
+			true,
+		);
 		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'catalog', 'webviewHost.catalog.json')), false);
 
 		const workset = loadRuntimeDynamicWorkset(context);
 		assert.equal(workset.domain, 'webviews');
-		assert.equal(workset.entries.some(entry => entry.id === 'message.webviews-only'), true);
-		assert.equal(workset.entries.some(entry => entry.source === 'Home'), true);
+		assert.equal(
+			workset.entries.some(entry => entry.id === 'message.webviews-only'),
+			true,
+		);
+		assert.equal(
+			workset.entries.some(entry => entry.source === 'Home'),
+			true,
+		);
 		assert.equal(fs.existsSync(path.join(rootDir, 'i18n', 'worksets', 'webviewHost.zh-cn.json')), false);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });

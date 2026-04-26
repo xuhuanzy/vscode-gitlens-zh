@@ -201,10 +201,7 @@ export function resolveReportOutputFile(context: DomainContext, name: string): s
 
 function isFileNotFoundError(ex: unknown): boolean {
 	return (
-		typeof ex === 'object' &&
-		ex != null &&
-		'code' in ex &&
-		(ex as { readonly code?: unknown }).code === 'ENOENT'
+		typeof ex === 'object' && ex != null && 'code' in ex && (ex as { readonly code?: unknown }).code === 'ENOENT'
 	);
 }
 

@@ -26,9 +26,7 @@ export function createRuntimeDynamicDomainContext(
 		domain: domainName,
 		artifactId: domainName,
 		catalogFile:
-			domainName === 'webviewHost'
-				? path.join(domain.catalogDir, 'webviews.catalog.json')
-				: domain.catalogFile,
+			domainName === 'webviewHost' ? path.join(domain.catalogDir, 'webviews.catalog.json') : domain.catalogFile,
 		worksetFile:
 			domainName === 'webviewHost'
 				? path.join(domain.worksetDir, `webviews.${domain.locale}.json`)

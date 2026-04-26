@@ -191,15 +191,9 @@ function testWebviewsSyncPreservesSharedWebviewHostEntries(): void {
 		writeTextFile(
 			rootDir,
 			'dist/webviews/settings.html',
-			[
-				'<!doctype html>',
-				'<html lang="en">',
-				'<body>',
-				'\t<h1>Settings</h1>',
-				'</body>',
-				'</html>',
-				'',
-			].join('\n'),
+			['<!doctype html>', '<html lang="en">', '<body>', '\t<h1>Settings</h1>', '</body>', '</html>', ''].join(
+				'\n',
+			),
 		);
 
 		const context = createWebviewsDomainContext(rootDir);
@@ -262,12 +256,24 @@ function testWebviewsSyncPreservesSharedWebviewHostEntries(): void {
 		assert.equal(result.worksetCount, 1);
 
 		const workset = loadWebviewsWorkset(context);
-		assert.equal(workset.entries.some(entry => entry.id === 'message.webview-host-only'), true);
-		assert.equal(workset.entries.some(entry => entry.source === 'Settings'), true);
+		assert.equal(
+			workset.entries.some(entry => entry.id === 'message.webview-host-only'),
+			true,
+		);
+		assert.equal(
+			workset.entries.some(entry => entry.source === 'Settings'),
+			true,
+		);
 		const catalog = loadWebviewsCatalog(context);
 		assert.equal(catalog.domain, 'webviews');
-		assert.equal(catalog.occurrences.some(occurrence => occurrence.id.startsWith('webviewHost:')), true);
-		assert.equal(catalog.occurrences.some(occurrence => occurrence.sourceText === 'Settings'), true);
+		assert.equal(
+			catalog.occurrences.some(occurrence => occurrence.id.startsWith('webviewHost:')),
+			true,
+		);
+		assert.equal(
+			catalog.occurrences.some(occurrence => occurrence.sourceText === 'Settings'),
+			true,
+		);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}
