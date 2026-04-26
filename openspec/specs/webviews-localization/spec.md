@@ -36,7 +36,7 @@ The system SHALL extract translatable webview UI text from supported webview sou
 
 ### Requirement: Webviews localized outputs are emitted as derived runtime artifacts keyed by supported webview targets
 
-The system SHALL generate localized runtime artifacts for supported webview targets as this branch's canonical `dist/webviews` output. Dynamic pages SHALL consume localized per-app entry bundles from the standard webview artifact tree, while static HTML shells SHALL be published through the same standard webview artifact tree rather than requiring runtime locale-specific script selection.
+The system SHALL generate localized runtime artifacts for supported webview targets as this branch's canonical `dist/webviews` output. Dynamic pages SHALL consume localized per-app entry bundles from the standard webview artifact tree, while static HTML shells SHALL be published through the same standard webview artifact tree rather than requiring runtime locale-specific script selection or maintained `src/i18n` helpers.
 
 #### Scenario: Two dynamic webview apps generate separate canonical bundles
 
@@ -61,6 +61,13 @@ The system SHALL generate localized runtime artifacts for supported webview targ
 - **WHEN** a localized webview output is generated
 - **THEN** the generator resolves its source translations and generated-source destinations from the webview localization workflow
 - **AND** the workset does not need to duplicate a second hand-maintained output store outside the catalog-driven workflow
+
+#### Scenario: Intermediate localized webview sources are needed for the build
+
+- **WHEN** the webview localization workflow needs localized source material before bundling
+- **THEN** it may materialize intermediate generated sources under the configured work area
+- **AND** the final runtime output is still published through `dist/webviews`
+- **AND** no maintained localized webview runtime files are created under `src/i18n`
 
 ### Requirement: Static webview shells can localize first-paint HTML content
 

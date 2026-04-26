@@ -8,17 +8,24 @@ TBD - created by archiving change unify-i18n-message-model. Update Purpose after
 
 ### Requirement: Branch localization tooling is isolated to dedicated i18n directories
 
-The system SHALL place extraction, reporting, reconciliation, and generation tooling under `./i18n`. Runtime localization support MAY be implemented under `./src/i18n` only when application runtime code still consumes branch-localization helpers directly.
+The system SHALL place branch-maintained localization sources, extraction, reporting, reconciliation, and generation tooling under `./i18n`. Runtime-facing localization artifacts MUST be generated at build or package time into configured staging or canonical build outputs. The branch MUST NOT maintain runtime localization helper modules under `./src/i18n`, nor hand-maintain VS Code localization resource files such as root `package.nls*.json`.
 
 #### Scenario: New extraction workflow is added
 
 - **WHEN** a new branch-specific localization tool is introduced
 - **THEN** it is implemented under `./i18n` rather than `./scripts`
 
-#### Scenario: Runtime support is needed in application code
+#### Scenario: Runtime-facing localization is needed by application code
 
-- **WHEN** a runtime localization helper is required by extension or webview code
-- **THEN** it is implemented under `./src/i18n`
+- **WHEN** extension or webview code needs localized runtime content
+- **THEN** the i18n workflow produces the localized artifact during build or packaging
+- **AND** the artifact is consumed through a controlled low-level build, staging, or runtime boundary rather than by adding maintained modules under `./src/i18n`
+
+#### Scenario: VS Code manifest localization files are needed for packaging
+
+- **WHEN** a localized VS Code package needs `package.nls.json` or `package.nls.zh-cn.json`
+- **THEN** the manifest workflow materializes those files as generated staging or package artifacts
+- **AND** the root workspace does not maintain those files as editable translation sources
 
 #### Scenario: Runtime support is no longer needed
 
@@ -163,7 +170,7 @@ The branch localization workflow SHALL treat authority files, override files, an
 
 ### Requirement: Runtime dynamic localization avoids broad upstream source edits
 
-The branch localization workflow SHALL forbid runtime dynamic localization strategies that require broad modifications across upstream-maintained application source call sites. Runtime dynamic localization MUST be concentrated in controlled i18n workflow code, generated artifacts, and reviewed low-level runtime boundaries.
+The branch localization workflow SHALL forbid runtime dynamic localization strategies that require broad modifications across upstream-maintained application source call sites. Runtime dynamic localization MUST be concentrated in controlled i18n workflow code, generated artifacts, and reviewed low-level build or runtime boundaries.
 
 #### Scenario: A runtime dynamic localization implementation modifies upper-layer call sites
 

@@ -24,7 +24,7 @@ The manifest localization workflow SHALL read root `package.json` as the canonic
 
 ### Requirement: Manifest localization emits package manifest staging artifacts
 
-The manifest localization workflow SHALL emit a tokenized `package.json`, an English `package.nls.json`, and a localized `package.nls.zh-cn.json` into a staging location that localized debug, build, or package flows can consume explicitly.
+The manifest localization workflow SHALL emit a tokenized `package.json`, an English `package.nls.json`, and a localized `package.nls.zh-cn.json` as generated staging artifacts that localized debug, build, or package flows can consume explicitly. These VS Code localization resource files MUST NOT be maintained as root workspace source files.
 
 #### Scenario: Staged manifest output is requested
 
@@ -37,6 +37,12 @@ The manifest localization workflow SHALL emit a tokenized `package.json`, an Eng
 - **WHEN** root `package.json` or i18n authority data changes
 - **THEN** rerunning the generator updates the staged package manifest and package NLS files from the current source and authority state
 - **AND** no hand-maintained staged translation edits are required
+
+#### Scenario: Root workspace is inspected before packaging
+
+- **WHEN** the repository root is inspected outside a localized packaging flow
+- **THEN** `package.nls.json` and `package.nls.zh-cn.json` are not required as maintained source files
+- **AND** any needed VS Code manifest localization resources are generated during the localized build or package flow
 
 ### Requirement: Localized consumers select staged manifests explicitly
 

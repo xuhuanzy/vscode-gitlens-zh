@@ -524,10 +524,7 @@ export class SettingsApp extends App<State> {
 
 	private updateState() {
 		const { version } = this.state;
-		const versionEl = document.getElementById('version');
-		if (versionEl != null) {
-			versionEl.textContent = version;
-		}
+		document.getElementById('version')!.textContent = version;
 
 		const focusId = document.activeElement?.id;
 		this.renderAutolinkIntegration();
