@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { disableStagedPrepublishScript, execute, writeStagedPackageIgnoreFile } from '../cli.mts';
+import { disableStagedPackageLifecycleScripts, execute, writeStagedPackageIgnoreFile } from '../cli.mts';
 
 run();
 
@@ -14,7 +14,7 @@ function run(): void {
 	testAggregatePromoteRunsAllDomains();
 	testAggregateGenerateDoesNotRequireSettingsDist();
 	testLegacyCliDomainAliasesAreRejected();
-	testDisableStagedPrepublishScript();
+	testDisableStagedPackageLifecycleScripts();
 	testWriteStagedPackageIgnoreFileIgnoresLinkedRootDirectories();
 }
 
@@ -201,7 +201,7 @@ function testWriteStagedPackageIgnoreFileIgnoresLinkedRootDirectories(): void {
 	}
 }
 
-function testDisableStagedPrepublishScript(): void {
+function testDisableStagedPackageLifecycleScripts(): void {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), 'gitlens-i18n-cli-'));
 	try {
 		const packageJsonFile = path.join(rootDir, 'package.json');
@@ -212,6 +212,7 @@ function testDisableStagedPrepublishScript(): void {
 					name: 'fixture',
 					scripts: {
 						bundle: 'node ./scripts/build.mjs --mode production',
+						prepare: 'husky',
 						'vscode:prepublish': 'pnpm run bundle',
 					},
 				},
@@ -221,14 +222,14 @@ function testDisableStagedPrepublishScript(): void {
 			'utf8',
 		);
 
-		assert.equal(disableStagedPrepublishScript(packageJsonFile), true);
+		assert.deepEqual(disableStagedPackageLifecycleScripts(packageJsonFile), ['vscode:prepublish', 'prepare']);
 		const manifest = JSON.parse(fs.readFileSync(packageJsonFile, 'utf8')) as {
 			readonly scripts: Record<string, string>;
 		};
 		assert.deepEqual(manifest.scripts, {
 			bundle: 'node ./scripts/build.mjs --mode production',
 		});
-		assert.equal(disableStagedPrepublishScript(packageJsonFile), false);
+		assert.deepEqual(disableStagedPackageLifecycleScripts(packageJsonFile), []);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}

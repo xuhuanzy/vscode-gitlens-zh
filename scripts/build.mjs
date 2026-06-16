@@ -147,26 +147,6 @@ if (build?.includes('unit-tests')) {
 // A "full" build targets no specific config (the default `pnpm run build`) — these are the ones
 // we split across processes below.
 const isFullBuild = !build?.length && !target?.length && !webviews?.length;
-if (shouldBuildLocalizedWebviews) {
-	const generateLocalizedWebviewsCmd = `node ./i18n/cli.mts webviews generate --dynamic-sources-only`;
-	console.log(`Running: ${generateLocalizedWebviewsCmd}`);
-
-	const webviewNlsCode = await new Promise(resolve => {
-		const webviewNls = spawn(generateLocalizedWebviewsCmd, [], {
-			shell: true,
-			stdio: 'inherit',
-			env: env,
-		});
-
-		webviewNls.on('exit', code => resolve(code || 0));
-	});
-
-	if (webviewNlsCode !== 0) {
-		process.exit(webviewNlsCode);
-	}
-}
-
-console.log(`Running: ${cmd}`);
 
 if (!quick && !watch) {
 	const prettyCmd = process.env.CI ? `pnpm run pretty:check` : `pnpm run pretty`;
@@ -225,7 +205,9 @@ if (isFullBuild && !watch) {
 		// a bundling process's event loop.
 		`${baseCmd} --config-name common`,
 		// Keep webviews:common + webviews in one process (CompileComposerTemplatesPlugin shares state).
-		`${baseCmd} --config-name webviews:common --config-name webviews --config-name unit-tests`,
+		`${baseCmd} --config-name webviews:common --config-name webviews${
+			shouldBuildLocalizedWebviews ? ' --config-name webviews:i18n:zh-cn' : ''
+		} --config-name unit-tests`,
 	];
 } else {
 	bundleCmds = [cmd];

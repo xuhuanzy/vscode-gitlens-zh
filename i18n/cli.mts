@@ -269,14 +269,27 @@ function runManifest(action: string | undefined, args: readonly string[]): void 
 				rootDir: rootDir,
 				outputRoot: outputRoot,
 			});
-			const disabledPrepublish = disableStagedPrepublishScript(result.context.generatedManifestFile);
-			if (disabledPrepublish) {
-				console.log(`Disabled staged vscode:prepublish in ${result.context.generatedManifestFile}`);
+			const disabledScripts = disableStagedPackageLifecycleScripts(result.context.generatedManifestFile);
+			if (disabledScripts.length !== 0) {
+				console.log(
+					`Disabled staged package scripts in ${result.context.generatedManifestFile}: ${disabledScripts.join(', ')}`,
+				);
 			}
 			writeStagedPackageIgnoreFile(result.context.stagedManifestRootDir);
-			const packageArgs = ['exec', 'vsce', 'package', '--no-dependencies', ...readPassthroughArgs(args)];
+			const packageArgs = ['package', '--no-dependencies', ...readPassthroughArgs(args)];
 			console.log(`Running localized package from ${result.context.stagedManifestRootDir}`);
-			runCommand('pnpm', packageArgs, result.context.stagedManifestRootDir, 'Localized package failed');
+			if (process.platform === 'win32') {
+				const vsceCommand = path.join(context.rootDir, 'node_modules', '.bin', 'vsce.cmd');
+				runCommand(
+					'cmd.exe',
+					['/d', '/s', '/c', [vsceCommand, ...packageArgs].map(quoteWindowsCommandArgument).join(' ')],
+					result.context.stagedManifestRootDir,
+					'Localized package failed',
+				);
+			} else {
+				const vsceCommand = path.join(context.rootDir, 'node_modules', '.bin', 'vsce');
+				runCommand(vsceCommand, packageArgs, result.context.stagedManifestRootDir, 'Localized package failed');
+			}
 			return;
 		}
 		case 'promote': {
@@ -469,18 +482,27 @@ function readPassthroughArgs(args: readonly string[]): string[] {
 	return separatorIndex >= 0 ? [...args.slice(separatorIndex + 1)] : [];
 }
 
-export function disableStagedPrepublishScript(packageJsonFile: string): boolean {
+export function disableStagedPackageLifecycleScripts(packageJsonFile: string): string[] {
 	const manifest = JSON.parse(fs.readFileSync(packageJsonFile, 'utf8')) as unknown;
 	if (!isJsonObject(manifest)) {
 		throw new Error(`Staged package manifest is not a JSON object: ${packageJsonFile}`);
 	}
 
 	const scripts = manifest.scripts;
-	if (!isJsonObject(scripts) || !Object.hasOwn(scripts, 'vscode:prepublish')) return false;
+	if (!isJsonObject(scripts)) return [];
 
-	delete scripts['vscode:prepublish'];
+	const disabledScripts: string[] = [];
+	for (const script of ['vscode:prepublish', 'prepare']) {
+		if (!Object.hasOwn(scripts, script)) continue;
+
+		delete scripts[script];
+		disabledScripts.push(script);
+	}
+
+	if (disabledScripts.length === 0) return [];
+
 	fs.writeFileSync(packageJsonFile, `${JSON.stringify(manifest, undefined, '\t')}\n`, 'utf8');
-	return true;
+	return disabledScripts;
 }
 
 export function writeStagedPackageIgnoreFile(stagedRootDir: string): void {
@@ -520,6 +542,12 @@ function runCommand(command: string, args: readonly string[], cwd: string, failu
 	}
 
 	throw new Error(`${failureMessage} with exit code ${result.status ?? 1}`);
+}
+
+function quoteWindowsCommandArgument(value: string): string {
+	if (!/[ \t"&<>|^]/u.test(value)) return value;
+
+	return `"${value.replaceAll('"', '\\"')}"`;
 }
 
 function isJsonObject(value: unknown): value is Record<string, unknown> {
