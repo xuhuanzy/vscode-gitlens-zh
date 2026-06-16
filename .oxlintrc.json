@@ -45,6 +45,7 @@
 		"**/.gitkraken-components.version",
 		"**/custom-elements.json",
 		"**/gitlens-*.vsix",
+		"/i18n",
 		"**/product.json",
 		"**/tsconfig*.tsbuildinfo",
 		"**/*.code-workspace",
