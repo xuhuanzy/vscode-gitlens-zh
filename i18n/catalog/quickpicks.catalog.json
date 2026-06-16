@@ -2,7 +2,7 @@
 	"$schema": "../schemas/sourceCatalog.schema.json",
 	"version": 3,
 	"domain": "quickpicks",
-	"generatedAt": "2026-04-26T15:16:53.903Z",
+	"generatedAt": "2026-06-16T06:40:12.980Z",
 	"deferredDomains": [
 		"formatter",
 		"webviewHost"

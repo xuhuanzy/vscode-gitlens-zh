@@ -234,6 +234,8 @@ export function isTranslatableLiteralText(text: string): boolean {
 	if (text.includes('${')) return false;
 	if (containsSyntheticAttributeSlotToken(text)) return false;
 	if (text === '•') return false;
+	if (isHtmlNumericEntityText(text)) return false;
+	if (isDateFormatTokenText(text)) return false;
 	if (/^\d+(?:\.\d+)?$/u.test(text)) return false;
 	return /[\p{L}\p{N}]/u.test(text);
 }
@@ -243,8 +245,18 @@ export function isTranslatablePatternText(text: string): boolean {
 	const literalText = text.replace(/\$\{[^}]+\}/gu, '').trim();
 	if (literalText.length === 0) return false;
 	if (literalText === '•') return false;
+	if (isHtmlNumericEntityText(literalText)) return false;
+	if (isDateFormatTokenText(literalText)) return false;
 	if (/^\d+(?:\.\d+)?$/u.test(literalText)) return false;
 	return /[\p{L}\p{N}]/u.test(literalText);
+}
+
+export function isDateFormatTokenText(text: string): boolean {
+	return /^(?:M{1,4}|D{1,2}|Y{2,4})(?:[\s,./-]+(?:M{1,4}|D{1,2}|Y{2,4}))*$/u.test(text.trim());
+}
+
+function isHtmlNumericEntityText(text: string): boolean {
+	return /^&#(?:\d+|x[\da-f]+);$/iu.test(text.trim());
 }
 
 export function normalizeWhitespace(text: string): string {
@@ -384,6 +396,8 @@ function hasMeaningfulDirectTextChild(element: HtmlElementNode): boolean {
 function shouldExtractSlottedElementContent(element: HtmlElementNode): boolean {
 	if (hasMeaningfulDirectTextChild(element)) return true;
 	if (translatableContentTags.has(element.tag)) return false;
+	if (element.tag === 'section') return false;
+	if (element.tag === 'select') return false;
 	if (element.tag === 'span') return false;
 	if (element.tag === 'div') return false;
 

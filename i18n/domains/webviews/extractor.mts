@@ -14,6 +14,7 @@ import {
 	collectElementContentPattern,
 	findAttributeValueRange,
 	getClassList,
+	isDateFormatTokenText,
 	isTranslatableLiteralText,
 	parseHtmlDocument,
 	shouldExtractRootContent,
@@ -607,11 +608,25 @@ function shouldExtractImperativeDisplayNode(
 		if (helperName != null && localizationHelperNames.has(helperName)) return false;
 	}
 
+	const templateContext = containingLitTemplateExpressionDisplayContext(node);
+	if (templateContext === false) return false;
+
 	return (
 		hasHtmlTemplateAncestor(node, sourceFile) ||
 		hasRenderedJsxExpressionAncestor(node) ||
 		hasImperativeDisplayContextAncestor(node, sourceFile)
 	);
+}
+
+function containingLitTemplateExpressionDisplayContext(node: ts.Node): boolean | undefined {
+	for (let child: ts.Node = node, current = node.parent; current != null; child = current, current = current.parent) {
+		if (ts.isTemplateSpan(current) && current.expression === child) {
+			return templateSpanDisplayContext(current);
+		}
+		if (ts.isSourceFile(current)) break;
+	}
+
+	return undefined;
 }
 
 function hasHtmlTemplateAncestor(node: ts.Node, sourceFile: ts.SourceFile): boolean {
@@ -1238,7 +1253,8 @@ function getPropertyName(name: ts.PropertyName): string | undefined {
 }
 
 function isTranslatableSourceText(text: string): boolean {
-	return parseMessagePattern(text).text.length !== 0 && /[\p{L}\p{N}]/u.test(text);
+	const patternText = parseMessagePattern(text).text;
+	return patternText.length !== 0 && !isDateFormatTokenText(patternText) && /[\p{L}\p{N}]/u.test(text);
 }
 
 function normalizeJsxText(text: string): string {
