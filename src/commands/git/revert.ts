@@ -1,5 +1,5 @@
 import { window } from 'vscode';
-import { RevertError } from '@gitlens/git/errors.js';
+import { RevertError, SigningError } from '@gitlens/git/errors.js';
 import type { GitBranch } from '@gitlens/git/models/branch.js';
 import type { GitLog } from '@gitlens/git/models/log.js';
 import type { GitRevisionReference } from '@gitlens/git/models/reference.js';
@@ -26,7 +26,7 @@ import { StepResultBreak } from '../quick-wizard/models/steps.js';
 import type { QuickPickStep } from '../quick-wizard/models/steps.quickpick.js';
 import { QuickCommand } from '../quick-wizard/quickCommand.js';
 import { pickCommitsStep } from '../quick-wizard/steps/commits.js';
-import { pickRepositoryStep } from '../quick-wizard/steps/repositories.js';
+import { canSkipRepositoryPick, pickRepositoryStep } from '../quick-wizard/steps/repositories.js';
 import { StepsController } from '../quick-wizard/stepsController.js';
 import { appendReposToTitle, assertStepState, canPickStepContinue } from '../quick-wizard/utils/steps.utils.js';
 
@@ -114,7 +114,7 @@ export class RevertGitCommand extends QuickCommand<State> {
 				return;
 			}
 
-			void showGitErrorMessage(ex, RevertError.is(ex) ? undefined : 'Unable to revert');
+			void showGitErrorMessage(ex, RevertError.is(ex) || SigningError.is(ex) ? undefined : 'Unable to revert');
 		}
 	}
 
@@ -144,8 +144,8 @@ export class RevertGitCommand extends QuickCommand<State> {
 			context.title = this.title;
 
 			if (steps.isAtStep(Steps.PickRepo) || state.repo == null || typeof state.repo === 'string') {
-				// Only show the picker if there are multiple repositories
-				if (context.repos.length === 1) {
+				// Skip the picker only when the sole available repo is the one requested
+				if (canSkipRepositoryPick(context.repos, state.repo)) {
 					[state.repo] = context.repos;
 				} else {
 					using step = steps.enterStep(Steps.PickRepo);

@@ -11,6 +11,10 @@ import { IpcCommand, IpcNotification, IpcRequest } from './ipc/models/ipc.js';
 
 export interface WebviewReadyParams {
 	bootstrap?: boolean;
+	/** Stable id generated once per JS module evaluation on the webview side. Same `clientId` across two readies means the iframe was NOT reloaded. */
+	clientId?: string;
+	/** `Date.now()` captured at module evaluation time on the webview side. */
+	clientLoadedAt?: number;
 }
 
 export interface WebviewReadyResponse {

@@ -28,6 +28,7 @@
  * Note: Navigation helpers (goBackAndVerify, waitForStep, etc.) are now part of
  * the QuickPick component in tests/e2e/pageObjects/components/quickPick.ts
  */
+import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as process from 'node:process';
 import type { VSCodeInstance } from '../baseTest.js';
@@ -69,16 +70,28 @@ const test = base.extend({
 				await git.commit('Feature 1 commit B', 'feature1-b.txt', 'feature 1 content B');
 				await git.checkout('main');
 
-				// Create a worktree for testing worktree-linked branch scenarios
-				// Use a unique path inside the repo's temp directory to avoid conflicts
-				// Retry to handle transient lock file conflicts from VS Code's background git operations
-				const worktreeDir = path.join(repoDir, '..', `worktree-${Date.now()}`);
-				for (let attempt = 0; attempt < 3; attempt++) {
+				// Create a worktree for testing worktree-linked branch scenarios.
+				// Retry to handle transient filesystem errors under parallel load: lock-file conflicts
+				// from VS Code's background git operations and Windows file locking (antivirus/indexing),
+				// which surface as either `index.lock` or `fatal: Could not write new index file`.
+				// Use a FRESH path per attempt — a partial `worktree add` leaves the target directory
+				// behind, so retrying the same path would fail with "already exists". The name embeds the
+				// worker-unique repo dir name (`gltest-e2e-…`) so sibling worktrees can't collide across
+				// workers in the shared temp parent. On failure, remove the orphaned directory and prune
+				// the stale admin entry before retrying.
+				const maxAttempts = 5;
+				for (let attempt = 0; attempt < maxAttempts; attempt++) {
+					const worktreeDir = path.join(repoDir, '..', `worktree-${path.basename(repoDir)}-${attempt}`);
 					try {
 						await git.worktree(worktreeDir, 'feature-with-worktree');
 						break;
 					} catch (ex) {
-						if (attempt < 2 && String(ex).includes('index.lock')) {
+						const message = String(ex);
+						const transient =
+							message.includes('index.lock') || message.includes('Could not write new index file');
+						if (attempt < maxAttempts - 1 && transient) {
+							await fs.rm(worktreeDir, { recursive: true, force: true }).catch(() => {});
+							await git.pruneWorktrees().catch(() => {});
 							await new Promise(resolve => setTimeout(resolve, 1000));
 							continue;
 						}
@@ -608,27 +621,35 @@ test.describe('Quick Wizard — Tag Commands', () => {
 
 test.describe('Quick Wizard — Stash Commands', () => {
 	test.describe('Stash Push Flow', () => {
-		test('Complete flow: command → subcommand → message & reverse', async ({
+		test('Complete flow: command → subcommand → confirm → message & reverse', async ({
 			vscode,
 			vscode: {
 				gitlens: { quickPick },
 			},
 		}) => {
+			// The push wizard was reversed (commit "Reverses the stash push wizard"): the confirm
+			// step now precedes the message input to avoid back-navigation loops with confirm overrides.
+			// The confirm step shows because launching via the menu (`gitlens.gitCommands`, no args) makes
+			// `startedFrom === 'menu'`, so the skip key is `stash-push:menu` — not the default-skipped
+			// `stash-push:command`. If `stash-push:menu` is ever added to `gitCommands.skipConfirmations`,
+			// the confirm step vanishes and this test would time out on the (now-absent) confirm step.
 			await selectCommandSubcommandAndWaitForStepWithOptionalRepo(vscode, 'stash', 'push', {
-				title: /Push Stash/i,
-				placeholder: /Stash message/i,
+				title: /Confirm Push Stash/i,
+				placeholder: /Confirm Push Stash/i,
 			});
 
-			// Enter a stash message
-			await quickPick.enterTextAndSubmit('Test stash message');
+			// Select the plain "Push Stash" confirmation option (negative lookahead excludes the
+			// "Snapshot" / "& …" variants, so this is order-independent rather than relying on `.first()`)
+			await quickPick.selectItem(/Push Stash(?! Snapshot| &)/);
 
-			// Confirm step
-			await quickPick.waitForStep({ title: /Confirm Push Stash/i });
+			// Message step (placeholder distinguishes it from the still-matching "Confirm Push Stash" title)
+			await quickPick.waitForStep({ title: /Push Stash/i, placeholder: /Stash message/i });
 
 			// === REVERSE NAVIGATION ===
+			// Do not submit a message — submitting would execute the stash. Navigate back instead.
 
-			// Back from confirm → message
-			await quickPick.goBackAndWaitForStep({ title: /Push Stash/i, placeholder: /Stash message/i });
+			// Back from message → confirm
+			await quickPick.goBackAndWaitForStep({ title: /Confirm Push Stash/i, placeholder: /Confirm Push Stash/i });
 
 			await reverseCommandSubcommandAndRepo(vscode, 'stash');
 

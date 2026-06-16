@@ -9,15 +9,14 @@ import CopyPlugin from 'copy-webpack-plugin';
 import CspHtmlPlugin from 'csp-html-webpack-plugin';
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin';
 import esbuild from 'esbuild';
-import { ESLintLitePlugin } from '@eamodio/eslint-lite-webpack-plugin';
 import { generateFonts } from 'fantasticon';
-import ForkTsCheckerPlugin from 'fork-ts-checker-webpack-plugin';
+import { OxLintWebpackPlugin } from './scripts/webpack-oxlint-plugin.mjs';
 import fs from 'fs';
+import { createHash } from 'crypto';
 import HtmlPlugin from 'html-webpack-plugin';
 import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import { createRequire } from 'module';
-import { availableParallelism } from 'os';
 import path from 'path';
 import { validate } from 'schema-utils';
 import TerserPlugin from 'terser-webpack-plugin';
@@ -35,17 +34,7 @@ const { DefinePlugin, optimize, WebpackError } = webpack;
 
 const require = createRequire(import.meta.url);
 
-const cores = Math.max(Math.floor(availableParallelism() / 6) - 1, 1);
-const eslintWorker = { max: cores, filesPerWorker: 100 };
-/** @type import('@eamodio/eslint-lite-webpack-plugin').ESLintLitePluginOptions['eslintOptions'] */
-const eslintOptions = {
-	cache: true,
-	cacheStrategy: 'metadata',
-	// concurrency: 'auto',
-};
-
 const debug = Boolean(process.env.DEBUG);
-const useAsyncTypeChecking = false;
 const useNpm = Boolean(process.env.GL_USE_NPM);
 if (useNpm) {
 	console.log('Using npm to run scripts');
@@ -59,10 +48,12 @@ const pkgMgr = useNpm ? 'npm' : 'pnpm';
 function getLibraryAliases() {
 	return {
 		'@gitlens/utils': path.resolve(__dirname, 'packages', 'utils', 'src'),
+		'@gitlens/ipc': path.resolve(__dirname, 'packages', 'ipc', 'src'),
 		'@gitlens/git': path.resolve(__dirname, 'packages', 'git', 'src'),
 		'@gitlens/git-cli': path.resolve(__dirname, 'packages', 'git-cli', 'src'),
 		'@gitlens/git-github': path.resolve(__dirname, 'packages', 'plus', 'git-github', 'src'),
 		'@gitlens/ai': path.resolve(__dirname, 'packages', 'plus', 'ai', 'src'),
+		'@gitlens/agents': path.resolve(__dirname, 'packages', 'plus', 'agents', 'src'),
 	};
 }
 
@@ -85,7 +76,7 @@ function getUtilsEnvAliases(target) {
 		'#env/platform.js': path.resolve(base, 'platform.ts'),
 	};
 }
-/** @typedef {{ analyzeBundle?: boolean; analyzeDeps?: boolean; esbuild?: boolean; quick?: 'turbo' | boolean; trace?: boolean; webviews?: string }} GlEnv */
+/** @typedef {{ analyzeBundle?: boolean; analyzeDeps?: boolean; esbuild?: boolean; quick?: boolean; trace?: boolean; webviews?: string }} GlEnv */
 /** @typedef {{ [key: string]: { entry: string; plus?: boolean; alias?: { [key: string]: string } } }} GlWebviews */
 
 /**
@@ -106,11 +97,7 @@ export default function (env, argv) {
 	};
 
 	if (env.quick) {
-		if (env.quick === 'turbo') {
-			console.log('Turbo mode enabled — skipping type checking, linting, and docs generation');
-		} else {
-			console.log('Quick mode enabled — skipping linting and docs generation');
-		}
+		console.log('Quick mode enabled — skipping type checking, linting, docs, and asset generation');
 	}
 
 	if (env.trace) {
@@ -174,11 +161,11 @@ function getCacheConfig(name, target, mode) {
  * @returns { WebpackConfig }
  */
 function getCommonConfig(mode, env) {
-	// Ensure that the dist folder exists otherwise the FantasticonPlugin will fail
+	// Ensure that the dist folder exists otherwise the FantasticonPlugin will fail. Use recursive
+	// (idempotent) since this config function is evaluated by every parallel webpack process — a
+	// plain mkdirSync races (EEXIST) when they run concurrently (see scripts/build.mjs split).
 	const dist = path.join(__dirname, 'dist');
-	if (!fs.existsSync(dist)) {
-		fs.mkdirSync(dist);
-	}
+	fs.mkdirSync(dist, { recursive: true });
 
 	/**
 	 * @type WebpackConfig['plugins'] | any
@@ -240,51 +227,33 @@ function getExtensionConfig(target, mode, env) {
 		new GenerateLocalizedRuntimeDynamicSourcesPlugin({ rootDir: __dirname, locale: 'zh-cn' }),
 	];
 
-	if (env.quick !== 'turbo') {
-		plugins.push(
-			new ForkTsCheckerPlugin({
-				async: useAsyncTypeChecking,
-				formatter: 'basic',
-				typescript: {
-					configFile: tsConfigPath,
-					memoryLimit: 4096,
-					...(env.trace
-						? {
-								configOverwrite: {
-									compilerOptions: {
-										generateTrace: path.join(__dirname, 'dist', 'trace', `extension-${target}`),
-									},
-								},
-							}
-						: {}),
-				},
-			}),
-		);
-	}
-
-	// Only lint in node build - webworker uses same ESLint config, just different tsconfig
-	if (!env.quick && target !== 'webworker') {
-		plugins.push(
-			new ESLintLitePlugin({
-				files: [
-					path.join(__dirname, 'src', '**', '*.ts'),
-					path.join(__dirname, 'packages', '**', 'src', '**', '*.ts'),
-				],
-				exclude: ['**/@types/**', '**/webviews/apps/**', '**/__tests__/**'],
-				worker: eslintWorker,
-				eslintOptions: { ...eslintOptions, cacheLocation: path.join(__dirname, '.eslintcache/') },
-			}),
-		);
-	}
+	// Linting and type checking (incl. tsgo-backed TS diagnostics) are both handled by oxlint:
+	// once per build, in parallel with bundling, from build.mjs — so ForkTsCheckerPlugin and the
+	// ESLint plugins are gone. The inline OxLintWebpackPlugin (added below whenever not in quick
+	// mode) is watch-only, so it re-checks changed files incrementally during watch; one-shot builds
+	// rely on the single standalone oxlint pass in build.mjs.
 
 	if (target === 'webworker') {
 		plugins.push(new optimize.LimitChunkCountPlugin({ maxChunks: 1 }));
 	} else {
+		const utilsDir = path.posix.join(__dirname.replace(/\\/g, '/'), 'src', 'git', 'utils');
+		const distDir = path.posix.join(__dirname.replace(/\\/g, '/'), 'dist');
 		plugins.push(
 			new GenerateContributionsPlugin(),
 			new ExtractContributionsPlugin(),
 			new GenerateCommandTypesPlugin(),
+			// Ship the rebase-todo editor wrapper scripts (git `sequence.editor`) alongside the bundled
+			// `dist/rebaseTodoEditor.js`.
+			new CopyPlugin({
+				patterns: [
+					{ from: path.posix.join(utilsDir, 'rebaseTodoEditor.sh'), to: distDir },
+					{ from: path.posix.join(utilsDir, 'rebaseTodoEditor.cmd'), to: distDir },
+				],
+			}),
 		);
+	}
+	if (!env.quick && target !== 'webworker') {
+		plugins.push(new OxLintWebpackPlugin());
 	}
 
 	if (env.analyzeDeps) {
@@ -305,9 +274,7 @@ function getExtensionConfig(target, mode, env) {
 
 	if (env.analyzeBundle) {
 		const out = path.join(__dirname, 'out');
-		if (!fs.existsSync(out)) {
-			fs.mkdirSync(out);
-		}
+		fs.mkdirSync(out, { recursive: true });
 
 		plugins.push(
 			new BundleAnalyzerPlugin({
@@ -322,13 +289,18 @@ function getExtensionConfig(target, mode, env) {
 
 	return {
 		name: `extension:${target}`,
-		entry: { extension: './src/extension.ts' },
+		// `rebaseTodoEditor` is a standalone Node script bundled for desktop only — it's git's
+		// `sequence.editor` for the Commit Graph's headless squash/drop/reword (no git in webworker).
+		entry:
+			target === 'webworker'
+				? { extension: './src/extension.ts' }
+				: { extension: './src/extension.ts', rebaseTodoEditor: './src/git/utils/rebaseTodoEditor.ts' },
 		mode: mode,
 		target: target,
-		devtool: mode === 'production' && !env.analyzeBundle ? false : 'source-map',
+		devtool: mode === 'production' && !env.analyzeBundle ? false : 'cheap-module-source-map',
 		output: {
 			chunkFilename: '[name].js',
-			filename: 'gitlens.js',
+			filename: pathData => (pathData.chunk?.name === 'extension' ? 'gitlens.js' : '[name].js'),
 			libraryTarget: 'commonjs2',
 			path: target === 'webworker' ? path.join(__dirname, 'dist', 'browser') : path.join(__dirname, 'dist'),
 			// Clean output directory, but preserve other build targets' output directories
@@ -370,9 +342,41 @@ function getExtensionConfig(target, mode, env) {
 				target === 'webworker'
 					? false
 					: {
-							// Disable all non-async code splitting
-							chunks: () => false,
-							cacheGroups: { default: false, vendors: false },
+							// Only dedupe ASYNC chunks (the lazy webview-host controllers, `ai`, etc.).
+							// The eager `extension` entry (gitlens.js) is left fully self-contained — it is
+							// excluded from splitting, so this never changes the eager bundle, only collapses
+							// modules that were being copied into multiple lazy chunks into shared siblings.
+							chunks: 'async',
+							cacheGroups: {
+								// Disable webpack's built-in groups (the default group is `defaultVendors`,
+								// not `vendors`) so ONLY the explicit named groups below ever split — otherwise
+								// `defaultVendors` (minChunks 1) extracts every async dep into numeric vendor chunks.
+								default: false,
+								defaultVendors: false,
+								// zod + compose-tools (+ all first-party compose code: the webview compose
+								// integrations, the coretools compose backend, and the env-node composer
+								// factory) are the AI/compose feature family, lazily imported by both the
+								// composer and graph controllers. Emit one shared chunk instead of duplicating
+								// it (and a per-controller wrapper) across them.
+								compose: {
+									test: /([\\/]node_modules[\\/](zod|@gitkraken[\\/](compose-tools|shared-tools))[\\/]|[\\/]src[\\/](webviews[\\/].*[\\/]compose[\\/]|plus[\\/]coretools[\\/]compose[\\/]|env[\\/]node[\\/]coretools[\\/]composer))/,
+									name: 'compose',
+									minChunks: 2,
+									priority: 20,
+									reuseExistingChunk: true,
+									enforce: true,
+								},
+								// The webview RPC service layer + shared webview infra are copied into every
+								// webview controller (commitDetails, timeline, graph, home, …); emit them once.
+								webviewShared: {
+									test: /[\\/]src[\\/]webviews[\\/](rpc|shared)[\\/]/,
+									name: 'webview-shared',
+									minChunks: 2,
+									priority: 10,
+									reuseExistingChunk: true,
+									enforce: true,
+								},
+							},
 						},
 		},
 		externals: { vscode: 'commonjs vscode' },
@@ -434,7 +438,14 @@ function getExtensionConfig(target, mode, env) {
 			fallback: {
 				'../../../product.json': false,
 				...(target === 'webworker'
-					? { path: require.resolve('path-browserify'), os: require.resolve('os-browserify/browser') }
+					? {
+							path: require.resolve('path-browserify'),
+							os: require.resolve('os-browserify/browser'),
+							child_process: false,
+							fs: false,
+							'fs/promises': false,
+							process: false,
+						}
 					: {}),
 			},
 			mainFields: target === 'webworker' ? ['browser', 'module', 'main'] : ['module', 'main'],
@@ -443,6 +454,8 @@ function getExtensionConfig(target, mode, env) {
 		ignoreWarnings: [
 			// Ignore dynamic require warning for platform-agnostic async_hooks detection
 			{ module: /packages[\\/]utils[\\/]src[\\/]logScope\.ts/, message: /Critical dependency/ },
+			// Ignore dynamic require warning from protobufjs's optional-peer resolver (used by @opentelemetry/otlp-transformer)
+			{ module: /[\\/]@protobufjs[\\/]inquire[\\/]/, message: /Critical dependency/ },
 		],
 		plugins: plugins,
 		infrastructureLogging: mode === 'production' ? undefined : { level: 'log' }, // enables logging required for problem matchers
@@ -463,16 +476,7 @@ function getUnitTestConfig(_target, mode, env) {
 	const plugins = [new EsbuildTestsPlugin()];
 
 	if (!env.quick) {
-		plugins.push(
-			new ESLintLitePlugin({
-				files: [
-					path.join(__dirname, 'src', '**', '__tests__', '**', '*.ts'),
-					path.join(__dirname, 'packages', '**', 'src', '**', '__tests__', '**', '*.ts'),
-				],
-				worker: eslintWorker,
-				eslintOptions: { ...eslintOptions, cacheLocation: path.join(__dirname, '.eslintcache', 'tests/') },
-			}),
-		);
+		plugins.push(new OxLintWebpackPlugin());
 	}
 
 	return {
@@ -483,7 +487,8 @@ function getUnitTestConfig(_target, mode, env) {
 		mode: mode,
 		plugins: plugins,
 		infrastructureLogging: mode === 'production' ? undefined : { level: 'log' },
-		stats: 'none',
+		// Surface ESLint errors/warnings from the lint plugin (esbuild handles asset output separately)
+		stats: { preset: 'errors-warnings', colors: true, errorsCount: true, warningsCount: true },
 	};
 }
 
@@ -538,7 +543,7 @@ function getWebviewsConfigs(mode, env) {
 				locale: 'zh-cn',
 				config: getWebviewConfig(localizedEntries, {}, mode, env),
 				dependencies: webviewConfig?.name != null ? [String(webviewConfig.name)] : undefined,
-				excludePlugin: plugin => plugin instanceof ESLintLitePlugin || plugin instanceof ForkTsCheckerPlugin,
+				excludePlugin: plugin => plugin instanceof OxLintWebpackPlugin,
 			}),
 		);
 	}
@@ -578,14 +583,7 @@ function getWebviewsCommonConfig(mode, env) {
 	];
 
 	if (!env.quick) {
-		plugins.push(
-			new ESLintLitePlugin({
-				files: '**/*.ts?(x)',
-				exclude: ['**/__tests__/**'],
-				worker: eslintWorker,
-				eslintOptions: { ...eslintOptions, cacheLocation: path.join(__dirname, '.eslintcache', 'webviews/') },
-			}),
-		);
+		plugins.push(new OxLintWebpackPlugin());
 	}
 
 	const imageGeneratorConfig = getImageMinimizerConfig(mode, env);
@@ -650,6 +648,12 @@ function getWebviewConfig(webviews, overrides, mode, env) {
 	if ('composer' in webviews) {
 		plugins.push(new CompileComposerTemplatesPlugin());
 	}
+
+	// Keep `custom-elements.json` fresh during dev/watch builds (skipped in production and quick modes)
+	if (mode !== 'production' && !env.quick) {
+		plugins.push(new CustomElementsManifestPlugin());
+	}
+
 	let name = '';
 	let filePrefix = '';
 	if (overrides.name != null) {
@@ -663,37 +667,11 @@ function getWebviewConfig(webviews, overrides, mode, env) {
 		filePrefix = `webviews-${Object.keys(webviews)[0]}`;
 	}
 
-	if (env.quick !== 'turbo') {
-		plugins.push(
-			new ForkTsCheckerPlugin({
-				async: useAsyncTypeChecking,
-				formatter: 'basic',
-				typescript: {
-					configFile: tsConfigPath,
-					memoryLimit: 4096,
-					...(env.trace
-						? {
-								configOverwrite: {
-									compilerOptions: {
-										generateTrace: path.join(__dirname, 'dist', 'trace', filePrefix),
-									},
-								},
-							}
-						: {}),
-				},
-			}),
-		);
-	}
+	// Type checking is now handled by the Go-native tsgo compiler via OxLintWebpackPlugin,
+	// so ForkTsCheckerPlugin is removed to prevent redundant, slow Node-based type checking.
 
 	if (!env.quick) {
-		plugins.push(
-			new ESLintLitePlugin({
-				files: '**/*.ts?(x)',
-				exclude: ['**/__tests__/**'],
-				worker: eslintWorker,
-				eslintOptions: { ...eslintOptions, cacheLocation: path.join(__dirname, '.eslintcache', 'webviews/') },
-			}),
-		);
+		plugins.push(new OxLintWebpackPlugin());
 	}
 
 	const imageGeneratorConfig = getImageMinimizerConfig(mode, env);
@@ -705,9 +683,7 @@ function getWebviewConfig(webviews, overrides, mode, env) {
 
 	if (env.analyzeBundle) {
 		const out = path.join(__dirname, 'out');
-		if (!fs.existsSync(out)) {
-			fs.mkdirSync(out);
-		}
+		fs.mkdirSync(out, { recursive: true });
 
 		plugins.push(
 			new BundleAnalyzerPlugin({
@@ -726,7 +702,7 @@ function getWebviewConfig(webviews, overrides, mode, env) {
 		entry: Object.fromEntries(Object.entries(webviews).map(([n, { entry }]) => [n, entry])),
 		mode: mode,
 		target: 'web',
-		devtool: mode === 'production' && !env.analyzeBundle ? false : 'source-map',
+		devtool: mode === 'production' && !env.analyzeBundle ? false : 'cheap-module-source-map',
 		output: {
 			chunkFilename: '[name].js',
 			filename: '[name].js',
@@ -885,10 +861,7 @@ function getCspHtmlPlugin(mode, env) {
 				mode !== 'production'
 					? ['#{cspSource}', "'nonce-#{cspNonce}'", "'unsafe-eval'"]
 					: ['#{cspSource}', "'nonce-#{cspNonce}'"],
-			'style-src':
-				mode === 'production'
-					? ['#{cspSource}', "'nonce-#{cspNonce}'", "'unsafe-hashes'"]
-					: ['#{cspSource}', "'unsafe-hashes'", "'unsafe-inline'"],
+			'style-src': ['#{cspSource}', "'nonce-#{cspNonce}'", "'unsafe-hashes'"],
 			'font-src': ['#{cspSource}'],
 			'connect-src': mode !== 'production' ? ['#{cspSource}'] : "'none'",
 		},
@@ -896,7 +869,7 @@ function getCspHtmlPlugin(mode, env) {
 			enabled: true,
 			hashingMethod: 'sha256',
 			hashEnabled: { 'script-src': true, 'style-src': mode === 'production' },
-			nonceEnabled: { 'script-src': true, 'style-src': mode === 'production' },
+			nonceEnabled: { 'script-src': true, 'style-src': true },
 		},
 	);
 	// Override the nonce creation so we can dynamically generate them at runtime
@@ -1018,8 +991,54 @@ class FileGeneratorPlugin {
 		this.pluginName = config.pluginName;
 		this.pathsToWatch = config.pathsToWatch;
 		this.command = config.command;
+		this.outputs = config.outputs ?? [];
 		this.strings = config.strings ?? { starting: 'Generating', completed: 'Generated' };
 		this.lastModified = 0;
+		// When `outputs` are declared, persist an input content-hash across builds/processes so the
+		// generator's `spawnSync` is skipped when inputs are unchanged and outputs still exist —
+		// otherwise every one-shot build (and each split process) regenerates. Keyed by command args
+		// (pluginName alone collides, e.g. the contributions pair). Cyclic generators omit `outputs`
+		// (they mutually write each other's inputs, so content-hash convergence must be verified first).
+		this.cacheFile = this.outputs.length
+			? path.join(
+					__dirname,
+					'.codegen-cache',
+					`${this.pluginName}-${createHash('sha1').update(this.command.args.join(' ')).digest('hex').slice(0, 8)}.json`,
+				)
+			: undefined;
+	}
+
+	/** @private Content hash of all watched inputs (stable across mtime-only churn, e.g. git checkout). */
+	inputsHash() {
+		const hash = createHash('sha1');
+		for (const p of this.pathsToWatch) {
+			try {
+				hash.update(fs.readFileSync(p));
+			} catch {
+				hash.update('\0');
+			}
+		}
+		return hash.digest('hex');
+	}
+
+	/** @private Skip when the persisted input-hash matches AND every declared output still exists. */
+	persistedSkip() {
+		if (!this.cacheFile) return false;
+		if (this.outputs.some(o => !fs.existsSync(o))) return false;
+		try {
+			return JSON.parse(fs.readFileSync(this.cacheFile, 'utf8')).hash === this.inputsHash();
+		} catch {
+			return false;
+		}
+	}
+
+	/** @private Persist the current input-hash after a successful generation. */
+	recordRun() {
+		if (!this.cacheFile) return;
+		try {
+			fs.mkdirSync(path.dirname(this.cacheFile), { recursive: true });
+			fs.writeFileSync(this.cacheFile, JSON.stringify({ hash: this.inputsHash() }));
+		} catch {}
 	}
 
 	/**
@@ -1056,6 +1075,12 @@ class FileGeneratorPlugin {
 		compiler.hooks.make.tapAsync(this.pluginName, async (compilation, callback) => {
 			const logger = compiler.getInfrastructureLogger(this.pluginName);
 			try {
+				// Skip across builds/processes when inputs are unchanged and outputs exist (persisted).
+				if (this.persistedSkip()) {
+					callback();
+					return;
+				}
+
 				const changed = this.pathsChanged(this.pathsToWatch);
 				// Only regenerate if the file has changed since last time
 				if (!changed) {
@@ -1083,6 +1108,7 @@ class FileGeneratorPlugin {
 
 					if (result.status === 0) {
 						this.lastModified = Date.now();
+						this.recordRun();
 						logger.log(
 							`${this.strings.completed} ${this.command.name} in \x1b[32m${Date.now() - start}ms\x1b[0m`,
 						);
@@ -1107,6 +1133,7 @@ class GenerateCommandTypesPlugin extends FileGeneratorPlugin {
 		super({
 			pluginName: 'commandTypes',
 			pathsToWatch: [path.join(__dirname, 'contributions.json')],
+			outputs: [path.join(__dirname, 'src', 'constants.commands.generated.ts')],
 			command: {
 				name: "'src/constants.commands.generated.ts' command types",
 				command: pkgMgr,
@@ -1121,6 +1148,7 @@ class GenerateContributionsPlugin extends FileGeneratorPlugin {
 		super({
 			pluginName: 'contributions',
 			pathsToWatch: [path.join(__dirname, 'contributions.json')],
+			outputs: [path.join(__dirname, 'package.json')],
 			command: {
 				name: "'package.json' contributions",
 				command: pkgMgr,
@@ -1135,6 +1163,7 @@ class ExtractContributionsPlugin extends FileGeneratorPlugin {
 		super({
 			pluginName: 'contributions',
 			pathsToWatch: [path.join(__dirname, 'package.json')],
+			outputs: [path.join(__dirname, 'contributions.json')],
 			command: {
 				name: "contributions from 'package.json'",
 				command: pkgMgr,
@@ -1153,6 +1182,7 @@ class DocsPlugin extends FileGeneratorPlugin {
 		super({
 			pluginName: 'docs',
 			pathsToWatch: [path.join(__dirname, 'src', 'constants.telemetry.ts')],
+			outputs: [path.join(__dirname, 'docs', 'telemetry-events.md')],
 			command: {
 				name: 'docs',
 				command: pkgMgr,
@@ -1167,6 +1197,7 @@ class LicensesPlugin extends FileGeneratorPlugin {
 		super({
 			pluginName: 'licenses',
 			pathsToWatch: [path.join(__dirname, 'package.json')],
+			outputs: [path.join(__dirname, 'ThirdPartyNotices.txt')],
 			command: {
 				name: 'licenses',
 				command: pkgMgr,
@@ -1499,5 +1530,99 @@ class CompileComposerTemplatesPlugin {
 			fs.writeFileSync(outPath, newContent, 'utf8');
 			console.log(`[CompileComposerTemplatesPlugin] Wrote ${outPath}`);
 		}
+	}
+}
+
+class CustomElementsManifestPlugin {
+	static name = 'CustomElementsManifestPlugin';
+
+	#firstRun = true;
+	#sourcePrefix = `${path.sep}src${path.sep}webviews${path.sep}apps${path.sep}`;
+	#sourcesDir = path.join(__dirname, 'src', 'webviews', 'apps');
+	#output = path.join(__dirname, 'custom-elements.json');
+	#cacheFile = path.join(__dirname, '.codegen-cache', 'custom-elements.json');
+
+	/** @returns {number} newest mtime across webview-app sources (the manifest's inputs). */
+	#sourcesMaxMtime() {
+		let max = 0;
+		try {
+			for (const entry of fs.readdirSync(this.#sourcesDir, { recursive: true, withFileTypes: true })) {
+				if (!entry.isFile() || !/\.tsx?$/.test(entry.name)) continue;
+				try {
+					const m = fs.statSync(path.join(entry.parentPath, entry.name)).mtimeMs;
+					if (m > max) max = m;
+				} catch {}
+			}
+		} catch {}
+		return max;
+	}
+
+	/** Skip the first-compile regen when no source changed since the last build and the manifest exists. */
+	#persistedSkip() {
+		if (!fs.existsSync(this.#output)) return false;
+		try {
+			return JSON.parse(fs.readFileSync(this.#cacheFile, 'utf8')).mtime >= this.#sourcesMaxMtime();
+		} catch {
+			return false;
+		}
+	}
+
+	#recordRun() {
+		try {
+			fs.mkdirSync(path.dirname(this.#cacheFile), { recursive: true });
+			fs.writeFileSync(this.#cacheFile, JSON.stringify({ mtime: this.#sourcesMaxMtime() }));
+		} catch {}
+	}
+
+	/**
+	 * @param {import('webpack').Compiler} compiler
+	 */
+	apply(compiler) {
+		compiler.hooks.afterEmit.tapAsync(CustomElementsManifestPlugin.name, (_compilation, callback) => {
+			// First compile of a process: instead of always regenerating, skip when no webview source
+			// changed since the last build (persisted mtime) and the manifest still exists. Subsequent
+			// compiles (watch) regenerate only when a webview source file actually changed.
+			if (this.#firstRun) {
+				this.#firstRun = false;
+				if (this.#persistedSkip()) {
+					callback();
+					return;
+				}
+			} else {
+				const changed = [...(compiler.modifiedFiles ?? []), ...(compiler.removedFiles ?? [])];
+				const relevant = changed.some(f => f.includes(this.#sourcePrefix) && /\.tsx?$/.test(f));
+				if (!relevant) {
+					callback();
+					return;
+				}
+			}
+
+			const logger = compiler.getInfrastructureLogger(CustomElementsManifestPlugin.name);
+			try {
+				logger.log(`Generating 'custom-elements.json'...`);
+				const start = Date.now();
+
+				const result = spawnSync(pkgMgr, ['run', 'generate:customElements'], {
+					cwd: __dirname,
+					encoding: 'utf8',
+					shell: true,
+				});
+
+				if (result.status === 0) {
+					logger.log(`Generated 'custom-elements.json' in \x1b[32m${Date.now() - start}ms\x1b[0m`);
+					this.#recordRun();
+				} else {
+					logger.warn(
+						`Failed to generate 'custom-elements.json' (exit ${result.status})${
+							result.stderr ? `: ${result.stderr.trim()}` : ''
+						}`,
+					);
+				}
+			} catch (ex) {
+				logger.warn(`Error generating 'custom-elements.json': ${ex}`);
+			}
+
+			callback();
+		});
 	}
 }

@@ -1,3 +1,5 @@
+.agents
+.claude/plans/**
 !.claude/settings.json
 .claude/settings.local.json
 .claude/scheduled_tasks.lock
@@ -18,12 +20,16 @@ out
 node_modules
 images/settings
 .gitkraken-components.version
+custom-elements.json
 gitlens-*.vsix
 product.json
 tsconfig*.tsbuildinfo
 *.code-workspace
 localdev*.instructions.md
 *.log
+
+# Build codegen skip-cache (input fingerprints for Docs/contributions/CEM generators)
+.codegen-cache/
 
 
 i18n/reports/*.json

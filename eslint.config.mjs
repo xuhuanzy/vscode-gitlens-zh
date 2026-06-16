@@ -10,9 +10,8 @@ import e18e from '@e18e/eslint-plugin';
 import importX from 'eslint-plugin-import-x';
 import { configs as litConfigs } from 'eslint-plugin-lit';
 import { configs as wcConfigs } from 'eslint-plugin-wc';
-import noSrcImports from './scripts/eslint-rules/no-src-imports.mjs';
-import noEnvWithoutJs from './scripts/eslint-rules/no-env-without-js.mjs';
-import logScopeUsage from './scripts/eslint-rules/scoped-logger-usage.mjs';
+import oxlint from 'eslint-plugin-oxlint';
+import gitlens from './scripts/eslint-plugin-gitlens.mjs';
 import { fileURLToPath } from 'node:url';
 
 /** @type {Awaited<import('typescript-eslint').Config>[number]['languageOptions']} */
@@ -31,10 +30,12 @@ const defaultLanguageOptions = {
 const filePatterns = {
 	packages: [
 		'packages/utils/src/**/*',
+		'packages/ipc/src/**/*',
 		'packages/git/src/**/*',
 		'packages/git-cli/src/**/*',
 		'packages/plus/git-github/src/**/*',
 		'packages/plus/ai/src/**/*',
+		'packages/plus/agents/src/**/*',
 	],
 	src: ['src/**/*'],
 	envNode: ['src/env/node/**/*'],
@@ -185,19 +186,16 @@ export default defineConfig(
 			// @ts-ignore
 			'anti-trojan-source': antiTrojanSource,
 			// @ts-ignore
-			'@gitlens': {
-				rules: {
-					'no-src-imports': noSrcImports,
-					'no-env-without-js': noEnvWithoutJs,
-					'scoped-logger-usage': logScopeUsage,
-				},
-			},
+			'@gitlens': gitlens,
 		},
 		rules: {
 			// Custom rules
 			'@gitlens/no-src-imports': 'error',
-			'@gitlens/no-env-without-js': 'error',
+			'@gitlens/no-self-package-imports': 'error',
+			'@gitlens/require-js-extension': 'error',
 			'@gitlens/scoped-logger-usage': 'error',
+			'@gitlens/require-block-body': 'error',
+			'@gitlens/newline-after-control-flow': 'warn',
 			'anti-trojan-source/no-bidi': 'error',
 
 			// Core JavaScript rules
@@ -267,28 +265,6 @@ export default defineConfig(
 			// Syntax restrictions for code style
 			'no-restricted-syntax': [
 				'error',
-				{
-					selector:
-						'IfStatement:not(:has(BlockStatement)):not(:has(ReturnStatement)):not(:has(BreakStatement)):not(:has(ContinueStatement)):not(:has(YieldExpression)):not(:has(ThrowStatement))',
-					message:
-						'Single-line if statements are only allowed for control flow (return, break, continue, throw, yield).',
-				},
-				{
-					selector: 'WhileStatement:not(:has(BlockStatement))',
-					message: 'Single-line while statements are not allowed.',
-				},
-				{
-					selector: 'ForStatement:not(:has(BlockStatement))',
-					message: 'Single-line for statements are not allowed.',
-				},
-				{
-					selector: 'ForInStatement:not(:has(BlockStatement))',
-					message: 'Single-line for-in statements are not allowed.',
-				},
-				{
-					selector: 'ForOfStatement:not(:has(BlockStatement))',
-					message: 'Single-line for-of statements are not allowed.',
-				},
 				{
 					selector: 'BinaryExpression[operator="instanceof"][right.name="CancellationError"]',
 					message: 'Use `isCancellationError(ex)` instead of `instanceof CancellationError`.',
@@ -428,6 +404,11 @@ export default defineConfig(
 			'import-x/extensions': ['.ts', '.tsx'],
 			'import-x/parsers': { '@typescript-eslint/parser': ['.ts', '.tsx'] },
 			'import-x/resolver-next': [createCustomTypeScriptImportResolver()],
+			// Force Node subpath imports (`#...`), the `@env/*` alias, and workspace `@gitlens/*`
+			// packages into the `internal` group so import-x/order is stable regardless of whether
+			// the typescript resolver can locate them (e.g., missing `dist/` or `node_modules`
+			// symlink at lint time).
+			'import-x/internal-regex': '^(#|@env/|@gitlens/)',
 		},
 	},
 
@@ -555,4 +536,11 @@ export default defineConfig(
 			],
 		},
 	},
+
+	// Oxlint integration - appended at the end to disable rules oxlint already enforces (avoids
+	// true duplication in `lint:ci`, where oxlint runs first). Rules oxlint does NOT enforce —
+	// including ones it can't implement or diverges on — stay enabled here so eslint remains the
+	// complete gate. (Any oxlint-recommended rule we leave off in .oxlintrc.json is re-enabled
+	// there so this disable stays a true duplicate, not a coverage hole.)
+	oxlint.configs['flat/recommended'],
 );

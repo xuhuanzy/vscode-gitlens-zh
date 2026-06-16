@@ -1,17 +1,14 @@
-import type SlPopup from '@shoelace-style/shoelace/dist/components/popup/popup.js';
+import type WaPopup from '@awesome.me/webawesome/dist/components/popup/popup.js';
 import { css, html, LitElement } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { parseDuration, waitForEvent } from '../../dom.js';
 import { GlElement, observe } from '../element.js';
 import { scrollableBase } from '../styles/lit/base.css.js';
-import '@shoelace-style/shoelace/dist/components/popup/popup.js';
-import '../shoelace-stub.js';
-
-// Adapted from shoelace tooltip
+import '@awesome.me/webawesome/dist/components/popup/popup.js';
 
 declare const CloseWatcher: CloseWatcher;
 interface CloseWatcher extends EventTarget {
-	// eslint-disable-next-line @typescript-eslint/no-misused-new
+	// oxlint-disable-next-line @typescript-eslint/no-misused-new
 	new (options?: CloseWatcherOptions): CloseWatcher;
 	requestClose(): void;
 	close(): void;
@@ -24,7 +21,7 @@ interface CloseWatcherOptions {
 	signal: AbortSignal;
 }
 
-type TriggerType = 'hover' | 'focus' | 'click' | 'manual';
+type TriggerType = 'hover' | 'focus' | 'focus-visible' | 'click' | 'manual';
 type Combine<T extends string, U extends string = T> = T extends any ? T | `${T} ${Combine<Exclude<U, T>>}` : never;
 type Triggers = Combine<TriggerType>;
 
@@ -41,13 +38,117 @@ declare global {
 	}
 }
 
+type ResizeHandle = 'top' | 'right' | 'bottom' | 'left' | 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+
+const allResizeHandles: readonly ResizeHandle[] = [
+	'top',
+	'right',
+	'bottom',
+	'left',
+	'top-left',
+	'top-right',
+	'bottom-left',
+	'bottom-right',
+] as const;
+
+/**
+ * Returns true if this handle sits on an edge anchored to the trigger — either by the placement's main axis (the side
+ * opposite `placement`) or by its cross-axis alignment (`-start` pins the start edge, `-end` pins the end edge).
+ * Dragging an anchored edge fights Floating UI and causes the opposite edge to move instead.
+ */
+function isHandleAnchored(handle: ResizeHandle, placement: string | undefined): boolean {
+	if (!placement) return false;
+
+	const [side, align] = placement.split('-');
+
+	// Main axis: the edge opposite the placement side.
+	let mainAnchored: 'top' | 'right' | 'bottom' | 'left' | undefined;
+	switch (side) {
+		case 'top':
+			mainAnchored = 'bottom';
+			break;
+		case 'right':
+			mainAnchored = 'left';
+			break;
+		case 'bottom':
+			mainAnchored = 'top';
+			break;
+		case 'left':
+			mainAnchored = 'right';
+			break;
+	}
+
+	// Cross axis: -start pins the start edge (top for h-placements, left for v-placements);
+	// -end pins the end edge (bottom / right).
+	let crossAnchored: 'top' | 'right' | 'bottom' | 'left' | undefined;
+	const horizontal = side === 'left' || side === 'right';
+	if (align === 'start') {
+		crossAnchored = horizontal ? 'top' : 'left';
+	} else if (align === 'end') {
+		crossAnchored = horizontal ? 'bottom' : 'right';
+	}
+
+	const matches = (anchored: 'top' | 'right' | 'bottom' | 'left' | undefined) =>
+		anchored != null &&
+		(handle === anchored || handle.startsWith(`${anchored}-`) || handle.endsWith(`-${anchored}`));
+
+	return matches(mainAnchored) || matches(crossAnchored);
+}
+
+/**
+ * Walks up `node`'s parent chain — jumping ShadowRoot → host at boundaries — to determine whether
+ * `possibleAncestor` is a shadow-including ancestor. `Node.contains` and `compareDocumentPosition`
+ * stop at shadow tree boundaries (returning `DOCUMENT_POSITION_DISCONNECTED` across them), which
+ * breaks containment checks between popovers nested inside child components' shadow roots.
+ */
+function isShadowIncludingAncestor(possibleAncestor: Node, node: Node): boolean {
+	let current: Node | null = node;
+	while (current != null) {
+		if (current === possibleAncestor) return true;
+
+		current = current.parentNode ?? (current instanceof ShadowRoot ? current.host : null);
+	}
+	return false;
+}
+
+function parseResizeHandles(value: string | undefined): ResizeHandle[] {
+	if (!value) return [];
+
+	const result = new Set<ResizeHandle>();
+	for (const token of value.trim().split(/\s+/)) {
+		switch (token) {
+			case 'horizontal':
+				result.add('right');
+				break;
+			case 'vertical':
+				result.add('bottom');
+				break;
+			case 'both':
+				result.add('right');
+				result.add('bottom');
+				result.add('bottom-right');
+				break;
+			case 'all':
+				for (const h of allResizeHandles) {
+					result.add(h);
+				}
+				break;
+			default:
+				if ((allResizeHandles as readonly string[]).includes(token)) {
+					result.add(token as ResizeHandle);
+				}
+		}
+	}
+	return [...result];
+}
+
 /**
  * @tag gl-popover
  *
  * @slot anchor - The element that triggers the popover
  * @slot content - The content of the popover
  *
- * @csspart base - Styles the sl-popup element itself
+ * @csspart base - Styles the wa-popup element itself
  * @csspart arrow - Styles the arrow's container
  * @csspart popup - Styles the popup's container
  * @csspart body - Styles the element that wraps the content slot
@@ -70,11 +171,7 @@ export class GlPopover extends GlElement {
 
 	private static closeOthers(openingPopover: GlPopover): void {
 		for (const popover of GlPopover.openPopovers) {
-			if (
-				popover === openingPopover ||
-				// Check if the popover contains the opening popover
-				Boolean(popover.compareDocumentPosition(openingPopover) & Node.DOCUMENT_POSITION_CONTAINS)
-			) {
+			if (popover === openingPopover || isShadowIncludingAncestor(popover, openingPopover)) {
 				continue;
 			}
 
@@ -86,24 +183,23 @@ export class GlPopover extends GlElement {
 		scrollableBase,
 		css`
 			:host {
-				--hide-delay: 0ms;
+				--hide-delay: 100ms;
 				--show-delay: 500ms;
 
 				display: contents;
 			}
 
 			.popover {
-				--arrow-size: var(--sl-tooltip-arrow-size);
-				--arrow-color: var(--sl-tooltip-background-color);
+				--arrow-size: var(--wa-tooltip-arrow-size);
+				--arrow-color: var(--wa-tooltip-background-color);
+				/* tells wa-popup to overlap the arrow with the inside edge of our 1px body
+				   border, so the arrow base aligns with the body's content area instead of
+				   sitting on top of the border line */
+				--popup-border-width: 1px;
 			}
 
 			.popover::part(popup) {
-				z-index: var(--sl-z-index-tooltip);
-			}
-
-			.popover::part(arrow) {
-				border: 1px solid var(--gl-tooltip-border-color);
-				z-index: 1;
+				z-index: var(--wa-z-index-tooltip);
 			}
 
 			.popover[placement^='top']::part(popup) {
@@ -122,49 +218,148 @@ export class GlPopover extends GlElement {
 				transform-origin: left;
 			}
 
-			.popover[data-current-placement^='top']::part(arrow) {
-				border-top-width: 0;
-				border-left-width: 0;
-				clip-path: polygon(0 50%, 100% 0, 100% 100%, 0 100%);
-			}
-
-			.popover[data-current-placement^='bottom']::part(arrow) {
-				border-bottom-width: 0;
-				border-right-width: 0;
-				clip-path: polygon(0 0, 100% 0, 100% 50%, 0 100%);
-			}
-
-			.popover[data-current-placement^='left']::part(arrow) {
-				border-bottom-width: 0;
-				border-left-width: 0;
-				clip-path: polygon(0 0, 100% 0, 100% 100%, 70% 100%, 0 30%);
-			}
-
-			.popover[data-current-placement^='right']::part(arrow) {
-				border-top-width: 0;
-				border-right-width: 0;
-				clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 70%, 30% 0);
-			}
-
 			.popover__body {
 				display: block;
 				width: fit-content;
+				min-width: 0;
 				border: 1px solid var(--gl-tooltip-border-color);
-				border-radius: var(--sl-tooltip-border-radius);
+				border-radius: var(--wa-tooltip-border-radius);
 				box-shadow: 0 2px 8px var(--gl-tooltip-shadow);
-				background-color: var(--sl-tooltip-background-color);
-				font-family: var(--sl-tooltip-font-family);
-				font-size: var(--sl-tooltip-font-size);
-				font-weight: var(--sl-tooltip-font-weight);
-				line-height: var(--sl-tooltip-line-height);
+				background-color: var(--wa-tooltip-background-color);
+				font-family: var(--wa-tooltip-font-family);
+				font-size: var(--wa-tooltip-font-size);
+				font-weight: var(--wa-tooltip-font-weight);
+				line-height: var(--wa-tooltip-line-height);
 				text-align: start;
 				white-space: normal;
-				color: var(--sl-tooltip-color);
-				padding: var(--sl-tooltip-padding);
+				color: var(--wa-tooltip-color);
+				padding: var(--wa-tooltip-padding);
 				user-select: none;
 				-webkit-user-select: none;
 				max-width: min(var(--auto-size-available-width), var(--max-width, 70vw));
+				overflow: hidden;
 				pointer-events: all;
+			}
+
+			:host([auto-size-vertical]) .popover__body {
+				max-height: var(--auto-size-available-height);
+				display: flex;
+				flex-direction: column;
+				overflow: hidden;
+			}
+
+			:host([resize]) .popover__body {
+				position: relative;
+			}
+
+			.popover__resizer {
+				position: absolute;
+				background-color: transparent;
+				transition: background-color 0.1s ease-out;
+				touch-action: none;
+				z-index: 1;
+			}
+
+			/* Edges — 4px thick bars */
+			.popover__resizer--top {
+				top: 0;
+				left: 0;
+				right: 0;
+				height: 4px;
+				cursor: ns-resize;
+			}
+			.popover__resizer--right {
+				top: 0;
+				right: 0;
+				bottom: 0;
+				width: 4px;
+				cursor: ew-resize;
+			}
+			.popover__resizer--bottom {
+				left: 0;
+				right: 0;
+				bottom: 0;
+				height: 4px;
+				cursor: ns-resize;
+			}
+			.popover__resizer--left {
+				top: 0;
+				left: 0;
+				bottom: 0;
+				width: 4px;
+				cursor: ew-resize;
+			}
+
+			/* Corners — 12px squares, layered above edges */
+			.popover__resizer--top-left,
+			.popover__resizer--top-right,
+			.popover__resizer--bottom-left,
+			.popover__resizer--bottom-right {
+				width: 12px;
+				height: 12px;
+				z-index: 2;
+			}
+			.popover__resizer--top-left {
+				top: 0;
+				left: 0;
+				cursor: nwse-resize;
+			}
+			.popover__resizer--top-right {
+				top: 0;
+				right: 0;
+				cursor: nesw-resize;
+			}
+			.popover__resizer--bottom-left {
+				bottom: 0;
+				left: 0;
+				cursor: nesw-resize;
+			}
+			.popover__resizer--bottom-right {
+				bottom: 0;
+				right: 0;
+				cursor: nwse-resize;
+			}
+
+			/* Extended hit area for easier grabbing on edges */
+			.popover__resizer--top::after,
+			.popover__resizer--right::after,
+			.popover__resizer--bottom::after,
+			.popover__resizer--left::after {
+				content: '';
+				position: absolute;
+			}
+			.popover__resizer--top::after {
+				left: 0;
+				right: 0;
+				top: -4px;
+				bottom: -2px;
+			}
+			.popover__resizer--right::after {
+				top: 0;
+				bottom: 0;
+				left: -2px;
+				right: -4px;
+			}
+			.popover__resizer--bottom::after {
+				left: 0;
+				right: 0;
+				top: -2px;
+				bottom: -4px;
+			}
+			.popover__resizer--left::after {
+				top: 0;
+				bottom: 0;
+				left: -4px;
+				right: -2px;
+			}
+
+			.popover__resizer:hover,
+			:host([dragging]) .popover__resizer--active {
+				transition-delay: 0.2s;
+				background-color: var(--vscode-sash-hoverBorder, var(--vscode-focusBorder));
+			}
+			:host([dragging]) .popover__resizer--active {
+				transition-delay: 0s;
 			}
 
 			/* Override scrollbar thumb to not inherit border-color from the popover
@@ -183,9 +378,9 @@ export class GlPopover extends GlElement {
 			}
 
 			:host([appearance='menu']) {
-				--sl-tooltip-padding: var(--sl-spacing-2x-small);
-				--sl-tooltip-font-size: var(--vscode-font-size);
-				--sl-tooltip-background-color: var(--vscode-menu-background);
+				--wa-tooltip-padding: var(--wa-spacing-2x-small);
+				--wa-tooltip-font-size: var(--vscode-font-size);
+				--wa-tooltip-background-color: var(--vscode-menu-background);
 				--arrow-color: var(--vscode-menu-background);
 			}
 
@@ -205,15 +400,16 @@ export class GlPopover extends GlElement {
 
 	private closeWatcher!: CloseWatcher | null;
 	private hoverTimeout!: ReturnType<typeof setTimeout>;
+	private resizeObserver?: ResizeObserver;
 
 	@query('#popover')
-	body!: HTMLElement;
+	private body!: HTMLElement;
 
-	@query('sl-popup')
-	popup!: SlPopup;
+	@query('wa-popup')
+	private popup!: WaPopup;
 
 	@property({ reflect: true })
-	placement: SlPopup['placement'] = 'bottom';
+	placement: WaPopup['placement'] = 'bottom';
 
 	@property({ type: Object })
 	anchor?: string | HTMLElement | { getBoundingClientRect: () => Omit<DOMRect, 'toJSON'> };
@@ -230,6 +426,21 @@ export class GlPopover extends GlElement {
 	@property({ reflect: true, type: Boolean })
 	arrow: boolean = true;
 
+	/** When true, constrains the popover's height to the available viewport space and enables vertical scrolling. */
+	@property({ reflect: true, type: Boolean, attribute: 'auto-size-vertical' })
+	autoSizeVertical: boolean = false;
+
+	/**
+	 * When set, exposes drag-resize grips on the popover body. Accepts a space-separated list of
+	 * edges/corners, or one of the shortcut keywords.
+	 *
+	 * Tokens: `top`, `right`, `bottom`, `left`, `top-left`, `top-right`, `bottom-left`, `bottom-right`.
+	 * Shortcuts: `horizontal` (right), `vertical` (bottom), `both` (right + bottom + bottom-right corner),
+	 * `all` (all 4 edges + 4 corners).
+	 */
+	@property({ reflect: true })
+	resize?: string;
+
 	/** The distance in pixels from which to offset the popover along its target. */
 	@property({ type: Number })
 	skidding = 0;
@@ -238,9 +449,9 @@ export class GlPopover extends GlElement {
 	trigger: Triggers = 'hover focus';
 
 	/**
-	 * Enable this option to prevent the popover from being clipped when the component is placed inside a container with
-	 * `overflow: auto|hidden|scroll`. Hoisting uses a fixed positioning strategy that works in many, but not all,
-	 * scenarios.
+	 * @deprecated No longer needed — `wa-popup` renders in the browser's top layer via the HTML Popover API,
+	 * which escapes all clipping, stacking contexts, and transform containing blocks. Kept as a no-op for
+	 * source compatibility; will be removed in a follow-up.
 	 */
 	@property({ type: Boolean })
 	hoist = false;
@@ -250,8 +461,10 @@ export class GlPopover extends GlElement {
 
 	@state() private suppressed: boolean = false;
 
-	get currentPlacement(): SlPopup['placement'] {
-		return (this.popup?.getAttribute('data-current-placement') ?? this.placement) as SlPopup['placement'];
+	@state() private _resolvedPlacement?: WaPopup['placement'];
+
+	get currentPlacement(): WaPopup['placement'] {
+		return (this.popup?.getAttribute('data-current-placement') as WaPopup['placement'] | null) ?? this.placement;
 	}
 
 	override connectedCallback(): void {
@@ -288,6 +501,9 @@ export class GlPopover extends GlElement {
 		window.removeEventListener('dragstart', this.handleDragStart, { capture: true });
 		window.removeEventListener('dragend', this.handleDragEnd, { capture: true });
 
+		this.resizeObserver?.disconnect();
+		this.resizeObserver = undefined;
+
 		// Remove this popover from the registry when it's disconnected
 		GlPopover.openPopovers.delete(this);
 
@@ -302,28 +518,45 @@ export class GlPopover extends GlElement {
 			this.popup.active = true;
 			this.popup.reposition();
 		}
+
+		this.updateResizeObserver();
+	}
+
+	private updateResizeObserver(): void {
+		if (this.resize != null) {
+			if (this.resizeObserver == null && this.body != null) {
+				this.resizeObserver = new ResizeObserver(() => this.popup?.reposition());
+				this.resizeObserver.observe(this.body);
+			}
+		} else if (this.resizeObserver != null) {
+			this.resizeObserver.disconnect();
+			this.resizeObserver = undefined;
+		}
 	}
 
 	override render(): unknown {
-		return html`<sl-popup
+		const resolvedPlacement = this._resolvedPlacement ?? this.placement;
+		const handles = parseResizeHandles(this.resize).filter(h => !isHandleAnchored(h, resolvedPlacement));
+		return html`<wa-popup
 			part="base"
 			exportparts="
 				popup:base__popup,
-				arrow:base__arrow
+				arrow:base__arrow,
+				hover-bridge:base__hover-bridge
 			"
 			class="popover"
 			.anchor=${this.anchor}
 			placement=${this.placement}
 			distance=${this.distance}
 			skidding=${this.skidding}
-			strategy=${this.hoist ? 'fixed' : 'absolute'}
-			auto-size="horizontal"
+			auto-size=${this.autoSizeVertical ? 'both' : 'horizontal'}
 			auto-size-padding="3"
 			flip-padding="3"
 			flip
 			shift
 			?arrow=${this.arrow}
 			hover-bridge
+			@wa-reposition=${this.handleReposition}
 		>
 			<div slot="anchor" aria-describedby="popover">
 				<slot name="anchor"></slot>
@@ -337,9 +570,81 @@ export class GlPopover extends GlElement {
 				aria-live=${this.open ? 'polite' : 'off'}
 			>
 				<slot name="content"></slot>
+				${handles.map(
+					h =>
+						html`<div
+							class="popover__resizer popover__resizer--${h}"
+							role="separator"
+							aria-orientation=${h === 'top' || h === 'bottom' ? 'horizontal' : 'vertical'}
+							aria-label="Resize"
+							data-handle=${h}
+							@pointerdown=${this.handleResizePointerDown}
+						></div>`,
+				)}
 			</div>
-		</sl-popup>`;
+		</wa-popup>`;
 	}
+
+	private handleReposition = (): void => {
+		const p = this.popup?.getAttribute('data-current-placement') as WaPopup['placement'] | null;
+		if (p != null && p !== this._resolvedPlacement) {
+			this._resolvedPlacement = p;
+		}
+	};
+
+	private handleResizePointerDown = (e: PointerEvent): void => {
+		if (e.button !== 0) return;
+
+		const handle = e.currentTarget as HTMLElement;
+		const pos = handle.dataset.handle as ResizeHandle | undefined;
+		if (pos == null) return;
+
+		e.preventDefault();
+
+		const growsRight = pos === 'right' || pos === 'top-right' || pos === 'bottom-right';
+		const growsLeft = pos === 'left' || pos === 'top-left' || pos === 'bottom-left';
+		const growsDown = pos === 'bottom' || pos === 'bottom-left' || pos === 'bottom-right';
+		const growsUp = pos === 'top' || pos === 'top-left' || pos === 'top-right';
+
+		const body = this.body;
+		const startX = e.clientX;
+		const startY = e.clientY;
+		const startRect = body.getBoundingClientRect();
+		const startWidth = startRect.width;
+		const startHeight = startRect.height;
+
+		handle.setPointerCapture(e.pointerId);
+		handle.classList.add('popover__resizer--active');
+		this.toggleAttribute('dragging', true);
+
+		const onMove = (ev: PointerEvent) => {
+			const dx = ev.clientX - startX;
+			const dy = ev.clientY - startY;
+			if (growsRight) {
+				body.style.width = `${Math.max(0, startWidth + dx)}px`;
+			} else if (growsLeft) {
+				body.style.width = `${Math.max(0, startWidth - dx)}px`;
+			}
+			if (growsDown) {
+				body.style.height = `${Math.max(0, startHeight + dy)}px`;
+			} else if (growsUp) {
+				body.style.height = `${Math.max(0, startHeight - dy)}px`;
+			}
+			this.popup?.reposition();
+		};
+
+		const cleanup = () => {
+			this.toggleAttribute('dragging', false);
+			handle.classList.remove('popover__resizer--active');
+			handle.removeEventListener('pointermove', onMove);
+			handle.removeEventListener('lostpointercapture', cleanup);
+			handle.removeEventListener('pointerup', cleanup);
+		};
+
+		handle.addEventListener('pointermove', onMove, { passive: true });
+		handle.addEventListener('lostpointercapture', cleanup);
+		handle.addEventListener('pointerup', cleanup);
+	};
 
 	private _triggeredBy: TriggerType | undefined;
 	/** Shows the popover. */
@@ -351,6 +656,7 @@ export class GlPopover extends GlElement {
 			}
 			return undefined;
 		}
+
 		if (this._triggeredBy == null || triggeredBy !== 'hover') {
 			this._triggeredBy = triggeredBy;
 		}
@@ -378,7 +684,7 @@ export class GlPopover extends GlElement {
 	}
 
 	private readonly handleTriggerBlur = (e: FocusEvent) => {
-		if (this.open && this.hasTrigger('focus')) {
+		if (this.open && (this.hasTrigger('focus') || this.hasTrigger('focus-visible'))) {
 			if (e.relatedTarget && this.contains(e.relatedTarget as Node)) return;
 
 			void this.hide();
@@ -398,6 +704,9 @@ export class GlPopover extends GlElement {
 
 				void this.hide();
 			} else {
+				// Either opening fresh or upgrading from hover → click. Reset the flag so a
+				// stale `true` from mousedown can't leak into a future close-click.
+				this._skipHideOnClick = false;
 				void this.show('click');
 			}
 		}
@@ -405,7 +714,8 @@ export class GlPopover extends GlElement {
 
 	private _skipHideOnClick = false;
 	private readonly handleTriggerMouseDown = (e: MouseEvent) => {
-		if (this.hasTrigger('click') && this.hasTrigger('focus') && !this.matches(':focus-within')) {
+		const hasFocusTrigger = this.hasTrigger('focus') || this.hasTrigger('focus-visible');
+		if (this.hasTrigger('click') && hasFocusTrigger && !this.matches(':focus-within')) {
 			this._skipHideOnClick = true;
 		} else {
 			this._skipHideOnClick = false;
@@ -413,8 +723,15 @@ export class GlPopover extends GlElement {
 
 		// Suppress and hide hover-triggered popovers on mousedown to prevent them from being included
 		// in drag images — but not when the mousedown originates inside the popover body, so users can
-		// interact with controls in a hover-opened popover.
-		if (this.open && this._triggeredBy === 'hover' && !e.composedPath().includes(this.body)) {
+		// interact with controls in a hover-opened popover. Skip the hide when `click` is also a
+		// trigger: the click handler will upgrade `_triggeredBy` from 'hover' to 'click' via show(),
+		// keeping the popover continuously visible instead of flashing hide → reshow.
+		if (
+			this.open &&
+			this._triggeredBy === 'hover' &&
+			!this.hasTrigger('click') &&
+			!e.composedPath().includes(this.body)
+		) {
 			this.suppressed = true;
 			void this.hide();
 		}
@@ -433,13 +750,25 @@ export class GlPopover extends GlElement {
 		this.suppressed = false;
 	};
 
-	private readonly handleTriggerFocus = () => {
-		if (this.hasTrigger('focus')) {
-			if (this.open && this._triggeredBy !== 'hover' && !this.hasPopupFocus()) {
-				void this.hide();
-			} else {
-				void this.show('focus');
+	private readonly handleTriggerFocus = (e: FocusEvent) => {
+		const hasFocus = this.hasTrigger('focus');
+		const hasFocusVisible = this.hasTrigger('focus-visible');
+		if (!hasFocus && !hasFocusVisible) return;
+
+		// When only focus-visible is configured, gate on :focus-visible matching so the popover
+		// only opens for keyboard (or otherwise focus-visible) focus, not mouse-induced focus.
+		// When `focus` is also configured, the broader trigger wins (back-compat).
+		if (!hasFocus && hasFocusVisible) {
+			const target = e.target as Element | null;
+			if (target == null || typeof target.matches !== 'function' || !target.matches(':focus-visible')) {
+				return;
 			}
+		}
+
+		if (this.open && this._triggeredBy !== 'hover' && !this.hasPopupFocus()) {
+			void this.hide();
+		} else {
+			void this.show('focus');
 		}
 	};
 
@@ -516,7 +845,7 @@ export class GlPopover extends GlElement {
 			document.addEventListener('focusin', this.handlePopupBlur);
 			window.addEventListener('webview-blur', this.handleWebviewBlur, false);
 
-			if (this.hasTrigger('click') || this.hasTrigger('focus')) {
+			if (this.hasTrigger('click') || this.hasTrigger('focus') || this.hasTrigger('focus-visible')) {
 				document.addEventListener('mousedown', this.handleDocumentMouseDown);
 			}
 
@@ -543,12 +872,17 @@ export class GlPopover extends GlElement {
 		}
 	}
 
-	@observe(['distance', 'hoist', 'placement', 'skidding'])
+	@observe(['distance', 'placement', 'skidding'])
 	async handleOptionsChange(): Promise<void> {
 		if (this.hasUpdated) {
 			await this.updateComplete;
 			this.popup.reposition();
 		}
+	}
+
+	@observe('resize', { afterFirstUpdate: true })
+	handleResizeChange(): void {
+		this.updateResizeObserver();
 	}
 
 	@observe('disabled')

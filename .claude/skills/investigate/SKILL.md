@@ -7,6 +7,23 @@ description: Investigate bugs — single-issue deep root cause analysis or batch
 
 Perform structured root cause analysis of bugs. Operates in two modes: single-issue deep investigation or batch parallel investigation across multiple issues.
 
+## Pair with `/live-exercise` when the trace alone won't close the case
+
+This skill is the static-tracing layer: read code, form a hypothesis, point at a likely cause. **For many bugs that's enough — finish here.** But if the bug is reproducible in a running instance AND any of the following apply, **escalate to `/live-exercise` after the trace** to validate the theory, add temporary logging and observe it, or iterate fix → re-verify:
+
+- **Visible UI behavior**: flaky rendering, intermittent visual glitches, hover/focus/animation issues, layout overflow, "user clicks X and sometimes Y"
+- **Timing / event / race**: focus shifts, microtask vs task ordering, async chains, pointerdown→focusout→click sequences, debounced/throttled handlers
+- **Cross-component state**: cause spans multiple modules, contexts, or shadow DOM boundaries — the trace keeps fanning out without converging
+- **Theory needs empirical confirmation**: "I think the cause is X, but I'd have to read 8 more files to be sure" → faster to run the theory than to keep tracing
+- **Iterative debug loop expected**: add logging → repro → read logs → adjust hypothesis → repro again. Single-shot static investigation can't do this efficiently
+- **Bug surfaces only at runtime**: state-dependent, dataset-dependent, configuration-dependent — code looks correct but behaves wrong in the live instance
+
+**Pattern**: trace as far as the code alone takes you, identify the candidate cause(s), then hand off to `/live-exercise` to confirm or refute live. Don't skip the trace — but don't keep tracing past the point where running it would be cheaper.
+
+**Stay entirely here for**: pure-logic bugs, parser/algorithm correctness, build/config errors, well-isolated functions where the trace is short, or when no running instance is available.
+
+---
+
 ## Usage
 
 ```

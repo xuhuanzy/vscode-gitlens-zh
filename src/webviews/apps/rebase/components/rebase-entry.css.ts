@@ -50,7 +50,7 @@ export const entryStyles = css`
 	}
 
 	/* Raise z-index only when overlays are open/hovered/focused to escape row stacking contexts */
-	:host:has(sl-select[open]),
+	:host:has(gl-select[open]),
 	:host:has(gl-popover[open]),
 	:host:has(gl-tooltip:hover),
 	:host:has(gl-tooltip:focus-within),
@@ -80,10 +80,10 @@ export const entryStyles = css`
 
 		--entry-bg: var(--color-background);
 
-		--sl-input-background-color: var(--color-background);
-		--sl-input-color: var(--color-foreground);
-		--sl-input-color-hover: var(--color-foreground);
-		--sl-input-color-disabled: var(--color-foreground);
+		--wa-form-control-background-color: var(--color-background);
+		--wa-form-control-value-color: var(--color-foreground);
+		--wa-form-control-value-color-hover: var(--color-foreground);
+		--wa-form-control-value-color-disabled: var(--color-foreground);
 
 		display: flex;
 		align-items: center;
@@ -142,6 +142,7 @@ export const entryStyles = css`
 			.entry-graph::after {
 				border-color: transparent;
 				background-color: var(--action-color);
+				background-image: none;
 			}
 
 			/* Disabled select for done entries */
@@ -238,7 +239,11 @@ export const entryStyles = css`
 			height: 12px;
 			border-radius: 50%;
 			border: 2px solid var(--action-color);
-			background-color: var(--entry-bg);
+			/* Layer the row tint over an opaque editor base so the dot center always
+			   covers the throughline — VS Code list hover/selection tokens are
+			   semi-transparent overlays and would otherwise let the line shine through. */
+			background-color: var(--vscode-editor-background);
+			background-image: linear-gradient(var(--entry-bg), var(--entry-bg));
 		}
 
 		/* squircle for commands */
@@ -263,6 +268,8 @@ export const entryStyles = css`
 
 	/* Action dropdown container */
 	.entry-action {
+		display: flex;
+		align-items: center;
 		flex: 0 0 auto;
 	}
 
@@ -279,18 +286,33 @@ export const entryStyles = css`
 	.action-select {
 		color: var(--color-foreground);
 		min-width: 90px;
+		/* Reset WA's form-control sizing tokens. WA defaults to padding-block: 0.75em
+		   + line-height: 1.35 which produces a ~40px control height. We size the
+		   combobox to track the graph dot so the select grows with row density. */
+		--wa-form-control-padding-block: 0;
+		--wa-form-control-value-line-height: 1.2;
+
+		/* gl-select option styling overrides — wa-option lives in gl-select's shadow
+		   root and can't be targeted directly from this scope, so we pass through
+		   custom-properties exposed by gl-select itself. */
+		--gl-select-option-padding: 0.2rem 0.4rem;
+		--gl-select-option-hover-bg: var(--vscode-list-inactiveSelectionBackground);
+		--gl-select-option-hover-color: var(--vscode-list-activeSelectionForeground);
 
 		&::part(combobox) {
 			padding: 0 0.75rem;
 			outline: none;
+			height: 25px;
+			line-height: 1.2;
 		}
 
 		&::part(display-input) {
 			field-sizing: content;
+			line-height: 1.2;
 		}
 
 		&::part(expand-icon) {
-			margin-inline-start: var(--sl-spacing-x-small);
+			margin-inline-start: var(--wa-spacing-x-small);
 		}
 
 		&::part(listbox) {
@@ -301,30 +323,12 @@ export const entryStyles = css`
 			min-width: anchor-size(width, 90px);
 			width: max-content;
 		}
-
-		sl-option::part(base) {
-			padding: 0.2rem 0.4rem;
-		}
-
-		sl-option:focus::part(base) {
-			background-color: var(--vscode-list-activeSelectionBackground);
-			color: var(--vscode-list-activeSelectionForeground);
-		}
-
-		sl-option:not(:focus):hover::part(base) {
-			background-color: var(--vscode-list-inactiveSelectionBackground);
-			color: var(--vscode-list-activeSelectionForeground);
-		}
-
-		sl-option::part(checked-icon) {
-			display: none;
-		}
 	}
 
 	/* Message */
 	gl-popover.entry-message {
 		--hide-delay: 100ms;
-		--sl-z-index-tooltip: 10000;
+		--wa-z-index-tooltip: 10000;
 
 		display: flex;
 		flex: 1 1 0;
@@ -333,6 +337,16 @@ export const entryStyles = css`
 		overflow: hidden;
 		color: var(--fg);
 		text-decoration: var(--action-text-decoration);
+
+		/* Tooltip-style behavior: pointer events on the rendered popup pass through,
+		   so the hover state ends as soon as the cursor leaves the anchor — matching
+		   the file tree hover-popover. The wa-popup's popup part is re-exported from
+		   gl-popover as base__popup (see popover.ts exportparts mapping). */
+		&::part(base__popup),
+		&::part(base__hover-bridge),
+		&::part(body) {
+			pointer-events: none;
+		}
 
 		&::part(body) {
 			max-height: 50vh;
@@ -471,6 +485,7 @@ export const entryStyles = css`
 		.entry-graph::after {
 			border-color: transparent;
 			background-color: color-mix(in srgb, var(--color-foreground) 25%, var(--vscode-editor-background));
+			background-image: none;
 		}
 
 		gl-avatar-list::part(avatar) {
@@ -486,10 +501,9 @@ export const entryStyles = css`
 		--action-color: var(--action-edit-color);
 		--action-line-color: var(--action-edit-color);
 
-		--sl-input-background-color: var(--action-edit-bg);
-		--sl-input-border-color: var(--action-edit-color);
-		--sl-input-border-color-focus: var(--action-edit-color);
-		--sl-input-focus-ring-color: var(--action-edit-color);
+		--wa-form-control-background-color: var(--action-edit-bg);
+		--wa-form-control-border-color: var(--action-edit-color);
+		--wa-color-focus: var(--action-edit-color);
 	}
 
 	.entry[data-action='fixup'],
@@ -498,10 +512,9 @@ export const entryStyles = css`
 		--action-line-color: var(--action-squash-color);
 		--action-text-decoration: line-through;
 
-		--sl-input-background-color: var(--action-squash-bg);
-		--sl-input-border-color: var(--action-squash-color);
-		--sl-input-border-color-focus: var(--action-squash-color);
-		--sl-input-focus-ring-color: var(--action-squash-color);
+		--wa-form-control-background-color: var(--action-squash-bg);
+		--wa-form-control-border-color: var(--action-squash-color);
+		--wa-color-focus: var(--action-squash-color);
 
 		/* Muted but responds to hover/focus/selected at reduced intensity */
 		--fg-intensity: 60%;
@@ -530,10 +543,9 @@ export const entryStyles = css`
 		--action-line-color: var(--action-drop-color);
 		--action-text-decoration: line-through;
 
-		--sl-input-background-color: var(--action-drop-bg);
-		--sl-input-border-color: var(--action-drop-color);
-		--sl-input-border-color-focus: var(--action-drop-color);
-		--sl-input-focus-ring-color: var(--action-drop-color);
+		--wa-form-control-background-color: var(--action-drop-bg);
+		--wa-form-control-border-color: var(--action-drop-color);
+		--wa-color-focus: var(--action-drop-color);
 
 		/* More muted but responds to hover/focus/selected at reduced intensity */
 		--fg-intensity: 45%;

@@ -81,3 +81,60 @@ export const inlineCode = css`
 		font-family: var(--vscode-editor-font-family);
 	}
 `;
+
+/**
+ * Fade + slide-up entrance for a sub-panel. Consumer markup: `<div class="sub-panel-enter">…`.
+ * Respects `prefers-reduced-motion`.
+ */
+export const subPanelEnterStyles = css`
+	@keyframes sub-panel-enter {
+		from {
+			opacity: 0;
+			transform: translateY(4px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.sub-panel-enter {
+		animation: sub-panel-enter 0.2s ease-out;
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		min-height: 0;
+		overflow: hidden;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.sub-panel-enter {
+			animation: none;
+		}
+	}
+`;
+
+/** Flex column panel that fills available space. */
+export const panelBase = css`
+	:host {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		min-height: 0;
+		overflow: hidden;
+	}
+`;
+
+/**
+ * Shared metadata-bar visual contract — the tinted strip beneath a panel title used by
+ * single-commit details, multi-commit compare, the WIP secondary header, and review/compose
+ * results. Consumers read `var(--gl-metadata-bar-bg)` etc.; defining the variables on `:host`
+ * keeps any panel that adopts these styles in sync without re-declaring the literal values.
+ */
+export const metadataBarVarsBase = css`
+	:host {
+		--gl-metadata-bar-bg: color-mix(in srgb, var(--color-background) 95%, var(--color-foreground) 5%);
+		--gl-metadata-bar-border: var(--vscode-sideBarSectionHeader-border, var(--color-foreground--25));
+		--gl-metadata-bar-min-height: 2.94rem;
+	}
+`;

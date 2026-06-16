@@ -43,9 +43,17 @@ export class PausedOperationsGitSubProvider implements GitPausedOperationsSubPro
 	@debug()
 	getPausedOperationStatus(
 		repoPath: string,
+		options?: { force?: boolean },
 		cancellation?: AbortSignal,
 	): Promise<GitPausedOperationStatus | undefined> {
 		const scope = getScopedLogger();
+
+		// Self-heal callers (WIP refresh) bypass the cache so a missed `'pausedOp'` FS-watcher
+		// event (CLI-driven completion, torn-down secondary-worktree watcher) can't leave the
+		// status stuck — the readdir-based detection is cheap enough to repeat on every tick.
+		if (options?.force) {
+			this.cache.pausedOperationStatus.delete(repoPath);
+		}
 
 		const status = this.cache.pausedOperationStatus.getOrCreate(repoPath, async _cancellable => {
 			const gitDir = await this.provider.config.getGitDir(repoPath);
@@ -109,7 +117,7 @@ export class PausedOperationsGitSubProvider implements GitPausedOperationsSubPro
 			const operation = sortedOperations[0];
 			switch (operation) {
 				case 'cherry-pick': {
-					const result = await this.git.exec(
+					const result = await this.git.run(
 						{ cwd: repoPath, cancellation: cancellation, errors: 'ignore' },
 						'rev-parse',
 						'--quiet',
@@ -145,7 +153,7 @@ export class PausedOperationsGitSubProvider implements GitPausedOperationsSubPro
 					} satisfies GitCherryPickStatus;
 				}
 				case 'merge': {
-					const result = await this.git.exec(
+					const result = await this.git.run(
 						{ cwd: repoPath, cancellation: cancellation, errors: 'ignore' },
 						'rev-parse',
 						'--quiet',
@@ -197,7 +205,7 @@ export class PausedOperationsGitSubProvider implements GitPausedOperationsSubPro
 					} satisfies GitMergeStatus;
 				}
 				case 'revert': {
-					const result = await this.git.exec(
+					const result = await this.git.run(
 						{ cwd: repoPath, cancellation: cancellation, errors: 'ignore' },
 						'rev-parse',
 						'--quiet',
@@ -249,7 +257,7 @@ export class PausedOperationsGitSubProvider implements GitPausedOperationsSubPro
 						stepsMessageResult,
 						isInteractiveResult,
 					] = await Promise.allSettled([
-						this.git.exec(
+						this.git.run(
 							{ cwd: repoPath, cancellation: cancellation, errors: 'ignore' },
 							'rev-parse',
 							'--quiet',
@@ -479,7 +487,7 @@ export class PausedOperationsGitSubProvider implements GitPausedOperationsSubPro
 		const args = [status.type, options?.quit ? '--quit' : '--abort'];
 
 		try {
-			await this.git.exec({ cwd: repoPath, errors: 'throw' }, ...args);
+			await this.git.run({ cwd: repoPath, errors: 'throw' }, ...args);
 			this.context.hooks?.cache?.onReset?.(repoPath, 'branches', 'status');
 			this.context.hooks?.repository?.onChanged?.(repoPath, ['head', 'heads', 'index']);
 		} catch (ex) {
@@ -514,7 +522,7 @@ export class PausedOperationsGitSubProvider implements GitPausedOperationsSubPro
 		const args = [status.type, options?.skip ? '--skip' : '--continue'];
 
 		try {
-			await this.git.exec({ cwd: repoPath, errors: 'throw' }, ...args);
+			await this.git.run({ cwd: repoPath, errors: 'throw' }, ...args);
 			this.context.hooks?.cache?.onReset?.(repoPath, 'branches', 'status');
 			this.context.hooks?.repository?.onChanged?.(repoPath, ['head', 'heads', 'index']);
 		} catch (ex) {

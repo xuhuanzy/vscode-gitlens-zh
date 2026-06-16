@@ -105,7 +105,7 @@ export abstract class QuickCommand<State = any> implements QuickPickItem {
 	 */
 	getSteps(state: PartialStepState<State>, context: StepsContext<any>): StepGenerator {
 		// Merge initialState defaults with passed state, allowing caller to override
-		return this.steps({ ...this.initialState, ...state } as PartialStepState<State>, context);
+		return this.steps({ ...this.initialState, ...state }, context);
 	}
 
 	executeSteps(context: StepsContext<any>): StepGenerator {

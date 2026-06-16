@@ -56,6 +56,7 @@ export class StagingGitSubProvider implements GitStagingSubProvider {
 					// Copy the current index to preserve staged state
 					const gitDir = await this.provider.config.getGitDir?.(repoPath);
 					if (gitDir == null) throw new Error(`Unable to determine git directory for ${repoPath}`);
+
 					const currentIndex = joinPaths(gitDir.uri.fsPath, 'index');
 					await fs.copyFile(currentIndex, tempIndex);
 					break;
@@ -64,7 +65,7 @@ export class StagingGitSubProvider implements GitStagingSubProvider {
 					if (ref == null) throw new Error(`ref is required when from is 'ref'`);
 
 					// Create the temp index file from a base ref/sha
-					const newIndexResult = await this.git.exec(
+					const newIndexResult = await this.git.run(
 						{ cwd: repoPath, env: env },
 						'ls-tree',
 						'-z',
@@ -75,7 +76,7 @@ export class StagingGitSubProvider implements GitStagingSubProvider {
 
 					if (newIndexResult.stdout.trim()) {
 						// Write the tree to our temp index
-						await this.git.exec(
+						await this.git.run(
 							{ cwd: repoPath, env: env, stdin: newIndexResult.stdout },
 							'update-index',
 							'-z',
@@ -98,7 +99,7 @@ export class StagingGitSubProvider implements GitStagingSubProvider {
 
 	@debug()
 	async stageFile(repoPath: string, pathOrUri: string | Uri): Promise<void> {
-		await this.git.exec({ cwd: repoPath }, 'add', '-A', '--', toFsPath(pathOrUri));
+		await this.git.run({ cwd: repoPath }, 'add', '-A', '--', toFsPath(pathOrUri));
 	}
 
 	@debug()
@@ -117,7 +118,7 @@ export class StagingGitSubProvider implements GitStagingSubProvider {
 		// Process files in batches (will be a single batch if under the limit)
 		const batches = chunk(paths, batchSize);
 		for (const batch of batches) {
-			await this.git.exec(
+			await this.git.run(
 				{ cwd: repoPath, env: options?.index?.env },
 				'add',
 				options?.intentToAdd ? '-N' : '-A',
@@ -129,12 +130,12 @@ export class StagingGitSubProvider implements GitStagingSubProvider {
 
 	@debug()
 	async stageDirectory(repoPath: string, directoryOrUri: string | Uri): Promise<void> {
-		await this.git.exec({ cwd: repoPath }, 'add', '-A', '--', toFsPath(directoryOrUri));
+		await this.git.run({ cwd: repoPath }, 'add', '-A', '--', toFsPath(directoryOrUri));
 	}
 
 	@debug()
 	async unstageFile(repoPath: string, pathOrUri: string | Uri): Promise<void> {
-		await this.git.exec({ cwd: repoPath }, 'reset', '-q', '--', toFsPath(pathOrUri));
+		await this.git.run({ cwd: repoPath }, 'reset', '-q', '--', toFsPath(pathOrUri));
 	}
 
 	@debug()
@@ -149,22 +150,54 @@ export class StagingGitSubProvider implements GitStagingSubProvider {
 		// Process files in batches (will be a single batch if under the limit)
 		const batches = chunk(paths, batchSize);
 		for (const batch of batches) {
-			await this.git.exec({ cwd: repoPath }, 'reset', '-q', '--', ...batch);
+			await this.git.run({ cwd: repoPath }, 'reset', '-q', '--', ...batch);
 		}
 	}
 
 	@debug()
 	async unstageDirectory(repoPath: string, directoryOrUri: string | Uri): Promise<void> {
-		await this.git.exec({ cwd: repoPath }, 'reset', '-q', '--', toFsPath(directoryOrUri));
+		await this.git.run({ cwd: repoPath }, 'reset', '-q', '--', toFsPath(directoryOrUri));
+	}
+
+	@debug()
+	async removeFile(repoPath: string, pathOrUri: string | Uri, options?: { force?: boolean }): Promise<void> {
+		const args = ['rm'];
+		if (options?.force) {
+			args.push('-f');
+		}
+		args.push('--', toFsPath(pathOrUri));
+		await this.git.run({ cwd: repoPath }, ...args);
+	}
+
+	@debug()
+	async removeFiles(repoPath: string, pathsOrUris: (string | Uri)[], options?: { force?: boolean }): Promise<void> {
+		const paths = pathsOrUris.map(toFsPath);
+		if (!paths.length) return;
+
+		const args: string[] = ['rm'];
+		if (options?.force) {
+			args.push('-f');
+		}
+		args.push('--');
+
+		// Calculate a safe batch size based on average path length
+		const avgPathLength = countStringLength(paths) / paths.length;
+		const batchSize = Math.max(1, Math.floor(maxGitCliLength / avgPathLength));
+
+		// Process files in batches (will be a single batch if under the limit)
+		const batches = chunk(paths, batchSize);
+		for (const batch of batches) {
+			await this.git.run({ cwd: repoPath }, ...args, ...batch);
+		}
 	}
 
 	@debug()
 	async stageAll(repoPath: string): Promise<void> {
-		await this.git.exec({ cwd: repoPath }, 'add', '-A');
+		await this.git.run({ cwd: repoPath }, 'add', '-A');
 	}
 
 	@debug()
 	async unstageAll(repoPath: string): Promise<void> {
-		await this.git.exec({ cwd: repoPath }, 'reset', '-q');
+		await this.git.run({ cwd: repoPath }, 'reset', '-q');
 	}
 }

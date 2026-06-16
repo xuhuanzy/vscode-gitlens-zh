@@ -1,5 +1,6 @@
 import type GraphContainer from '@gitkraken/gitkraken-components';
 import type {
+	ColumnNumberBySha,
 	GraphRef,
 	GraphRow,
 	GraphSelectionState,
@@ -44,8 +45,14 @@ export class GlGraph extends LitElement {
 	};
 
 	// Properties that match GraphWrapperProps
+	@property({ attribute: false })
+	activeFilterColumns?: GraphWrapperProps['activeFilterColumns'];
+
 	@property({ type: String })
 	activeRow?: GraphWrapperProps['activeRow'];
+
+	@property({ type: String })
+	repoPath?: GraphWrapperProps['repoPath'];
 
 	@property({ type: Object })
 	avatars?: GraphWrapperProps['avatars'];
@@ -93,6 +100,9 @@ export class GlGraph extends LitElement {
 	includeOnlyRefs?: GraphWrapperProps['includeOnlyRefs'];
 
 	@property({ type: Object })
+	pinnedRef?: GraphWrapperProps['pinnedRef'];
+
+	@property({ type: Object })
 	rowsStats?: GraphWrapperProps['rowsStats'];
 
 	@property({ type: Boolean })
@@ -100,6 +110,27 @@ export class GlGraph extends LitElement {
 
 	@property({ type: Object })
 	workingTreeStats?: GraphWrapperProps['workingTreeStats'];
+
+	@property({ type: Object })
+	runningOperationByRowSha?: GraphWrapperProps['runningOperationByRowSha'];
+
+	@property({ type: Object })
+	agentStatusByRowSha?: GraphWrapperProps['agentStatusByRowSha'];
+
+	@property({ type: Object })
+	unpublishedShas?: GraphWrapperProps['unpublishedShas'];
+
+	@property({ type: Object })
+	wipMetadataBySha?: GraphWrapperProps['wipMetadataBySha'];
+
+	@property({ type: Number, attribute: 'wip-shas-settle-delay-ms' })
+	wipShasSettleDelayMs?: number;
+
+	@property({ type: String, attribute: 'wip-visibility' })
+	wipVisibility?: GraphWrapperProps['wipVisibility'];
+
+	@property({ type: Object })
+	scope?: GraphWrapperProps['scope'];
 
 	@property({ type: Object })
 	theming?: GraphWrapperProps['theming'];
@@ -134,6 +165,7 @@ export class GlGraph extends LitElement {
 
 		// Debounce updates to avoid rapid re-renders
 		if (this.updateScheduled) return this.reactRoot == null;
+
 		this.updateScheduled = true;
 
 		const { provideReactState: stateUpdater } = this;
@@ -157,6 +189,7 @@ export class GlGraph extends LitElement {
 				setRef: this.setRef,
 				subscriber: this.setReactStateProvider,
 
+				activeFilterColumns: this.activeFilterColumns ?? new Set(),
 				activeRow: this.activeRow,
 				avatars: this.avatars,
 				columns: this.columns,
@@ -166,6 +199,7 @@ export class GlGraph extends LitElement {
 				excludeRefs: this.excludeRefs,
 				excludeTypes: this.excludeTypes,
 				includeOnlyRefs: this.includeOnlyRefs,
+				pinnedRef: this.pinnedRef,
 				loading: this.loading,
 				nonce: this.nonce,
 				paging: this.paging,
@@ -176,20 +210,34 @@ export class GlGraph extends LitElement {
 				searchMode: this.searchMode ?? 'normal',
 				searchResults: this.searchResults,
 				selectedRows: this.selectedRows,
+				repoPath: this.repoPath,
 				theming: this.theming,
 				windowFocused: this.windowFocused,
 				workingTreeStats: this.workingTreeStats,
+				wipMetadataBySha: this.wipMetadataBySha,
+				wipShasSettleDelayMs: this.wipShasSettleDelayMs,
+				wipVisibility: this.wipVisibility,
+				scope: this.scope,
+				runningOperationByRowSha: this.runningOperationByRowSha,
+				agentStatusByRowSha: this.agentStatusByRowSha,
+				unpublishedShas: this.unpublishedShas,
 
 				onChangeColumns: this.handleChangeColumns,
+				onScopeAnchorsUnreachable: this.handleScopeAnchorsUnreachable,
+				onWipShasMissingStats: this.handleWipShasMissingStats,
+				onVisibleWipShasChanged: this.handleVisibleWipShasChanged,
+				onColumnsCalculated: this.handleColumnsCalculated,
 				onChangeRefsVisibility: this.handleChangeRefsVisibility,
 				onChangeSelection: this.handleChangeSelection,
 				onChangeVisibleDays: this.handleChangeVisibleDays,
+				onFilterColumn: this.handleFilterColumn,
 				onMissingAvatars: this.handleMissingAvatars,
 				onMissingRefsMetadata: this.handleMissingRefsMetadata,
 				onMoreRows: this.handleMoreRows,
 				onMouseLeave: this.handleMouseLeave,
 				onRefDoubleClick: this.handleRefDoubleClick,
 				onRowAction: this.handleRowAction,
+				onWipRowOpen: this.handleWipRowOpen,
 				onRowContextMenu: this.handleRowContextMenu,
 				onRowDoubleClick: this.handleRowDoubleClick,
 				onRowHover: this.handleRowHover,
@@ -225,6 +273,10 @@ export class GlGraph extends LitElement {
 		this.dispatchEvent(new CustomEvent('changevisibledays', { detail: detail }));
 	};
 
+	private handleFilterColumn = (detail: { zone: GraphZoneType }): void => {
+		this.dispatchEvent(new CustomEvent('filtercolumn', { detail: detail }));
+	};
+
 	private handleMissingAvatars = (emails: GraphAvatars): void => {
 		this.dispatchEvent(new CustomEvent('missingavatars', { detail: emails }));
 	};
@@ -245,11 +297,22 @@ export class GlGraph extends LitElement {
 		this.dispatchEvent(new CustomEvent('refdoubleclick', { detail: detail }));
 	};
 
-	private handleRowAction = (detail: { action: RowAction; row: GraphRow }): void => {
+	private handleRowAction = (detail: { action: RowAction; row: GraphRow; worktreePath?: string }): void => {
 		this.dispatchEvent(new CustomEvent('rowaction', { detail: detail }));
 	};
 
-	private handleRowContextMenu = (detail: { graphZoneType: GraphZoneType; graphRow: GraphRow }): void => {
+	private handleWipRowOpen = (detail: {
+		target: 'compose' | 'review' | 'resolve' | 'agents';
+		row: GraphRow;
+	}): void => {
+		this.dispatchEvent(new CustomEvent('wiprowopen', { detail: detail }));
+	};
+
+	private handleRowContextMenu = (detail: {
+		graphZoneType: GraphZoneType;
+		graphRow: GraphRow;
+		isAvatar: boolean;
+	}): void => {
 		this.dispatchEvent(new CustomEvent('rowcontextmenu', { detail: detail }));
 	};
 
@@ -277,6 +340,16 @@ export class GlGraph extends LitElement {
 	}): void => {
 		// Fire immediately so downstream can cancel unhover timers before the debounced hover arrives
 		this.dispatchEvent(new CustomEvent('rowhoverstart', { bubbles: true, composed: true }));
+		// Lightweight immediate fire for consumers (e.g. the minimap) that need to track the hovered
+		// row without waiting for the 250ms debounce below — the debounced `rowhover` is cancelled by
+		// fast row-to-row transit so any consumer relying on it would lose updates.
+		this.dispatchEvent(
+			new CustomEvent('rowhovertrack', {
+				detail: { graphZoneType: detail.graphZoneType, graphRow: detail.graphRow },
+				bubbles: true,
+				composed: true,
+			}),
+		);
 		this._handleRowHoverDebounced(detail);
 	};
 
@@ -292,6 +365,22 @@ export class GlGraph extends LitElement {
 	private handleRowActionHover = () => {
 		this._handleRowHoverDebounced.cancel();
 		this.dispatchEvent(new CustomEvent('row-action-hover', { bubbles: true, composed: true }));
+	};
+
+	private handleScopeAnchorsUnreachable = (unreachableAnchors: Set<string>): void => {
+		this.dispatchEvent(new CustomEvent('scopeanchorsunreachable', { detail: unreachableAnchors }));
+	};
+
+	private handleWipShasMissingStats = (shas: Record<string, true>): void => {
+		this.dispatchEvent(new CustomEvent('wipshasmissingstats', { detail: shas }));
+	};
+
+	private handleVisibleWipShasChanged = (shas: Record<string, true>): void => {
+		this.dispatchEvent(new CustomEvent('visiblewipshaschanged', { detail: shas }));
+	};
+
+	private handleColumnsCalculated = (columnsBySha: ColumnNumberBySha): void => {
+		this.dispatchEvent(new CustomEvent('columnscalculated', { detail: columnsBySha }));
 	};
 }
 
@@ -314,8 +403,8 @@ declare global {
 		missingrefsmetadata: CustomEvent<GraphMissingRefsMetadata>;
 		morerows: CustomEvent<string | undefined>;
 		refdoubleclick: CustomEvent<{ ref: GraphRef; metadata?: GraphRefMetadataItem }>;
-		rowaction: CustomEvent<{ action: RowAction; row: GraphRow }>;
-		rowcontextmenu: CustomEvent<{ graphZoneType: GraphZoneType; graphRow: GraphRow }>;
+		rowaction: CustomEvent<{ action: RowAction; row: GraphRow; worktreePath?: string }>;
+		rowcontextmenu: CustomEvent<{ graphZoneType: GraphZoneType; graphRow: GraphRow; isAvatar: boolean }>;
 		rowdoubleclick: CustomEvent<{ row: GraphRow; preserveFocus?: boolean }>;
 		rowhover: CustomEvent<{
 			graphZoneType: GraphZoneType;
@@ -324,10 +413,18 @@ declare global {
 			currentTarget: HTMLElement;
 		}>;
 		rowhoverstart: CustomEvent<void>;
+		rowhovertrack: CustomEvent<{
+			graphZoneType: GraphZoneType;
+			graphRow: GraphRow;
+		}>;
 		rowunhover: CustomEvent<{
 			graphZoneType: GraphZoneType;
 			graphRow: GraphRow;
 			relatedTarget: EventTarget | null;
 		}>;
+		scopeanchorsunreachable: CustomEvent<Set<string>>;
+		wipshasmissingstats: CustomEvent<Record<string, true>>;
+		visiblewipshaschanged: CustomEvent<Record<string, true>>;
+		columnscalculated: CustomEvent<ColumnNumberBySha>;
 	}
 }

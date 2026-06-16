@@ -7,7 +7,7 @@
 
 import { css, html, LitElement, nothing } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { styleMap } from 'lit/directives/style-map.js';
+import { cspStyleMap } from '../csp-style-map.directive.js';
 import { resolveSetiFileIcon } from './seti-icons.js';
 
 @customElement('gl-file-icon')
@@ -17,15 +17,15 @@ export class GlFileIcon extends LitElement {
 			display: inline-flex;
 			align-items: center;
 			justify-content: center;
-			width: 16px;
-			height: 16px;
+			width: var(--gl-file-icon-size, 16px);
+			height: var(--gl-file-icon-size, 16px);
 			vertical-align: text-bottom;
 		}
 
 		.font-icon {
 			display: inline-block;
 			font-family: 'seti';
-			font-size: 16px;
+			font-size: var(--gl-file-icon-size, 16px);
 			line-height: 1;
 			text-align: center;
 			-webkit-font-smoothing: antialiased;
@@ -36,18 +36,20 @@ export class GlFileIcon extends LitElement {
 	@property()
 	filename?: string;
 
-	override render() {
+	override render(): unknown {
 		if (this.filename == null) return nothing;
 
 		const isLight =
 			document.body.classList.contains('vscode-light') ||
 			document.body.classList.contains('vscode-high-contrast-light');
-
 		const icon = resolveSetiFileIcon(this.filename, isLight);
 		if (icon == null) return nothing;
 
-		const char = parseFontCharacter(icon.character);
-		return html`<span class="font-icon" style=${styleMap({ color: icon.color || 'inherit' })}>${char}</span>`;
+		// Color is inheritable — apply on the span directly via `cspStyleMap` (CSSOM) since the
+		// webview CSP forbids inline `style="…"` attributes.
+		return html`<span class="font-icon" style=${cspStyleMap({ color: icon.color || 'inherit' })}
+			>${parseFontCharacter(icon.character)}</span
+		>`;
 	}
 }
 

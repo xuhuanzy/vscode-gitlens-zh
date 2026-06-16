@@ -32,9 +32,9 @@ import {
 	getRemoteNameFromBranchName,
 } from '@gitlens/git/utils/branch.utils.js';
 import { getChangedFilesCount } from '@gitlens/git/utils/commit.utils.js';
+import { createReachabilityTableBuilder } from '@gitlens/git/utils/reachability.utils.js';
 import { isUncommitted } from '@gitlens/git/utils/revision.utils.js';
 import { getSearchQueryComparisonKey, parseSearchQueryGitCommand } from '@gitlens/git/utils/search.utils.js';
-import { compareReachableRefs } from '@gitlens/git/utils/sorting.js';
 import { getTagId } from '@gitlens/git/utils/tag.utils.js';
 import { isUserMatch } from '@gitlens/git/utils/user.utils.js';
 import { getWorktreeId, groupWorktreesByBranch } from '@gitlens/git/utils/worktree.utils.js';
@@ -91,7 +91,7 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 		const [shaResult, stashResult, branchesResult, remotesResult, currentUserResult, worktreesResult] =
 			await Promise.allSettled([
 				!isUncommitted(rev, true)
-					? this.git.exec(
+					? this.git.run(
 							{ cwd: repoPath, configs: gitConfigsLog },
 							'log',
 							...shaParser.arguments,
@@ -100,7 +100,7 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 							'--',
 						)
 					: undefined,
-				this.provider.stash?.getStash(repoPath, undefined, cancellation),
+				this.provider.stash?.getStash(repoPath, { includeFiles: false }, cancellation),
 				this.provider.branches.getBranches(repoPath, undefined, cancellation),
 				this.provider.remotes.getRemotes(repoPath, undefined, cancellation),
 				this.provider.config.getCurrentUser(repoPath),
@@ -119,9 +119,14 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 		const [worktrees, worktreesByBranch] = getSettledValue(worktreesResult) ?? [[], new Map<string, GitWorktree>()];
 
 		let branchIdOfMainWorktree: string | undefined;
+		let mainWorktree: GitWorktree | undefined;
 		if (worktreesByBranch != null) {
-			branchIdOfMainWorktree = find(worktreesByBranch, ([, wt]) => wt.isDefault)?.[0];
-			if (branchIdOfMainWorktree != null) {
+			const defaultEntry = find(worktreesByBranch, ([, wt]) => wt.isDefault);
+			if (defaultEntry != null) {
+				[branchIdOfMainWorktree, mainWorktree] = defaultEntry;
+				// Remove the main/default worktree so the branch-row decoration shows `+checkedout`
+				// (not `+worktree`) for the main checkout. `mainWorktree` is retained below purely so
+				// Undo Commit can still reach the main worktree's HEAD from a secondary worktree's graph.
 				worktreesByBranch.delete(branchIdOfMainWorktree);
 			}
 		}
@@ -142,9 +147,62 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 		const avatars = new Map<string, string>();
 		const ids = new Set<string>();
 		const reachableFromHEAD = new Set<string>();
+		// SHAs on the first-parent chain from HEAD up to (excluding) the first merge commit — the only
+		// commits a plain (non-`--rebase-merges`) interactive rebase can safely rewrite. `headSha` seeds
+		// the chain; `rewriteableNextSha` tracks the next sha expected on it. Outer scope so they persist
+		// across `more()` pagination, like `reachableFromHEAD`.
+		const rewriteableFromHEAD = new Set<string>();
+		let headSha: string | undefined;
+		let rewriteableNextSha: string | undefined;
+		// Undo Commit is offered only on a worktree HEAD that is a LEAF (nothing is built on it) —
+		// undoing a commit other work is stacked on is unsafe. The leaf check is only needed for the
+		// undo-eligible tips (the active HEAD + each worktree's HEAD), so track just those shas rather
+		// than every commit, keeping this O(#worktrees) instead of O(#commits).
+		const undoableTipShas = new Set<string>();
+		if (headBranch?.sha != null) {
+			undoableTipShas.add(headBranch.sha);
+		}
+		for (const wt of worktrees) {
+			if (wt.sha != null) {
+				undoableTipShas.add(wt.sha);
+			}
+		}
+		// The subset of `undoableTipShas` that turn out to have a child (are an ancestor of another
+		// commit) — i.e. NOT leaves. Built newest-first during the walk, so by the time a tip's row is
+		// processed every newer commit (its only possible children) has been seen. Undo is withheld for
+		// shas recorded here. Stash rows are excluded (a stash sitting on a tip must not block undoing it).
+		const tipShasWithChildren = new Set<string>();
+		// SHAs reachable from HEAD's tracking upstream tip. Combined with `reachableFromHEAD`,
+		// this lets us mark commits as unpushed (reachable from HEAD but not from HEAD's upstream).
+		const reachableFromHeadUpstream = new Set<string>();
 
 		// Map<sha, Map<refKey, ref>> — inner map deduplicates refs during propagation
 		const reachableRefs = new Map<string, Map<string, ReachableRef>>();
+
+		// Stable, append-only reachability table built as we walk — the PRIMARY representation shipped to
+		// consumers. Lives in the outer scope so it accumulates across `more()` pagination; indices
+		// already assigned never change, since git reachability only propagates to older (later-walked)
+		// commits. Per-row ref arrays are NOT retained — each row keeps only its set index
+		// (`contexts.reachabilityIndex`), and the working `reachableRefs` entry is dropped once emitted.
+		// The encoder lives next to its decoder in `reachability.utils` so the wire format can't drift.
+		const reachabilityBuilder = createReachabilityTableBuilder();
+
+		function finalizeRowReachability(
+			row: GitGraphRow,
+			sha: string,
+			refs: Map<string, ReachableRef> | undefined,
+		): void {
+			const setIndex = reachabilityBuilder.intern(refs?.values());
+			if (setIndex != null) {
+				(row.contexts ??= {}).reachabilityIndex = setIndex;
+			}
+			// Drop the transient per-row arrays so emitted rows don't retain reachability, and release the
+			// working entry — once a commit is emitted its children are all walked and its parents already
+			// seeded, so nothing reads `reachableRefs.get(sha)` again (orderings keep parents after children).
+			row.reachability = undefined;
+			reachableRefs.delete(sha);
+		}
+
 		const rowStats: GitGraphRowsStats = new Map<string, GitGraphRowStats>();
 		let pendingRowsStatsCount = 0;
 		let iterations = 0;
@@ -224,6 +282,12 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 								branchIdOfMainWorktree: branchIdOfMainWorktree,
 								stashes: gitStash?.stashes,
 								reachableFromHEAD: reachableFromHEAD,
+								rewriteableFromHEAD: rewriteableFromHEAD,
+								tipShasWithChildren: tipShasWithChildren,
+								// `undefined` when HEAD has no upstream, so the processor flags nothing as
+								// unpublished; otherwise the live set (mutated during the walk, read by ref).
+								reachableFromHeadUpstream:
+									headRefUpstreamName != null ? reachableFromHeadUpstream : undefined,
 								avatars: avatars,
 							}
 						: undefined;
@@ -234,7 +298,14 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 					// - SHA + limit = 0: Find SHA, stop immediately
 					// - No SHA + limit > 0: Load exactly `limit` commits
 					// - No SHA + limit = 0: Load everything remaining
-					if ((limit && count >= limit && (!sha || found)) || (!limit && sha && found)) {
+					// - SHA + limit > 0 + still unfound past 10× limit: defensive cap so an unreachable
+					//   SHA (e.g. a stale merge-base the webview hasn't yet seen invalidated) can't
+					//   walk the entire history. `hasMore=true` lets callers retry; the graph-wrapper
+					//   side deduplicates re-requests so the cap doesn't loop.
+					if (
+						(limit && count >= limit && (!sha || found || count >= limit * 10)) ||
+						(!limit && sha && found)
+					) {
 						hasMore = true;
 						aborter.abort();
 						break;
@@ -250,6 +321,7 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 					total++;
 					shaOrRemapped = remappedIds.get(commit.sha);
 					if (shaOrRemapped && ids.has(shaOrRemapped)) continue;
+
 					shaOrRemapped ??= commit.sha;
 
 					ids.add(shaOrRemapped);
@@ -280,6 +352,7 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 							if (tip.startsWith('HEAD')) {
 								head = true;
 								reachableFromHEAD.add(shaOrRemapped);
+								headSha ??= shaOrRemapped;
 
 								if (tip !== 'HEAD') {
 									tip = tip.substring(8);
@@ -294,12 +367,16 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 									if (branchName === 'HEAD') continue;
 
 									remoteBranchId = getBranchId(repoPath, true, tip);
+									const isHeadUpstream = tip === headRefUpstreamName;
+									if (isHeadUpstream) {
+										reachableFromHeadUpstream.add(shaOrRemapped);
+									}
 									refRemoteHead = {
 										id: remoteBranchId,
 										name: branchName,
 										owner: remote.name,
 										url: remote.url,
-										current: tip === headRefUpstreamName,
+										current: isHeadUpstream,
 										hostingServiceType: remote.provider?.gkProviderId,
 									};
 									refRemoteHeads.push(refRemoteHead);
@@ -310,7 +387,16 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 
 							branch = branchMap.get(tip);
 							branchId = branch?.id ?? getBranchId(repoPath, false, tip);
-							const worktree = worktreesByBranch?.get(branchId);
+							// `worktreesByBranch` has the main/default worktree removed (above), so recover it
+							// here — Undo Commit needs to reach the main worktree's HEAD even when the active
+							// workspace is a secondary worktree.
+							const worktree =
+								worktreesByBranch?.get(branchId) ??
+								(branchId === branchIdOfMainWorktree ? mainWorktree : undefined);
+							const worktreeRef =
+								worktree != null
+									? { id: getWorktreeId(repoPath, worktree.name), path: worktree.path }
+									: undefined;
 							refHead = {
 								id: branchId,
 								name: tip,
@@ -322,7 +408,12 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 												id: getBranchId(repoPath, true, branch.upstream.name),
 											}
 										: undefined,
-								worktreeId: worktree != null ? getWorktreeId(repoPath, worktree.name) : undefined,
+								worktree: worktreeRef,
+								// Mirror `worktree.id` for `@gitkraken/gitkraken-components` — its bundled renderer
+								// reads `head.worktreeId` to pick the WORKTREE vs HEAD ref-badge. Scope to NON-default
+								// worktrees so the main checkout keeps its HEAD badge even though `worktree` (above)
+								// is populated for it for Undo routing.
+								worktreeId: worktree?.isDefault === false ? worktreeRef?.id : undefined,
 							};
 							refHeads.push(refHead);
 							if (branch?.upstream?.name != null) {
@@ -342,6 +433,27 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 					if (reachableFromHEAD.has(shaOrRemapped)) {
 						for (parent of parents) {
 							reachableFromHEAD.add(parent);
+						}
+					}
+
+					// First-parent rewriteable chain from HEAD: include each commit only while HEAD and
+					// every commit down to it has exactly one parent. Stops at (excludes) the first merge
+					// and the root — mirrors GitKraken's getDistinctCommitsFromHeadToFirstMergeCommit.
+					// Off-chain commits (a merge's other-parent ancestry, or anything below the first merge)
+					// are reachable-from-HEAD but NOT safely history-rewriteable by a plain interactive
+					// rebase. Relies on the same "commit emitted before its parents" ordering as above.
+					if (shaOrRemapped === headSha || shaOrRemapped === rewriteableNextSha) {
+						if (parents.length === 1) {
+							rewriteableFromHEAD.add(shaOrRemapped);
+							rewriteableNextSha = parents[0];
+						} else {
+							// A merge (>1 parents) or the root (0 parents) terminates the chain.
+							rewriteableNextSha = undefined;
+						}
+					}
+					if (reachableFromHeadUpstream.has(shaOrRemapped)) {
+						for (parent of parents) {
+							reachableFromHeadUpstream.add(parent);
 						}
 					}
 
@@ -398,12 +510,13 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 							heads: refHeads,
 							remotes: refRemoteHeads,
 							tags: refTags,
-							reachability: refs?.size
-								? { partial: true, refs: [...refs.values()].sort(compareReachableRefs) }
-								: undefined,
+							// Transient: the row processor's `+unique` decision reads this; stripped just below.
+							// Unsorted (the consumer re-sorts after decoding) — order doesn't affect interning.
+							reachability: refs?.size ? { partial: true, refs: [...refs.values()] } : undefined,
 							isCurrentUser: true,
 						};
 						rowProcessor?.processRow(row, graphCtx!);
+						finalizeRowReachability(row, shaOrRemapped, refs);
 						rows.push(row);
 
 						if (stash.stats != null) {
@@ -415,6 +528,17 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 						}
 					} else {
 						isCurrentUser = isUserMatch(currentUser, commit.author, commit.authorEmail);
+
+						// Mark any undo-eligible tip that THIS (non-stash) commit builds on as non-leaf, so
+						// its Undo Commit is withheld. Uses the full parent set (incl. merge second-parents)
+						// but only records shas that are actually undo tips — newer commits are walked first,
+						// so a tip is recorded before its own row is processed. Stash rows are intentionally
+						// not handled here, so a stash based on a tip doesn't block undoing that tip.
+						for (parent of parents) {
+							if (undoableTipShas.has(parent)) {
+								tipShasWithChildren.add(parent);
+							}
+						}
 
 						const refs = reachableRefs.get(shaOrRemapped);
 						const row: GitGraphRow = {
@@ -429,12 +553,13 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 							heads: refHeads,
 							remotes: refRemoteHeads,
 							tags: refTags,
-							reachability: refs?.size
-								? { partial: true, refs: [...refs.values()].sort(compareReachableRefs) }
-								: undefined,
+							// Transient: the row processor's `+unique` decision reads this; stripped just below.
+							// Unsorted (the consumer re-sorts after decoding) — order doesn't affect interning.
+							reachability: refs?.size ? { partial: true, refs: [...refs.values()] } : undefined,
 							isCurrentUser: isCurrentUser || undefined,
 						};
 						rowProcessor?.processRow(row, graphCtx!);
+						finalizeRowReachability(row, shaOrRemapped, refs);
 						rows.push(row);
 
 						if (commit.stats != null) {
@@ -452,7 +577,7 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 				if (deferStats) {
 					pendingRowsStatsCount++;
 
-					// eslint-disable-next-line no-async-promise-executor
+					// oxlint-disable-next-line no-async-promise-executor
 					const promise = new Promise<void>(async resolve => {
 						try {
 							const args = [...statsParser.arguments];
@@ -463,8 +588,8 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 							}
 							args.push(`--${ordering}-order`, '--all');
 
-							const statsResult = await this.git.exec(
-								{ cwd: repoPath, configs: gitConfigsLog, stdin: stdin },
+							const statsResult = await this.git.run(
+								{ cwd: repoPath, configs: gitConfigsLog, stdin: stdin, priority: 'background' },
 								'log',
 								stdin ? '--stdin' : undefined,
 								...args,
@@ -476,7 +601,7 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 								for (const stat of statsParser.parse(statsResult.stdout)) {
 									statShaOrRemapped = remappedIds.get(stat.sha) ?? stat.sha;
 
-									// If we already have the stats for this sha, skip it (e.g. stashes)
+									// Don't overwrite stats already populated for this sha
 									if (rowStats.has(statShaOrRemapped)) continue;
 
 									rowStats.set(statShaOrRemapped, stat.stats);
@@ -506,6 +631,8 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 					worktrees: worktrees,
 					worktreesByBranch: worktreesByBranch,
 					reachableFromHEAD: reachableFromHEAD,
+					rewriteableFromHEAD: rewriteableFromHEAD,
+					reachability: reachabilityBuilder.build(),
 					rows: rows,
 					id: sha ?? rev,
 					rowsStats: rowStats,
@@ -530,7 +657,19 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 			}
 		}
 
-		return getCommitsForGraphCore.call(this, defaultLimit, selectSha, undefined, cancellation);
+		let graph = await getCommitsForGraphCore.call(this, defaultLimit, selectSha, undefined, cancellation);
+
+		// Spurious-empty guard: the repo has branches (so `git log --all` should yield commits) yet the
+		// log returned no rows. That's an inconsistent result — almost always a transient ref-read race
+		// while a concurrent git operation rewrites refs/packed-refs — not a genuinely empty repo.
+		// Returning it would flash "No commits" in the graph. Retry once (transient glitches clear within
+		// ms). A truly empty repo has no branches and is left untouched.
+		if (graph.rows.length === 0 && branches?.length && !cancellation?.aborted) {
+			scope?.warn(`graph returned 0 rows but repo has ${branches.length} branches; retrying`);
+			graph = await getCommitsForGraphCore.call(this, defaultLimit, selectSha, undefined, cancellation);
+		}
+
+		return graph;
 	}
 
 	@debug({
@@ -615,7 +754,7 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 				// Don't include stashes when using ref: filter, as they would add unrelated commits
 				// There *HAS* to be a better way to get git log to return stashes, but this is the best we've found
 				({ stdin, stashes, remappedIds } = convertStashesToStdin(
-					await this.provider.stash?.getStash(repoPath, undefined, cancellation),
+					await this.provider.stash?.getStash(repoPath, { includeFiles: false }, cancellation),
 				));
 			} else {
 				remappedIds = new Map();
@@ -725,6 +864,7 @@ export class GraphGitSubProvider implements GitGraphSubProvider {
 							runningTotal: results.size,
 							hasMore: true,
 						};
+
 						batch.length = 0;
 						lastProgressTime = Date.now();
 					}

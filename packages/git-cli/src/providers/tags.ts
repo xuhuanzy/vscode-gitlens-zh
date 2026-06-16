@@ -16,7 +16,6 @@ import type { CliGitProviderInternal } from '../cliGitProvider.js';
 import type { GitResult } from '../exec/exec.types.js';
 import type { Git, GitError } from '../exec/git.js';
 import { getGitCommandError, gitConfigsBranch } from '../exec/git.js';
-import { getTagParser } from '../parsers/refParser.js';
 
 export class TagsGitSubProvider implements GitTagsSubProvider {
 	constructor(
@@ -54,29 +53,29 @@ export class TagsGitSubProvider implements GitTagsSubProvider {
 				// Prefer the aggregate signal from the cache; fall back to the caller's cancellation.
 				signal ??= cancellation;
 				try {
-					const parser = getTagParser();
-
-					const result = await this.git.exec(
-						{ cwd: repoPath, cancellation: signal },
-						'for-each-ref',
-						...parser.arguments,
-						'refs/tags/',
-					);
-					if (!result.stdout) return emptyPagedResult;
+					const records = await this.provider.refs.getRefs(commonPath, signal);
+					if (!records.length) return emptyPagedResult;
 
 					using sw = maybeStopWatch(scope, { log: { onlyExit: true, level: 'debug' } });
 
 					const tags: GitTag[] = [];
 
-					for (const entry of parser.parse(result.stdout)) {
+					for (const record of records) {
+						const fullName = record.name;
+						if (!fullName.startsWith('refs/tags/')) continue;
+
+						// Annotated tags: peeledObjectname is the commit SHA; objectname is the tag-object SHA.
+						// Lightweight tags: peeledObjectname is empty; objectname is already the commit SHA.
+						const sha = record.peeledObjectname || record.objectname;
+
 						tags.push(
 							new GitTag(
 								commonPath,
-								entry.name,
-								entry.sha || entry.tagSha,
-								entry.message,
-								entry.date ? new Date(entry.date) : undefined,
-								entry.commitDate ? new Date(entry.commitDate) : undefined,
+								fullName,
+								sha,
+								record.subject,
+								record.creatorDate ? new Date(record.creatorDate) : undefined,
+								record.authorDate ? new Date(record.authorDate) : undefined,
 							),
 						);
 					}
@@ -130,7 +129,7 @@ export class TagsGitSubProvider implements GitTagsSubProvider {
 		const params: string[] = ['tag', '--format=%(refname:short)'];
 		params.push(options?.mode === 'pointsAt' ? `--points-at=${sha}` : `--contains=${sha}`);
 
-		return this.git.exec(
+		return this.git.run(
 			{
 				cwd: repoPath,
 				cancellation: cancellation,
@@ -149,7 +148,7 @@ export class TagsGitSubProvider implements GitTagsSubProvider {
 		}
 
 		try {
-			await this.git.exec({ cwd: repoPath }, ...args);
+			await this.git.run({ cwd: repoPath }, ...args);
 			this.context.hooks?.cache?.onReset?.(repoPath, 'tags');
 			this.context.hooks?.repository?.onChanged?.(repoPath, ['tags']);
 		} catch (ex) {
@@ -170,7 +169,7 @@ export class TagsGitSubProvider implements GitTagsSubProvider {
 		const args = ['tag', '-d', name];
 
 		try {
-			await this.git.exec({ cwd: repoPath }, ...args);
+			await this.git.run({ cwd: repoPath }, ...args);
 			this.context.hooks?.cache?.onReset?.(repoPath, 'tags');
 			this.context.hooks?.repository?.onChanged?.(repoPath, ['tags']);
 		} catch (ex) {

@@ -43,6 +43,22 @@ export class GlStatusNav extends LitElement {
 				overflow: hidden;
 			}
 
+			.pr-pill {
+				min-width: 0;
+				overflow: hidden;
+			}
+
+			.pr-pill > code-icon {
+				flex: none;
+			}
+
+			.pr-pill > span {
+				min-width: 0;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				white-space: nowrap;
+			}
+
 			.group {
 				display: flex;
 				flex: none;
@@ -104,7 +120,7 @@ export class GlStatusNav extends LitElement {
 					this.pullRequest != null,
 					() =>
 						html`<gl-popover hoist>
-							<a href="#" class="commit-action" slot="anchor"
+							<a href="#" class="commit-action pr-pill" slot="anchor"
 								><code-icon icon=${prIcon} class="pr pr--${this.pullRequest!.state}"></code-icon
 								><span>#${this.pullRequest!.id}</span></a
 							>
@@ -123,7 +139,7 @@ export class GlStatusNav extends LitElement {
 							</div>
 						</gl-popover>`,
 				)}
-				<gl-tooltip hoist class="tooltip--overflowed">
+				<gl-tooltip class="tooltip--overflowed">
 					<a
 						href="#"
 						class="commit-action commit-action--overflowed"
@@ -142,7 +158,7 @@ export class GlStatusNav extends LitElement {
 				</gl-tooltip>
 			</div>
 			<div class="group">
-				<gl-tooltip hoist content="Fetch">
+				<gl-tooltip content="Fetch">
 					<a href="#" class="commit-action" @click=${(e: MouseEvent) => this.handleAction(e, 'fetch')}
 						><code-icon icon="repo-fetch"></code-icon></a
 				></gl-tooltip>

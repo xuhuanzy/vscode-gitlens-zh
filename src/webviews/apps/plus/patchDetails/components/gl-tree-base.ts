@@ -3,6 +3,7 @@ import { html, nothing } from 'lit';
 import type { GitFileChangeShape } from '@gitlens/git/models/fileChange.js';
 import type { HierarchicalItem } from '@gitlens/utils/array.js';
 import { makeHierarchical } from '@gitlens/utils/array.js';
+import { joinPaths } from '@gitlens/utils/path.js';
 import { GlElement } from '../../../shared/components/element.js';
 import type {
 	TreeItemAction,
@@ -12,9 +13,10 @@ import type {
 	TreeItemSelectionDetail,
 	TreeModel,
 } from '../../../shared/components/tree/base.js';
+import { buildFileTooltip } from '../../../shared/components/tree/file-tree-utils.js';
 import '../../../shared/components/tree/tree-view.js';
 import '../../../shared/components/skeleton-loader.js';
-import '../../../shared/components/actions/action-item.js';
+import '../../../shared/components/chips/action-chip.js';
 
 export class GlTreeBase extends GlElement {
 	protected onTreeItemActionClicked?(_e: CustomEvent<TreeItemActionDetail>): void;
@@ -59,13 +61,18 @@ export class GlTreeBase extends GlElement {
 				break;
 		}
 
-		return html`<action-item data-switch-value="${value}" label="${label}" icon="${icon}"></action-item>`;
+		return html`<gl-action-chip data-switch-value="${value}" label="${label}" icon="${icon}"></gl-action-chip>`;
 	}
 
-	protected renderTreeView(treeModel: TreeModel[], guides: 'none' | 'onHover' | 'always' = 'none'): TemplateResult {
+	protected renderTreeView(
+		treeModel: TreeModel[],
+		guides: 'none' | 'onHover' | 'always' = 'none',
+		emptyText?: string,
+	): TemplateResult {
 		return html`<gl-tree-view
 			.model=${treeModel}
 			.guides=${guides}
+			empty-text=${emptyText ?? nothing}
 			@gl-tree-generated-item-action-clicked=${this.onTreeItemActionClicked}
 			@gl-tree-generated-item-checked=${this.onTreeItemChecked}
 			@gl-tree-generated-item-selected=${this.onTreeItemSelected}
@@ -75,6 +82,7 @@ export class GlTreeBase extends GlElement {
 	protected renderFiles(files: GitFileChangeShape[], isTree = false, compact = false, level = 2): TreeModel[] {
 		const children: TreeModel[] = [];
 		if (isTree) {
+			const repoPath = files[0]?.repoPath;
 			const fileTree = makeHierarchical(
 				files,
 				n => n.path.split('/'),
@@ -83,7 +91,7 @@ export class GlTreeBase extends GlElement {
 			);
 			if (fileTree.children != null) {
 				for (const child of fileTree.children.values()) {
-					const childModel = this.walkFileTree(child, { level: level });
+					const childModel = this.walkFileTree(child, { level: level }, repoPath);
 					children.push(childModel);
 				}
 			}
@@ -100,6 +108,7 @@ export class GlTreeBase extends GlElement {
 	protected walkFileTree(
 		item: HierarchicalItem<GitFileChangeShape>,
 		options: Partial<TreeItemBase> = { level: 1 },
+		repoPath?: string,
 	): TreeModel {
 		if (options.level === undefined) {
 			options.level = 1;
@@ -108,6 +117,9 @@ export class GlTreeBase extends GlElement {
 		let model: TreeModel;
 		if (item.value == null) {
 			model = this.folderToTreeModel(item.name, item.relativePath, options);
+			if (repoPath) {
+				model.tooltip = joinPaths(repoPath, item.relativePath);
+			}
 		} else {
 			model = this.fileToTreeModel(item.value, options);
 		}
@@ -115,7 +127,7 @@ export class GlTreeBase extends GlElement {
 		if (item.children != null) {
 			const children = [];
 			for (const child of item.children.values()) {
-				const childModel = this.walkFileTree(child, { ...options, level: options.level + 1 });
+				const childModel = this.walkFileTree(child, { ...options, level: options.level + 1 }, repoPath);
 				children.push(childModel);
 			}
 
@@ -138,6 +150,7 @@ export class GlTreeBase extends GlElement {
 			checked: false,
 			icon: 'folder',
 			label: name,
+			tooltip: relativePath,
 			...options,
 		};
 	}
@@ -206,6 +219,7 @@ export class GlTreeBase extends GlElement {
 			icon: 'file', //{ type: 'status', name: file.status },
 			label: fileName,
 			description: flat === true ? filePath : undefined,
+			tooltip: buildFileTooltip(file),
 			context: [file],
 			actions: this.getFileActions(file, options),
 			decorations: [{ type: 'text', label: file.status }],

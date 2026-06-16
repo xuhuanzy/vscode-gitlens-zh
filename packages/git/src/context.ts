@@ -85,6 +85,27 @@ export interface GitServiceConfig {
 		/** Maximum search items (0 = unlimited). */
 		readonly maxSearchItems?: number;
 	};
+
+	/** Force-push preferences. */
+	readonly push?: {
+		/** Whether to use `--force-with-lease` instead of a plain `--force` when force-pushing. Defaults to `true`. */
+		readonly useForceWithLease?: boolean;
+		/**
+		 * Whether to add `--force-if-includes` when force-pushing. Only applies when `useForceWithLease` is `true`
+		 * and the installed Git supports it. Defaults to `true`.
+		 */
+		readonly useForceIfIncludes?: boolean;
+	};
+
+	/** Commit-signing preferences. */
+	readonly signing?: {
+		/**
+		 * Host-level override for whether commit signing is enabled (e.g. VS Code's `git.enableCommitSigning`).
+		 * When `true`, signing is treated as enabled even if the repo's `commit.gpgsign` is unset/false. It never
+		 * forces signing off.
+		 */
+		readonly enabled?: boolean;
+	};
 }
 
 /** Git command types that can produce conflicts. */
@@ -113,9 +134,18 @@ export interface GitServiceHooks {
 	};
 	/** Commit lifecycle hooks */
 	readonly commits?: {
-		/** Called when a commit is signed successfully */
+		/**
+		 * Called when a commit is signed successfully.
+		 *
+		 * Note: currently fired only from explicit-sign paths in the patch provider
+		 * (where signing is requested via `-S` and confirmed up front). Operations
+		 * that sign implicitly via `commit.gpgsign=true` (`commit`, `merge`, `pull`,
+		 * `rebase`, `revert`, `cherryPick`) do not fire this hook because the
+		 * library cannot cheaply confirm that signing actually occurred without an
+		 * extra `git config`/`log --show-signature` call.
+		 */
 		onSigned?(format: SigningFormat, source?: unknown): void;
-		/** Called when commit signing fails */
+		/** Called when commit signing fails — fired from all signing-capable paths. */
 		onSigningFailed?(reason: SigningErrorReason, format: SigningFormat, source?: unknown): void;
 	};
 	/** Git operation hooks */

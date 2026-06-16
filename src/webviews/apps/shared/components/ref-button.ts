@@ -13,10 +13,18 @@ export class GlRefButton extends LitElement {
 		css`
 			:host {
 				--font-weight: normal;
+				/* Use grid to force the min-content contribution of this host to 0,
+					   then apply a configurable floor at icon + chevron + padding.
+				   Without grid minmax(0, 1fr), the host's min-content resolves to
+				   the full label width due to white-space: nowrap inside. */
+				display: grid;
+				grid-template-columns: minmax(0, 1fr);
+				min-width: var(--gl-ref-button-min-width, 3.6rem);
 			}
 
 			gl-button {
 				max-width: 100%;
+				min-width: 0;
 			}
 
 			gl-ref-name:not([icon]) {
@@ -45,7 +53,12 @@ export class GlRefButton extends LitElement {
 	worktree = false;
 
 	override render(): unknown {
-		return html`<gl-button appearance="toolbar" href=${ifDefined(this.href)} ?disabled=${this.disabled}
+		return html`<gl-button
+			part="button"
+			appearance="toolbar"
+			href=${ifDefined(this.href)}
+			?disabled=${this.disabled}
+			truncate
 			>${this.ref == null
 				? html`<slot name="empty">&lt;missing&gt;</slot>`
 				: html`<gl-ref-name

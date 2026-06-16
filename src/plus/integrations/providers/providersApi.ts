@@ -23,27 +23,16 @@ import type { IntegrationAuthenticationService } from '../authentication/integra
 import type { TokenOptInfo, TokenWithInfo } from '../authentication/models.js';
 import { toTokenWithInfo } from '../authentication/models.js';
 import type {
-	GetAzureProjectsForResourceFn,
-	GetAzureResourcesForUserFn,
-	GetBitbucketPullRequestsAuthoredByUserForWorkspaceFn,
-	GetBitbucketResourcesForCurrentUserFn,
-	GetCurrentUserFn,
-	GetCurrentUserForInstanceFn,
 	GetIssueFn,
-	GetIssuesForAzureProjectFn,
-	GetIssuesForRepoFn,
 	GetIssuesForReposFn,
 	GetIssuesOptions,
-	GetPullRequestsForAzureProjectsFn,
 	GetPullRequestsForRepoFn,
 	GetPullRequestsForReposFn,
 	GetPullRequestsForUserFn,
 	GetPullRequestsForUserOptions,
 	GetPullRequestsOptions,
-	GetReposForAzureProjectFn,
 	GetReposOptions,
 	IssueFilter,
-	MergePullRequestFn,
 	PageInfo,
 	PagingInput,
 	PagingMode,
@@ -98,7 +87,7 @@ export class ProvidersApi {
 			[GitCloudHostIntegrationId.GitHub]: {
 				...providersMetadata[GitCloudHostIntegrationId.GitHub],
 				provider: providerApis.github,
-				getCurrentUserFn: providerApis.github.getCurrentUser.bind(providerApis.github) as GetCurrentUserFn,
+				getCurrentUserFn: providerApis.github.getCurrentUser.bind(providerApis.github),
 				getPullRequestsForReposFn: providerApis.github.getPullRequestsForRepos.bind(
 					providerApis.github,
 				) as GetPullRequestsForReposFn,
@@ -112,7 +101,7 @@ export class ProvidersApi {
 			[GitSelfManagedHostIntegrationId.CloudGitHubEnterprise]: {
 				...providersMetadata[GitSelfManagedHostIntegrationId.CloudGitHubEnterprise],
 				provider: providerApis.github,
-				getCurrentUserFn: providerApis.github.getCurrentUser.bind(providerApis.github) as GetCurrentUserFn,
+				getCurrentUserFn: providerApis.github.getCurrentUser.bind(providerApis.github),
 				getPullRequestsForReposFn: providerApis.github.getPullRequestsForRepos.bind(
 					providerApis.github,
 				) as GetPullRequestsForReposFn,
@@ -126,7 +115,7 @@ export class ProvidersApi {
 			[GitSelfManagedHostIntegrationId.GitHubEnterprise]: {
 				...providersMetadata[GitSelfManagedHostIntegrationId.GitHubEnterprise],
 				provider: providerApis.github,
-				getCurrentUserFn: providerApis.github.getCurrentUser.bind(providerApis.github) as GetCurrentUserFn,
+				getCurrentUserFn: providerApis.github.getCurrentUser.bind(providerApis.github),
 				getPullRequestsForReposFn: providerApis.github.getPullRequestsForRepos.bind(
 					providerApis.github,
 				) as GetPullRequestsForReposFn,
@@ -141,7 +130,7 @@ export class ProvidersApi {
 				...providersMetadata[GitCloudHostIntegrationId.GitLab],
 				provider: providerApis.gitlab,
 				getRepoFn: providerApis.gitlab.getRepo.bind(providerApis.gitlab),
-				getCurrentUserFn: providerApis.gitlab.getCurrentUser.bind(providerApis.gitlab) as GetCurrentUserFn,
+				getCurrentUserFn: providerApis.gitlab.getCurrentUser.bind(providerApis.gitlab),
 				getPullRequestsForReposFn: providerApis.gitlab.getPullRequestsForRepos.bind(
 					providerApis.gitlab,
 				) as GetPullRequestsForReposFn,
@@ -155,15 +144,13 @@ export class ProvidersApi {
 				getIssuesForReposFn: providerApis.gitlab.getIssuesForRepos.bind(
 					providerApis.gitlab,
 				) as GetIssuesForReposFn,
-				getIssuesForRepoFn: providerApis.gitlab.getIssuesForRepo.bind(
-					providerApis.gitlab,
-				) as GetIssuesForRepoFn,
+				getIssuesForRepoFn: providerApis.gitlab.getIssuesForRepo.bind(providerApis.gitlab),
 				mergePullRequestFn: providerApis.gitlab.mergePullRequest.bind(providerApis.gitlab),
 			},
 			[GitSelfManagedHostIntegrationId.CloudGitLabSelfHosted]: {
 				...providersMetadata[GitSelfManagedHostIntegrationId.CloudGitLabSelfHosted],
 				provider: providerApis.gitlab,
-				getCurrentUserFn: providerApis.gitlab.getCurrentUser.bind(providerApis.gitlab) as GetCurrentUserFn,
+				getCurrentUserFn: providerApis.gitlab.getCurrentUser.bind(providerApis.gitlab),
 				getPullRequestsForReposFn: providerApis.gitlab.getPullRequestsForRepos.bind(
 					providerApis.gitlab,
 				) as GetPullRequestsForReposFn,
@@ -177,15 +164,13 @@ export class ProvidersApi {
 				getIssuesForReposFn: providerApis.gitlab.getIssuesForRepos.bind(
 					providerApis.gitlab,
 				) as GetIssuesForReposFn,
-				getIssuesForRepoFn: providerApis.gitlab.getIssuesForRepo.bind(
-					providerApis.gitlab,
-				) as GetIssuesForRepoFn,
+				getIssuesForRepoFn: providerApis.gitlab.getIssuesForRepo.bind(providerApis.gitlab),
 				mergePullRequestFn: providerApis.gitlab.mergePullRequest.bind(providerApis.gitlab),
 			},
 			[GitSelfManagedHostIntegrationId.GitLabSelfHosted]: {
 				...providersMetadata[GitSelfManagedHostIntegrationId.GitLabSelfHosted],
 				provider: providerApis.gitlab,
-				getCurrentUserFn: providerApis.gitlab.getCurrentUser.bind(providerApis.gitlab) as GetCurrentUserFn,
+				getCurrentUserFn: providerApis.gitlab.getCurrentUser.bind(providerApis.gitlab),
 				getPullRequestsForReposFn: providerApis.gitlab.getPullRequestsForRepos.bind(
 					providerApis.gitlab,
 				) as GetPullRequestsForReposFn,
@@ -198,40 +183,28 @@ export class ProvidersApi {
 				getIssuesForReposFn: providerApis.gitlab.getIssuesForRepos.bind(
 					providerApis.gitlab,
 				) as GetIssuesForReposFn,
-				getIssuesForRepoFn: providerApis.gitlab.getIssuesForRepo.bind(
-					providerApis.gitlab,
-				) as GetIssuesForRepoFn,
+				getIssuesForRepoFn: providerApis.gitlab.getIssuesForRepo.bind(providerApis.gitlab),
 			},
 			[GitCloudHostIntegrationId.Bitbucket]: {
 				...providersMetadata[GitCloudHostIntegrationId.Bitbucket],
 				provider: providerApis.bitbucket,
-				getCurrentUserFn: providerApis.bitbucket.getCurrentUser.bind(
-					providerApis.bitbucket,
-				) as GetCurrentUserFn,
+				getCurrentUserFn: providerApis.bitbucket.getCurrentUser.bind(providerApis.bitbucket),
 				getBitbucketResourcesForCurrentUserFn: providerApis.bitbucket.getWorkspacesForCurrentUser.bind(
 					providerApis.bitbucket,
-				) as GetBitbucketResourcesForCurrentUserFn,
+				),
 				getBitbucketPullRequestsAuthoredByUserForWorkspaceFn:
-					providerApis.bitbucket.getPullRequestsForUserAndWorkspace.bind(
-						providerApis.bitbucket,
-					) as GetBitbucketPullRequestsAuthoredByUserForWorkspaceFn,
+					providerApis.bitbucket.getPullRequestsForUserAndWorkspace.bind(providerApis.bitbucket),
 				getPullRequestsForReposFn: providerApis.bitbucket.getPullRequestsForRepos.bind(
 					providerApis.bitbucket,
 				) as GetPullRequestsForReposFn,
-				getPullRequestsForRepoFn: providerApis.bitbucket.getPullRequestsForRepo.bind(
-					providerApis.bitbucket,
-				) as GetPullRequestsForRepoFn,
-				mergePullRequestFn: providerApis.bitbucket.mergePullRequest.bind(
-					providerApis.bitbucket,
-				) as MergePullRequestFn,
+				getPullRequestsForRepoFn: providerApis.bitbucket.getPullRequestsForRepo.bind(providerApis.bitbucket),
+				mergePullRequestFn: providerApis.bitbucket.mergePullRequest.bind(providerApis.bitbucket),
 			},
 			[GitSelfManagedHostIntegrationId.BitbucketServer]: {
 				...providersMetadata[GitSelfManagedHostIntegrationId.BitbucketServer],
 				provider: providerApis.bitbucketServer,
 				getRepoFn: providerApis.bitbucketServer.getRepo.bind(providerApis.bitbucketServer),
-				getCurrentUserFn: providerApis.bitbucketServer.getCurrentUser.bind(
-					providerApis.bitbucketServer,
-				) as GetCurrentUserFn,
+				getCurrentUserFn: providerApis.bitbucketServer.getCurrentUser.bind(providerApis.bitbucketServer),
 				getBitbucketServerPullRequestsForCurrentUserFn:
 					providerApis.bitbucketServer.getPullRequestsForCurrentUser.bind(providerApis.bitbucketServer),
 				getPullRequestsForReposFn: providerApis.bitbucketServer.getPullRequestsForRepos.bind(
@@ -239,75 +212,63 @@ export class ProvidersApi {
 				) as GetPullRequestsForReposFn,
 				getPullRequestsForRepoFn: providerApis.bitbucketServer.getPullRequestsForRepo.bind(
 					providerApis.bitbucketServer,
-				) as GetPullRequestsForRepoFn,
-				mergePullRequestFn: providerApis.bitbucketServer.mergePullRequest.bind(
-					providerApis.bitbucketServer,
-				) as MergePullRequestFn,
+				),
+				mergePullRequestFn: providerApis.bitbucketServer.mergePullRequest.bind(providerApis.bitbucketServer),
 			},
 			[GitCloudHostIntegrationId.AzureDevOps]: {
 				...providersMetadata[GitCloudHostIntegrationId.AzureDevOps],
 				provider: providerApis.azureDevOps,
 				getRepoOfProjectFn: providerApis.azureDevOps.getRepo.bind(providerApis.azureDevOps),
-				getCurrentUserFn: providerApis.azureDevOps.getCurrentUser.bind(
-					providerApis.azureDevOps,
-				) as GetCurrentUserFn,
+				getCurrentUserFn: providerApis.azureDevOps.getCurrentUser.bind(providerApis.azureDevOps),
 				getCurrentUserForInstanceFn: providerApis.azureDevOps.getCurrentUserForInstance.bind(
 					providerApis.azureDevOps,
-				) as GetCurrentUserForInstanceFn,
-				getAzureResourcesForUserFn: providerApis.azureDevOps.getOrgsForUser.bind(
-					providerApis.azureDevOps,
-				) as GetAzureResourcesForUserFn,
-				getAzureProjectsForResourceFn: providerApis.azureDevOps.getAzureProjects.bind(
-					providerApis.azureDevOps,
-				) as GetAzureProjectsForResourceFn,
+				),
+				getAzureResourcesForUserFn: providerApis.azureDevOps.getOrgsForUser.bind(providerApis.azureDevOps),
+				getAzureProjectsForResourceFn: providerApis.azureDevOps.getAzureProjects.bind(providerApis.azureDevOps),
 				getPullRequestsForReposFn: providerApis.azureDevOps.getPullRequestsForRepos.bind(
 					providerApis.azureDevOps,
 				) as GetPullRequestsForReposFn,
 				getPullRequestsForRepoFn: providerApis.azureDevOps.getPullRequestsForRepo.bind(
 					providerApis.azureDevOps,
-				) as GetPullRequestsForRepoFn,
+				),
 				getPullRequestsForAzureProjectsFn: providerApis.azureDevOps.getPullRequestsForProjects.bind(
 					providerApis.azureDevOps,
-				) as GetPullRequestsForAzureProjectsFn,
+				),
 				getIssuesForAzureProjectFn: providerApis.azureDevOps.getIssuesForAzureProject.bind(
 					providerApis.azureDevOps,
-				) as GetIssuesForAzureProjectFn,
+				),
 				getReposForAzureProjectFn: providerApis.azureDevOps.getReposForAzureProject.bind(
 					providerApis.azureDevOps,
-				) as GetReposForAzureProjectFn,
+				),
 				mergePullRequestFn: providerApis.azureDevOps.mergePullRequest.bind(providerApis.azureDevOps),
 			},
 			[GitSelfManagedHostIntegrationId.AzureDevOpsServer]: {
 				...providersMetadata[GitSelfManagedHostIntegrationId.AzureDevOpsServer],
 				provider: providerApis.azureDevOps,
 				getRepoOfProjectFn: providerApis.azureDevOps.getRepo.bind(providerApis.azureDevOps),
-				getCurrentUserFn: providerApis.azureDevOps.getCurrentUser.bind(
-					providerApis.azureDevOps,
-				) as GetCurrentUserFn,
+				getCurrentUserFn: providerApis.azureDevOps.getCurrentUser.bind(providerApis.azureDevOps),
 				getCurrentUserForInstanceFn: providerApis.azureDevOps.getCurrentUserForInstance.bind(
 					providerApis.azureDevOps,
-				) as GetCurrentUserForInstanceFn,
+				),
 				getAzureResourcesForUserFn: providerApis.azureDevOps.getCollectionsForUser.bind(
 					providerApis.azureDevOps,
-				) as GetAzureResourcesForUserFn,
-				getAzureProjectsForResourceFn: providerApis.azureDevOps.getAzureProjects.bind(
-					providerApis.azureDevOps,
-				) as GetAzureProjectsForResourceFn,
+				),
+				getAzureProjectsForResourceFn: providerApis.azureDevOps.getAzureProjects.bind(providerApis.azureDevOps),
 				getPullRequestsForReposFn: providerApis.azureDevOps.getPullRequestsForRepos.bind(
 					providerApis.azureDevOps,
 				) as GetPullRequestsForReposFn,
 				getPullRequestsForRepoFn: providerApis.azureDevOps.getPullRequestsForRepo.bind(
 					providerApis.azureDevOps,
-				) as GetPullRequestsForRepoFn,
+				),
 				getPullRequestsForAzureProjectsFn: providerApis.azureDevOps.getPullRequestsForProjects.bind(
 					providerApis.azureDevOps,
-				) as GetPullRequestsForAzureProjectsFn,
+				),
 				getIssuesForAzureProjectFn: providerApis.azureDevOps.getIssuesForAzureProject.bind(
 					providerApis.azureDevOps,
-				) as GetIssuesForAzureProjectFn,
+				),
 				getReposForAzureProjectFn: providerApis.azureDevOps.getReposForAzureProject.bind(
 					providerApis.azureDevOps,
-				) as GetReposForAzureProjectFn,
+				),
 				mergePullRequestFn: providerApis.azureDevOps.mergePullRequest.bind(providerApis.azureDevOps),
 			},
 			[IssuesCloudHostIntegrationId.Jira]: {
@@ -327,7 +288,7 @@ export class ProvidersApi {
 			[IssuesCloudHostIntegrationId.Linear]: {
 				...providersMetadata[IssuesCloudHostIntegrationId.Linear],
 				provider: providerApis.linear,
-				getIssueFn: providerApis.linear.getIssue.bind(providerApis.linear) as GetIssueFn,
+				getIssueFn: providerApis.linear.getIssue.bind(providerApis.linear),
 				getIssuesForCurrentUserFn: providerApis.linear.getIssuesForCurrentUser.bind(providerApis.linear),
 				getLinearOrganizationFn: providerApis.linear.getLinearOrganization.bind(providerApis.linear),
 				getLinearTeamsForCurrentUserFn: providerApis.linear.getTeamsForCurrentUser.bind(providerApis.linear),

@@ -1,6 +1,6 @@
 import type { CancellationToken, Disposable, Uri } from 'vscode';
 import { window } from 'vscode';
-import type { GitExecOptions, GitResult } from '@gitlens/git/exec.types.js';
+import type { GitResult, GitRunOptions } from '@gitlens/git/run.types.js';
 import { debug, trace } from '@gitlens/utils/decorators/log.js';
 import { getScopedLogger } from '@gitlens/utils/logger.scoped.js';
 import type { LiveShare, SharedServiceProxy } from '../@types/vsls.d.js';
@@ -55,7 +55,7 @@ export class VslsGuestService implements Disposable {
 	}
 
 	@debug()
-	async git<TOut extends string | Buffer>(options: GitExecOptions, ...args: any[]): Promise<GitResult<TOut>> {
+	async git<TOut extends string | Buffer>(options: GitRunOptions, ...args: any[]): Promise<GitResult<TOut>> {
 		const response = await this.sendRequest(GitCommandRequestType, {
 			__type: 'gitlens',
 			options: options,

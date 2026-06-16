@@ -1,10 +1,12 @@
 import type { PagedResult, PagingOptions } from '@gitlens/utils/paging.js';
+import type { GkConfigInvalidationTarget } from '../cache.js';
 import type { BranchDisposition, GitBranch } from '../models/branch.js';
 import type { GitCommitStats } from '../models/commit.js';
 import type { GitContributor } from '../models/contributor.js';
 import type { ConflictDetectionResult } from '../models/mergeConflicts.js';
 import type { PullRequest } from '../models/pullRequest.js';
 import type { GitBranchReference } from '../models/reference.js';
+import type { GitCommandPriority } from '../run.types.js';
 import type { BranchSortOptions } from '../utils/sorting.js';
 
 export interface BranchContributionsOverview extends GitCommitStats<number> {
@@ -12,6 +14,8 @@ export interface BranchContributionsOverview extends GitCommitStats<number> {
 	readonly branch: string;
 	readonly mergeTarget: string;
 	readonly mergeBase: string;
+	/** Committer date of the merge-base commit. Lets consumers (e.g. the graph minimap scope window) anchor on the same date semantics as the minimap aggregation without a separate commit fetch. */
+	readonly mergeBaseDate: Date | undefined;
 
 	readonly commits: number;
 	readonly latestCommitDate: Date | undefined;
@@ -41,7 +45,7 @@ export interface GitBranchesSubProvider {
 	getBranchContributionsOverview(
 		repoPath: string,
 		ref: string,
-		options?: { associatedPullRequest?: Promise<PullRequest | undefined> },
+		options?: { associatedPullRequest?: Promise<PullRequest | undefined>; priority?: GitCommandPriority },
 		cancellation?: AbortSignal,
 	): Promise<BranchContributionsOverview | undefined>;
 	getBranchesWithCommits(
@@ -56,6 +60,7 @@ export interface GitBranchesSubProvider {
 	getDefaultBranchName(
 		repoPath: string | undefined,
 		remote?: string,
+		options?: { priority?: GitCommandPriority },
 		cancellation?: AbortSignal,
 	): Promise<string | undefined>;
 
@@ -92,12 +97,18 @@ export interface GitBranchesSubProvider {
 		targetBranch: string,
 		cancellation?: AbortSignal,
 	): Promise<ConflictDetectionResult>;
-	getBaseBranchName?(repoPath: string, ref: string, cancellation?: AbortSignal): Promise<string | undefined>;
+	getBaseBranchName?(
+		repoPath: string,
+		ref: string,
+		options?: { priority?: GitCommandPriority },
+		cancellation?: AbortSignal,
+	): Promise<string | undefined>;
 	getStoredMergeTargetBranchName?(repoPath: string, ref: string): Promise<string | undefined>;
 	getStoredDetectedMergeTargetBranchName?(repoPath: string, ref: string): Promise<string | undefined>;
 	getStoredUserMergeTargetBranchName?(repoPath: string, ref: string): Promise<string | undefined>;
 	onCurrentBranchAccessed?(repoPath: string): Promise<void>;
 	onCurrentBranchModified?(repoPath: string): Promise<void>;
+	onCurrentBranchAgentActivity?(repoPath: string): Promise<void>;
 	renameBranch?(repoPath: string, oldName: string, newName: string): Promise<void>;
 	setUpstreamBranch?(repoPath: string, name: string, upstream: string | undefined): Promise<void>;
 	setBranchDisposition?(
@@ -105,7 +116,17 @@ export interface GitBranchesSubProvider {
 		branchName: string,
 		disposition: BranchDisposition | undefined,
 	): Promise<void>;
-	storeBaseBranchName?(repoPath: string, ref: string, base: string): Promise<void>;
-	storeMergeTargetBranchName?(repoPath: string, ref: string, target: string): Promise<void>;
+	storeBaseBranchName?(
+		repoPath: string,
+		ref: string,
+		base: string,
+		options?: { skipInvalidation?: readonly GkConfigInvalidationTarget[] },
+	): Promise<void>;
+	storeMergeTargetBranchName?(
+		repoPath: string,
+		ref: string,
+		target: string,
+		options?: { skipInvalidation?: readonly GkConfigInvalidationTarget[] },
+	): Promise<void>;
 	storeUserMergeTargetBranchName?(repoPath: string, ref: string, target: string | undefined): Promise<void>;
 }

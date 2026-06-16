@@ -265,7 +265,7 @@ function log<T extends (...arg: any[]) => any>(
 					}
 
 					if (result != null && isPromise(result)) {
-						result.then(logResult, logError);
+						void result.then(logResult, logError).catch(() => {});
 					} else {
 						logResult(result);
 					}

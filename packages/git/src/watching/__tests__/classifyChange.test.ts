@@ -55,6 +55,30 @@ describe('classifyGitDirChange', () => {
 		assert.deepStrictEqual(classifyGitDirChange('rebase-apply/head-name'), ['rebase', 'pausedOp']);
 	});
 
+	it('maps rebase-merge/head-name to rebase + pausedOp', () => {
+		assert.deepStrictEqual(classifyGitDirChange('rebase-merge/head-name'), ['rebase', 'pausedOp']);
+	});
+
+	it('maps rebase-merge/onto to rebase + pausedOp', () => {
+		assert.deepStrictEqual(classifyGitDirChange('rebase-merge/onto'), ['rebase', 'pausedOp']);
+	});
+
+	it('maps rebase-merge/done to rebase + pausedOp', () => {
+		assert.deepStrictEqual(classifyGitDirChange('rebase-merge/done'), ['rebase', 'pausedOp']);
+	});
+
+	it('returns undefined for rebase-merge/git-rebase-todo (handled by VS Code TextDocument events)', () => {
+		assert.strictEqual(classifyGitDirChange('rebase-merge/git-rebase-todo'), undefined);
+	});
+
+	it('returns undefined for rebase-merge/git-rebase-todo.backup', () => {
+		assert.strictEqual(classifyGitDirChange('rebase-merge/git-rebase-todo.backup'), undefined);
+	});
+
+	it('returns undefined for worktrees/foo/rebase-merge/git-rebase-todo (todo special-case wins over worktrees regex)', () => {
+		assert.strictEqual(classifyGitDirChange('worktrees/foo/rebase-merge/git-rebase-todo'), undefined);
+	});
+
 	it('maps REVERT_HEAD to revert + pausedOp', () => {
 		assert.deepStrictEqual(classifyGitDirChange('REVERT_HEAD'), ['revert', 'pausedOp']);
 	});

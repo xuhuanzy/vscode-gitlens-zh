@@ -103,12 +103,14 @@ export function sequentialize<T extends (...args: any[]) => any>(
 			}
 
 			// Cleanup when done
-			void promise.finally(() => {
-				const s = this[prop];
-				if (s?.promise === promise && s.waiting == null) {
-					this[prop] = undefined;
-				}
-			});
+			void promise
+				.finally(() => {
+					const s = this[prop];
+					if (s?.promise === promise && s.waiting == null) {
+						this[prop] = undefined;
+					}
+				})
+				.catch(() => {});
 
 			return promise;
 		};

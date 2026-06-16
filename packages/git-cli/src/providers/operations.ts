@@ -11,20 +11,34 @@ import {
 	RebaseError,
 	ResetError,
 	RevertError,
+	SigningError,
 } from '@gitlens/git/errors.js';
 import type { GitBranchReference, GitReference } from '@gitlens/git/models/reference.js';
+import type { SigningFormat } from '@gitlens/git/models/signature.js';
 import type { GitConflictFile } from '@gitlens/git/models/staging.js';
-import type { GitOperationResult, GitOperationsSubProvider } from '@gitlens/git/providers/operations.js';
+import type {
+	GitOperationResult,
+	GitOperationRunOptions,
+	GitOperationsSubProvider,
+} from '@gitlens/git/providers/operations.js';
 import { getBranchNameAndRemote, getBranchTrackingWithoutRemote } from '@gitlens/git/utils/branch.utils.js';
 import { isBranchReference } from '@gitlens/git/utils/reference.utils.js';
 import { debug } from '@gitlens/utils/decorators/log.js';
 import { sequentialize } from '@gitlens/utils/decorators/sequentialize.js';
+import { chunkByStringLength } from '@gitlens/utils/iterable.js';
 import { Logger } from '@gitlens/utils/logger.js';
 import { getScopedLogger } from '@gitlens/utils/logger.scoped.js';
 import { normalizePath, splitPath } from '@gitlens/utils/path.js';
 import type { CliGitProviderInternal } from '../cliGitProvider.js';
 import type { Git, PushForceOptions } from '../exec/git.js';
-import { getGitCommandError, gitConfigsPull, GitErrors } from '../exec/git.js';
+import {
+	classifySigningError,
+	getGitCommandError,
+	gitConfigsPull,
+	GitErrors,
+	inferSigningFormatFromError,
+	maxGitCliLength,
+} from '../exec/git.js';
 
 export class OperationsGitSubProvider implements GitOperationsSubProvider {
 	constructor(
@@ -38,40 +52,24 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 	async checkout(
 		repoPath: string,
 		ref: string,
-		options?: { createBranch?: string } | { path?: string },
+		options?: { createBranch?: string },
+		runOptions?: GitOperationRunOptions,
 	): Promise<void> {
 		const scope = getScopedLogger();
 
+		const params = ['checkout'];
+		if (options?.createBranch) {
+			params.push('-b', options.createBranch, ref, '--');
+		} else {
+			params.push(ref, '--');
+		}
+
 		try {
-			await this.checkoutCore(repoPath, ref, options);
+			await this.git.run({ cwd: repoPath, ...runOptions }, ...params);
 			this.context.hooks?.cache?.onReset?.(repoPath, 'branches', 'status');
 			this.context.hooks?.repository?.onChanged?.(repoPath, ['head', 'heads', 'index']);
 		} catch (ex) {
 			scope?.error(ex);
-			throw ex;
-		}
-	}
-
-	private async checkoutCore(
-		repoPath: string,
-		ref: string,
-		{ createBranch, path }: { createBranch?: string; path?: string } = {},
-	): Promise<void> {
-		const params = ['checkout'];
-		if (createBranch) {
-			params.push('-b', createBranch, ref, '--');
-		} else {
-			params.push(ref, '--');
-
-			if (path) {
-				[path, repoPath] = splitPath(path, repoPath, true);
-				params.push(path);
-			}
-		}
-
-		try {
-			await this.git.exec({ cwd: repoPath }, ...params);
-		} catch (ex) {
 			throw getGitCommandError(
 				'checkout',
 				ex,
@@ -89,7 +87,8 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 	async cherryPick(
 		repoPath: string,
 		revs: string[],
-		options?: { edit?: boolean; noCommit?: boolean },
+		options?: { edit?: boolean; noCommit?: boolean; source?: unknown },
+		runOptions?: GitOperationRunOptions,
 	): Promise<GitOperationResult> {
 		const scope = getScopedLogger();
 
@@ -102,9 +101,10 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 		}
 
 		if (revs.length > 1) {
-			// Sort commits in topological order (oldest ancestor first) so cherry-pick applies them correctly
+			// Sort commits in topological order (oldest ancestor first) so cherry-pick applies them correctly.
+			// This is a local read-only pre-flight, not the user-initiated op — don't subject it to caller env/timeout.
 			const revsSet = new Set(revs);
-			const result = await this.git.exec({ cwd: repoPath }, 'rev-list', '--topo-order', '--reverse', ...revs);
+			const result = await this.git.run({ cwd: repoPath }, 'rev-list', '--topo-order', '--reverse', ...revs);
 
 			const ordered: string[] = [];
 			for (const sha of result.stdout.trim().split('\n')) {
@@ -123,12 +123,13 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 		args.push(...revs);
 
 		try {
-			await this.git.exec({ cwd: repoPath, errors: 'throw' }, ...args);
+			await this.git.run({ cwd: repoPath, errors: 'throw', ...runOptions }, ...args);
 			this.context.hooks?.cache?.onReset?.(repoPath, 'branches', 'status');
 			this.context.hooks?.repository?.onChanged?.(repoPath, ['head', 'heads', 'index']);
 			return { conflicted: false };
 		} catch (ex) {
 			scope?.error(ex);
+			await this.throwIfSigningError(repoPath, args, ex, options?.source);
 			const mapped = getGitCommandError(
 				'cherry-pick',
 				ex,
@@ -157,7 +158,9 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 			author?: string;
 			date?: string;
 			signoff?: boolean;
+			source?: unknown;
 		},
+		runOptions?: GitOperationRunOptions,
 	): Promise<void> {
 		const scope = getScopedLogger();
 
@@ -184,11 +187,15 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 		params.push('-F', '-');
 
 		try {
-			await this.git.exec({ cwd: repoPath, stdin: message, stdinEncoding: 'utf8', errors: 'throw' }, ...params);
+			await this.git.run(
+				{ cwd: repoPath, stdin: message, stdinEncoding: 'utf8', errors: 'throw', ...runOptions },
+				...params,
+			);
 			this.context.hooks?.cache?.onReset?.(repoPath, 'branches', 'status');
 			this.context.hooks?.repository?.onChanged?.(repoPath, ['head', 'heads', 'index']);
 		} catch (ex) {
 			scope?.error(ex);
+			await this.throwIfSigningError(repoPath, params, ex, options?.source);
 			throw getGitCommandError(
 				'commit',
 				ex,
@@ -206,6 +213,7 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 	async fetch(
 		repoPath: string,
 		options?: { all?: boolean; branch?: GitBranchReference; prune?: boolean; pull?: boolean; remote?: string },
+		runOptions?: GitOperationRunOptions,
 	): Promise<void> {
 		const scope = getScopedLogger();
 
@@ -215,14 +223,18 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 				const [branchName, remoteName] = getBranchNameAndRemote(branch);
 				if (remoteName == null) return;
 
-				await this.fetchCore(repoPath, {
-					branch: branchName,
-					remote: remoteName,
-					upstream: getBranchTrackingWithoutRemote(branch)!,
-					pull: options?.pull,
-				});
+				await this.fetchCore(
+					repoPath,
+					{
+						branch: branchName,
+						remote: remoteName,
+						upstream: getBranchTrackingWithoutRemote(branch)!,
+						pull: options?.pull,
+					},
+					runOptions,
+				);
 			} else {
-				await this.fetchCore(repoPath, opts);
+				await this.fetchCore(repoPath, opts, runOptions);
 			}
 
 			this.context.hooks?.cache?.onReset?.(repoPath, 'branches', 'tags');
@@ -245,6 +257,7 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 					remote: string;
 					upstream: string;
 			  },
+		runOptions?: GitOperationRunOptions,
 	): Promise<void> {
 		const params = ['fetch'];
 
@@ -265,7 +278,7 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 		}
 
 		try {
-			await this.git.exec({ cwd: repoPath }, ...params);
+			await this.git.run({ cwd: repoPath, ...runOptions }, ...params);
 		} catch (ex) {
 			throw getGitCommandError(
 				'fetch',
@@ -289,7 +302,8 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 	async merge(
 		repoPath: string,
 		ref: string,
-		options?: { fastForward?: boolean | 'only'; noCommit?: boolean; squash?: boolean },
+		options?: { fastForward?: boolean | 'only'; noCommit?: boolean; squash?: boolean; source?: unknown },
+		runOptions?: GitOperationRunOptions,
 	): Promise<GitOperationResult> {
 		const scope = getScopedLogger();
 
@@ -312,9 +326,9 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 		args.push(ref);
 
 		try {
-			await this.git.exec(
+			await this.git.run(
 				// Avoid a timeout since merges can take a long time (set to 0 to disable)
-				{ cwd: repoPath, errors: 'throw', timeout: 0 },
+				{ cwd: repoPath, errors: 'throw', timeout: 0, ...runOptions },
 				...args,
 			);
 
@@ -323,6 +337,7 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 			return { conflicted: false };
 		} catch (ex) {
 			scope?.error(ex);
+			await this.throwIfSigningError(repoPath, args, ex, options?.source);
 			const mapped = getGitCommandError(
 				'merge',
 				ex,
@@ -343,7 +358,8 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 	@debug()
 	async pull(
 		repoPath: string,
-		options?: { branch?: GitBranchReference; rebase?: boolean; tags?: boolean },
+		options?: { branch?: GitBranchReference; rebase?: boolean; tags?: boolean; source?: unknown },
+		runOptions?: GitOperationRunOptions,
 	): Promise<void> {
 		const scope = getScopedLogger();
 
@@ -357,23 +373,33 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 				);
 				if (worktree != null) {
 					// Branch is checked out in a worktree — run git pull in that worktree's directory
-					await this.pullCore(normalizePath(worktree.uri.fsPath), {
-						rebase: options?.rebase,
-						tags: options?.tags,
-					});
+					await this.pullCore(
+						normalizePath(worktree.uri.fsPath),
+						{
+							rebase: options?.rebase,
+							tags: options?.tags,
+							source: options?.source,
+						},
+						runOptions,
+					);
 					this.context.hooks?.cache?.onReset?.(repoPath, 'branches', 'status', 'tags');
 					this.context.hooks?.repository?.onChanged?.(repoPath, ['head', 'heads', 'remotes', 'index']);
 				} else {
 					// Branch is not checked out anywhere — can only fetch (no working tree to merge into)
-					await this.fetch(repoPath, { branch: branch });
+					await this.fetch(repoPath, { branch: branch }, runOptions);
 				}
 				return;
 			}
 
-			await this.pullCore(repoPath, {
-				rebase: options?.rebase,
-				tags: options?.tags,
-			});
+			await this.pullCore(
+				repoPath,
+				{
+					rebase: options?.rebase,
+					tags: options?.tags,
+					source: options?.source,
+				},
+				runOptions,
+			);
 
 			this.context.hooks?.cache?.onReset?.(repoPath, 'branches', 'status', 'tags');
 			this.context.hooks?.repository?.onChanged?.(repoPath, ['head', 'heads', 'remotes', 'index']);
@@ -383,7 +409,11 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 		}
 	}
 
-	private async pullCore(repoPath: string, options: { rebase?: boolean; tags?: boolean }): Promise<void> {
+	private async pullCore(
+		repoPath: string,
+		options: { rebase?: boolean; tags?: boolean; source?: unknown },
+		runOptions?: GitOperationRunOptions,
+	): Promise<void> {
 		const params = ['pull'];
 
 		if (options.tags) {
@@ -395,8 +425,9 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 		}
 
 		try {
-			await this.git.exec({ cwd: repoPath, configs: gitConfigsPull }, ...params);
+			await this.git.run({ cwd: repoPath, configs: gitConfigsPull, ...runOptions }, ...params);
 		} catch (ex) {
+			await this.throwIfSigningError(repoPath, params, ex, options.source);
 			throw getGitCommandError(
 				'pull',
 				ex,
@@ -411,6 +442,7 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 	async push(
 		repoPath: string,
 		options?: { reference?: GitReference; force?: boolean; publish?: { remote: string } },
+		runOptions?: GitOperationRunOptions,
 	): Promise<void> {
 		const scope = getScopedLogger();
 
@@ -437,12 +469,17 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 			const branch = await this.provider.branches.getBranch(repoPath);
 			if (branch == null) return;
 
-			branchName =
-				options?.reference != null
-					? `${options.reference.ref}:${
-							options?.publish != null ? 'refs/heads/' : ''
-						}${branch.nameWithoutRemote}`
-					: branch.name;
+			if (options?.reference != null) {
+				branchName = `${options.reference.ref}:${
+					options?.publish != null ? 'refs/heads/' : ''
+				}${branch.nameWithoutRemote}`;
+			} else {
+				const tracking = options?.publish == null ? branch.trackingWithoutRemote : undefined;
+				branchName =
+					tracking != null && tracking !== branch.nameWithoutRemote
+						? `${branch.name}:${tracking}`
+						: branch.name;
+			}
 			remoteName = branch.remoteName ?? options?.publish?.remote;
 			upstreamName = options?.reference == null && options?.publish != null ? branch.name : undefined;
 
@@ -462,34 +499,49 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 
 		let forceOpts: PushForceOptions | undefined;
 		if (options?.force) {
-			forceOpts = {
-				withLease: true,
-				ifIncludes: true,
-			};
+			// Honor the host's force-push preferences (e.g. VS Code's `git.useForcePushWithLease` /
+			// `git.useForcePushIfIncludes`); fall back to the safer `--force-with-lease` behavior.
+			const useForceWithLease = this.context.config?.push?.useForceWithLease ?? true;
+			forceOpts = useForceWithLease
+				? { withLease: true, ifIncludes: this.context.config?.push?.useForceIfIncludes ?? true }
+				: { withLease: false };
 		}
 
 		try {
-			await this.pushCore(repoPath, {
-				branch: branchName,
-				remote: remoteName,
-				upstream: upstreamName,
-				force: forceOpts,
-				publish: options?.publish != null,
-			});
+			await this.pushCore(
+				repoPath,
+				{
+					branch: branchName,
+					remote: remoteName,
+					upstream: upstreamName,
+					force: forceOpts,
+					publish: options?.publish != null,
+				},
+				runOptions,
+			);
 
-			// Since Git can't setup upstream tracking when publishing a new branch to a specific commit, do it now
+			// Since Git can't setup upstream tracking when publishing a new branch to a specific commit, do it now.
+			// Soft-fail: the push already succeeded, so don't let a local upstream-tracking failure (cancellation
+			// arriving mid-spawn, transient git error) suppress the post-push hook fan-out below.
 			if (setUpstream != null) {
-				await this.git.exec(
-					{ cwd: repoPath },
-					'branch',
-					'--set-upstream-to',
-					`${setUpstream.remote}/${setUpstream.remoteBranch}`,
-					setUpstream.branch,
-				);
+				try {
+					await this.git.run(
+						{ cwd: repoPath, ...runOptions },
+						'branch',
+						'--set-upstream-to',
+						`${setUpstream.remote}/${setUpstream.remoteBranch}`,
+						setUpstream.branch,
+					);
+				} catch (ex) {
+					scope?.error(ex, 'Unable to set upstream tracking after publish');
+				}
 			}
 
 			this.context.hooks?.cache?.onReset?.(repoPath, 'branches');
-			this.context.hooks?.repository?.onChanged?.(repoPath, ['remotes']);
+			this.context.hooks?.repository?.onChanged?.(
+				repoPath,
+				options?.publish != null ? ['config', 'heads', 'remotes'] : ['remotes'],
+			);
 		} catch (ex) {
 			scope?.error(ex);
 			throw ex;
@@ -506,6 +558,7 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 			upstream?: string;
 			delete?: { remote: string; branch: string };
 		},
+		runOptions?: GitOperationRunOptions,
 	): Promise<void> {
 		const params = ['push'];
 
@@ -537,7 +590,7 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 		}
 
 		try {
-			await this.git.exec({ cwd: repoPath }, ...params);
+			await this.git.run({ cwd: repoPath, ...runOptions }, ...params);
 		} catch (ex) {
 			const error = getGitCommandError(
 				'push',
@@ -607,14 +660,18 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 			branch?: string;
 			editor?: string;
 			interactive?: boolean;
+			programmaticEditor?: boolean;
+			messageEditor?: string;
 			onto?: string;
 			updateRefs?: boolean;
+			source?: unknown;
 		},
+		runOptions?: GitOperationRunOptions,
 	): Promise<GitOperationResult> {
 		const scope = getScopedLogger();
 
 		const args = ['rebase'];
-		let configs: string[] | undefined;
+		const configs: string[] = [];
 
 		if (options?.autoStash !== false) {
 			args.push('--autostash');
@@ -624,8 +681,24 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 			args.push('--interactive');
 
 			if (options.editor) {
-				configs = ['-c', `sequence.editor=${options.editor}`];
+				configs.push('-c', `sequence.editor=${options.editor}`);
 			}
+
+			// A script-based sequence editor rewrites the todo by command word + SHA, so git must emit a
+			// plain, natural-order todo regardless of the user's rebase config: `rebase.autosquash` would
+			// reorder commits and rewrite `pick`→`fixup`, and `rebase.abbreviateCommands` would emit `p`.
+			if (options.programmaticEditor) {
+				configs.push('-c', 'rebase.autosquash=false', '-c', 'rebase.abbreviateCommands=false');
+			}
+		}
+
+		// Drive per-commit message editing (the combined message a `squash` produces, or a `reword`).
+		// `GIT_EDITOR` (not `core.editor`) is what git's interactive-rebase backend honors for the `reword`
+		// amend step, so set it on the environment; also set `core.editor` config as a fallback.
+		let env = runOptions?.env;
+		if (options?.messageEditor) {
+			configs.push('-c', `core.editor=${options.messageEditor}`);
+			env = { ...env, GIT_EDITOR: options.messageEditor };
 		}
 
 		if (options?.updateRefs) {
@@ -643,9 +716,9 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 		}
 
 		try {
-			await this.git.exec(
+			await this.git.run(
 				// Avoid a timeout since rebases can take a long time (set to 0 to disable)
-				{ cwd: repoPath, errors: 'throw', configs: configs, timeout: 0 },
+				{ cwd: repoPath, errors: 'throw', configs: configs, timeout: 0, ...runOptions, env: env },
 				...args,
 			);
 			this.context.hooks?.cache?.onReset?.(repoPath, 'branches', 'status');
@@ -653,6 +726,7 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 			return { conflicted: false };
 		} catch (ex) {
 			scope?.error(ex);
+			await this.throwIfSigningError(repoPath, args, ex, options?.source);
 			const mapped = getGitCommandError(
 				'rebase',
 				ex,
@@ -678,11 +752,12 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 		repoPath: string,
 		rev: string,
 		options?: { mode?: 'hard' | 'keep' | 'merge' | 'mixed' | 'soft' },
+		runOptions?: GitOperationRunOptions,
 	): Promise<void> {
 		const scope = getScopedLogger();
 
 		try {
-			await this.resetCore(repoPath, rev, options?.mode);
+			await this.resetCore(repoPath, rev, options?.mode, runOptions);
 			this.context.hooks?.cache?.onReset?.(repoPath, 'branches', 'status');
 			this.context.hooks?.repository?.onChanged?.(repoPath, ['head', 'heads', 'index']);
 		} catch (ex) {
@@ -695,6 +770,7 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 		repoPath: string,
 		rev: string,
 		mode?: 'hard' | 'keep' | 'merge' | 'mixed' | 'soft',
+		runOptions?: GitOperationRunOptions,
 	): Promise<void> {
 		const params = ['reset', '-q'];
 		if (mode) {
@@ -703,7 +779,7 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 		params.push(rev, '--');
 
 		try {
-			await this.git.exec({ cwd: repoPath }, ...params);
+			await this.git.run({ cwd: repoPath, ...runOptions }, ...params);
 		} catch (ex) {
 			throw getGitCommandError(
 				'reset',
@@ -716,7 +792,77 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 
 	@sequentialize({ getQueueKey: rp => rp })
 	@debug()
-	async revert(repoPath: string, refs: string[], options?: { editMessage?: boolean }): Promise<GitOperationResult> {
+	async restore(
+		repoPath: string,
+		path: string | string[],
+		options?: { ref?: string; side?: 'ours' | 'theirs' },
+		runOptions?: GitOperationRunOptions,
+	): Promise<void> {
+		const paths = Array.isArray(path) ? path : [path];
+		if (!paths.length) return;
+
+		const scope = getScopedLogger();
+		const normalized = paths.map(p => splitPath(p, repoPath, true)[0]);
+
+		// `side` and `ref` are mutually exclusive in git (--ours/--theirs apply during conflict
+		// resolution and take no source ref); side takes precedence if both are somehow supplied.
+		// Use a truthy check on `ref` so an empty string falls through to index-restore rather than
+		// producing a malformed `git checkout '' -- …`. Implemented via `checkout` rather than
+		// `git restore` for compatibility with the minimum supported git (2.7.2); `git restore`
+		// only landed in 2.23.
+		const selector = options?.side != null ? `--${options.side}` : options?.ref || undefined;
+		const prefix = selector != null ? ['checkout', selector, '--'] : ['checkout', '--'];
+
+		try {
+			if (await this.git.supports('git:checkout:pathspec-from-file')) {
+				// Git ≥ 2.26: stream all pathspecs via stdin (NUL-separated) in a single invocation —
+				// no CLI-length limit (so no batching), and robust for paths with spaces/newlines.
+				// Pathspecs come from the file rather than argv, so `--` isn't used.
+				const args = ['checkout'];
+				if (selector != null) {
+					args.push(selector);
+				}
+				args.push('--pathspec-from-file=-', '--pathspec-file-nul');
+				await this.git.run({ cwd: repoPath, ...runOptions, stdin: normalized.join('\0') }, ...args);
+			} else {
+				// Older git: pass pathspecs as args, one git invocation per chunk (collapsing N
+				// path-mode checkouts into ⌈N / chunk⌉ spawns). Reserve the command prefix length and
+				// a per-arg overhead (separator + possible quoting) so the assembled command line
+				// can't exceed the OS limit even with many short paths.
+				const perArgOverhead = 3;
+				const prefixLength = prefix.reduce((sum, arg) => sum + arg.length + perArgOverhead, 0);
+				for (const batch of chunkByStringLength(normalized, maxGitCliLength - prefixLength, perArgOverhead)) {
+					await this.git.run({ cwd: repoPath, ...runOptions }, ...prefix, ...batch);
+				}
+			}
+			this.context.hooks?.cache?.onReset?.(repoPath, 'status');
+			this.context.hooks?.repository?.onChanged?.(repoPath, ['index']);
+		} catch (ex) {
+			scope?.error(ex);
+			throw getGitCommandError(
+				'checkout',
+				ex,
+				reason =>
+					new CheckoutError(
+						{
+							reason: reason ?? 'other',
+							ref: options?.side ?? options?.ref,
+							gitCommand: { repoPath: repoPath, args: [...prefix, ...normalized] },
+						},
+						ex,
+					),
+			);
+		}
+	}
+
+	@sequentialize({ getQueueKey: rp => rp })
+	@debug()
+	async revert(
+		repoPath: string,
+		refs: string[],
+		options?: { editMessage?: boolean; source?: unknown },
+		runOptions?: GitOperationRunOptions,
+	): Promise<GitOperationResult> {
 		const scope = getScopedLogger();
 
 		const args = ['revert'];
@@ -730,9 +876,9 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 		args.push(...refs);
 
 		try {
-			await this.git.exec(
+			await this.git.run(
 				// Avoid a timeout since reverts can take a long time (set to 0 to disable)
-				{ cwd: repoPath, errors: 'throw', timeout: 0 },
+				{ cwd: repoPath, errors: 'throw', timeout: 0, ...runOptions },
 				...args,
 			);
 
@@ -741,6 +887,7 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 			return { conflicted: false };
 		} catch (ex) {
 			scope?.error(ex);
+			await this.throwIfSigningError(repoPath, args, ex, options?.source);
 
 			const mapped = getGitCommandError(
 				'revert',
@@ -756,6 +903,40 @@ export class OperationsGitSubProvider implements GitOperationsSubProvider {
 			}
 			throw mapped;
 		}
+	}
+
+	/**
+	 * Classifies `ex` as a signing failure; if so, fires the `commits.onSigningFailed`
+	 * hook and throws a typed {@link SigningError}. Callers should invoke this first
+	 * in their catch blocks, before falling through to command-specific error mapping
+	 * via {@link getGitCommandError}.
+	 *
+	 * `SigningFormat` is read opportunistically from `config.getSigningConfig`, with
+	 * {@link inferSigningFormatFromError} as a stderr-based fallback and `'gpg'` as
+	 * the final default.
+	 */
+	private async throwIfSigningError(
+		repoPath: string,
+		args: readonly (string | undefined)[],
+		ex: unknown,
+		source?: unknown,
+	): Promise<void> {
+		const reason = classifySigningError(ex);
+		if (reason == null) return;
+
+		let format: SigningFormat | undefined;
+		try {
+			format = (await this.provider.config.getSigningConfig?.(repoPath))?.format;
+		} catch {
+			// Fall through — config read failed; use stderr-inferred format or gpg default
+		}
+		format ??= inferSigningFormatFromError(ex) ?? 'gpg';
+
+		this.context.hooks?.commits?.onSigningFailed?.(reason, format, source);
+		throw new SigningError(
+			{ reason: reason, gitCommand: { repoPath: repoPath, args: args } },
+			ex instanceof Error ? ex : undefined,
+		);
 	}
 
 	private async createConflictResult(repoPath: string, command: GitConflictCommand): Promise<GitOperationResult> {

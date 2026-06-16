@@ -292,6 +292,7 @@ export class GitFixture {
 			if (!todoFilePath) {
 				throw new Error('Must call waitForTodoFile first');
 			}
+
 			const doneFile = `${todoFilePath}.done`;
 			await fs.writeFile(doneFile, 'done');
 		};
@@ -300,6 +301,7 @@ export class GitFixture {
 			if (!todoFilePath) {
 				throw new Error('Must call waitForTodoFile first');
 			}
+
 			const abortFile = `${todoFilePath}.abort`;
 			await fs.writeFile(abortFile, 'abort');
 		};
@@ -349,6 +351,13 @@ export class GitFixture {
 
 	async worktree(worktreePath: string, branch: string): Promise<void> {
 		await this.git('worktree', undefined, 'add', worktreePath, branch);
+	}
+
+	/**
+	 * Prune stale worktree administrative entries left behind by a failed `worktree add`.
+	 */
+	async pruneWorktrees(): Promise<void> {
+		await this.git('worktree', undefined, 'prune');
 	}
 
 	private async git(command: string, options?: { configs?: string[] }, ...args: string[]): Promise<string> {

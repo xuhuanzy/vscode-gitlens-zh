@@ -41,7 +41,7 @@ export class RemotesGitSubProvider extends RemotesGitProviderBase implements Git
 				const remoteProviderMatcher = createRemoteProviderMatcher(configs, this.context.remotes);
 
 				try {
-					const result = await this.git.exec(
+					const result = await this.git.run(
 						{
 							cwd: repoPath,
 							cancellation: signal,
@@ -79,7 +79,7 @@ export class RemotesGitSubProvider extends RemotesGitProviderBase implements Git
 	@gate()
 	@debug()
 	async addRemote(repoPath: string, name: string, url: string, options?: { fetch?: boolean }): Promise<void> {
-		await this.git.exec({ cwd: repoPath }, 'remote', 'add', options?.fetch ? '-f' : undefined, name, url);
+		await this.git.run({ cwd: repoPath }, 'remote', 'add', options?.fetch ? '-f' : undefined, name, url);
 		this.context.hooks?.cache?.onReset?.(repoPath, 'remotes');
 		this.context.hooks?.repository?.onChanged?.(repoPath, ['remotes']);
 	}
@@ -100,7 +100,7 @@ export class RemotesGitSubProvider extends RemotesGitProviderBase implements Git
 	@gate()
 	@debug()
 	async pruneRemote(repoPath: string, name: string): Promise<void> {
-		await this.git.exec({ cwd: repoPath }, 'remote', 'prune', name);
+		await this.git.run({ cwd: repoPath }, 'remote', 'prune', name);
 		this.context.hooks?.cache?.onReset?.(repoPath, 'remotes', 'branches');
 		this.context.hooks?.repository?.onChanged?.(repoPath, ['remotes']);
 	}
@@ -108,7 +108,7 @@ export class RemotesGitSubProvider extends RemotesGitProviderBase implements Git
 	@gate()
 	@debug()
 	async removeRemote(repoPath: string, name: string): Promise<void> {
-		await this.git.exec({ cwd: repoPath }, 'remote', 'remove', name);
+		await this.git.run({ cwd: repoPath }, 'remote', 'remove', name);
 		this.context.hooks?.cache?.onReset?.(repoPath, 'remotes');
 		this.context.hooks?.repository?.onChanged?.(repoPath, ['remotes']);
 	}

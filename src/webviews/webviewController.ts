@@ -183,6 +183,35 @@ export class WebviewController<
 		return this._ready;
 	}
 
+	private _readyCount = 0;
+	private _lastHtmlSetAt: number | undefined;
+
+	/**
+	 * Replay-buffer window for the post-bootstrap IPC log. We only need this around startup, since the iframe is only
+	 * re-mounted under a live controller during VS Code's window-startup / panel-restoration / layout-settle phase.
+	 *
+	 * Two anchors gate the buffer:
+	 *  1. Anchor 1 (per-controller, latched at construction): is this controller within the activation window?
+	 *  2. Anchor 2 (per-controller, latched on first ready): once enabled, buffer for {@link replayWindowMs} then stop.
+	 *
+	 * A reconnect inside the window replays the log; a reconnect outside falls back to a full {@link refresh}.
+	 */
+	private static readonly activationWindowMs = 60_000;
+	private static readonly replayWindowMs = 30_000;
+	private readonly _replayEligible: boolean;
+	private _replayEnabled = false;
+	private _replayBuffer: IpcMessage[] = [];
+	private _replayWindowTimer: ReturnType<typeof setTimeout> | undefined;
+
+	/**
+	 * Refresh coalescing: `refresh(force=true)` tears down the iframe and re-renders the HTML, which is
+	 * destructive while the iframe is mid-render. Coalesce in-flight calls and drop rapid back-to-back
+	 * calls within {@link refreshCoalesceMs} of the previous refresh completing.
+	 */
+	private static readonly refreshCoalesceMs = 1000;
+	private _refreshing: Promise<void> | undefined;
+	private _lastRefreshCompletedAt = 0;
+
 	/** Used to cancel pending ipc promise operations */
 	private cancellation: CancellationTokenSource | undefined;
 	private disposable: Disposable | undefined;
@@ -211,6 +240,9 @@ export class WebviewController<
 	) {
 		this.id = descriptor.id as ID;
 		this.webview = parent.webview;
+
+		const readyAt = container.readyAt;
+		this._replayEligible = readyAt == null || Date.now() - readyAt < WebviewController.activationWindowMs;
 
 		const isInEditor = 'onDidChangeViewState' in parent;
 		this._isInEditor = isInEditor;
@@ -255,10 +287,15 @@ export class WebviewController<
 				isInEditor
 					? parent.onDidChangeViewState(({ webviewPanel }) => {
 							const { visible, active, viewColumn } = webviewPanel;
+							// Only treat a viewColumn change as a forceReload-worthy "move" if the webview was
+							// already alive (`_ready`). During panel restoration the first view-state event is
+							// the panel settling into its restored column — not a user move — and forcing a
+							// reload there tears down the just-created iframe mid-bootstrap, cancelling the
+							// deferred-rows delivery and leaving the Graph stuck on its loading spinner.
 							this.onParentVisibilityChanged(
 								visible,
 								active,
-								this.viewColumn != null && this.viewColumn !== viewColumn,
+								this._ready && this.viewColumn != null && this.viewColumn !== viewColumn,
 							);
 							this._viewColumn = viewColumn;
 						})
@@ -298,6 +335,12 @@ export class WebviewController<
 		this._disposed = true;
 		this.cancellation?.cancel();
 		this.cancellation?.dispose();
+		if (this._replayWindowTimer != null) {
+			clearTimeout(this._replayWindowTimer);
+			this._replayWindowTimer = undefined;
+		}
+		this._replayEnabled = false;
+		this._replayBuffer.length = 0;
 		resetContextKeys(this.descriptor.contextKeyPrefix);
 
 		void this.removePlusFeatureOverride();
@@ -338,6 +381,7 @@ export class WebviewController<
 
 	private exposeRpc(): void {
 		if (this._rpcExposed || this._rpcHost == null) return;
+
 		this._rpcExposed = true;
 		try {
 			this._rpcHost.expose();
@@ -351,7 +395,11 @@ export class WebviewController<
 			'context.webview.id': this.id,
 			'context.webview.type': this.descriptor.type,
 			'context.webview.instanceId': this.instanceId,
-			'context.webview.host': this.is('editor') ? 'editor' : 'view',
+			'context.webview.host': this.is('editor')
+				? 'editor'
+				: (this.descriptor as WebviewViewDescriptor).location === 'panel'
+					? 'panel'
+					: 'view',
 		};
 	}
 
@@ -475,7 +523,12 @@ export class WebviewController<
 		if (loading) {
 			this.cancellation ??= new CancellationTokenSource();
 			try {
-				this.webview.html = await this.getHtml(this.webview);
+				const html = await this.getHtml(this.webview);
+				Logger.info(
+					`WebviewController(${this.id}|${this.instanceId}): webview.html set (reason=show:loading, length=${html.length})`,
+				);
+				this._lastHtmlSetAt = Date.now();
+				this.webview.html = html;
 			} catch (ex) {
 				if (isCancellationError(ex)) {
 					this.cancellation.cancel();
@@ -532,11 +585,35 @@ export class WebviewController<
 
 	@trace()
 	async refresh(force?: boolean): Promise<void> {
+		// In-flight coalesce: piggyback on an existing refresh rather than tearing down the iframe twice.
+		if (this._refreshing != null) return this._refreshing;
+
+		// Post-refresh quiet window: drop rapid back-to-back invocations. Protects against a second
+		// invocation (VS Code title-bar command double-dispatch, user double-click, or a late async
+		// caller) firing shortly after the previous refresh completes and tearing down a mid-render iframe.
+		if (Date.now() - this._lastRefreshCompletedAt < WebviewController.refreshCoalesceMs) {
+			getScopedLogger()?.info(`refresh coalesced (within ${WebviewController.refreshCoalesceMs}ms of previous)`);
+			return;
+		}
+
+		this._refreshing = this.refreshCore(force).finally(() => {
+			this._lastRefreshCompletedAt = Date.now();
+			this._refreshing = undefined;
+		});
+		return this._refreshing;
+	}
+
+	private async refreshCore(force?: boolean): Promise<void> {
 		this.cancellation?.cancel();
 		this.cancellation = new CancellationTokenSource();
 
 		if (force) {
 			this.clearPendingIpcNotifications();
+			// Iframe is about to be torn down and re-mounted with a fresh bootstrap; any buffered messages were
+			// addressed at the soon-to-be-dead iframe and would double-apply against the new iframe's fresh
+			// bootstrap on a subsequent reconnect. Anchor 2's timer keeps running so post-refresh notifications
+			// continue to be buffered.
+			this._replayBuffer.length = 0;
 		}
 		this.provider.onRefresh?.(force);
 
@@ -560,6 +637,10 @@ export class WebviewController<
 
 		if (force) {
 			// Reset the html to get the webview to reload
+			Logger.info(
+				`WebviewController(${this.id}|${this.instanceId}): webview.html set (reason=refresh:reset, length=0)`,
+			);
+			this._lastHtmlSetAt = Date.now();
 			this.webview.html = '';
 		}
 
@@ -572,6 +653,10 @@ export class WebviewController<
 			return;
 		}
 
+		Logger.info(
+			`WebviewController(${this.id}|${this.instanceId}): webview.html set (reason=refresh:apply, length=${html.length})`,
+		);
+		this._lastHtmlSetAt = Date.now();
 		this.webview.html = html;
 	}
 
@@ -592,16 +677,71 @@ export class WebviewController<
 		scope?.addExitInfo(`ipc (webview -> host) duration=${Date.now() - e.timestamp}ms`);
 
 		switch (true) {
-			case WebviewReadyRequest.is(e):
+			case WebviewReadyRequest.is(e): {
+				this._readyCount++;
+				const sinceLastHtmlSet = this._lastHtmlSetAt != null ? Date.now() - this._lastHtmlSetAt : -1;
+				// A re-ready means the webview's iframe was reloaded under us (e.g., panel layout settle, window
+				// reload restoring a serialized panel). The host's prior IPC pipe is severed; the new iframe loaded
+				// a stale bootstrap (frozen at HTML-generation time) and won't re-fetch state on its own. If we're
+				// still inside the replay window, replay the buffered post-bootstrap IPC log so the new iframe sees
+				// the same state the dead one had. Outside the window — where reconnects are anomalous — fall back
+				// to a full refresh, which is the honest answer at that point.
+				const isReconnect = this._ready;
+				const canSoftReconnect = isReconnect && this._replayEnabled;
+				Logger.info(
+					`WebviewController(${this.id}|${this.instanceId}): WebviewReadyRequest #${this._readyCount} (id=${e.id}, clientId=${e.params.clientId ?? '?'}, clientLoadedAt=${e.params.clientLoadedAt ?? '?'}, bootstrap=${e.params.bootstrap}, msgAge=${Date.now() - e.timestamp}ms, sinceLastHtmlSet=${sinceLastHtmlSet}ms, wasAlreadyReady=${this._ready}, replayEligible=${this._replayEligible}, replayEnabled=${this._replayEnabled}, replayBufferSize=${this._replayBuffer.length}, parentVisible=${this.parent.visible})`,
+				);
+
+				if (isReconnect && !canSoftReconnect) {
+					Logger.info(
+						`WebviewController(${this.id}|${this.instanceId}): reconnect outside replay window — forcing refresh`,
+					);
+					void this.refresh(true);
+					break;
+				}
+
+				if (isReconnect) {
+					this.cancellation?.cancel();
+					this.cancellation = new CancellationTokenSource();
+					this._rpcExposed = false;
+					this.clearPendingIpcNotifications();
+				}
+
+				if (isReconnect) {
+					Logger.info(
+						`WebviewController(${this.id}|${this.instanceId}): soft reconnect (replaying ${this._replayBuffer.length} buffered messages)`,
+					);
+				}
+
 				this._ready = true;
 				this.exposeRpc();
 				void this.respond(WebviewReadyRequest, e, {
+					// Honor the iframe's `bootstrap` flag literally — including on reconnect. The new iframe's
+					// HTML re-evaluates its `<script>window.bootstrap=…</script>` tag with the original T=0 payload,
+					// and replay below brings it forward by re-delivering the post-bootstrap delta log. Sending a
+					// fresh `includeBootstrap()` on reconnect would override the original starting point and let
+					// the replayed deltas double-apply on top of an already-current snapshot. The only iframes
+					// that ask for bootstrap on the re-ready are deferred-bootstrap providers — for those we do
+					// return the resolved bootstrap because they explicitly await it.
 					state: e.params.bootstrap ? this.provider.includeBootstrap?.(false) : undefined,
 				});
+				// Start the replay window BEFORE flushing pending so any pending IpcMessages flushed below land in
+				// the replay buffer. Deferred-bootstrap providers (e.g. Graph's deferRows path) push the initial
+				// rows notification BEFORE first-ready; without this ordering it would never make it into the buffer
+				// and a subsequent panel-layout-settle reconnect would replay state minus the rows — empty graph.
+				if (!isReconnect) {
+					this.startReplayWindow();
+				}
 				this.sendPendingIpcNotifications();
-				void this.provider.onReady?.();
+				if (isReconnect) {
+					this.replayBufferedMessages();
+					void this.provider.onReconnect?.();
+				} else {
+					void this.provider.onReady?.();
+				}
 
 				break;
+			}
 
 			case WebviewFocusChangedCommand.is(e):
 				this.onViewFocusChanged(e.params);
@@ -826,6 +966,18 @@ export class WebviewController<
 		const success = await this.postMessage(msg);
 		if (success) {
 			this._pendingIpcNotifications.clear();
+			// While the replay window is open, append every successfully delivered message to the log in send order
+			// so that on reconnect we can replay the exact sequence the previous iframe saw — including
+			// IpcPromiseSettled and request responses, so embedded IpcPromise placeholders in earlier messages
+			// resolve correctly on the new iframe. WebviewReadyRequest's own response is regenerated per reconnect
+			// (with a fresh bootstrap) and would be ID-mismatched on replay, so skip it. Honor reset semantics:
+			// a reset-type notification supersedes all prior state, so prune the log before storing.
+			if (this._replayEnabled && notificationType !== WebviewReadyRequest.response) {
+				if (notificationType.reset) {
+					this._replayBuffer.length = 0;
+				}
+				this._replayBuffer.push(msg);
+			}
 		} else if (notificationType === IpcPromiseSettled) {
 			this._pendingIpcPromiseNotifications.add({ msg: msg, timestamp: Date.now() });
 		} else {
@@ -935,13 +1087,13 @@ export class WebviewController<
 
 	private _pendingIpcNotifications = new Map<
 		IpcNotification,
-		{ msg: IpcMessage | (() => Promise<boolean>); timestamp: number }
+		{ msg: IpcMessage | (() => Promise<boolean | void>); timestamp: number }
 	>();
 	private _pendingIpcPromiseNotifications = new Set<{ msg: IpcMessage; timestamp: number }>();
 
 	addPendingIpcNotification(
 		type: IpcNotification<any>,
-		mapping: Map<IpcNotification<any>, () => Promise<boolean>>,
+		mapping: Map<IpcNotification<any>, () => Promise<boolean | void>>,
 		thisArg: any,
 	): void {
 		this.addPendingIpcNotificationCore(type, mapping.get(type)?.bind(thisArg));
@@ -949,7 +1101,7 @@ export class WebviewController<
 
 	private addPendingIpcNotificationCore(
 		type: IpcNotification<any>,
-		msgOrFn: IpcMessage | (() => Promise<boolean>) | undefined,
+		msgOrFn: IpcMessage | (() => Promise<boolean | void>) | undefined,
 	) {
 		if (type.reset) {
 			this._pendingIpcNotifications.clear();
@@ -959,6 +1111,7 @@ export class WebviewController<
 			debugger;
 			return;
 		}
+
 		this._pendingIpcNotifications.set(type, { msg: msgOrFn, timestamp: Date.now() });
 	}
 
@@ -974,19 +1127,77 @@ export class WebviewController<
 			return;
 		}
 
-		const ipcs = [...this._pendingIpcNotifications.values(), ...this._pendingIpcPromiseNotifications.values()].sort(
-			(a, b) => a.timestamp - b.timestamp,
-		);
+		// Preserve the IpcNotification type alongside each pending entry so we can decide buffer eligibility
+		// below. Promise-settled entries carry no type — they're addressed at specific call ids and aren't
+		// independently replayable.
+		const typedEntries = Array.from(this._pendingIpcNotifications.entries(), ([type, value]) => ({
+			type: type,
+			...value,
+		}));
+		const untyped = Array.from(this._pendingIpcPromiseNotifications.values(), value => ({
+			type: undefined,
+			...value,
+		}));
+		const ipcs = [...typedEntries, ...untyped].sort((a, b) => a.timestamp - b.timestamp);
 		this._pendingIpcNotifications.clear();
 		this._pendingIpcPromiseNotifications.clear();
 
-		for (const { msg } of ipcs.values()) {
+		for (const { type, msg } of ipcs) {
 			if (typeof msg === 'function') {
 				void msg();
-			} else {
-				void this.postMessage(msg);
+				continue;
+			}
+
+			void this.postMessage(msg);
+			// Mirror notify()'s success-path buffer push for pending IpcMessages that just got flushed —
+			// otherwise pre-first-ready notifications (e.g. Graph's deferred-rows microtask firing during
+			// HTML generation) never enter the replay buffer and a panel-layout-settle reconnect would
+			// deliver bootstrap without them.
+			if (
+				this._replayEnabled &&
+				type != null &&
+				(type as IpcNotification<unknown>) !== WebviewReadyRequest.response
+			) {
+				if (type.reset) {
+					this._replayBuffer.length = 0;
+				}
+				this._replayBuffer.push(msg);
 			}
 		}
+	}
+
+	/**
+	 * Replays the buffered post-bootstrap IPC log to the webview, in original send order. Called on reconnect
+	 * inside the replay window so the freshly-mounted iframe converges to the same state the previous one had,
+	 * without requiring per-provider reconnect logic.
+	 */
+	private replayBufferedMessages(): void {
+		for (const msg of this._replayBuffer) {
+			void this.postMessage(msg);
+		}
+	}
+
+	/**
+	 * Starts the replay-buffer window on first ready (subject to anchor 1: `_replayEligible`). After
+	 * {@link replayWindowMs} elapses, buffering is disabled and the log is dropped — reconnects past this
+	 * point fall back to a full refresh in the WebviewReadyRequest handler.
+	 */
+	private startReplayWindow(): void {
+		if (!this._replayEligible || this._replayWindowTimer != null) return;
+
+		this._replayEnabled = true;
+		Logger.info(
+			`WebviewController(${this.id}|${this.instanceId}): replay window opened (${WebviewController.replayWindowMs}ms)`,
+		);
+		this._replayWindowTimer = setTimeout(() => {
+			const bufferedCount = this._replayBuffer.length;
+			this._replayEnabled = false;
+			this._replayBuffer.length = 0;
+			this._replayWindowTimer = undefined;
+			Logger.info(
+				`WebviewController(${this.id}|${this.instanceId}): replay window closed; discarded ${bufferedCount} buffered messages`,
+			);
+		}, WebviewController.replayWindowMs);
 	}
 
 	async maximize(): Promise<void> {

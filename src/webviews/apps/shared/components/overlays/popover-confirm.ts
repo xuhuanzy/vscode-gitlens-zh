@@ -51,7 +51,7 @@ export class GlPopoverConfirm extends LitElement {
 			:host {
 				display: contents;
 				--warning-color: var(--vscode-editorWarning-foreground, #cca700);
-				--sl-tooltip-border-radius: 0.8rem;
+				--wa-tooltip-border-radius: 0.8rem;
 			}
 
 			.confirm-popover {

@@ -12,6 +12,7 @@ import type { GitDir } from '@gitlens/git/models/repository.js';
 import { deletedOrMissing, uncommitted } from '@gitlens/git/models/revision.js';
 import type { GitProvider } from '@gitlens/git/providers/provider.js';
 import type { GitProviderDescriptor, RepositoryVisibility } from '@gitlens/git/providers/types.js';
+import type { UnsafeGit } from '@gitlens/git/run.types.js';
 import { getVisibilityCacheKey } from '@gitlens/git/utils/remote.utils.js';
 import {
 	getRevisionRangeParts,
@@ -30,7 +31,7 @@ import { debounce } from '@gitlens/utils/debounce.js';
 import { debug, trace } from '@gitlens/utils/decorators/log.js';
 import type { UnifiedDisposable } from '@gitlens/utils/disposable.js';
 import type { Event } from '@gitlens/utils/event.js';
-import { Emitter } from '@gitlens/utils/event.js';
+import { Emitter, promisifyDeferred } from '@gitlens/utils/event.js';
 import { getDurationMilliseconds, hrtime } from '@gitlens/utils/hrtime.js';
 import { first } from '@gitlens/utils/iterable.js';
 import { getLoggableName, Logger } from '@gitlens/utils/logger.js';
@@ -48,8 +49,9 @@ import {
 import { any, asSettled } from '@gitlens/utils/promise.js';
 import { equalsIgnoreCase, interpolate } from '@gitlens/utils/string.js';
 import { compare, fromString } from '@gitlens/utils/version.js';
-import type { GitExtension, API as ScmGitApi } from '../../../@types/vscode.git.d.js';
+import type { APIState, GitExtension, API as ScmGitApi } from '../../../@types/vscode.git.d.js';
 import { Schemes } from '../../../constants.js';
+import type { Source } from '../../../constants.telemetry.js';
 import type { Container } from '../../../container.js';
 import type { Features } from '../../../features.js';
 import { gitMinimumVersion } from '../../../features.js';
@@ -75,7 +77,7 @@ import {
 import { asRepoComparisonKey } from '../../../repositories.js';
 import { configuration } from '../../../system/-webview/configuration.js';
 import { setContext } from '../../../system/-webview/context.js';
-import { getBestPath, isFolderUri, relative, splitPath } from '../../../system/-webview/path.js';
+import { getBestPath, isDescendant, isFolderUri, relative, splitPath } from '../../../system/-webview/path.js';
 import { UriSet } from '../../../system/-webview/uriMap.js';
 import { gate } from '../../../system/decorators/gate.js';
 
@@ -154,6 +156,10 @@ export class GlCliGitProvider implements GlGitProvider {
 		return this.ensureProvider();
 	}
 
+	ensureRegistered(): void {
+		this.ensureProvider();
+	}
+
 	protected ensureProvider(): CliGitProvider {
 		if (this._provider == null) {
 			if (this._providerInitializing) {
@@ -180,6 +186,7 @@ export class GlCliGitProvider implements GlGitProvider {
 					// Clear pending commands on @gitlens/git-cli's Git when the cache resets
 					this.container.events.on('git:cache:reset', e => {
 						if (e.data.types?.every(t => t === 'providers')) return;
+
 						this._provider?.git.clearPendingCommands();
 					}),
 				);
@@ -234,11 +241,18 @@ export class GlCliGitProvider implements GlGitProvider {
 				decode: (data: Uint8Array, options?: { readonly encoding: string }) =>
 					Promise.resolve(options ? workspace.decode(data, options) : workspace.decode(data)),
 				gitTimeout: (configuration.get('advanced.git.timeout') ?? 60) * 1000,
-				queue: { maxConcurrent: configuration.get('advanced.git.maxConcurrentProcesses') ?? 7 },
+				queue: { maxConcurrent: configuration.get('advanced.git.maxConcurrentProcesses') ?? 20 },
 				logger: gitOutputChannel,
 				hooks: {
 					onAborted: info => container.telemetry.sendEvent('op/git/aborted', info),
-					onSlowQueue: info =>
+					onSlowQueue: info => {
+						// Surface slow-queue events in the GitLens output channel so the wait time
+						// is observable during local debug — not just in telemetry. Helps catch
+						// priority misclassifications where a user-initiated read got queued behind
+						// background work (e.g., commit details click stuck behind graph load).
+						Logger.warn(
+							`Git queue wait: ${info.waitTime}ms [priority=${info.priority}, active=${info.active}/${info.maxConcurrent}, queued=${info.queued.interactive}/${info.queued.normal}/${info.queued.background}]`,
+						);
 						container.telemetry.sendEvent('op/git/queueWait', {
 							priority: info.priority,
 							waitTime: info.waitTime,
@@ -247,7 +261,8 @@ export class GlCliGitProvider implements GlGitProvider {
 							'queued.normal': info.queued.normal,
 							'queued.background': info.queued.background,
 							maxConcurrent: info.maxConcurrent,
-						}),
+						});
+					},
 				},
 			},
 		};
@@ -258,18 +273,9 @@ export class GlCliGitProvider implements GlGitProvider {
 		uri: Uri,
 		gitDir: GitDir | undefined,
 		root: boolean,
-		closed?: boolean,
+		opened: boolean,
 	): GlRepository {
-		const repo = new GlRepository(
-			this.container,
-			this.descriptor,
-			folder,
-			uri,
-			gitDir,
-			root,
-			closed ?? false,
-			!window.state.focused,
-		);
+		const repo = new GlRepository(this.container, this.descriptor, folder, uri, gitDir, root, opened);
 
 		repo.onDidChange(e => {
 			this.cache.onRepositoryChanged(repo.path, [...e.changes]);
@@ -339,6 +345,7 @@ export class GlCliGitProvider implements GlGitProvider {
 
 				const closed = [...closing];
 				closing.clear();
+				scope?.info(`fireRepositoryClosed: firing ${closed.length} closed repo(s) from vscode.git`);
 				for (const uri of closed) {
 					this._onDidCloseRepository.fire({ uri: uri, source: 'scm' });
 				}
@@ -351,6 +358,7 @@ export class GlCliGitProvider implements GlGitProvider {
 				const opened = [...opening];
 				opening.clear();
 
+				scope?.info(`fireRepositoryOpened: firing ${opened.length} opened repo(s) from vscode.git`);
 				for (const uri of opened) {
 					this._onDidOpenRepository.fire({ uri: uri, source: 'scm' });
 				}
@@ -360,16 +368,38 @@ export class GlCliGitProvider implements GlGitProvider {
 				scmGit.onDidCloseRepository(e => {
 					if (this.container.deactivating) return;
 
+					scope?.info(`SCM.onDidCloseRepository(${e.rootUri.toString(true)})`);
+					// Track the SCM-close intent immediately (before the 1s debounce), so any
+					// re-open paths during the debounce window can short-circuit.
+					const repo = this.container.git.getRepository(e.rootUri);
+					if (repo != null) {
+						repo.closedByScm = true;
+					}
+
 					closing.add(e.rootUri);
 					fireRepositoryClosed();
 				}),
 				scmGit.onDidOpenRepository(e => {
 					if (this.container.deactivating) return;
 
+					scope?.info(`SCM.onDidOpenRepository(${e.rootUri.toString(true)})`);
+					// Clear any prior SCM-close intent immediately so subsequent paths see it as open.
+					const repo = this.container.git.getRepository(e.rootUri);
+					if (repo != null) {
+						repo.closedByScm = false;
+					}
+
 					opening.add(e.rootUri);
 					fireRepositoryOpened();
 				}),
 			);
+
+			// When relying solely on SCM discovery, wait for vscode.git's initial scan so we seed from a complete
+			// snapshot, not a partial one. The open/close subscriptions above are already wired, so any repo opened
+			// during the wait is still caught. (In filesystem mode the scan is authoritative, so seed immediately.)
+			if (!configuration.get('advanced.repositorySearch.enabled')) {
+				await this.whenScmRepositoriesInitialized(scmGit);
+			}
 
 			for (const scmRepository of scmGit.repositories) {
 				this._onDidOpenRepository.fire({ uri: scmRepository.rootUri, source: 'scm' });
@@ -435,6 +465,14 @@ export class GlCliGitProvider implements GlGitProvider {
 		if (uri.scheme !== Schemes.File) return [];
 
 		try {
+			// When repository search is disabled, don't scan the filesystem for *automatic* workspace discovery; rely
+			// on vscode.git's discovery instead. Explicit scans (`findRepositories`, which pass options — e.g. a
+			// user-picked parent folder) must still scan the filesystem, since that folder isn't necessarily opened in
+			// SCM. `return await` keeps any error inside this try so it shares the same error handling as the scan.
+			if (options == null && !configuration.get('advanced.repositorySearch.enabled')) {
+				return await this.scmRepositorySearch(uri);
+			}
+
 			const autoRepositoryDetection = configuration.getCore('git.autoRepositoryDetection') ?? true;
 
 			const folder = workspace.getWorkspaceFolder(uri);
@@ -452,11 +490,8 @@ export class GlCliGitProvider implements GlGitProvider {
 				options?.silent,
 			);
 
-			if (!options?.silent && (autoRepositoryDetection === true || autoRepositoryDetection === 'subFolders')) {
-				for (const repository of repositories) {
-					void this.getOrOpenScmRepository(repository.uri);
-				}
-			}
+			// Opening discovered repos in VS Code's built-in SCM is intentionally left to vscode.git (see the
+			// note in `addRepository`) so we don't override the user's SCM closed-repos set.
 
 			if (!options?.silent && repositories.length > 0) {
 				this.cache.trackedPaths.clear();
@@ -480,29 +515,32 @@ export class GlCliGitProvider implements GlGitProvider {
 	}
 
 	@trace({ exit: true })
-	openRepository(
+	addRepository(
 		folder: WorkspaceFolder | undefined,
 		uri: Uri,
 		gitDir: GitDir | undefined,
 		root: boolean,
-		closed?: boolean,
+		opened: boolean,
 	): GlRepository[] {
 		// Ensure the library-level provider is registered before any GlRepository is created,
 		// so the library's GitService can route this repo's path to the local provider.
 		this.ensureProvider();
 
-		if (!closed) {
-			void this.getOrOpenScmRepository(uri);
-		}
+		// `opened` is GitLens visibility only — we deliberately do NOT open the repo in VS Code's built-in SCM.
+		// vscode.git's `openRepository` API force-opens AND clears the repo from its persisted closed-repos set
+		// (which GitLens can't read), so syncing here would resurrect repos the user closed in SCM. vscode.git's
+		// own `git.autoRepositoryDetection` opens repos in SCM honoring that set; GitLens follows via `onDidOpenRepository`.
 
 		// Register the repo path mapping for worktree-aware caching
 		if (gitDir != null) {
 			this.cache.registerRepoPath(uri, gitDir);
 		}
 
-		const opened = [this.createRepository(folder ?? workspace.getWorkspaceFolder(uri), uri, gitDir, root, closed)];
+		const repositories = [
+			this.createRepository(folder ?? workspace.getWorkspaceFolder(uri), uri, gitDir, root, opened),
+		];
 
-		// Add a closed (hidden) repository for the canonical version if not already opened
+		// Add a hidden (not-opened) repository for the canonical version if not already opened
 		const canonicalUri = this.toCanonicalMap.get(getBestPath(uri));
 		if (canonicalUri != null && this.container.git.getRepository(canonicalUri) == null) {
 			// Also register the canonical path for worktree-aware caching
@@ -510,18 +548,18 @@ export class GlCliGitProvider implements GlGitProvider {
 				this.cache.registerRepoPath(canonicalUri, gitDir);
 			}
 
-			opened.push(
+			repositories.push(
 				this.createRepository(
 					folder ?? workspace.getWorkspaceFolder(canonicalUri),
 					canonicalUri,
 					gitDir,
 					root,
-					true,
+					false,
 				),
 			);
 		}
 
-		return opened;
+		return repositories;
 	}
 
 	private _supportedFeatures = new Map<Features, boolean>();
@@ -560,6 +598,7 @@ export class GlCliGitProvider implements GlGitProvider {
 			if (result.value[0] === 'public') {
 				return ['public', getVisibilityCacheKey(result.value[1])];
 			}
+
 			if (result.value[0] !== 'local') {
 				local = false;
 			}
@@ -663,28 +702,7 @@ export class GlCliGitProvider implements GlGitProvider {
 		let canonicalRootPath;
 
 		const maybeAddRepo = async (uri: Uri, folder: WorkspaceFolder | undefined, root: boolean) => {
-			const comparisonId = asRepoComparisonKey(uri);
-			if (repositories.some(r => r.id === comparisonId)) {
-				scope?.info(`found ${root ? 'root ' : ''}repository in '${uri.fsPath}'; skipping - duplicate`);
-				return;
-			}
-
-			const repo = this.container.git.getRepository(uri);
-			if (repo != null) {
-				if (repo.closed && silent === false) {
-					repo.closed = false;
-				}
-				scope?.info(`found ${root ? 'root ' : ''}repository in '${uri.fsPath}'; skipping - already open`);
-				return;
-			}
-
-			scope?.info(`found ${root ? 'root ' : ''}repository in '${uri.fsPath}'`);
-			const gitDir = await this.provider.config.getGitDir?.(uri.fsPath);
-			if (gitDir == null) {
-				scope?.warn(`Unable to get gitDir for '${uri.toString(true)}'`);
-				return;
-			}
-			repositories.push(...this.openRepository(folder, uri, gitDir, root, silent));
+			repositories.push(...(await this.addDiscoveredRepository(uri, folder, root, silent, repositories, scope)));
 		};
 
 		const uri = await this.findRepositoryUri(rootUri, true);
@@ -756,6 +774,116 @@ export class GlCliGitProvider implements GlGitProvider {
 		}
 
 		return repositories;
+	}
+
+	/** Shared repository-from-uri add logic for both filesystem ({@link repositorySearch}) and SCM ({@link scmRepositorySearch}) discovery */
+	private async addDiscoveredRepository(
+		uri: Uri,
+		folder: WorkspaceFolder | undefined,
+		root: boolean,
+		silent: boolean | undefined,
+		seen: GlRepository[],
+		scope: ReturnType<typeof getScopedLogger>,
+	): Promise<GlRepository[]> {
+		const comparisonId = asRepoComparisonKey(uri);
+		if (seen.some(r => r.id === comparisonId)) {
+			scope?.info(`found ${root ? 'root ' : ''}repository in '${uri.fsPath}'; skipping - duplicate`);
+			return [];
+		}
+
+		const repo = this.container.git.getRepository(uri);
+		if (repo != null) {
+			if (!repo.opened && silent === false) {
+				if (repo.closedByScm) {
+					scope?.info(
+						`found ${
+							root ? 'root ' : ''
+						}repository in '${uri.fsPath}'; skipping - already known and closed (in SCM) (not auto-reopening)`,
+					);
+				} else {
+					repo.opened = true;
+					scope?.info(
+						`found ${
+							root ? 'root ' : ''
+						}repository in '${uri.fsPath}'; skipping - already known; flipped closed→open`,
+					);
+				}
+				return [];
+			}
+
+			scope?.info(`found ${root ? 'root ' : ''}repository in '${uri.fsPath}'; skipping - already open`);
+			return [];
+		}
+
+		scope?.info(`found ${root ? 'root ' : ''}repository in '${uri.fsPath}'`);
+		const gitDir = await this.provider.config.getGitDir?.(uri.fsPath);
+		if (gitDir == null) {
+			scope?.warn(`Unable to get gitDir for '${uri.toString(true)}'`);
+			return [];
+		}
+
+		return this.addRepository(folder, uri, gitDir, root, !silent);
+	}
+
+	/**
+	 * Discovers repositories from vscode.git's known set (instead of scanning the filesystem) when
+	 * `gitlens.advanced.repositorySearch.enabled` is off. Waits for vscode.git's initial scan to complete so
+	 * discovery readiness is honest. Repos unrelated to the folder (siblings, or repos outside any workspace
+	 * folder) are surfaced by the SCM open/close event path instead.
+	 */
+	@debug({ args: false, exit: true })
+	private async scmRepositorySearch(folderUri: Uri, silent?: boolean): Promise<GlRepository[]> {
+		const scope = getScopedLogger();
+
+		// Locate Git and wire the SCM open/close subscription (mirrors the filesystem path), so live opens/closes
+		// and `closedByScm` tracking work from startup even though we're not scanning the filesystem.
+		void (await this.ensureGit());
+
+		const scmGit = await this.getScmGitApi();
+		if (scmGit == null) {
+			scope?.warn('No built-in Git (vscode.git) API; unable to discover repositories via SCM');
+			return [];
+		}
+
+		// Wait for vscode.git's initial scan so its repositories list is complete and our discovery readiness
+		// (GitProviderService.isDiscoveringRepositories) reflects the real state rather than a guess/timeout.
+		await this.whenScmRepositoriesInitialized(scmGit);
+
+		const folder = workspace.getWorkspaceFolder(folderUri);
+		const repositories: GlRepository[] = [];
+
+		for (const scmRepo of scmGit.repositories) {
+			const uri = scmRepo.rootUri;
+			if (uri.scheme !== Schemes.File) continue;
+
+			// Surface the repo at the folder, the repo that contains it, and repos nested under it. Note: `isDescendant`
+			// is strict (a path is not its own descendant), so the equal case is checked explicitly. Unrelated repos
+			// (siblings, or repos outside any folder) are surfaced by the SCM open/close event path instead.
+			const sameAsFolder = arePathsEqual(getBestPath(uri), getBestPath(folderUri));
+			const containsFolder = !sameAsFolder && isDescendant(folderUri, uri);
+			const underFolder = !sameAsFolder && isDescendant(uri, folderUri);
+			if (!sameAsFolder && !containsFolder && !underFolder) continue;
+
+			const root = sameAsFolder || containsFolder; // the repo at or above the folder is its root
+			repositories.push(...(await this.addDiscoveredRepository(uri, folder, root, silent, repositories, scope)));
+		}
+
+		if (!silent && repositories.length > 0) {
+			this.cache.trackedPaths.clear();
+		}
+
+		return repositories;
+	}
+
+	/** Resolves once vscode.git has completed its initial repository scan (its `state` is `'initialized'`) */
+	private async whenScmRepositoriesInitialized(scmGit: ScmGitApi): Promise<void> {
+		if (scmGit.state === 'initialized') return;
+
+		await promisifyDeferred<APIState, void>(scmGit.onDidChangeState, (state, resolve) => {
+			if (state === 'initialized') {
+				resolve();
+			}
+		}).promise;
 	}
 
 	@trace({ args: (root, depth) => ({ root: root, depth: depth }), exit: true })
@@ -1055,7 +1183,7 @@ export class GlCliGitProvider implements GlGitProvider {
 
 					return;
 				} catch (e) {
-					// eslint-disable-next-line no-ex-assign
+					// oxlint-disable-next-line no-ex-assign
 					ex = e;
 				}
 			}
@@ -1273,6 +1401,12 @@ export class GlCliGitProvider implements GlGitProvider {
 		return (await this.isTrackedWithDetails(uri)) != null;
 	}
 
+	createUnsafeGit(repoPath: string): UnsafeGit {
+		return {
+			run: (args, options) => this.provider.git.run({ cwd: repoPath, errors: 'throw', ...options }, ...args),
+		};
+	}
+
 	private async isTrackedWithDetails(uri: Uri | GitUri): Promise<[string, string] | undefined>;
 	private async isTrackedWithDetails(
 		path: string,
@@ -1365,8 +1499,9 @@ export class GlCliGitProvider implements GlGitProvider {
 						// If we didn't find it, check it as close to the file as possible (will find nested repos)
 						tracked = await existsInRev(newRepoPath, newRelativePath);
 						if (tracked) {
-							repository = await this.container.git.getOrOpenRepository(Uri.file(path), {
+							repository = await this.container.git.getOrAddRepository(Uri.file(path), {
 								detectNested: true,
+								opened: false,
 							});
 							if (repository != null) {
 								return splitPath(path, repository.path);
@@ -1395,8 +1530,9 @@ export class GlCliGitProvider implements GlGitProvider {
 						const index = relativePath.indexOf('/');
 						if (index < 0 || index === relativePath.length - 1) return undefined;
 
-						const nested = await this.container.git.getOrOpenRepository(Uri.file(path), {
+						const nested = await this.container.git.getOrAddRepository(Uri.file(path), {
 							detectNested: true,
+							opened: false,
 						});
 						if (nested != null && nested !== repository) {
 							[relativePath, repoPath] = splitPath(path, repository.path);
@@ -1476,23 +1612,38 @@ export class GlCliGitProvider implements GlGitProvider {
 	}
 
 	@debug({ exit: true })
-	async getOrOpenScmRepository(repoPath: string | Uri): Promise<ScmRepository | undefined> {
+	async getOrOpenScmRepository(repoPath: string | Uri, source?: Source): Promise<ScmRepository | undefined> {
 		const scope = getScopedLogger();
 
 		try {
 			const uri = repoPath instanceof Uri ? repoPath : Uri.file(repoPath);
+
+			// Defense-in-depth: if GitLens knows this repo as closed in SCM, don't ask vscode.git to re-open
+			// it on our behalf \u2014 `openRepository` force-opens and erases vscode.git's persisted closed-repos set.
+			const known = this.container.git.getRepository(uri);
+			if (known?.closedByScm) {
+				scope?.info(
+					`skipping opening the SCM repository for '${uri.toString(true)}'${
+						source != null ? ` (source=${source.source})` : ''
+					}: tracked currently as closed (in SCM)`,
+				);
+				return undefined;
+			}
+
 			const gitApi = await this.getScmGitApi();
 			if (gitApi == null) return undefined;
 
 			// `getRepository` will return an opened repository that "contains" that path, so for nested repositories, we need to force the opening of the nested path, otherwise we will only get the root repository
 			let repo = gitApi.getRepository(uri);
 			if (repo == null || (repo != null && repo.rootUri.toString() !== uri.toString())) {
-				scope?.trace(
-					repo == null
-						? '\u2022 no existing repository found, opening repository...'
-						: `\u2022 existing, non-matching repository '${repo.rootUri.toString(
-								true,
-							)}' found, opening repository...`,
+				scope?.info(
+					`opening the SCM repository for '${uri.toString(true)}'${
+						source != null ? ` (source=${source.source})` : ''
+					}: ${
+						repo == null
+							? 'no existing repository found'
+							: `existing, non-matching repository '${repo.rootUri.toString(true)}'`
+					}`,
 				);
 				repo = await gitApi.openRepository?.(uri);
 			}

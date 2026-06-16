@@ -3,6 +3,7 @@ import { Disposable, Uri, ViewColumn, window } from 'vscode';
 import { uuid } from '@gitlens/utils/crypto.js';
 import { trace } from '@gitlens/utils/decorators/log.js';
 import { find, first, map } from '@gitlens/utils/iterable.js';
+import { Logger } from '@gitlens/utils/logger.js';
 import { maybeStartScopedLogger } from '@gitlens/utils/logger.scoped.js';
 import type { GlCommands } from '../constants.commands.js';
 import type { Source } from '../constants.telemetry.js';
@@ -140,6 +141,10 @@ export class WebviewsController implements Disposable {
 						const instanceId = uuid();
 
 						scope?.trace(`Resolving view (${instanceId})`);
+
+						Logger.info(
+							`WebviewsController.resolveWebviewView(${descriptor.id}|${instanceId}): hasRestoreState=${isSerializedState<State>(context)}, parentVisible=${webviewView.visible}`,
+						);
 
 						webviewView.webview.options = {
 							enableCommandUris: true,

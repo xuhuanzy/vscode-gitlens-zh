@@ -248,11 +248,12 @@ Each sub-provider interface is defined in its own file under `providers/`:
 | `getStoredUserMergeTargetBranchName?(repoPath, ref)`                                 | `string \| undefined`                      |
 | `onCurrentBranchAccessed?(repoPath)`                                                 | `void`                                     |
 | `onCurrentBranchModified?(repoPath)`                                                 | `void`                                     |
+| `onCurrentBranchAgentActivity?(repoPath)`                                            | `void`                                     |
 | `renameBranch?(repoPath, oldName, newName)`                                          | `void`                                     |
 | `setUpstreamBranch?(repoPath, name, upstream)`                                       | `void`                                     |
 | `setBranchDisposition?(repoPath, branchName, disposition)`                           | `void`                                     |
 | `storeBaseBranchName?(repoPath, ref, base)`                                          | `void`                                     |
-| `storeMergeTargetBranchName?(repoPath, ref, target)`                                 | `void`                                     |
+| `storeMergeTargetBranchName?(repoPath, ref, target, options?)`                       | `void`                                     |
 | `storeUserMergeTargetBranchName?(repoPath, ref, target)`                             | `void`                                     |
 
 ### GitCommitsSubProvider
@@ -291,7 +292,7 @@ Each sub-provider interface is defined in its own file under `providers/`:
 | `getRepositoryInfo?(cwd)`                       | `Promise<...>`         |
 | `getGkConfig?(repoPath, key, options?)`         | `string \| undefined`  |
 | `getGkConfigRegex?(repoPath, pattern)`          | `Map<string, string>`  |
-| `setGkConfig?(repoPath, key, value)`            | `void`                 |
+| `setGkConfig?(repoPath, key, value, options?)`  | `void`                 |
 | `getSigningConfig?(repoPath)`                   | `SigningConfig`        |
 | `getSigningConfigFlags?(config)`                | `string[]`             |
 | `setSigningConfig?(repoPath, config, options?)` | `void`                 |
@@ -346,19 +347,22 @@ Each sub-provider interface is defined in its own file under `providers/`:
 | `push(repoPath, options?)`             | `void`               |
 | `rebase(repoPath, upstream, options?)` | `GitOperationResult` |
 | `reset(repoPath, rev, options?)`       | `void`               |
+| `restore(repoPath, path, options?)`    | `void`               |
 | `revert(repoPath, refs, options?)`     | `GitOperationResult` |
 
 `GitOperationResult` (exported from `providers/operations.js`): `{ readonly conflicted: boolean; readonly conflicts?: GitConflictFile[] }`. Merge/rebase/cherry-pick/revert now return this shape — conflicts are returned (not thrown); hard failures (aborted, uncommittedChanges, alreadyInProgress, etc.) still throw.
+
+`restore` accepts a single path or an array (chunked under the CLI length limit). Options select the source: none = working tree from the index (drops unstaged changes, index untouched); `{ ref }` = both index and working tree from `<ref>`; `{ side: 'ours' | 'theirs' }` = conflict-resolution checkout during a paused merge/rebase/cherry-pick. `restore` replaces the former path-mode `checkout` and the `checkoutConflictedPath`/`checkoutConflictedPaths` methods.
 
 > Note: `clone` is on `GitProvider` directly (not on this sub-provider) — see Provider Interface above.
 
 ### GitPausedOperationsSubProvider
 
-| Method                                              | Returns                                 |
-| --------------------------------------------------- | --------------------------------------- |
-| `getPausedOperationStatus(repoPath, cancellation?)` | `GitPausedOperationStatus \| undefined` |
-| `abortPausedOperation(repoPath, options?)`          | `void`                                  |
-| `continuePausedOperation(repoPath, options?)`       | `void`                                  |
+| Method                                                        | Returns                                 |
+| ------------------------------------------------------------- | --------------------------------------- |
+| `getPausedOperationStatus(repoPath, options?, cancellation?)` | `GitPausedOperationStatus \| undefined` |
+| `abortPausedOperation(repoPath, options?)`                    | `void`                                  |
+| `continuePausedOperation(repoPath, options?)`                 | `void`                                  |
 
 ### GitPatchSubProvider
 
@@ -373,16 +377,16 @@ Each sub-provider interface is defined in its own file under `providers/`:
 
 ### GitRefsSubProvider
 
-| Method                                                           | Returns                     |
-| ---------------------------------------------------------------- | --------------------------- |
-| `checkIfCouldBeValidBranchOrTagName(repoPath, ref)`              | `boolean`                   |
-| `getMergeBase(repoPath, ref1, ref2, options?, cancellation?)`    | `string \| undefined`       |
-| `getReference(repoPath, ref, cancellation?)`                     | `GitReference \| undefined` |
-| `getSymbolicReferenceName?(repoPath, ref, cancellation?)`        | `string \| undefined`       |
-| `hasBranchOrTag(repoPath, options?, cancellation?)`              | `boolean`                   |
-| `isValidReference(repoPath, ref, pathOrUri?, cancellation?)`     | `boolean`                   |
-| `validateReference(repoPath, ref, relativePath?, cancellation?)` | `string \| undefined`       |
-| `updateReference(repoPath, ref, newRef, cancellation?)`          | `void`                      |
+| Method                                                              | Returns                     |
+| ------------------------------------------------------------------- | --------------------------- |
+| `checkIfCouldBeValidBranchOrTagName(repoPath, ref)`                 | `boolean`                   |
+| `getMergeBase(repoPath, ref1, ref2, options?, cancellation?)`       | `string \| undefined`       |
+| `getReference(repoPath, ref, cancellation?)`                        | `GitReference \| undefined` |
+| `getSymbolicReferenceName?(repoPath, ref, options?, cancellation?)` | `string \| undefined`       |
+| `hasBranchOrTag(repoPath, options?, cancellation?)`                 | `boolean`                   |
+| `isValidReference(repoPath, ref, pathOrUri?, cancellation?)`        | `boolean`                   |
+| `validateReference(repoPath, ref, relativePath?, cancellation?)`    | `string \| undefined`       |
+| `updateReference(repoPath, ref, newRef, cancellation?)`             | `void`                      |
 
 ### GitRemotesSubProvider
 
@@ -446,7 +450,7 @@ Each sub-provider interface is defined in its own file under `providers/`:
 
 | Method                                                            | Returns                        |
 | ----------------------------------------------------------------- | ------------------------------ |
-| `getStatus(repoPath, cancellation?)`                              | `GitStatus \| undefined`       |
+| `getStatus(repoPath, options?, cancellation?)`                    | `GitStatus \| undefined`       |
 | `getStatusForFile?(repoPath, pathOrUri, options?, cancellation?)` | `GitStatusFile \| undefined`   |
 | `getStatusForPath?(repoPath, pathOrUri, options?, cancellation?)` | `GitStatusFile[] \| undefined` |
 | `hasWorkingChanges(repoPath, options?, cancellation?)`            | `boolean`                      |

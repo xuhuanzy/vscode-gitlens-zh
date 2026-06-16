@@ -26,6 +26,31 @@ export const noop = (ex?: unknown): void => {
 };
 
 /**
+ * True for AbortError-shaped rejections — covers both DOMException-based aborts and
+ * Supertalk-deserialized errors (which preserve `name` but not the DOMException class
+ * across the wire). Use to suppress expected cancellation rejections without hiding
+ * real failures.
+ */
+export function isAbortError(ex: unknown): boolean {
+	return ex instanceof Error && ex.name === 'AbortError';
+}
+
+/**
+ * Like {@link noop}, but silent on cancellation/abort rejections (which are expected
+ * when an in-flight enrichment is aborted by `signal?.throwIfAborted()` host-side).
+ * Real errors still log at warn level.
+ *
+ * Use as the rejection arg of `.then(onFulfilled, noopUnlessReal)` for any RPC call
+ * that accepts an AbortSignal — otherwise expected cancellations spam the log.
+ */
+export const noopUnlessReal = (ex?: unknown): void => {
+	if (ex == null || isAbortError(ex)) return;
+
+	const msg = ex instanceof Error ? ex.message : 'unknown error';
+	Logger.warn(`RPC call rejected (noopUnlessReal handler): ${msg}`);
+};
+
+/**
  * Per-signal version counter for optimistic rollback safety.
  * Prevents stale rollbacks when multiple optimistic updates overlap on the same signal.
  */
@@ -128,6 +153,36 @@ export function enrichmentGuard<T>(
 			onResult(value);
 		}
 	};
+}
+
+/**
+ * Fire-and-forget chip-enrichment helper. Wraps the standard pattern of an enrichment RPC
+ * call: generation guard (drops stale callbacks for resources that have moved on), abort
+ * guard (drops callbacks once the panel-level enrichment signal aborts), cancellation-aware
+ * rejection (suppresses expected `AbortError` rejections silently while still logging real
+ * failures via `noopUnlessReal`), and an optional pre-fetch skip predicate (e.g., when
+ * autolinks are disabled).
+ *
+ * Cache writes and state writes stay local to each call site — those are genuinely
+ * different per enrichment and the helper deliberately doesn't try to abstract them.
+ */
+export function guardedEnrich<T>(
+	resource: Pick<Resource<unknown>, 'generationId'>,
+	signal: AbortSignal,
+	fetcher: () => Promise<T>,
+	apply: (value: T) => void,
+	options?: { skipIf?: () => boolean },
+): void {
+	if (options?.skipIf?.()) return;
+
+	void fetcher().then(
+		enrichmentGuard(resource, value => {
+			if (signal.aborted) return;
+
+			apply(value);
+		}),
+		noopUnlessReal,
+	);
 }
 
 /**

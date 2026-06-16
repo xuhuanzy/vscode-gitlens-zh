@@ -28,7 +28,7 @@
 			"preLaunchTask": "i18n: debug generate",
 			"runtimeSourcemapPausePatterns": ["${workspaceFolder}/dist/**/*.js"],
 			"presentation": {
-				"group": "2_run",
+				"group": "1_primary",
 				"order": 1
 			},
 			"showAsyncStacks": true,
@@ -66,7 +66,7 @@
 			"pauseForSourceMap": true,
 			"runtimeSourcemapPausePatterns": ["${workspaceFolder}/dist/**/*.js"],
 			"presentation": {
-				"group": "2_run",
+				"group": "2_web",
 				"order": 2
 			},
 			"skipFiles": ["<node_internals>/**", "**/node_modules/**", "**/resources/app/out/vs/**"],
@@ -98,8 +98,8 @@
 			"pauseForSourceMap": true,
 			"runtimeSourcemapPausePatterns": ["${workspaceFolder}/dist/**/*.js"],
 			"presentation": {
-				"group": "2_run",
-				"order": 3
+				"group": "3_sandboxed",
+				"order": 1
 			},
 			"showAsyncStacks": true,
 			"skipFiles": ["<node_internals>/**", "**/node_modules/**", "**/resources/app/out/vs/**"],
@@ -116,7 +116,7 @@
 			"outFiles": ["${workspaceFolder}/out/tests/**/*.test.js"],
 			"preLaunchTask": "npm: build:tests",
 			"presentation": {
-				"group": "2_run_tests",
+				"group": "4_tests",
 				"order": 2
 			},
 			"skipFiles": ["<node_internals>/**", "**/node_modules/**", "**/resources/app/out/vs/**"],
@@ -150,8 +150,8 @@
 			"runtimeSourcemapPausePatterns": ["${workspaceFolder}/dist/**/*.js"],
 			"preLaunchTask": "i18n: watch",
 			"presentation": {
-				"group": "1_watch",
-				"order": 1
+				"group": "1_primary",
+				"order": 2
 			},
 			"showAsyncStacks": true,
 			"skipFiles": ["<node_internals>/**", "**/node_modules/**", "**/resources/app/out/vs/**"],
@@ -189,8 +189,8 @@
 			"runtimeSourcemapPausePatterns": ["${workspaceFolder}/dist/**/*.js"],
 			"preLaunchTask": "${defaultBuildTask}",
 			"presentation": {
-				"group": "1_watch",
-				"order": 1
+				"group": "2_web",
+				"order": 2
 			},
 			"skipFiles": ["<node_internals>/**", "**/node_modules/**", "**/resources/app/out/vs/**"],
 			"showAsyncStacks": true,
@@ -221,7 +221,7 @@
 			"runtimeSourcemapPausePatterns": ["${workspaceFolder}/dist/**/*.js"],
 			"preLaunchTask": "${defaultBuildTask}",
 			"presentation": {
-				"group": "1_watch",
+				"group": "3_sandboxed",
 				"order": 2
 			},
 			"showAsyncStacks": true,
@@ -239,7 +239,7 @@
 			"outFiles": ["${workspaceFolder}/out/tests/**/*.test.js"],
 			"preLaunchTask": "npm: watch:tests",
 			"presentation": {
-				"group": "1_watch_tests",
+				"group": "4_tests",
 				"order": 2
 			},
 			"skipFiles": ["<node_internals>/**", "**/node_modules/**", "**/resources/app/out/vs/**"],

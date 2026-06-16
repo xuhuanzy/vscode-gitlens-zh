@@ -70,6 +70,16 @@ export function createCommandDecorator<
 	};
 }
 
-export function getWebviewCommand(command: string, type: WebviewTypes): GlWebviewCommands {
+/**
+ * Suffix used to disambiguate webview-scoped command IDs.
+ *
+ * Normally one of {@link WebviewTypes}, but we also allow `'graphDetails'` as a legacy label for
+ * the integrated graph details panel's file context-menu commands. The `gitlens.views.graphDetails`
+ * webview was removed when the integrated panel took over, but the `:graphDetails` command suffix
+ * is still used by package.json menus filtered on `webview == gitlens.graph || webview == gitlens.views.graph`.
+ */
+export type WebviewCommandSuffix = WebviewTypes | 'graphDetails';
+
+export function getWebviewCommand(command: string, type: WebviewCommandSuffix): GlWebviewCommands {
 	return (command.endsWith(':') ? `${command}${type}` : command) as GlWebviewCommands;
 }

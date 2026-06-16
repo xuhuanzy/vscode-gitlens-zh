@@ -9,13 +9,14 @@
  */
 import type { Handler, Options, Remote } from '@eamodio/supertalk';
 import { Connection } from '@eamodio/supertalk';
-import { AbortSignalHandler } from '@eamodio/supertalk-core/handlers/abort-signal.js';
 import { SignalHandler } from '@eamodio/supertalk-signals';
 import { Logger } from '@gitlens/utils/logger.js';
 import type { WebviewIds } from '../../../constants.views.js';
+import { GlAbortSignalHandler } from '../../../system/rpc/abortSignalHandler.js';
 import { rpcHandlers } from '../../../system/rpc/handlers.js';
 import { createSupertalkLogger, formatWebviewLogTag } from '../../../system/rpc/logger.js';
 import { getHost } from './host/context.js';
+import { cacheRemoteServices } from './rpc/cachedRemote.js';
 import type { DisposableEndpoint } from './webviewEndpoint.js';
 
 export interface RpcClientOptions {
@@ -150,7 +151,12 @@ export async function wrapServices<TServices extends object>(
 	const signalHandler = new SignalHandler({ autoWatch: options?.autoWatchSignals });
 
 	// Merge default handlers with SignalHandler, AbortSignalHandler, and any additional handlers
-	const handlers: Handler[] = [...rpcHandlers, signalHandler, new AbortSignalHandler(), ...(options?.handlers ?? [])];
+	const handlers: Handler[] = [
+		...rpcHandlers,
+		signalHandler,
+		new GlAbortSignalHandler(),
+		...(options?.handlers ?? []),
+	];
 
 	const connectionOptions: Options = {
 		handlers: handlers,
@@ -253,7 +259,15 @@ export async function wrapServices<TServices extends object>(
 		clearSetup();
 		Logger.debug(`${logPrefix}: Connected to host successfully`);
 		return {
-			services: services,
+			// Wrap so each non-method property's thenable resolves at most once per session — see
+			// the comment on `cacheRemoteServices` for the supertalk-side rationale. Every webview
+			// app reaches its services through this function (directly or via `RpcController`),
+			// so this is the single choke point that makes `await services.X` safe in repeated
+			// callbacks for our stable-handle service bags. Producers must expose only methods
+			// and stable sub-service handles (a property whose value never changes for a given
+			// connection); dynamic-value getters that allocate a different object per access
+			// would break under memoization and are not safe here.
+			services: cacheRemoteServices(services),
 			dispose: () => {
 				Logger.debug(`${logPrefix}: Disposing connection...`);
 				disposeConnection();

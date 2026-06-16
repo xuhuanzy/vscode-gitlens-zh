@@ -16,7 +16,7 @@ export { GitHubApi } from '@gitlens/git-github/api/github.js';
 export function createGitHubApi(): GitHubApi {
 	const config: GitHubApiConfig = {
 		isWeb: isWeb,
-		fetch: fetch as unknown as GitHubApiConfig['fetch'],
+		fetch: fetch,
 		wrapForForcedInsecureSSL: wrapForForcedInsecureSSL,
 
 		onConfigChanged: (listener: () => void) => {

@@ -169,7 +169,7 @@ export async function resolveLocalInfoFromRemoteUri(
 	repo: GlRepository,
 	uri: Uri,
 ): Promise<LocalInfoFromRemoteUriResult | undefined> {
-	const parsed = provider.parseRemoteFileUri?.(uri as unknown as URI);
+	const parsed = provider.parseRemoteFileUri?.(uri);
 	if (parsed == null) return undefined;
 
 	let fallback: LocalInfoFromRemoteUriResult | undefined;

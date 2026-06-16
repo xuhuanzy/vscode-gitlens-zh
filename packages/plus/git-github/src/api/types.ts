@@ -103,6 +103,21 @@ export interface GitHubApiClient {
 		},
 	): Promise<PagedResult<GitHubCommit> & { viewer?: string }>;
 
+	getCommitShas(
+		token: GitHubTokenInfo,
+		owner: string,
+		repo: string,
+		ref: string,
+		options?: {
+			after?: string;
+			before?: string;
+			limit?: number;
+			path?: string;
+			since?: string | Date;
+			until?: string | Date;
+		},
+	): Promise<PagedResult<string>>;
+
 	getCommitRefs(
 		token: GitHubTokenInfo,
 		owner: string,

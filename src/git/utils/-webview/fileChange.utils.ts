@@ -4,7 +4,7 @@ import { pluralize } from '@gitlens/utils/string.js';
 import { Container } from '../../../container.js';
 
 export function getFileChangeWorkingUri(file: GitFileChange): Promise<Uri | undefined> {
-	return Container.instance.git.getRepositoryService(file.repoPath).getWorkingUri(file.uri as Uri);
+	return Container.instance.git.getRepositoryService(file.repoPath).getWorkingUri(file.uri);
 }
 
 export function formatFileChangeStats(

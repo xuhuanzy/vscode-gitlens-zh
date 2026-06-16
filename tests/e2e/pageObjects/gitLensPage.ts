@@ -24,11 +24,11 @@ export class GitLensPage extends VSCodePage {
 	async startSubscriptionSimulation(
 		state: SimulationState = { state: 6 /*SubscriptionState.Paid*/, planId: 'pro' },
 	): Promise<{ success: boolean } & Disposable> {
-		if (!(await this.waitForCommand('gitlens.plus.simulateSubscription'))) {
-			throw new Error('gitlens.plus.simulateSubscription command not found');
+		if (!(await this.waitForCommand('gitlens.plus.simulate.subscription'))) {
+			throw new Error('gitlens.plus.simulate.subscription command not found');
 		}
 
-		const success = await this.executeCommand<boolean>('gitlens.plus.simulateSubscription', state);
+		const success = await this.executeCommand<boolean>('gitlens.plus.simulate.subscription', state);
 		// Wait for the subscription change event to propagate through the system
 		await this.page.waitForTimeout(ShortTimeout);
 		return {
@@ -40,7 +40,7 @@ export class GitLensPage extends VSCodePage {
 	}
 
 	async stopSubscriptionSimulation(): Promise<void> {
-		await this.executeCommand('gitlens.plus.simulateSubscription', { state: null });
+		await this.executeCommand('gitlens.plus.simulate.subscription', { state: null });
 	}
 
 	/**
@@ -199,10 +199,14 @@ export class GitLensPage extends VSCodePage {
 		return this.panel.getTab('GitLens', true);
 	}
 
-	/** Commit Graph tab in the panel */
+	/** Commit Graph view section in the panel (matched via its panel toolbar) */
 	get commitGraphViewSection(): Locator {
-		// The Graph view shows as a tab in the panel with text content "Graph"
-		return this.panel.locator.locator('text=Graph').first();
+		// When the Commit Graph view is open, its panel toolbar is labelled
+		// "GitLens: Commit Graph: <repo> actions" and stays visible in both the gated (Community)
+		// and loaded (Pro) states. Match that toolbar by accessible name — the panel title <h2>
+		// itself is sr-hidden, and a bare "Graph" text match resolved to the hidden generic
+		// "GitLens: Graph" header.
+		return this.panel.locator.getByRole('toolbar', { name: /Commit Graph/ }).first();
 	}
 
 	/** Commit Graph webview in the panel */

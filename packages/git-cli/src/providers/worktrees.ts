@@ -49,7 +49,7 @@ export class WorktreesGitSubProvider implements GitWorktreesSubProvider {
 		}
 
 		try {
-			await this.git.exec({ cwd: repoPath }, ...args);
+			await this.git.run({ cwd: repoPath }, ...args);
 
 			this.context.hooks?.cache?.onReset?.(
 				repoPath,
@@ -106,7 +106,7 @@ export class WorktreesGitSubProvider implements GitWorktreesSubProvider {
 				// Prefer the aggregate signal from the cache; fall back to the caller's cancellation.
 				signal ??= cancellation;
 				const [dataResult, branchesResult] = await Promise.allSettled([
-					this.git.exec({ cwd: commonPath, cancellation: signal }, 'worktree', 'list', '--porcelain'),
+					this.git.run({ cwd: commonPath, cancellation: signal }, 'worktree', 'list', '--porcelain'),
 					this.provider.branches.getBranches(commonPath, undefined, signal),
 				]);
 
@@ -154,7 +154,7 @@ export class WorktreesGitSubProvider implements GitWorktreesSubProvider {
 
 		let deleted = false;
 		try {
-			await this.git.exec({ cwd: repoPath, errors: 'throw' }, ...args);
+			await this.git.run({ cwd: repoPath, errors: 'throw' }, ...args);
 			deleted = true;
 		} catch (ex) {
 			scope?.error(ex);

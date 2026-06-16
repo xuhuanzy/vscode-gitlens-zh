@@ -22,6 +22,7 @@ import { encodeGitLensRevisionUriAuthority } from '@gitlens/git/utils/uriAuthori
 import { debug } from '@gitlens/utils/decorators/log.js';
 import { union } from '@gitlens/utils/iterable.js';
 import { getScopedLogger } from '@gitlens/utils/logger.scoped.js';
+import { getSettledValue } from '@gitlens/utils/promise.js';
 import type { Uri } from '@gitlens/utils/uri.js';
 import { fromUri } from '@gitlens/utils/uri.js';
 import { toTokenInfo } from '../../api/tokenUtils.js';
@@ -58,12 +59,18 @@ export class DiffGitSubProvider implements GitDiffSubProvider {
 	async getChangedFilesCount(
 		repoPath: string,
 		to?: string,
-		_from?: string,
+		from?: string,
 		_options?: { uris?: (string | Uri)[]; includeUntracked?: boolean },
 		_cancellation?: AbortSignal,
 	): Promise<GitDiffShortStat | undefined> {
-		// TODO@eamodio if there is no ref we can't return anything, until we can get at the change store from RemoteHub
-		if (!to) return undefined;
+		// Virtual GitHub repos have no working tree, so no working changes can exist.
+		// Without any refs, return empty stats rather than undefined to avoid "uncertain state" callers.
+		if (!to && !from) return { additions: 0, deletions: 0, files: 0 };
+
+		// If only `from` is provided, compare against HEAD
+		if (!to) {
+			to = 'HEAD';
+		}
 
 		const commit = await this.provider.commits.getCommit(repoPath, to);
 		if (commit?.stats == null) return undefined;
@@ -115,27 +122,28 @@ export class DiffGitSubProvider implements GitDiffSubProvider {
 		}
 
 		try {
-			let result = await github.getComparison(
-				toTokenInfo(this.provider.authenticationProviderId, session),
-				metadata.repo.owner,
-				metadata.repo.name,
-				stripOrigin(range),
-			);
+			const token = toTokenInfo(this.provider.authenticationProviderId, session);
 
-			const files1 = result?.files;
-
-			let files = files1;
+			let files;
 			if (range2) {
-				result = await github.getComparison(
-					toTokenInfo(this.provider.authenticationProviderId, session),
-					metadata.repo.owner,
-					metadata.repo.name,
-					stripOrigin(range2),
-				);
+				// GitHub doesn't support `..`, so issue both `...` comparisons in parallel and union the results.
+				const [result1, result2] = await Promise.allSettled([
+					github.getComparison(token, metadata.repo.owner, metadata.repo.name, stripOrigin(range)),
+					github.getComparison(token, metadata.repo.owner, metadata.repo.name, stripOrigin(range2)),
+				]);
 
-				const files2 = result?.files;
+				const files1 = getSettledValue(result1)?.files;
+				const files2 = getSettledValue(result2)?.files;
 
 				files = [...new Set(union(files1, files2))];
+			} else {
+				const result = await github.getComparison(
+					token,
+					metadata.repo.owner,
+					metadata.repo.name,
+					stripOrigin(range),
+				);
+				files = result?.files;
 			}
 
 			return files?.map(f => ({

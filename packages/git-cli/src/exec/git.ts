@@ -17,6 +17,7 @@ import type {
 	ResetErrorReason,
 	RevertErrorReason,
 	ShowErrorReason,
+	SigningErrorReason,
 	StashApplyErrorReason,
 	StashPushErrorReason,
 	TagErrorReason,
@@ -24,6 +25,7 @@ import type {
 	WorktreeDeleteErrorReason,
 } from '@gitlens/git/errors.js';
 import { WorkspaceUntrustedError } from '@gitlens/git/errors.js';
+import type { SigningFormat } from '@gitlens/git/models/signature.js';
 import { CancellationError, getAbortSignalId, isCancellationError } from '@gitlens/utils/cancellation.js';
 import { getScopedCounter } from '@gitlens/utils/counter.js';
 import { getDurationMilliseconds, hrtime } from '@gitlens/utils/hrtime.js';
@@ -37,7 +39,7 @@ import { compare, fromString } from '@gitlens/utils/version.js';
 import { CancelledRunError, RunError } from './exec.errors.js';
 import type { RunOptions, RunResult } from './exec.js';
 import { fsExists, runSpawn } from './exec.js';
-import type { GitCommandPriority, GitExecOptions, GitResult, GitSpawnOptions } from './exec.types.js';
+import type { GitCommandPriority, GitResult, GitRunOptions, GitSpawnOptions } from './exec.types.js';
 import type { FilteredGitFeatures, GitFeatureOrPrefix, GitFeatures } from './features.js';
 import { gitFeaturesByVersion } from './features.js';
 import type { GitQueueConfig } from './gitQueue.js';
@@ -74,6 +76,8 @@ export const GitErrors = {
 	detachedHead: /You are in 'detached HEAD' state/i,
 	entryNotUpToDate: /error:\s*Entry ['"].+['"] not uptodate\. Cannot merge\./i,
 	failedToDeleteDirectoryNotEmpty: /failed to delete '(.*?)': Directory not empty/i,
+	gpgNotFound: /gpg:?\s*(?:command\s+)?not found|'gpg' is not recognized as|cannot run gpg:/i,
+	gpgSignFailed: /^error:\s*gpg failed to sign the data/im,
 	invalidName: /fatal:\s*'.+?' is not a valid branch name/i,
 	invalidLineCount: /file .+? has only (\d+) lines/i,
 	invalidObjectName: /invalid object name: (.*)\s/i,
@@ -106,6 +110,8 @@ export const GitErrors = {
 	remoteAhead: /rejected because the remote contains work/i,
 	remoteConnectionFailed: /Could not read from remote repository/i,
 	remoteRejected: /rejected because the remote contains work/i,
+	signingKeyNotAvailable: /secret key not available|no secret key|no signing key/i,
+	sshNotFound: /ssh-keygen[^\n]*(?:not found|No such file or directory|is not recognized)/i,
 	stashConflictingStagedAndUnstagedLines: /Cannot remove worktree changes/i,
 	stashNothingToSave: /No local changes to save/i,
 	stashSavedWorkingDirAndIndexState: /Saved working directory and index state/i,
@@ -413,6 +419,52 @@ export function getGitCommandError<T extends GitCommand, TReturn extends GitComm
 	return creator(undefined);
 }
 
+function extractSigningErrorText(ex: unknown): string {
+	if (ex == null) return '';
+	if (ex instanceof GitError) return ex.stderr || ex.stdout || ex.message || '';
+	if (ex instanceof Error) return ex.message || '';
+	if (typeof ex === 'string') return ex;
+	if (typeof ex === 'number' || typeof ex === 'boolean' || typeof ex === 'bigint') return String(ex);
+	if (typeof ex === 'object' && 'message' in ex && typeof ex.message === 'string') return ex.message;
+	return '';
+}
+
+/**
+ * Classifies a Git error as a signing-related failure using the {@link GitErrors}
+ * signing regexes. Returns the matched {@link SigningErrorReason}, or `undefined`
+ * when the error is not a recognized signing failure.
+ *
+ * Precedence is significant: `passphraseFailed` (gpg sign failure) is checked
+ * before `noKey`, matching the ordering used historically in patch.ts — a
+ * combined stderr like "error: gpg failed to sign … gpg: No secret key"
+ * resolves to `passphraseFailed`, the outer cause.
+ */
+export function classifySigningError(ex: unknown): SigningErrorReason | undefined {
+	const text = extractSigningErrorText(ex);
+	if (!text) return undefined;
+	if (GitErrors.gpgSignFailed.test(text)) return 'passphraseFailed';
+	if (GitErrors.signingKeyNotAvailable.test(text)) return 'noKey';
+	if (GitErrors.gpgNotFound.test(text)) return 'gpgNotFound';
+	if (GitErrors.sshNotFound.test(text)) return 'sshNotFound';
+	return undefined;
+}
+
+/**
+ * Infers the {@link SigningFormat} from stderr hints (e.g., mentions of
+ * `ssh-keygen` or `gpg.ssh.*` config keys). Returns `undefined` when no hints
+ * are present so callers can supply their own default (typically `'gpg'`).
+ *
+ * Used as a fallback when `config.getSigningConfig` is unavailable or rejects
+ * on the error path.
+ */
+export function inferSigningFormatFromError(ex: unknown): SigningFormat | undefined {
+	const text = extractSigningErrorText(ex);
+	if (!text) return undefined;
+	if (/\bssh-keygen\b|gpg\.ssh\.(?:program|allowedsignersfile)/i.test(text)) return 'ssh';
+	if (/\bgpg\b/i.test(text)) return 'gpg';
+	return undefined;
+}
+
 export interface GitOptions {
 	/** Custom environment variables to add to every git command */
 	env?: Record<string, string | undefined>;
@@ -456,7 +508,7 @@ const trailingNewlineRegex = /[\r|\n]+$/;
 const uniqueCounterForStdin = getScopedCounter();
 const uniqueCounterForStream = getScopedCounter();
 
-type ExitCodeOnlyGitCommandOptions = GitExecOptions & { exitCodeOnly: true };
+type ExitCodeOnlyGitCommandOptions = GitRunOptions & { exitCodeOnly: true };
 
 export class Git {
 	/** Map of running git commands — avoids running duplicate overlapping commands */
@@ -579,16 +631,16 @@ export class Git {
 		);
 	}
 
-	async exec(
+	async run(
 		options: ExitCodeOnlyGitCommandOptions,
 		...args: readonly (string | undefined)[]
 	): Promise<GitResult<unknown>>;
-	async exec<T extends string | Buffer = string>(
-		options: GitExecOptions,
+	async run<T extends string | Buffer = string>(
+		options: GitRunOptions,
 		...args: readonly (string | undefined)[]
 	): Promise<GitResult<T>>;
-	async exec<T extends string | Buffer = string>(
-		options: GitExecOptions,
+	async run<T extends string | Buffer = string>(
+		options: GitRunOptions,
 		...args: readonly (string | undefined)[]
 	): Promise<GitResult<T | unknown>> {
 		if (this.options.isTrusted?.() === false) throw new WorkspaceUntrustedError();
@@ -602,7 +654,7 @@ export class Git {
 				options.caching.commonPath ?? options.cwd!,
 				gitCommand,
 				async cacheable => {
-					const result = await this.execCore<T>({ ...options, caching: undefined }, runArgs, gitCommand);
+					const result = await this.runCore<T>({ ...options, caching: undefined }, runArgs, gitCommand);
 					if (result.exitCode !== 0) {
 						cacheable.invalidate();
 					}
@@ -612,11 +664,11 @@ export class Git {
 			);
 		}
 
-		return this.execCore<T>(options, runArgs, gitCommand);
+		return this.runCore<T>(options, runArgs, gitCommand);
 	}
 
-	private async execCore<T extends string | Buffer>(
-		options: GitExecOptions,
+	private async runCore<T extends string | Buffer>(
+		options: GitRunOptions,
 		args: string[],
 		gitCommand: string,
 	): Promise<GitResult<T | unknown>> {
@@ -679,7 +731,7 @@ export class Git {
 			// Execute through the queue (interactive/normal run immediately, background is throttled)
 			const gitPath = await this.path();
 			void this._queue
-				.execute(priority, () => runSpawn<T>(gitPath, args, encoding ?? 'utf8', runOpts))
+				.run(priority, () => runSpawn<T>(gitPath, args, encoding ?? 'utf8', runOpts), cancellation)
 				.then(deferred.fulfill, (e: unknown) => deferred.cancel(e instanceof Error ? e : new Error(String(e))))
 				.finally(() => {
 					this.pendingCommands.delete(cacheKey);
@@ -695,8 +747,8 @@ export class Git {
 		try {
 			result = await promise;
 			return {
-				stdout: result.stdout as T,
-				stderr: result.stderr as T | undefined,
+				stdout: result.stdout,
+				stderr: result.stderr,
 				exitCode: result.exitCode ?? 0,
 			};
 		} catch (ex) {
@@ -723,15 +775,15 @@ export class Git {
 			if (errorHandling === 'ignore') {
 				if (ex instanceof RunError) {
 					return {
-						stdout: ex.stdout as T,
-						stderr: ex.stderr as T | undefined,
+						stdout: ex.stdout,
+						stderr: ex.stderr,
 						exitCode: ex.code != null ? (typeof ex.code === 'number' ? ex.code : parseInt(ex.code, 10)) : 0,
 						cancelled: ex instanceof CancelledRunError,
 					};
 				}
 
 				return {
-					stdout: '' as T,
+					stdout: '',
 					stderr: undefined,
 					exitCode: 0,
 					cancelled: ex instanceof CancelledRunError,
@@ -747,7 +799,7 @@ export class Git {
 
 			defaultExceptionHandler(exception, options.cwd, start);
 			exception = undefined;
-			return { stdout: '' as T, stderr: result?.stderr as T | undefined, exitCode: result?.exitCode ?? 0 };
+			return { stdout: '', stderr: result?.stderr, exitCode: result?.exitCode ?? 0 };
 		} finally {
 			this.logGitCommandComplete(gitCommand, exception, getDurationMilliseconds(start), waiting);
 		}
@@ -854,6 +906,7 @@ export class Git {
 		let cleanedUp = false;
 		const cleanup = () => {
 			if (cleanedUp) return;
+
 			cleanedUp = true;
 
 			try {
@@ -888,7 +941,7 @@ export class Git {
 						for await (const chunk of proc.stdout) {
 							buffers.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
 						}
-						yield await decode(Buffer.concat(buffers as ReadonlyArray<Uint8Array>), { encoding: enc });
+						yield await decode(Buffer.concat(buffers), { encoding: enc });
 					}
 				}
 			} finally {
@@ -914,7 +967,7 @@ export class Git {
 	}
 
 	async rev_parse__git_dir(cwd: string): Promise<{ path: string; commonPath?: string } | undefined> {
-		const result = await this.exec({ cwd: cwd, errors: 'ignore' }, 'rev-parse', '--git-dir', '--git-common-dir');
+		const result = await this.run({ cwd: cwd, errors: 'ignore' }, 'rev-parse', '--git-dir', '--git-common-dir');
 		if (!result.stdout) return undefined;
 
 		// Keep trailing spaces which are part of the directory name
@@ -946,7 +999,7 @@ export class Git {
 			// Check if the folder is a bare clone: if it has a file named HEAD && `rev-parse --show-cdup` is empty
 			if (await fsExists(joinPaths(cwd, 'HEAD'))) {
 				try {
-					result = await this.exec(
+					result = await this.run(
 						{ cwd: cwd, errors: 'throw', configs: ['-C', cwd] },
 						'rev-parse',
 						'--show-cdup',
@@ -962,7 +1015,7 @@ export class Git {
 		}
 
 		try {
-			result = await this.exec({ cwd: cwd, errors: 'throw' }, 'rev-parse', '--show-toplevel');
+			result = await this.run({ cwd: cwd, errors: 'throw' }, 'rev-parse', '--show-toplevel');
 			// Make sure to normalize: https://github.com/git-for-windows/git/issues/2478
 			// Keep trailing spaces which are part of the directory name
 			return !result.stdout
@@ -985,7 +1038,7 @@ export class Git {
 			const inDotGit = GitWarnings.mustRunInWorkTree.test(ex.stderr ?? '');
 			// Check if we are in a bare clone
 			if (inDotGit && this.options.isTrusted?.() !== false) {
-				result = await this.exec({ cwd: cwd, errors: 'ignore' }, 'rev-parse', '--is-bare-repository');
+				result = await this.run({ cwd: cwd, errors: 'ignore' }, 'rev-parse', '--is-bare-repository');
 				if (result.stdout.trim() === 'true') {
 					const result = await this.rev_parse__git_dir(cwd);
 					const repoPath = result?.commonPath ?? result?.path;

@@ -97,6 +97,7 @@ export class PromiseCache<K, V> {
 		if (entry == null || this.expired(entry, now)) {
 			return undefined;
 		}
+
 		// Update accessed time
 		entry.accessed = now;
 		return entry.promise;
@@ -171,14 +172,18 @@ export class PromiseCache<K, V> {
 		this.controllers.set(key, cacheable);
 
 		const promise = factory(cacheable, abortAgg.signal);
-		void promise.finally(() => {
-			if (cacheable.invalidated) {
-				this.cache.delete(key);
-			}
-			abortAgg.dispose();
-			this.aborts.delete(key);
-			this.controllers.delete(key);
-		});
+		void promise
+			.finally(() => {
+				if (cacheable.invalidated) {
+					this.cache.delete(key);
+				}
+				abortAgg.dispose();
+				this.aborts.delete(key);
+				this.controllers.delete(key);
+			})
+			// Swallow the cleanup chain's rejection so it doesn't surface as an unhandled rejection
+			// separate from the caller-facing promise's own handling (e.g. on cancellation).
+			.catch(() => {});
 
 		if (options?.onError != null) {
 			// Wrap the promise to handle errors with the onError callback
@@ -392,14 +397,18 @@ export class PromiseMap<K, V> {
 
 		// Automatically remove failed promises from the cache
 		promise.catch(() => this.cache.delete(key));
-		void promise.finally(() => {
-			if (cacheable.invalidated) {
-				this.cache.delete(key);
-			}
-			aborts.dispose();
-			this.aborts.delete(key);
-			this.controllers.delete(key);
-		});
+		void promise
+			.finally(() => {
+				if (cacheable.invalidated) {
+					this.cache.delete(key);
+				}
+				aborts.dispose();
+				this.aborts.delete(key);
+				this.controllers.delete(key);
+			})
+			// Swallow the cleanup chain's rejection so it doesn't surface as an unhandled rejection
+			// separate from the caller-facing promise's own handling (e.g. on cancellation).
+			.catch(() => {});
 
 		this.cache.set(key, promise);
 
@@ -684,6 +693,29 @@ export class RepoPromiseCacheMap<K, V> {
 			}
 		}
 		return deleted;
+	}
+
+	/**
+	 * Invalidates all keys matching a prefix from a repository's cache. See `PromiseCache.invalidate`
+	 * for semantics — in-flight entries are marked invalidated and shared with new callers; settled
+	 * entries are hard-deleted. Prefer over `deleteByKeyPrefix` when the eviction is a "data has
+	 * changed" event and in-flight factories' results would still be valid for current waiters.
+	 * @param repoPath - The repository path
+	 * @param prefix - Key prefix to match
+	 * @returns true if something was invalidated
+	 */
+	invalidateByKeyPrefix(this: RepoPromiseCacheMap<string, V>, repoPath: string, prefix: string): boolean {
+		const repoCache = this.cache.get(repoPath);
+		if (repoCache == null) return false;
+
+		let invalidated = false;
+		for (const key of repoCache.keys()) {
+			if (key.startsWith(prefix)) {
+				repoCache.invalidate(key);
+				invalidated = true;
+			}
+		}
+		return invalidated;
 	}
 
 	/**

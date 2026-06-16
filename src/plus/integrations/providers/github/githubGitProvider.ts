@@ -27,6 +27,7 @@ import { asSettled, getSettledValue } from '@gitlens/utils/promise.js';
 import { joinUriPath, parseUri } from '@gitlens/utils/uri.js';
 import { GitCloudHostIntegrationId } from '../../../../constants.integrations.js';
 import { Schemes } from '../../../../constants.js';
+import type { Source } from '../../../../constants.telemetry.js';
 import type { Container } from '../../../../container.js';
 import {
 	AuthenticationError,
@@ -128,6 +129,10 @@ export class GlGitHubGitProvider implements GlGitProvider {
 		return this.ensureProvider();
 	}
 
+	ensureRegistered(): void {
+		this.ensureProvider();
+	}
+
 	private ensureProvider(): GitHubGitProvider {
 		if (this._provider == null) {
 			if (this._providerInitializing) {
@@ -174,8 +179,8 @@ export class GlGitHubGitProvider implements GlGitProvider {
 
 					const fileUri = joinUriPath(repoUri, path);
 					const [working, committed] = await Promise.allSettled([
-						workspace.fs.stat(fileUri as Uri),
-						workspace.fs.stat(fileUri.with({ scheme: Schemes.GitHub }) as Uri),
+						workspace.fs.stat(fileUri),
+						workspace.fs.stat(fileUri.with({ scheme: Schemes.GitHub })),
 					]);
 
 					return (
@@ -198,8 +203,7 @@ export class GlGitHubGitProvider implements GlGitProvider {
 				},
 
 				uris: {
-					getRelativePath: (pathOrUri, base) =>
-						this.getRelativePath(pathOrUri as string | Uri, base as string | Uri),
+					getRelativePath: (pathOrUri, base) => this.getRelativePath(pathOrUri, base),
 
 					createProviderUri: (repoPath, rev, path) => this.createProviderUri(repoPath, rev, path),
 
@@ -207,8 +211,7 @@ export class GlGitHubGitProvider implements GlGitProvider {
 
 					getBestRevisionUri: (repoPath, path, rev) => this.getBestRevisionUri(repoPath, path, rev),
 
-					getAbsoluteUri: (pathOrUri, base) =>
-						this.getAbsoluteUri(pathOrUri as string | Uri, base as string | Uri),
+					getAbsoluteUri: (pathOrUri, base) => this.getAbsoluteUri(pathOrUri, base),
 
 					getProviderRootUri: uri => {
 						// RemoteHub is always initialized before this is called because @gitlens/git-github
@@ -237,18 +240,9 @@ export class GlGitHubGitProvider implements GlGitProvider {
 		uri: Uri,
 		gitDir: GitDir | undefined,
 		root: boolean,
-		closed?: boolean,
+		opened: boolean,
 	): GlRepository {
-		const repo = new GlRepository(
-			this.container,
-			this.descriptor,
-			folder,
-			uri,
-			gitDir,
-			root,
-			closed ?? false,
-			!window.state.focused,
-		);
+		const repo = new GlRepository(this.container, this.descriptor, folder, uri, gitDir, root, opened);
 
 		repo.onDidChange(e => {
 			this.cache.onRepositoryChanged(repo.path, [...e.changes]);
@@ -270,7 +264,7 @@ export class GlGitHubGitProvider implements GlGitProvider {
 			const workspaceUri = remotehub.getVirtualWorkspaceUri(uri);
 			if (workspaceUri == null) return [];
 
-			return this.openRepository(undefined, workspaceUri, undefined, true, options?.silent);
+			return this.addRepository(undefined, workspaceUri, undefined, true, !options?.silent);
 		} catch (ex) {
 			if (ex.message.startsWith('No provider registered with')) {
 				Logger.error(ex, 'No GitHub provider registered with Remote Repositories (yet); retrying');
@@ -296,7 +290,7 @@ export class GlGitHubGitProvider implements GlGitProvider {
 				const workspaceUri = remotehub.getVirtualWorkspaceUri(uri);
 				if (workspaceUri == null) return [];
 
-				return this.openRepository(undefined, workspaceUri, undefined, true, options?.silent);
+				return this.addRepository(undefined, workspaceUri, undefined, true, !options?.silent);
 			} catch {
 				return [];
 			}
@@ -309,18 +303,18 @@ export class GlGitHubGitProvider implements GlGitProvider {
 		void setContext('gitlens:hasVirtualFolders', this.container.git.hasOpenRepositories(this.descriptor.id));
 	}
 
-	openRepository(
+	addRepository(
 		folder: WorkspaceFolder | undefined,
 		uri: Uri,
 		gitDir: GitDir | undefined,
 		root: boolean,
-		closed?: boolean,
+		opened: boolean,
 	): GlRepository[] {
 		// Ensure the library-level provider is registered before any GlRepository is created,
 		// so the library's GitService can route this repo's path to the GitHub provider.
 		this.ensureProvider();
 
-		return [this.createRepository(folder ?? workspace.getWorkspaceFolder(uri), uri, gitDir, root, closed)];
+		return [this.createRepository(folder ?? workspace.getWorkspaceFolder(uri), uri, gitDir, root, opened)];
 	}
 
 	async supports(feature: Features): Promise<boolean> {
@@ -380,7 +374,7 @@ export class GlGitHubGitProvider implements GlGitProvider {
 		return undefined;
 	}
 
-	async getOrOpenScmRepository(_repoPath: string): Promise<ScmRepository | undefined> {
+	async getOrOpenScmRepository(_repoPath: string, _source?: Source): Promise<ScmRepository | undefined> {
 		return undefined;
 	}
 

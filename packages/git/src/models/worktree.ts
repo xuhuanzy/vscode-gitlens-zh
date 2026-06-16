@@ -6,6 +6,7 @@ import { basename, normalizePath, relative } from '@gitlens/utils/path.js';
 import type { Shape } from '@gitlens/utils/types.js';
 import type { Uri } from '@gitlens/utils/uri.js';
 import { getRepositoryService } from '../repositoryService.js';
+import type { GitCommandPriority } from '../run.types.js';
 import { getRepositoryOrWorktreePath } from '../utils/repository.utils.js';
 import { shortenRevision } from '../utils/revision.utils.js';
 import type { GitBranch } from './branch.js';
@@ -73,6 +74,7 @@ export class GitWorktree {
 			const relativePath = normalizePath(relative(this.workspaceFolder.uri.fsPath, this.uri.fsPath));
 			return relativePath || this.workspaceFolder.name;
 		}
+
 		const relativePath = normalizePath(relative(this.repoPath, this.uri.fsPath));
 		return relativePath || normalizePath(this.uri.fsPath);
 	}
@@ -135,10 +137,15 @@ export class GitWorktree {
 			: GitWorktree.formatDateFromNow(worktree);
 	}
 
-	static async getStatus(worktree: GitWorktree): Promise<GitStatus | undefined> {
+	static async getStatus(
+		worktree: GitWorktree,
+		options?: { priority?: GitCommandPriority },
+		cancellation?: AbortSignal,
+	): Promise<GitStatus | undefined> {
 		if (worktree.type === 'bare') return undefined;
+
 		const repo = getRepositoryService(worktree.path);
-		return repo?.status.getStatus();
+		return repo?.status.getStatus(options, cancellation);
 	}
 
 	static async hasWorkingChanges(
@@ -146,6 +153,7 @@ export class GitWorktree {
 		options?: { staged?: boolean; unstaged?: boolean; untracked?: boolean },
 	): Promise<boolean | undefined> {
 		if (worktree.type === 'bare') return undefined;
+
 		const repo = getRepositoryService(worktree.path);
 		return repo?.status.hasWorkingChanges(options);
 	}

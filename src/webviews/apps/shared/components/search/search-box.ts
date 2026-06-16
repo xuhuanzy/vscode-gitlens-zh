@@ -2,6 +2,7 @@ import type { TemplateResult } from 'lit';
 import { css, html } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { when } from 'lit/directives/when.js';
 import type { Disposable } from 'vscode';
 import { isMac } from '@env/platform.js';
 import type { SearchQuery } from '@gitlens/git/models/search.js';
@@ -38,7 +39,8 @@ export class GlSearchBox extends GlElement {
 			align-items: center;
 			gap: 0.8rem;
 			color: var(--color-foreground);
-			flex: auto 1 1;
+			flex: 1 100 auto;
+			min-width: 16rem;
 			position: relative;
 		}
 		:host(:focus) {
@@ -57,10 +59,14 @@ export class GlSearchBox extends GlElement {
 		}
 
 		.count {
-			flex: none;
+			flex: 0 1 auto;
 			margin-right: 0.4rem;
 			font-size: 1.2rem;
-			min-width: 10ch;
+			min-width: 0;
+			max-width: 12ch;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
 		}
 
 		.count.error {
@@ -177,6 +183,7 @@ export class GlSearchBox extends GlElement {
 	@property({ type: String }) resultsLabel = 'result';
 	@property({ type: Boolean }) resultsLoaded = false;
 	@property({ type: Boolean }) searching = false;
+	@property({ type: Boolean }) showAutocompleteOnFocus = true;
 	@property({ type: Number }) step = 0;
 	@property({ type: Number }) total = 0;
 	@property({ type: Boolean }) valid = false;
@@ -186,6 +193,7 @@ export class GlSearchBox extends GlElement {
 	}
 	set value(value: string) {
 		if (this._value !== undefined) return;
+
 		this._value = value;
 	}
 
@@ -247,6 +255,22 @@ export class GlSearchBox extends GlElement {
 		this.matchWholeWord = search.matchWholeWord ?? false;
 		this.naturalLanguage = Boolean(search.naturalLanguage);
 		this.searchInput?.setExternalSearchQuery(search);
+	}
+
+	async pickAuthors(): Promise<void> {
+		await this.searchInput?.pickAuthors();
+	}
+
+	async pickRefs(): Promise<void> {
+		await this.searchInput?.pickRefs();
+	}
+
+	async pickFiles(): Promise<void> {
+		await this.searchInput?.pickFiles();
+	}
+
+	insertSearchOperator(operator: string): void {
+		this.searchInput?.insertSearchOperator(operator);
 	}
 
 	private handleShortcutKeys(e: KeyboardEvent) {
@@ -345,7 +369,6 @@ export class GlSearchBox extends GlElement {
 					<code-icon class="search-button__stop" icon="stop-circle"></code-icon>
 				</gl-button>
 				<gl-tooltip
-					hoist
 					placement="top"
 					?disabled="${!tooltip}"
 					class="count${!hasResults && this.valid && isComplete ? ' error' : ''}"
@@ -365,7 +388,6 @@ export class GlSearchBox extends GlElement {
 					<code-icon icon="play-circle"></code-icon>
 				</gl-button>
 				<gl-tooltip
-					hoist
 					placement="top"
 					?disabled="${!tooltip}"
 					class="count${!hasResults && this.valid && isComplete ? ' error' : ''}"
@@ -375,7 +397,6 @@ export class GlSearchBox extends GlElement {
 
 		// Not searching - just show results
 		return html`<gl-tooltip
-			hoist
 			placement="top"
 			?disabled="${!tooltip}"
 			class="count${!hasResults && this.valid && isComplete ? ' error' : ''}"
@@ -396,6 +417,7 @@ export class GlSearchBox extends GlElement {
 				?matchWholeWord="${this.matchWholeWord}"
 				?naturalLanguage="${this.naturalLanguage}"
 				?searching="${this.searching}"
+				?showAutocompleteOnFocus="${this.showAutocompleteOnFocus}"
 				?hasMoreResults="${this.resultsHasMore}"
 				.value="${this._value ?? ''}"
 				@gl-search-navigate="${(e: CustomEvent<SearchNavigationEventDetail>) => {
@@ -411,46 +433,50 @@ export class GlSearchBox extends GlElement {
 					this.emit('gl-search-pause');
 				}}"
 			></gl-search-input>
-			<div class="search-navigation" aria-label="Search navigation">
-				${this.resultsHtml}
-				<gl-tooltip hoist>
-					<button
-						type="button"
-						class="button ${this.navigating === 'previous' ? 'navigating' : ''}"
-						?disabled="${!this.hasResults || this.isAtFirstResult}"
-						@click="${this.handlePrevious}"
-					>
-						<code-icon
-							icon="arrow-up"
-							aria-label="Previous Match (Shift+Enter)&#10;First Match (Shift+Click)"
-						></code-icon>
-					</button>
-					<span slot="content">Previous Match (Shift+Enter)<br />First Match (Shift+Click)</span>
-				</gl-tooltip>
-				<gl-tooltip hoist>
-					<button
-						type="button"
-						class="button ${this.navigating === 'next' ? 'navigating' : ''}"
-						?disabled="${!this.hasResults || this.isAtLastResult}"
-						@click="${this.handleNext}"
-					>
-						<code-icon
-							icon="arrow-down"
-							aria-label="Next Match (Enter)&#10;Last Match (Shift+Click)"
-						></code-icon>
-					</button>
-					<span slot="content">Next Match (Enter)<br />Last Match (Shift+Click)</span>
-				</gl-tooltip>
-				<gl-tooltip hoist content="Show Results in Side Bar">
-					<button
-						type="button"
-						class="button"
-						?disabled="${!this.hasResults}"
-						@click="${this.handleOpenInView}"
-					>
-						<code-icon icon="link-external" aria-label="Show Results in Side Bar"></code-icon>
-					</button>
-				</gl-tooltip>
-			</div>`;
+			${when(
+				this.resultsLoaded || this.searching,
+				() =>
+					html`<div class="search-navigation" aria-label="Search navigation">
+						${this.resultsHtml}
+						<gl-tooltip>
+							<button
+								type="button"
+								class="button ${this.navigating === 'previous' ? 'navigating' : ''}"
+								?disabled="${!this.hasResults || this.isAtFirstResult}"
+								@click="${this.handlePrevious}"
+							>
+								<code-icon
+									icon="arrow-up"
+									aria-label="Previous Match (Shift+Enter)&#10;First Match (Shift+Click)"
+								></code-icon>
+							</button>
+							<span slot="content">Previous Match (Shift+Enter)<br />First Match (Shift+Click)</span>
+						</gl-tooltip>
+						<gl-tooltip>
+							<button
+								type="button"
+								class="button ${this.navigating === 'next' ? 'navigating' : ''}"
+								?disabled="${!this.hasResults || this.isAtLastResult}"
+								@click="${this.handleNext}"
+							>
+								<code-icon
+									icon="arrow-down"
+									aria-label="Next Match (Enter)&#10;Last Match (Shift+Click)"
+								></code-icon>
+							</button>
+							<span slot="content">Next Match (Enter)<br />Last Match (Shift+Click)</span>
+						</gl-tooltip>
+						<gl-tooltip content="Show Results in Side Bar">
+							<button
+								type="button"
+								class="button"
+								?disabled="${!this.hasResults}"
+								@click="${this.handleOpenInView}"
+							>
+								<code-icon icon="link-external" aria-label="Show Results in Side Bar"></code-icon>
+							</button>
+						</gl-tooltip>
+					</div>`,
+			)}`;
 	}
 }

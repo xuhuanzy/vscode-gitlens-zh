@@ -11,11 +11,11 @@
  */
 import type { Handler, Options } from '@eamodio/supertalk';
 import { Connection } from '@eamodio/supertalk';
-import { AbortSignalHandler } from '@eamodio/supertalk-core/handlers/abort-signal.js';
 import { SignalHandler } from '@eamodio/supertalk-signals';
 import type { Disposable, Webview } from 'vscode';
 import { Logger } from '@gitlens/utils/logger.js';
 import type { WebviewIds } from '../../constants.views.js';
+import { GlAbortSignalHandler } from '../../system/rpc/abortSignalHandler.js';
 import { rpcHandlers } from '../../system/rpc/handlers.js';
 import { createSupertalkLogger, formatWebviewLogTag } from '../../system/rpc/logger.js';
 import type { SubscriptionTracker } from './eventVisibilityBuffer.js';
@@ -197,7 +197,7 @@ export class RpcHost<TServices extends object> implements Disposable {
 		const handlers: Handler[] = [
 			...rpcHandlers,
 			signalHandler,
-			new AbortSignalHandler(),
+			new GlAbortSignalHandler(),
 			...(this.options?.handlers ?? []),
 		];
 

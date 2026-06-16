@@ -12,10 +12,12 @@ import type {
 	TimelineServices,
 	TimelineSliceBy,
 } from '../../../plus/timeline/protocol.js';
+import { periodToMs } from '../../../plus/timeline/utils/period.js';
 import type { RepositoryChange, RepositoryChangeEventData } from '../../../rpc/services/types.js';
 import { fireAndForget } from '../../shared/actions/rpc.js';
 import { createTelemetryContextUpdater } from '../../shared/actions/telemetry.js';
 import type { Resource } from '../../shared/state/resource.js';
+import { isPseudoCommitDatum } from './components/chart/timelineData.js';
 import type { CommitEventDetail } from './components/chart.js';
 import type { TimelineState } from './state.js';
 
@@ -60,6 +62,29 @@ export class TimelineActions {
 	private _wipWatchRepoPath: string | undefined;
 	private _wipWatchUnsubscribe: (() => void) | undefined;
 
+	/** Each `gl-load-more` extends the loaded span by `period * extensionChunkRatio`, clamped
+	 *  to `[extensionChunkMinMs, extensionChunkMaxMs]`. At 0.25, a 1-year period extends in
+	 *  3-month bites; the clamps keep extreme periods sane (a 1-day period would otherwise
+	 *  page in 6-hour chunks → many round-trips, and a 4-year period would page in 1-year
+	 *  chunks → very large single fetches). */
+	private static readonly extensionChunkRatio = 0.25;
+	/** Floor for the extension chunk size (~1 week). Without this, tiny periods (1 day, 1
+	 *  week) extend in fractions of a day per request — every pan past the loaded edge fires
+	 *  another RPC for a sliver of history, dominating the user's experience with latency
+	 *  rather than data. */
+	private static readonly extensionChunkMinMs = 7 * 24 * 60 * 60 * 1000;
+	/** Ceiling for the extension chunk size (~1 year). Without this, large periods (2 year, 4
+	 *  year) extend in 6-month / 1-year bites — single chunks become long-running fetches
+	 *  that block the user from seeing any progress. */
+	private static readonly extensionChunkMaxMs = 365 * 24 * 60 * 60 * 1000;
+	/** Initial fetch covers `period * (1 + initialBufferRatio)` so the chart's view (one
+	 *  period span) has 25% buffer to the left of the loaded data — prevents the chart's
+	 *  near-edge `gl-load-more` from auto-firing the moment the initial render happens. */
+	private static readonly initialBufferRatio = 0.25;
+	/** Length of the previous successful dataset; compared after each fetch to detect
+	 *  end-of-history (extension fetch returned no new rows). */
+	private _lastResolvedDataLength = 0;
+
 	constructor(
 		state: TimelineState,
 		services: Remote<TimelineServices>,
@@ -73,9 +98,8 @@ export class TimelineActions {
 		this._repository = repository;
 		this._datasetResource = datasetResource;
 
-		const telemetry = Promise.resolve(services.telemetry);
 		this._pushTelemetryContext = createTelemetryContextUpdater(
-			context => void telemetry.then(t => t.updateContext(context)),
+			context => void services.telemetry.then(t => t.updateContext(context)),
 		);
 	}
 
@@ -100,15 +124,88 @@ export class TimelineActions {
 
 		void (async () => {
 			const unsubscribe = (await this._repository.onRepositoryWorkingChanged(repoPath, () => {
-				void this.fetchTimeline();
+				// Working-tree change → patch only the WIP row, NOT a full `fetchTimeline()`.
+				// A full refetch would re-walk contributors and run the per-commit branch
+				// loop in `computeTimelineDataset` for every file save, which is also why
+				// other timeline instances watching the same repo would visibly spin in
+				// lockstep on every keystroke-saved file.
+				void this.refreshWip();
 			})) as unknown as (() => void) | undefined;
 			if (typeof unsubscribe !== 'function') return;
 			if (this._wipWatchRepoPath !== repoPath) {
 				unsubscribe();
 				return;
 			}
+
 			this._wipWatchUnsubscribe = unsubscribe;
 		})();
+	}
+
+	/**
+	 * Patch only the leading WIP pseudo-commit(s) of the current dataset with fresh
+	 * working-tree status. Cheap: one host call (`getWip`) instead of the full dataset RPC.
+	 * No-op when there is no current dataset (initial load handles WIP itself).
+	 *
+	 * Race guard: re-checks scope identity (uri + type) and resource value identity after the
+	 * `getWip` await. If a scope change or a fresh fetch has landed during our await, we bail
+	 * without mutating — otherwise we'd restore the prior scope's dataset onto the new scope,
+	 * or clobber a fresher dataset with our stale patch. Doesn't share `_runFetch`'s
+	 * `generationId` mechanism because they have asymmetric authority — a fresh fetch should
+	 * always win over a WIP patch, but a WIP patch shouldn't supersede a fresh fetch.
+	 */
+	async refreshWip(): Promise<void> {
+		const s = this._state;
+		const scope = s.scope.get();
+		if (scope == null) return;
+
+		const result = this._datasetResource.value.get();
+		if (result == null || result.dataset.length === 0) return;
+
+		const timeline = await this._services.timeline;
+		const newWip = await timeline.getWip(scope);
+
+		// `onScopeChanged` always assigns a new scope object, so compare uri + type, not refs.
+		const currentScope = s.scope.get();
+		if (currentScope?.uri !== scope.uri || currentScope?.type !== scope.type) return;
+		// A fresh fetch or another refreshWip during our await would have replaced the
+		// resource value via `_runFetch`'s `result` capture or this method's `mutate`. If
+		// the value isn't the same reference we captured, drop our patch.
+		if (this._datasetResource.value.get() !== result) return;
+
+		const dataset = result.dataset;
+		let leadingWipCount = 0;
+		while (leadingWipCount < dataset.length && isPseudoCommitDatum(dataset[leadingWipCount])) {
+			leadingWipCount++;
+		}
+
+		// Dedup: if the WIP rows are unchanged (same shape + same per-row stats), skip the
+		// mutate so the chart doesn't churn on every file save. Same length + matching stats
+		// is sufficient — message/date/etc. are deterministic for a given working-tree state.
+		if (leadingWipCount === newWip.length) {
+			let same = true;
+			for (let i = 0; i < newWip.length; i++) {
+				const a = dataset[i];
+				const b = newWip[i];
+				if (
+					a.sha !== b.sha ||
+					a.additions !== b.additions ||
+					a.deletions !== b.deletions ||
+					a.files !== b.files
+				) {
+					same = false;
+					break;
+				}
+			}
+			if (same) return;
+		}
+
+		// New WIP rows are all timestamped at "now" so they remain at the head; non-WIP rows
+		// after them are already sorted newest-first from the prior fetch. No re-sort needed.
+		const next = dataset.slice();
+		next.splice(0, leadingWipCount, ...newWip);
+
+		this._datasetResource.mutate({ ...result, dataset: next });
+		this._lastResolvedDataLength = next.length;
 	}
 
 	/** Stop watching WIP changes for the current repo. */
@@ -141,6 +238,7 @@ export class TimelineActions {
 			abbreviatedShaLength: ctx.displayConfig.abbreviatedShaLength,
 			dateFormat: ctx.displayConfig.dateFormat,
 			shortDateFormat: ctx.displayConfig.shortDateFormat,
+			currentUserNameStyle: ctx.displayConfig.currentUserNameStyle,
 		});
 		setAbbreviatedShaLength(ctx.displayConfig.abbreviatedShaLength);
 
@@ -175,42 +273,136 @@ export class TimelineActions {
 	 * staleness detection internally. Side-effect signals (scope, repository,
 	 * repositories, access) are updated from the result.
 	 */
+	/**
+	 * Fetch the timeline dataset for the current scope/period/sliceBy/etc. — a "fresh" fetch
+	 * that replaces whatever is on screen. Used on initial load, scope change, period change,
+	 * sliceBy/showAllBranches change, repo change, etc. Resets the progressive-load state
+	 * (`loadedSpanMs`, `hasMore`, `loadingMore`) so the next user-driven `extendTimeline`
+	 * starts from the period-derived span.
+	 *
+	 * For paginated load-more (chart's `gl-load-more`), call `extendTimeline` instead — that
+	 * preserves the existing dataset and extends backwards in history.
+	 */
 	async fetchTimeline(): Promise<void> {
 		const s = this._state;
 		if (s.scope.get() == null) return;
 
-		await this._datasetResource.fetch();
+		// Reset progressive-load state — this fetch is for a different (scope, period, …)
+		// combination than whatever is on screen. Force-clear `loadingMore` in case a stale
+		// `extendTimeline` was racing, so the chart goes back to its full-spinner affordance
+		// for the duration of this fresh fetch.
+		// Pre-set `loadedSpanMs` to `period × (1 + initialBufferRatio)` so the host's resource
+		// fetcher reads it and loads the buffered span on the first fetch — without this, the
+		// host defaults to `since = today - period` and the chart hits the loaded edge the
+		// moment the user pans past the windowed default. `'all'` period collapses to undefined
+		// (loadedSpanMs stays null → host fetches unbounded).
+		const baseSpan = periodToMs(s.period.get());
+		const bufferedSpan = baseSpan != null ? baseSpan * (1 + TimelineActions.initialBufferRatio) : null;
+		s.loadedSpanMs.set(bufferedSpan);
+		s.hasMore.set(true);
+		s.loadingMore.set(false);
+		this._lastResolvedDataLength = 0;
 
-		// Update side-effect signals from the result
-		if (this._datasetResource.status.get() === 'success') {
-			const result = this._datasetResource.value.get();
-			if (result != null) {
-				// Update scope with enriched version from host (has relativePath, head, base)
-				s.scope.set(result.scope);
-				s.repository.set(result.repository);
-				s.access.set(result.access);
-				s.error.set(undefined);
-				// Start/switch WIP watch for the enriched repo so file saves refresh the pseudo-commit row
-				if (result.repository?.path) {
-					this.watchWip(result.repository.path);
+		await this._runFetch(false);
+	}
+
+	/**
+	 * Chart asks for older history (user zoomed past the loaded oldest). Extends the loaded
+	 * span by a chunk (`period * extensionChunkRatio`) and re-fetches — the host returns a
+	 * wider dataset, the chart sees the same newest commit + more rows, and preserves the
+	 * user's zoom/scroll via its extension-detection.
+	 */
+	extendTimeline(): void {
+		const s = this._state;
+		if (s.scope.get() == null) return;
+		// Guard against re-entry while a load-more is in flight, and skip when we've already
+		// reached end-of-history.
+		if (!s.hasMore.get() || s.loadingMore.get()) return;
+
+		const baseSpan = periodToMs(s.period.get());
+		if (baseSpan == null) return; // 'all' period — already unbounded
+
+		const chunkSpan = Math.min(
+			TimelineActions.extensionChunkMaxMs,
+			Math.max(TimelineActions.extensionChunkMinMs, baseSpan * TimelineActions.extensionChunkRatio),
+		);
+		// `loadedSpanMs` is always set after `fetchTimeline`, but be defensive: if it ever
+		// races to null (e.g., a scope change wiped state between the prior fetch and now),
+		// fall back to the assumed-initial buffer so the next chunk lands at the right edge.
+		const currentSpan = s.loadedSpanMs.get() ?? baseSpan * (1 + TimelineActions.initialBufferRatio);
+		s.loadingMore.set(true);
+		s.loadedSpanMs.set(currentSpan + chunkSpan);
+		void this._runFetch(true);
+	}
+
+	/**
+	 * @param isLoadMore - extension-only post-fetch behaviors: end-of-history detection
+	 *   and clearing `loadingMore`.
+	 *
+	 * Bails when a later fetch has overtaken us (the resource cancels the RPC but the
+	 * awaiter still resumes; without the gen-id check it'd clobber the latest scope's state).
+	 */
+	private async _runFetch(isLoadMore: boolean): Promise<void> {
+		const s = this._state;
+		const previousLength = this._lastResolvedDataLength;
+		const expectedGenAfter = this._datasetResource.generationId.get() + 1;
+
+		try {
+			await this._datasetResource.fetch();
+
+			if (this._datasetResource.generationId.get() !== expectedGenAfter) return;
+
+			if (this._datasetResource.status.get() === 'success') {
+				const result = this._datasetResource.value.get();
+				if (result != null) {
+					// Update scope with enriched version from host (has relativePath, head, base)
+					s.scope.set(result.scope);
+					s.repository.set(result.repository);
+					s.access.set(result.access);
+					s.allowRepoSwitch.set(result.allowRepoSwitch ?? false);
+					s.error.set(undefined);
+					// Start/switch WIP watch for the enriched repo so file saves refresh the pseudo-commit row
+					if (result.repository?.path) {
+						this.watchWip(result.repository.path);
+					}
+
+					const currentLength = result.dataset.length;
+					// End-of-history detection: a load-more that didn't grow the dataset means
+					// we've reached the start of the scope's history — stop offering load-more.
+					if (isLoadMore && currentLength <= previousLength) {
+						s.hasMore.set(false);
+					}
+					this._lastResolvedDataLength = currentLength;
 				}
+			} else if (this._datasetResource.status.get() === 'error') {
+				s.error.set(this._datasetResource.error.get());
 			}
-		} else if (this._datasetResource.status.get() === 'error') {
-			s.error.set(this._datasetResource.error.get());
+		} finally {
+			// Clear `loadingMore` unconditionally — including when the gen-mismatch early-return
+			// fires above (a fresh fetch overtook us). Without this, an extend that gets
+			// preempted strands `loadingMore = true`, and `extendTimeline`'s `if (loadingMore)
+			// return` guard then blocks every subsequent load-more, freezing the chart's edge
+			// indicator with no way for the user to recover. Fresh fetches handle their own
+			// `loadingMore` reset in `fetchTimeline`'s setup, so double-clearing here is safe.
+			if (isLoadMore) {
+				s.loadingMore.set(false);
+			}
 		}
 	}
 
 	async fetchDisplayConfig(): Promise<void> {
 		const config = await this._services.config;
-		const [dateFormat, shortDateFormat, abbreviatedShaLength] = await config.getMany(
+		const [dateFormat, shortDateFormat, abbreviatedShaLength, currentUserNameStyle] = await config.getMany(
 			'defaultDateFormat',
 			'defaultDateShortFormat',
 			'advanced.abbreviatedShaLength',
+			'defaultCurrentUserNameStyle',
 		);
 		this._state.displayConfig.set({
 			dateFormat: dateFormat ?? '',
 			shortDateFormat: shortDateFormat ?? '',
 			abbreviatedShaLength: abbreviatedShaLength,
+			currentUserNameStyle: currentUserNameStyle ?? 'nameAndYou',
 		});
 		setAbbreviatedShaLength(abbreviatedShaLength);
 	}
@@ -231,6 +423,9 @@ export class TimelineActions {
 			this._datasetResource.cancel();
 			this._datasetResource.mutate(undefined);
 			s.repository.set(undefined);
+			s.loadedSpanMs.set(null);
+			s.hasMore.set(true);
+			this._lastResolvedDataLength = 0;
 			this.unwatchWip();
 			return;
 		}
@@ -273,7 +468,7 @@ export class TimelineActions {
 
 	private sendConfigChangedTelemetry(): void {
 		fireAndForget(
-			Promise.resolve(this._services.telemetry).then(t =>
+			this._services.telemetry.then(t =>
 				t.sendEvent('timeline/config/changed', {
 					period: this._state.period.get(),
 					showAllBranches: this._state.showAllBranches.get(),
@@ -285,9 +480,42 @@ export class TimelineActions {
 	}
 
 	changePeriod(period: TimelinePeriod): void {
-		this._state.period.set(period);
+		const s = this._state;
+		const prevPeriod = s.period.get();
+		if (prevPeriod === period) return;
+
+		s.period.set(period);
 		this.sendConfigChangedTelemetry();
-		void this.fetchTimeline();
+
+		const newSpanMs = periodToMs(period);
+		if (newSpanMs == null) {
+			// Switching TO 'all' — always refetch (we don't know if everything is loaded yet).
+			void this.fetchTimeline();
+			return;
+		}
+
+		// Use the actual dataset extent (newest commit's ts − oldest commit's ts) — more
+		// reliable than `loadedSpanMs` after various period transitions (e.g., `loadedSpanMs`
+		// is null after `'all'` despite the dataset covering everything).
+		const result = this._datasetResource.value.get();
+		const data = result?.dataset;
+		const loadedExtentMs = data != null && data.length > 1 ? data[0].sort - data.at(-1)!.sort : 0;
+
+		// Target = `newPeriod × 1.25` (matches the buffer the host would deliver on a fresh
+		// fetch). If we already have that much loaded, skip the host trip — the chart's
+		// `_zoomRange` re-anchors to the new windowSpanMs and narrows the view.
+		const newTargetSpan = newSpanMs * (1 + TimelineActions.initialBufferRatio);
+		if (newTargetSpan <= loadedExtentMs) return;
+
+		// Widening past what's loaded — extend rather than refetch. Sizing the FIRST chunk to
+		// fill the gap (`newTargetSpan - loadedExtent`) means the user gets a fully-buffered
+		// view on the new period in a single host trip instead of a fresh-dataset reset that
+		// would drop the user's zoom/scroll/selection. Subsequent `extendTimeline` calls
+		// resume at `newPeriod × extensionChunkRatio` chunks for any further pan into older
+		// history.
+		s.loadingMore.set(true);
+		s.loadedSpanMs.set(newTargetSpan);
+		void this._runFetch(true);
 	}
 
 	changeSliceBy(sliceBy: TimelineSliceBy): void {
@@ -348,7 +576,7 @@ export class TimelineActions {
 		if (location === 'config') {
 			// Config head pick: keep showAllBranches setting, just update head
 			const base = s.showAllBranches.get() ? undefined : currentScope.base;
-			s.scope.set({ ...currentScope, head: result.ref, base: base as any });
+			s.scope.set({ ...currentScope, head: result.ref, base: base });
 			void this.fetchTimeline();
 			return;
 		}
@@ -388,11 +616,7 @@ export class TimelineActions {
 			return;
 		}
 
-		s.scope.set({
-			...currentScope,
-			type: result.picked.type,
-			relativePath: result.picked.relativePath,
-		});
+		s.scope.set({ ...currentScope, type: result.picked.type, relativePath: result.picked.relativePath });
 		void this.fetchTimeline();
 	}
 
@@ -409,7 +633,8 @@ export class TimelineActions {
 
 		if (type === 'repo') {
 			if (openInEditor) {
-				this._timeline.openInEditor({ ...currentScope, type: 'repo', relativePath: '' });
+				const repoUri = s.repository.get()?.uri ?? currentScope.uri;
+				this._timeline.openInEditor({ ...currentScope, type: 'repo', uri: repoUri, relativePath: '' });
 				return;
 			}
 
@@ -419,12 +644,12 @@ export class TimelineActions {
 				return;
 			}
 
-			// Navigate to repo scope
-			s.scope.set({
-				...currentScope,
-				type: 'repo',
-				relativePath: '',
-			});
+			// Navigate to repo scope. Reset uri to the repo's uri so the host's enrichment
+			// (which rebuilds relativePath from uri vs repo.uri) yields '' instead of the
+			// previous file/folder path — otherwise the path breadcrumbs would re-appear and
+			// make it look like the filter wasn't cleared.
+			const repoUri = s.repository.get()?.uri ?? currentScope.uri;
+			s.scope.set({ ...currentScope, type: 'repo', uri: repoUri, relativePath: '' });
 			void this.fetchTimeline();
 			return;
 		}
@@ -432,19 +657,11 @@ export class TimelineActions {
 		if (value == null) return;
 
 		if (openInEditor) {
-			this._timeline.openInEditor({
-				...currentScope,
-				type: type,
-				relativePath: value,
-			});
+			this._timeline.openInEditor({ ...currentScope, type: type, relativePath: value });
 			return;
 		}
 
-		s.scope.set({
-			...currentScope,
-			type: type,
-			relativePath: value,
-		});
+		s.scope.set({ ...currentScope, type: type, relativePath: value });
 		void this.fetchTimeline();
 	}
 
@@ -454,11 +671,7 @@ export class TimelineActions {
 		if (result == null) return;
 
 		// head/base are left undefined — host enriches them in getDataset()
-		s.scope.set({
-			type: result.type,
-			uri: result.uri,
-			relativePath: '',
-		});
+		s.scope.set({ type: result.type, uri: result.uri, relativePath: '' });
 		void this.fetchTimeline();
 	}
 
@@ -466,10 +679,17 @@ export class TimelineActions {
 		const s = this._state;
 		if (s.scope.get() == null) return;
 
+		// Interim selections come from mid-drag slider scrub — useful for visual feedback in the
+		// chart but the editor diff would churn through every tick. Skip the host RPC for those;
+		// the slider's release event re-fires with `interim: false` and that's what opens the diff.
+		// Auto selections are the chart's first-paint highlight — never open a diff editor unprompted.
+		if (detail.interim || detail.auto) return;
+
 		this._fireSelectDataPointDebounced ??= debounce(
 			(e: CommitEventDetail) => {
 				const scope = s.scope.get();
 				if (scope == null) return;
+
 				this._timeline.selectDataPoint({ scope: scope, ...e });
 			},
 			250,

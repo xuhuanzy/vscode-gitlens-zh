@@ -38,8 +38,6 @@ export interface CommitSelectionEvent {
 	searchContext?: GitCommitSearchContext;
 	/** Whether this is a passive selection (e.g., from line tracker) */
 	passive?: boolean;
-	/** Mode the host wants the webview to switch to (graph-attached panels only). */
-	requestedMode?: Mode;
 }
 
 /**
@@ -64,19 +62,12 @@ export interface InitialContext {
 	mode: Mode;
 	/** Whether the view is pinned */
 	pinned: boolean;
-	/** Navigation stack state */
-	navigationStack: { count: number; position: number; hint?: string };
 	/** Whether review mode is active (for WIP) */
 	inReview: boolean;
 	/** Initial commit info if in commit mode */
 	initialCommit?: { repoPath: string; sha: string };
 	/** Initial WIP repo path if in WIP mode */
 	initialWipRepoPath?: string;
-}
-
-export interface NavigateResult {
-	navigationStack: { count: number; position: number; hint?: string };
-	selectedCommit?: { repoPath: string; sha: string };
 }
 
 // ============================================================
@@ -115,9 +106,8 @@ export interface CommitInspectService {
 	// ── Events ──
 
 	/**
-	 * Fired when a commit is selected elsewhere (graph, editor line, etc.).
-	 * View-specific: includes search context and passive flag, and filters
-	 * based on the view's attachedTo configuration.
+	 * Fired when a commit is selected elsewhere (editor line, tree views, etc.).
+	 * View-specific: includes search context and passive flag.
 	 */
 	onCommitSelected(callback: (event: CommitSelectionEvent) => void): Unsubscribe;
 
@@ -152,14 +142,6 @@ export interface CommitInspectService {
 	 * @param signal - Optional AbortSignal for cooperative cancellation
 	 */
 	getWipChanges(repoPath?: string, signal?: AbortSignal): Promise<Wip | undefined>;
-
-	// ── Navigation ──
-
-	/**
-	 * Navigate the commit stack.
-	 * Returns updated navigation state and the commit the webview should display.
-	 */
-	navigate(direction: 'back' | 'forward'): Promise<NavigateResult>;
 
 	/**
 	 * Pin or unpin the current view.
@@ -213,7 +195,7 @@ export interface CommitInspectService {
 	 * @param sha - Commit SHA (use 'wip' for uncommitted changes)
 	 * @param signal - Optional AbortSignal for cooperative cancellation
 	 */
-	explainCommit(repoPath: string, sha: string, signal?: AbortSignal): Promise<ExplainResult>;
+	explainCommit(repoPath: string, sha: string, prompt?: string, signal?: AbortSignal): Promise<ExplainResult>;
 
 	/**
 	 * Generate AI title and description for WIP changes.

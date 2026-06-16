@@ -350,7 +350,7 @@ Available search operators:
 - 'commit:' - Search by a specific commit SHA (e.g. 'commit:4ce3a')
 - 'file:' - Search by file path (e.g. 'file:"package.json"', 'file:"*.ts"'); maps to \`git log -- <value>\`
 - 'change:' - Search by specific code changes using regular expressions (e.g. 'change:"function.*auth"', 'change:"import.*react"'); maps to \`git log -G<value>\`
-- 'type:' - Search by type -- supports stash and tip (e.g. 'type:stash', 'type:tip')
+- 'type:' - Search by type -- supports stash, tip, and wip (e.g. 'type:stash', 'type:tip', 'type:wip'). Use 'type:wip' for queries about work in progress, uncommitted changes, or pending changes across worktrees.
 - 'ref:' - Search for commits reachable by a reference (branch, tag, commit) or reference range. Supports single refs (e.g. 'ref:main', 'ref:v1.0'), two-dot ranges (e.g. 'ref:main..feature' for commits in feature but not in main), three-dot ranges (e.g. 'ref:main...feature' for symmetric difference), and relative refs (e.g. 'ref:HEAD~5..HEAD'); maps to \`git log <ref>\`
 - 'after:' - Search for commits after a certain date or range (e.g. 'after:2023-01-01', 'after:"6 months ago"', 'after:"last Tuesday"', 'after:"noon"', 'after:"1 month 2 days ago"'); maps to \`git log --since=<value>\`
 - 'before:' - Search for commits before a certain date or range (e.g. 'before:2023-01-01', 'before:"6 months ago"', 'before:"yesterday"', 'before:"3PM GMT"'); maps to \`git log --until=<value>\`
@@ -525,4 +525,174 @@ You can use GitKraken MCP tools to gather additional context about the repositor
 \${instructions}
 
 Now, proceed with your analysis and provide a comprehensive review of the PR. Return only the relevant information without any additional text.`,
+};
+
+export const reviewChanges: PromptTemplate<'review-changes'> = {
+	id: 'review-changes',
+	variables: ['diff', 'message', 'context', 'instructions'],
+	template: `You are an expert code reviewer analyzing a set of code changes. Your goal is to identify meaningful issues — bugs, logic errors, security vulnerabilities, missing error handling, and potential regressions — while ignoring style preferences and linter-level concerns. Focus on problems a careful human reviewer would catch.
+
+Examine the following code changes in Git diff format. Each non-header line inside a hunk has been annotated with its 1-based new-file line number in a \`[NNNNN]\` block placed immediately after the line-type marker (\` \`, \`+\`, or \`-\`):
+  \` [   42] context line\`     // context: exists in both old and new; number = new-file line
+  \`+[   43] added line\`        // added: only in new file; number = new-file line
+  \`-[     ] removed line\`      // removed: not in new file; brackets are blank
+  \`@@ -10,5 +12,7 @@ ...\`     // hunk header (no annotation; ignore for line citing)
+<~~diff~~>
+\${diff}
+</~~diff~~>
+
+Author's description of the changes:
+<~~message~~>
+\${message}
+</~~message~~>
+
+Related work items (known pull requests and issues for this change set). Use these for *intent*: what the change is trying to accomplish. They are not authoritative spec — if a finding contradicts the stated intent, flag it rather than defer to it. May be empty.
+\${context}
+
+Produce a structured review in the following XML format. Include ONLY the XML tags described — no other text:
+
+<overview>
+A concise 1-3 sentence summary of what these changes do and their overall quality. Note any systemic concerns.
+</overview>
+<focus-areas>
+<area severity="critical|warning|suggestion" files="comma-separated file paths">
+<label>Short title of the concern (under 60 chars)</label>
+<rationale>Why this matters — what could go wrong or what is suboptimal</rationale>
+<findings>
+<finding severity="critical|warning|suggestion" file="path/to/file.ts" lines="start-end">
+<title>Specific issue title</title>
+<description>Clear explanation of the problem and how to address it</description>
+</finding>
+</findings>
+</area>
+</focus-areas>
+
+Guidelines:
+- Severity levels: "critical" = bugs, security issues, data loss risks; "warning" = logic concerns, missing error handling, potential regressions; "suggestion" = improvements, maintainability, performance
+- Group related findings into focus areas by theme, not by file
+- If changes look correct and well-structured, say so in the overview and include zero focus areas
+- 3-5 high-quality findings are better than 15 low-quality ones
+- For \`lines="start-end"\`, copy the numbers from the \`[NNNNN]\` annotations of the specific lines your finding concerns. Do not count, infer, or estimate — use only the annotated numbers. Removed lines (blank brackets \`[     ]\`) cannot be cited; pick the nearest surrounding new-file line instead. Anchor the range tightly to the lines the finding actually concerns; do not span an entire hunk.
+- Do not flag style issues, naming preferences, or things a linter would catch
+- Base conclusions only on the code shown — do not speculate about unseen code
+
+\${instructions}
+
+Review the changes and produce the structured XML output above.`,
+};
+
+export const reviewOverview: PromptTemplate<'review-overview'> = {
+	id: 'review-overview',
+	variables: ['files', 'message', 'context', 'instructions'],
+	template: `You are an expert code reviewer performing an initial assessment of a set of code changes. You are given a file manifest (not full diffs) — use the file paths, change types, and line counts to identify which areas deserve closer inspection.
+
+File manifest (JSON array of changed files):
+<~~files~~>
+\${files}
+</~~files~~>
+
+Author's description of the changes:
+<~~message~~>
+\${message}
+</~~message~~>
+
+Related work items (known pull requests and issues for this change set). Use these for *intent* — what the change is trying to accomplish — when ranking which areas deserve closer review. May be empty.
+\${context}
+
+Produce a structured assessment in the following XML format. Include ONLY the XML tags described — no other text:
+
+<overview>
+A concise 1-3 sentence summary of the scope and nature of these changes based on the file manifest and description.
+</overview>
+<focus-areas>
+<area severity="critical|warning|suggestion" files="comma-separated file paths">
+<label>Short title of the area to inspect (under 60 chars)</label>
+<rationale>Why this area deserves closer review — based on the types of files changed, the volume of changes, and potential risk</rationale>
+</area>
+</focus-areas>
+
+Guidelines:
+- Severity reflects potential risk: "critical" = security-sensitive files, auth/crypto/payment paths, database migrations; "warning" = core logic changes, API changes, large modifications; "suggestion" = refactoring, config changes, documentation
+- Rank focus areas from highest to lowest risk
+- Group related files into focus areas by theme
+- Include 2-6 focus areas. If changes are very simple, fewer is fine
+- Do NOT include <findings> — those come in a later pass when full diffs are available
+
+\${instructions}
+
+Assess the changes and produce the structured XML output above.`,
+};
+
+export const addressReviewFindings: PromptTemplate<'address-review-findings'> = {
+	id: 'address-review-findings',
+	variables: ['reviewMarkdown', 'scopeLabel', 'granularity', 'instructions'],
+	template: `You are an AI coding agent tasked with addressing the issues identified in a code review. Your goal is to understand each finding and, where appropriate, propose or make the code changes needed to fix it.
+
+The review was performed against: \${scopeLabel}
+
+The findings are provided as structured markdown below. Each finding includes a severity (\`**[CRITICAL]**\`, \`**[WARNING]**\`, or \`**[SUGGESTION]**\`), a short title, a description of the problem, and (when available) a file path and line range. Focus areas group related findings and include a rationale explaining why they matter.
+
+<review>
+\${reviewMarkdown}
+</review>
+
+Guidelines:
+- Treat the findings as a working list. Prioritize critical issues, then warnings, then suggestions.
+- For each finding, locate the referenced file(s) in the workspace before proposing a fix. If the file or line range no longer matches the review (the code may have evolved), reconcile against the current state.
+- When making code changes, address the underlying problem the finding describes — do not just paper over symptoms.
+- Prefer minimal, focused edits that don't introduce unrelated changes.
+- If a finding is ambiguous, contradicts the surrounding code's intent, or is already addressed in the current state, say so explicitly rather than fabricating a fix.
+- If a finding is out of scope (touches unrelated systems, requires significant refactoring, or contradicts established patterns), surface that as a tradeoff rather than acting on it.
+
+\${instructions}`,
+};
+
+export const reviewDetail: PromptTemplate<'review-detail'> = {
+	id: 'review-detail',
+	variables: ['diff', 'overview', 'message', 'focusArea', 'context', 'instructions'],
+	template: `You are an expert code reviewer performing a detailed inspection of specific files that were flagged for closer review. You have the context from an initial overview assessment.
+
+Initial overview of the full changeset:
+<~~overview~~>
+\${overview}
+</~~overview~~>
+
+Focus area being inspected: \${focusArea}
+
+Author's description of the changes:
+<~~message~~>
+\${message}
+</~~message~~>
+
+Related work items (known pull requests and issues for this change set). Use these for *intent* — what the change is trying to accomplish. They are not authoritative spec; if a finding contradicts the stated intent, flag it. May be empty.
+\${context}
+
+Code changes for the files in this focus area (Git diff format). Each non-header line inside a hunk has been annotated with its 1-based new-file line number in a \`[NNNNN]\` block placed immediately after the line-type marker (\` \`, \`+\`, or \`-\`):
+  \` [   42] context line\`     // context: exists in both old and new; number = new-file line
+  \`+[   43] added line\`        // added: only in new file; number = new-file line
+  \`-[     ] removed line\`      // removed: not in new file; brackets are blank
+  \`@@ -10,5 +12,7 @@ ...\`     // hunk header (no annotation; ignore for line citing)
+<~~diff~~>
+\${diff}
+</~~diff~~>
+
+Produce detailed findings in the following XML format. Include ONLY the XML tags — no other text:
+
+<findings>
+<finding severity="critical|warning|suggestion" file="path/to/file.ts" lines="start-end">
+<title>Specific issue title</title>
+<description>Clear explanation of the problem and how to address it</description>
+</finding>
+</findings>
+
+Guidelines:
+- Severity: "critical" = bugs, security, data loss; "warning" = logic concerns, error handling, regressions; "suggestion" = improvements, maintainability
+- For \`lines="start-end"\`, copy the numbers from the \`[NNNNN]\` annotations of the specific lines your finding concerns. Do not count, infer, or estimate — use only the annotated numbers. Removed lines (blank brackets \`[     ]\`) cannot be cited; pick the nearest surrounding new-file line instead. Anchor the range tightly to the lines the finding actually concerns; do not span an entire hunk.
+- Be concrete — explain what the problem is and how to fix it
+- If the code in this area looks correct, return an empty <findings></findings> block
+- Do not flag style issues or things a linter would catch
+
+\${instructions}
+
+Inspect the diff for this focus area and produce the structured XML findings above.`,
 };

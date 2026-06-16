@@ -1,7 +1,7 @@
 {
 	"name": "@gitkraken/core-gitlens",
 	"description": "GitLens core — shared Git / AI / GitHub primitives for internal GitKraken consumption",
-	"version": "0.1.0",
+	"version": "0.3.0",
 	"license": "SEE LICENSE IN LICENSE",
 	"author": {
 		"name": "GitKraken",
@@ -93,6 +93,10 @@
 		"./git/watching/*.js": {
 			"types": "./dist/git/watching/*.d.ts",
 			"default": "./dist/git/watching/*.js"
+		},
+		"./ipc/*.js": {
+			"types": "./dist/ipc/*.d.ts",
+			"default": "./dist/ipc/*.js"
 		},
 		"./plus/ai/*.js": {
 			"types": "./dist/plus/ai/*.d.ts",

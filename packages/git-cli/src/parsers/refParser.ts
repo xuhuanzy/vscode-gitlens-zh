@@ -1,52 +1,51 @@
 import type { FilteredGitFeatures } from '@gitlens/git/features.js';
+import type { RefRecord } from '@gitlens/git/models/reference.js';
 import { maybeStopWatch } from '@gitlens/utils/stopwatch.js';
 import { iterateByDelimiter } from '@gitlens/utils/string.js';
 import type { ExtractAll } from '@gitlens/utils/types.js';
 import type { Parser } from './logParser.js';
 
-const branchMapping = {
-	current: `%(HEAD)`, // HEAD indicator (current branch)
-	name: `%(refname)`, // Full reference name
-	upstream: `%(upstream)`, // Upstream branch, if any
-	upstreamTracking: `%(upstream:track)`, // Tracking status
-	sha: `%(objectname)`, // SHA
-	date: `%(committerdate:iso8601)`, // Date
+/**
+ * Unified `for-each-ref` mapping covering branches, remotes, and tags in a single pass.
+ * Fields inapplicable to a given ref-type come back as empty strings from git.
+ *
+ * NOTE: When adding a new field that is gated on a git feature flag, mirror the entry in
+ * `refMappingSupportsWorktreePath` (and any future variants) — both maps MUST stay aligned
+ * so callers can switch parsers based on `git.supported('git:for-each-ref')` without losing
+ * field positions.
+ */
+const refMapping = {
+	current: `%(HEAD)`,
+	name: `%(refname)`,
+	objectname: `%(objectname)`,
+	peeledObjectname: `%(*objectname)`,
+	upstream: `%(upstream)`,
+	upstreamTracking: `%(upstream:track)`,
+	committerDate: `%(committerdate:iso8601)`,
+	creatorDate: `%(creatordate:iso8601)`,
+	authorDate: `%(authordate:iso8601)`,
+	subject: `%(subject)`,
 	worktreePath: undefined,
 };
 
-const branchMappingSupportsWorktreePath = {
-	...branchMapping,
-	worktreePath: '%(worktreepath)', // Worktree path
+const refMappingSupportsWorktreePath = {
+	...refMapping,
+	worktreePath: '%(worktreepath)',
 };
 
-type BranchParser = Parser<typeof branchMapping> | Parser<typeof branchMappingSupportsWorktreePath>;
+type RefParser = Parser<RefRecord>;
 
-let _branchParser: BranchParser | undefined;
-let _branchParserWithWorktree: BranchParser | undefined;
-export function getBranchParser(supportedFeatures: FilteredGitFeatures<'git:for-each-ref'>[]): BranchParser {
+let _refParser: RefParser | undefined;
+let _refParserWithWorktree: RefParser | undefined;
+
+export function getRefParser(supportedFeatures: FilteredGitFeatures<'git:for-each-ref'>[]): RefParser {
 	if (supportedFeatures.includes('git:for-each-ref:worktreePath')) {
-		_branchParserWithWorktree ??= createRefParser(branchMappingSupportsWorktreePath);
-		return _branchParserWithWorktree;
+		_refParserWithWorktree ??= createRefParser(refMappingSupportsWorktreePath);
+		return _refParserWithWorktree;
 	}
-	_branchParser ??= createRefParser(branchMapping);
-	return _branchParser;
-}
 
-const tagMapping = {
-	name: `%(refname)`, // Full reference name
-	tagSha: `%(objectname)`, // sha of the tag
-	sha: `%(*objectname)`, // sha of the commit the tag points to, if any
-	date: `%(creatordate:iso8601)`, // date the tag was created
-	commitDate: `%(authordate:iso8601)`, // author date of the commit the tag points to
-	message: `%(subject)`, // message
-};
-
-type TagParser = Parser<typeof tagMapping>;
-let _tagParser: TagParser | undefined;
-
-export function getTagParser(): TagParser {
-	_tagParser ??= createRefParser(tagMapping);
-	return _tagParser;
+	_refParser ??= createRefParser(refMapping);
+	return _refParser;
 }
 
 const recordSep = '\x1E'; // ASCII Record Separator character

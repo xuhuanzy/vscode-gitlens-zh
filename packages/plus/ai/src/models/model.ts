@@ -22,11 +22,13 @@ export interface AIModelDescriptor<Provider extends AIProviders = AIProviders, M
 
 export type AIActionType =
 	| 'explain-changes'
+	| 'review-changes'
 	| 'generate-commitMessage'
 	| 'generate-stashMessage'
 	| 'generate-changelog'
 	| `generate-create-${'cloudPatch' | 'codeSuggestion' | 'pullRequest'}`
 	| 'generate-commits'
+	| 'conflict-resolution'
 	| 'generate-searchQuery';
 
 export interface AIProviderDescriptor<T extends AIProviders = AIProviders> {

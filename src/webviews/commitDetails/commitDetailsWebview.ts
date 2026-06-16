@@ -1,54 +1,36 @@
-import type { TextDocumentShowOptions, Uri } from 'vscode';
-import { Disposable, env, EventEmitter, window } from 'vscode';
-import { CheckoutError } from '@gitlens/git/errors.js';
+import type { TextDocumentShowOptions } from 'vscode';
+import { Disposable, EventEmitter, Uri, window } from 'vscode';
 import type { GitBranch } from '@gitlens/git/models/branch.js';
 import { GitCommit } from '@gitlens/git/models/commit.js';
-import type { GitFileChange, GitFileChangeShape } from '@gitlens/git/models/fileChange.js';
+import type { GitFileChange } from '@gitlens/git/models/fileChange.js';
 import type { GitRevisionReference } from '@gitlens/git/models/reference.js';
-import { RemoteResourceType } from '@gitlens/git/models/remoteResource.js';
 import type { Repository } from '@gitlens/git/models/repository.js';
-import { uncommitted, uncommittedStaged } from '@gitlens/git/models/revision.js';
-import { splitCommitMessage } from '@gitlens/git/utils/commit.utils.js';
+import { isConflictStatus } from '@gitlens/git/utils/fileStatus.utils.js';
 import { createReference } from '@gitlens/git/utils/reference.utils.js';
-import { isUncommitted, shortenRevision } from '@gitlens/git/utils/revision.utils.js';
-import { debug } from '@gitlens/utils/decorators/log.js';
-import { MRU } from '@gitlens/utils/mru.js';
+import { isUncommitted } from '@gitlens/git/utils/revision.utils.js';
 import { getSettledValue } from '@gitlens/utils/promise.js';
-import type { CopyDeepLinkCommandArgs, CopyFileDeepLinkCommandArgs } from '../../commands/copyDeepLink.js';
 import type { CopyMessageToClipboardCommandArgs } from '../../commands/copyMessageToClipboard.js';
 import type { CopyShaToClipboardCommandArgs } from '../../commands/copyShaToClipboard.js';
-import type { DiffWithCommandArgs } from '../../commands/diffWith.js';
 import type { ExplainCommitCommandArgs } from '../../commands/explainCommit.js';
 import type { ExplainStashCommandArgs } from '../../commands/explainStash.js';
 import type { ExplainWipCommandArgs } from '../../commands/explainWip.js';
-import type { OpenFileOnRemoteCommandArgs } from '../../commands/openFileOnRemote.js';
-import type { OpenOnRemoteCommandArgs } from '../../commands/openOnRemote.js';
-import type { CreatePatchCommandArgs } from '../../commands/patches.js';
-import type { GlWebviewCommandsOrCommandsWithSuffix } from '../../constants.commands.js';
 import type { InspectTelemetryContext, InspectWebviewTelemetryContext, Sources } from '../../constants.telemetry.js';
 import type { Container } from '../../container.js';
 import type { CommitSelectedEvent } from '../../eventBus.js';
-import {
-	applyChanges,
-	openChanges,
-	openChangesWithWorking,
-	openFile,
-	openFileAtRevision,
-	openFileOnRemote,
-	restoreFile,
-	showDetailsQuickPick,
-} from '../../git/actions/commit.js';
+import { showDetailsQuickPick } from '../../git/actions/commit.js';
 import { executeGitCommand } from '../../git/actions.js';
 import { CommitFormatter } from '../../git/formatters/commitFormatter.js';
 import type { GlRepository } from '../../git/models/repository.js';
-import { getCommitAuthorAvatarUri, getCommitForFile } from '../../git/utils/-webview/commit.utils.js';
+import {
+	getCommitAndFileByPath,
+	getCommitAuthorAvatarUri,
+	getCommitCommitterAvatarUri,
+} from '../../git/utils/-webview/commit.utils.js';
+import { countConflictMarkers } from '../../git/utils/-webview/mergeConflicts.utils.js';
 import { getReferenceFromRevision } from '../../git/utils/-webview/reference.utils.js';
-import { showGitErrorMessage } from '../../messages.js';
+import { getReachableWorktrees } from '../../git/utils/-webview/worktree.utils.js';
 import { executeCommand, executeCoreCommand, registerWebviewCommand } from '../../system/-webview/command.js';
-import { getContext, setContext } from '../../system/-webview/context.js';
-import type { MergeEditorInputs } from '../../system/-webview/vscode/editors.js';
-import { openMergeEditor } from '../../system/-webview/vscode/editors.js';
-import { createCommandDecorator, getWebviewCommand } from '../../system/decorators/command.js';
+import { getWebviewCommand } from '../../system/decorators/command.js';
 import type { LinesChangeEvent } from '../../trackers/lineTracker.js';
 import type { ShowInCommitGraphCommandArgs } from '../plus/graph/registration.js';
 import type { EventVisibilityBuffer, SubscriptionTracker } from '../rpc/eventVisibilityBuffer.js';
@@ -62,14 +44,21 @@ import type {
 	CommitSelectionEvent,
 	ExplainResult,
 	GenerateResult,
-	NavigateResult,
 } from './commitDetailsService.js';
+import type { ComparisonContext } from './commitDetailsWebview.utils.js';
 import {
 	getFileCommitFromContext,
-	getUriFromContext,
 	isDetailsFileContext,
+	isDetailsFolderContext,
 	isDetailsItemContext,
+	resolveMultiFileContext,
 } from './commitDetailsWebview.utils.js';
+import { DetailsFileCommands, getDetailsFileCommands, getDetailsFileMultiCommands } from './detailsFileCommands.js';
+import {
+	DetailsFolderCommands,
+	getDetailsFolderCommands,
+	sharedDetailsFolderCommandRoutes,
+} from './detailsFolderCommands.js';
 import type {
 	CommitDetails,
 	DetailsItemContext,
@@ -80,12 +69,23 @@ import type {
 	State,
 	Wip,
 	WipChange,
+	WipFileChange,
+	WipStats,
 } from './protocol.js';
 import { messageHeadlineSplitterToken } from './protocol.js';
 import type { CommitDetailsWebviewShowingArgs } from './registration.js';
 
-const { command, getCommands } =
-	createCommandDecorator<GlWebviewCommandsOrCommandsWithSuffix<'commitDetails' | 'graphDetails'>>();
+// Commands that open or modify editor content and need the line tracker suspended
+const lineTrackerCommands = new Set([
+	'gitlens.views.openChanges:',
+	'gitlens.views.openChangesWithWorking:',
+	'gitlens.views.openPreviousChangesWithWorking:',
+	'gitlens.views.openFile:',
+	'gitlens.views.openFileRevision:',
+	'gitlens.externalDiff:',
+	'gitlens.views.highlightChanges:',
+	'gitlens.views.highlightRevisionChanges:',
+]);
 
 // Internal type for WIP context (not exposed to webview)
 interface WipContext {
@@ -93,6 +93,8 @@ interface WipContext {
 	repositoryCount: number;
 	branch?: GitBranch;
 	repo: Repository;
+	/** Git-authoritative working-tree counts (from `status.diffStatus`). See {@link WipStats}. */
+	stats?: WipStats;
 }
 
 /**
@@ -112,9 +114,6 @@ interface WipContext {
 export class CommitDetailsWebviewProvider implements WebviewProvider<State, State, CommitDetailsWebviewShowingArgs> {
 	private readonly _disposable: Disposable;
 	private _focused = false;
-
-	/** Navigation history - backend keeps for back/forward navigation */
-	private _commitStack = new MRU<GitRevisionReference>(10, (a, b) => a.ref === b.ref);
 
 	/** Controls line tracker - set via setPin() RPC */
 	private _pinned = false;
@@ -138,8 +137,7 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 
 	constructor(
 		private readonly container: Container,
-		private readonly host: WebviewHost<'gitlens.views.commitDetails' | 'gitlens.views.graphDetails'>,
-		private readonly options: { attachedTo: 'default' | 'graph' },
+		private readonly host: WebviewHost<'gitlens.views.commitDetails'>,
 	) {
 		this._disposable = Disposable.from();
 	}
@@ -153,7 +151,7 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 	}
 
 	getTelemetrySource(): Sources {
-		return this.options.attachedTo === 'graph' ? 'graph-details' : 'inspect';
+		return 'inspect';
 	}
 
 	getTelemetryContext(): InspectTelemetryContext {
@@ -161,7 +159,6 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 			const context: InspectTelemetryContext = {
 				...this.host.getTelemetryContext(),
 				'context.mode': 'wip',
-				'context.attachedTo': this.options.attachedTo,
 				'context.autolinks': 0,
 				'context.inReview': this._showingInReview,
 				'context.codeSuggestions': 0,
@@ -173,7 +170,6 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 		const context: InspectTelemetryContext = {
 			...this.host.getTelemetryContext(),
 			'context.mode': 'commit',
-			'context.attachedTo': this.options.attachedTo,
 			'context.autolinks': 0,
 			'context.pinned': this._pinned,
 			'context.type': undefined,
@@ -265,10 +261,9 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 			data = arg;
 		}
 
-		// Add to navigation stack and capture showing context
+		// Capture showing context for getInitialContext()
 		if (data?.commit != null) {
 			const ref = getReferenceFromRevision(data.commit);
-			this._commitStack.insert(ref);
 			this._showingCommitRef = { repoPath: ref.repoPath, sha: ref.ref, refType: ref.refType };
 		} else {
 			// No explicit commit - try to resolve from event cache / line tracker
@@ -303,11 +298,13 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 	 * Resolve the current commit ref from the event cache or line tracker.
 	 * Used when no explicit commit is provided in onShowingCommit.
 	 */
-	private resolveCurrentCommitRef(): { repoPath: string; sha: string } | undefined {
+	private resolveCurrentCommitRef():
+		| { repoPath: string; sha: string; refType?: GitRevisionReference['refType'] }
+		| undefined {
 		if (this._pinned) return undefined;
 
-		// Check line tracker first (for the default inspect panel, not graph)
-		if (this.options.attachedTo !== 'graph' && window.activeTextEditor != null) {
+		// Check line tracker first
+		if (window.activeTextEditor != null) {
 			const { lineTracker } = this.container;
 			const line = lineTracker.selections?.[0]?.active;
 			if (line != null) {
@@ -319,16 +316,9 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 		}
 
 		// Check event cache
-		if (this.options.attachedTo === 'graph') {
-			const args = this.container.events.getCachedEventArgsBySource('commit:selected', 'gitlens.views.graph');
-			if (args?.commit != null) {
-				return { repoPath: args.commit.repoPath, sha: args.commit.ref };
-			}
-		} else {
-			const args = this.container.events.getCachedEventArgs('commit:selected');
-			if (args?.commit != null) {
-				return { repoPath: args.commit.repoPath, sha: args.commit.ref };
-			}
+		const args = this.container.events.getCachedEventArgs('commit:selected');
+		if (args?.commit != null) {
+			return { repoPath: args.commit.repoPath, sha: args.commit.ref, refType: args.commit.refType };
 		}
 
 		return undefined;
@@ -360,11 +350,77 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 			registerWebviewCommand(`${this.host.id}.refresh`, () => this.host.refresh(true)),
 		];
 
-		for (const { command, handler } of getCommands()) {
-			subscriptions.push(registerWebviewCommand(getWebviewCommand(command, this.host.type), handler, this));
+		// Shared file commands. `gitlens.views.copy:` and `gitlens.copyRelativePathToClipboard:` are
+		// also wired to folder context — when the menu fires them on a folder row, route to the
+		// folder commands instance instead of running the file lookup (which would no-op).
+		const fileCommands = new DetailsFileCommands(this.container, this.host.id);
+		const folderCommands = new DetailsFolderCommands(this.container);
+		for (const { command: cmd, handler } of getDetailsFileCommands()) {
+			const suspendsLineTracker = lineTrackerCommands.has(cmd);
+			const folderRoute = sharedDetailsFolderCommandRoutes[cmd];
+			subscriptions.push(
+				registerWebviewCommand(
+					getWebviewCommand(cmd, this.host.type),
+					async (item?: DetailsItemContext | ExecuteFileActionParams) => {
+						if (suspendsLineTracker) {
+							this.suspendLineTracker();
+						}
+
+						if (folderRoute != null && isDetailsFolderContext(item)) {
+							folderCommands[folderRoute](item.webviewItemValue);
+							return;
+						}
+
+						const [commit, file, comparison] = await this.getFileCommitFromContextOrParams(item);
+						if (commit == null) return;
+
+						return void handler.call(fileCommands, commit, file, this.getShowOptions(item), comparison);
+					},
+					this,
+				),
+			);
+		}
+
+		// Multi-file commands. When a multi-selection is right-clicked, the row's data-vscode-context
+		// carries `webviewItemsValues` (all selected files); resolve each to its commit+file and hand
+		// the whole set to the multi handler (one clipboard write, one stage op, etc.).
+		for (const { command: cmd, handler } of getDetailsFileMultiCommands()) {
+			subscriptions.push(
+				registerWebviewCommand(
+					getWebviewCommand(cmd, this.host.type),
+					async (item?: DetailsItemContext | ExecuteFileActionParams) => {
+						const resolved = await resolveMultiFileContext(this.container, item);
+						if (resolved.length) {
+							await handler.call(fileCommands, resolved);
+						}
+					},
+					this,
+				),
+			);
+		}
+
+		// Folder-only commands (Folder History submenu). `gitlens.views.copy:` and
+		// `gitlens.copyRelativePathToClipboard:` are intentionally NOT registered here — they share
+		// IDs with the file commands above.
+		for (const { command: cmd, handler } of getDetailsFolderCommands()) {
+			if (cmd in sharedDetailsFolderCommandRoutes) continue;
+
+			subscriptions.push(
+				registerWebviewCommand(getWebviewCommand(cmd, this.host.type), (item?: DetailsItemContext) => {
+					if (!isDetailsFolderContext(item)) return;
+
+					handler.call(folderCommands, item.webviewItemValue);
+				}),
+			);
 		}
 
 		return subscriptions;
+	}
+
+	private getShowOptions(
+		item: DetailsItemContext | ExecuteFileActionParams | undefined,
+	): TextDocumentShowOptions | undefined {
+		return isDetailsItemContext(item) ? undefined : item?.showOptions;
 	}
 
 	onFocusChanged(focused: boolean): void {
@@ -419,18 +475,10 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 	}
 
 	private onCommitSelected(e: CommitSelectedEvent) {
-		// Filter events based on attachedTo
-		if (
-			e.data == null ||
-			(this.options.attachedTo === 'graph' && e.source !== 'gitlens.views.graph') ||
-			(this.options.attachedTo === 'default' && e.source === 'gitlens.views.graph')
-		) {
-			return;
-		}
+		if (e.data == null) return;
 
-		// Add to navigation stack and track what's being shown
+		// Track what's being shown so file/stash actions know which commit to use
 		const ref = getReferenceFromRevision(e.data.commit);
-		this._commitStack.insert(ref);
 		this._showingCommitRef = { repoPath: ref.repoPath, sha: ref.ref, refType: ref.refType };
 
 		// Forward event to webview - let webview decide what to do based on its state
@@ -439,13 +487,6 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 			sha: e.data.commit.ref,
 			searchContext: e.data.searchContext,
 			passive: e.data.interaction === 'passive',
-			// Graph Details auto-switches between WIP and commit modes based on selection
-			requestedMode:
-				this.options.attachedTo === 'graph'
-					? e.data.commit.ref === uncommitted
-						? 'wip'
-						: 'commit'
-					: undefined,
 		});
 
 		// Show webview if not passive and not pinned
@@ -468,17 +509,15 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 
 		if (this._pinned) return;
 
-		if (this.options.attachedTo !== 'graph') {
-			const { lineTracker } = this.container;
-			this._lineTrackerDisposable = lineTracker.subscribe(
-				this,
-				lineTracker.onDidChangeActiveLines(this.onActiveEditorLinesChanged, this),
-			);
-		}
+		const { lineTracker } = this.container;
+		this._lineTrackerDisposable = lineTracker.subscribe(
+			this,
+			lineTracker.onDidChangeActiveLines(this.onActiveEditorLinesChanged, this),
+		);
 	}
 
 	private get isLineTrackerSuspended() {
-		return this.options.attachedTo !== 'graph' ? this._lineTrackerDisposable == null : false;
+		return this._lineTrackerDisposable == null;
 	}
 
 	private suspendLineTracker() {
@@ -506,25 +545,33 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 		}
 	}
 
-	private async onExplainRequest(repoPath: string, sha: string, signal?: AbortSignal): Promise<ExplainResult> {
+	private async onExplainRequest(
+		repoPath: string,
+		sha: string,
+		prompt?: string,
+		signal?: AbortSignal,
+	): Promise<ExplainResult> {
 		try {
 			signal?.throwIfAborted();
 			// Check if this is uncommitted changes
 			if (sha === 'wip' || isUncommitted(sha)) {
 				await executeCommand<ExplainWipCommandArgs>('gitlens.ai.explainWip', {
 					repoPath: repoPath,
+					prompt: prompt || undefined,
 					source: { source: this.getTelemetrySource(), context: { type: 'wip' } },
 				});
 			} else if (this._showingCommitRef?.refType === 'stash') {
 				await executeCommand<ExplainStashCommandArgs>('gitlens.ai.explainStash', {
 					repoPath: repoPath,
 					rev: sha,
+					prompt: prompt || undefined,
 					source: { source: this.getTelemetrySource(), context: { type: 'stash' } },
 				});
 			} else {
 				await executeCommand<ExplainCommitCommandArgs>('gitlens.ai.explainCommit', {
 					repoPath: repoPath,
 					rev: sha,
+					prompt: prompt || undefined,
 					source: { source: this.getTelemetrySource(), context: { type: 'commit' } },
 				});
 			}
@@ -566,30 +613,52 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 		}
 	}
 
-	private onNavigateStack(params: { direction: 'back' | 'forward' }): NavigateResult {
-		const commit = this._commitStack.navigate(params.direction);
-		let selectedCommit: NavigateResult['selectedCommit'];
-		if (commit != null) {
-			// Track what's being shown so file actions know which commit to use
-			this._showingCommitRef = { repoPath: commit.repoPath, sha: commit.ref, refType: commit.refType };
-			selectedCommit = { repoPath: commit.repoPath, sha: commit.ref };
-		}
+	private _wipConflictMarkerCache = new Map<string, { mtime: number; count: number }>();
 
-		return { navigationStack: this.getNavigationStack(), selectedCommit: selectedCommit };
-	}
+	private async getWipChange(repository: GlRepository): Promise<{ changes: WipChange; stats: WipStats } | undefined> {
+		const svc = this.container.git.getRepositoryService(repository.path);
+		const [statusResult, pausedOpStatusResult] = await Promise.allSettled([
+			svc.status.getStatus(),
+			svc.pausedOps?.getPausedOperationStatus?.(),
+		]);
 
-	private async getWipChange(repository: GlRepository): Promise<WipChange | undefined> {
-		const status = await this.container.git.getRepositoryService(repository.path).status.getStatus();
+		const status = getSettledValue(statusResult);
 		if (status == null) return undefined;
 
-		const files: GitFileChangeShape[] = [];
+		const pausedOpStatus = getSettledValue(pausedOpStatusResult);
+
+		const conflictMarkerCounts = new Map<string, number>();
+		if (status.hasConflicts) {
+			const conflictedPaths = new Set<string>();
+			for (const file of status.files) {
+				if (isConflictStatus(file.status)) {
+					conflictedPaths.add(file.path);
+				}
+			}
+			if (conflictedPaths.size > 0) {
+				const paths = [...conflictedPaths];
+				const counts = await Promise.allSettled(
+					paths.map(p => countConflictMarkers(Uri.joinPath(repository.uri, p), this._wipConflictMarkerCache)),
+				);
+				paths.forEach((p, i) => {
+					const count = getSettledValue(counts[i]);
+					if (count != null) {
+						conflictMarkerCounts.set(p, count);
+					}
+				});
+			}
+		}
+
+		const files: WipFileChange[] = [];
 		for (const file of status.files) {
-			const change = {
+			const conflictMarkers = conflictMarkerCounts.get(file.path);
+			const change: WipFileChange = {
 				repoPath: file.repoPath,
 				path: file.path,
 				status: file.status,
 				originalPath: file.originalPath,
 				staged: file.staged,
+				conflictMarkers: conflictMarkers,
 			};
 
 			files.push(change);
@@ -598,14 +667,32 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 			}
 		}
 
+		const diff = status.diffStatus;
+		// Git-authoritative counts from `diffStatus` (each path counted once). The `files` list above
+		// intentionally double-counts mixed staged+unstaged entries for display, so the header's
+		// fallback of counting `files` inflates them — embed `stats` so the header/panel use the
+		// correct counts, matching the Graph's `getWipForRepoAndStats`.
+		const stats: WipStats = {
+			added: diff.added,
+			deleted: diff.deleted,
+			modified: diff.changed,
+			hasConflicts: status.hasConflicts,
+			pausedOpStatus: pausedOpStatus,
+		};
+
 		return {
-			repository: {
-				name: repository.name,
-				path: repository.path,
-				uri: repository.uri.toString(),
+			changes: {
+				repository: {
+					name: repository.name,
+					path: repository.path,
+					uri: repository.uri.toString(),
+				},
+				branchName: status.branch,
+				files: files,
+				hasConflicts: status.hasConflicts,
+				pausedOpStatus: pausedOpStatus,
 			},
-			branchName: status.branch,
-			files: files,
+			stats: stats,
 		};
 	}
 
@@ -621,21 +708,6 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 	// Event Delivery Helper
 	// ============================================================
 
-	/** Computes navigation stack from _commitStack (on demand, not cached) */
-	private getNavigationStack(): { count: number; position: number; hint?: string } {
-		let sha = this._commitStack.get(this._commitStack.position - 1)?.ref;
-		if (sha != null) {
-			sha = shortenRevision(sha);
-		}
-		return {
-			count: this._commitStack.count,
-			position: this._commitStack.position,
-			hint: sha,
-		};
-	}
-
-	// Removed: updateNavigation - navigation is handled via onNavigateStack which fires commit selection events
-
 	private onChangeReviewModeCommand(params: { inReview: boolean; repoPath?: string }) {
 		// inReview state is owned by webview - just track telemetry
 		if (params.inReview) {
@@ -648,15 +720,21 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 	 * The message is raw-formatted (headline split) but not linkified with autolink patterns.
 	 */
 	private async getCoreCommitDetails(commit: GitCommit): Promise<CommitDetails> {
-		const [commitResult, avatarUriResult] = await Promise.allSettled([
+		const hasDistinctCommitter = commit.committer.email != null && commit.committer.email !== commit.author.email;
+		const [commitResult, avatarUriResult, committerAvatarUriResult, worktreesResult] = await Promise.allSettled([
 			!commit.hasFullDetails()
 				? GitCommit.ensureFullDetails(commit, { include: { uncommittedFiles: true } }).then(() => commit)
 				: commit,
 			getCommitAuthorAvatarUri(commit, { size: 32 }),
+			hasDistinctCommitter ? getCommitCommitterAvatarUri(commit, { size: 32 }) : Promise.resolve(undefined),
+			commit.refType === 'stash' || commit.isUncommitted
+				? Promise.resolve([])
+				: getReachableWorktrees(this.container, commit.repoPath, commit.sha),
 		]);
 
 		commit = getSettledValue(commitResult, commit);
 		const avatarUri = getSettledValue(avatarUriResult);
+		const committerAvatarUri = hasDistinctCommitter ? getSettledValue(committerAvatarUriResult) : undefined;
 
 		// Raw message with headline split — no autolink linkification (that's deferred)
 		let message = CommitFormatter.fromTemplate(`\${message}`, commit);
@@ -670,10 +748,11 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 			sha: commit.sha,
 			shortSha: commit.shortSha,
 			author: { ...commit.author, avatar: avatarUri?.toString(true) },
-			committer: { ...commit.committer, avatar: undefined },
+			committer: { ...commit.committer, avatar: committerAvatarUri?.toString(true) },
 			message: message,
 			parents: commit.parents,
 			stashNumber: commit.refType === 'stash' ? commit.stashNumber : undefined,
+			stashOnRef: commit.refType === 'stash' ? commit.stashOnRef : undefined,
 			// Serialize files to plain objects - GitFileChange class instances contain
 			// a Container reference which causes circular reference errors during JSON serialization
 			files: (commit.isUncommitted ? commit.anyFiles : commit.fileset?.files)?.map(f => ({
@@ -682,14 +761,19 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 				status: f.status,
 				originalPath: f.originalPath,
 				staged: f.staged,
+				stats: f.stats,
 			})),
 			stats: commit.stats,
+			reachableFromOtherWorktrees: (getSettledValue(worktreesResult)?.length ?? 0) > 0,
 		};
 	}
 
 	private async getFileCommitFromContextOrParams(
 		item: DetailsItemContext | ExecuteFileActionParams | undefined,
-	): Promise<[commit: GitCommit, file: GitFileChange] | [commit?: undefined, file?: undefined]> {
+	): Promise<
+		| [commit: GitCommit, file: GitFileChange, comparison?: ComparisonContext]
+		| [commit?: undefined, file?: undefined, comparison?: undefined]
+	> {
 		if (item == null) return [];
 
 		if (isDetailsItemContext(item)) {
@@ -704,17 +788,10 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 	private async getFileCommitFromParams(
 		params: ExecuteFileActionParams,
 	): Promise<[commit: GitCommit, file: GitFileChange] | [commit?: undefined, file?: undefined]> {
-		let commit: GitCommit | undefined;
-		if (params.repoPath != null) {
-			if (params.ref != null && params.ref !== uncommitted) {
-				commit = await this.container.git.getRepositoryService(params.repoPath).commits.getCommit(params.ref);
-			} else {
-				commit = await this.container.git.getRepositoryService(params.repoPath).commits.getCommit(uncommitted);
-			}
-		}
+		if (params.repoPath == null) return [];
 
-		commit = commit != null ? await getCommitForFile(commit, params.path, params.staged) : undefined;
-		return commit != null ? [commit, commit.file!] : [];
+		const ref = params.ref != null ? { ref: params.ref, stash: params.stash } : undefined;
+		return getCommitAndFileByPath(params.repoPath, params.path, ref, params.staged);
 	}
 
 	private onShowCommitPicker() {
@@ -738,10 +815,10 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 		switch (params.action) {
 			case 'graph': {
 				const ref = createReference(params.sha, params.repoPath, { refType: 'revision' });
-				void executeCommand<ShowInCommitGraphCommandArgs>(
-					this.options.attachedTo === 'graph' ? 'gitlens.showInCommitGraphView' : 'gitlens.showInCommitGraph',
-					{ ref: ref, source: { source: this.getTelemetrySource() } },
-				);
+				void executeCommand<ShowInCommitGraphCommandArgs>('gitlens.showInCommitGraph', {
+					ref: ref,
+					source: { source: this.getTelemetrySource() },
+				});
 				break;
 			}
 			case 'more':
@@ -798,521 +875,9 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 		// Track mode so onVisibilityChanged knows whether to fire passive commit selection
 		this._showingMode = params.mode;
 
-		this.host.sendTelemetryEvent(
-			`${this.options.attachedTo === 'graph' ? 'graphDetails' : 'commitDetails'}/mode/changed`,
-			{
-				'mode.old': params.mode === 'wip' ? 'commit' : 'wip', // Assume switching from opposite
-				'mode.new': params.mode,
-			},
-		);
-	}
-
-	@command('gitlens.views.openChanges:')
-	@debug()
-	private async openChanges(item: DetailsItemContext | ExecuteFileActionParams | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		this.suspendLineTracker();
-		void openChanges(file, commit, { preserveFocus: true, preview: true, ...this.getShowOptions(item) });
-		this.container.events.fire('file:selected', { uri: file.uri }, { source: this.host.id });
-	}
-
-	@command('gitlens.views.openChangesWithWorking:')
-	@debug()
-	private async openFileChangesWithWorking(item: DetailsItemContext | ExecuteFileActionParams | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		this.suspendLineTracker();
-		void openChangesWithWorking(file, commit, {
-			preserveFocus: true,
-			preview: true,
-			...this.getShowOptions(item),
-		});
-	}
-
-	@command('gitlens.views.openPreviousChangesWithWorking:')
-	@debug()
-	private async openPreviousFileChangesWithWorking(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		this.suspendLineTracker();
-		void openChangesWithWorking(
-			file,
-			{ repoPath: commit.repoPath, ref: commit.unresolvedPreviousSha },
-			{ preserveFocus: true, preview: true, ...this.getShowOptions(item) },
-		);
-		this.container.events.fire('file:selected', { uri: file.uri }, { source: this.host.id });
-	}
-
-	@command('gitlens.views.openFile:')
-	@debug()
-	private async openFile(item: DetailsItemContext | ExecuteFileActionParams | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		// if (file.submodule != null) {
-		// 	const submodulePath = this.container.git.getAbsoluteUri(file.path, commit.repoPath).fsPath;
-		// 	const submoduleRepo = this.container.git.getRepository(submodulePath);
-		// 	if (submoduleRepo != null) {
-		// 		const ref = createReference(file.submodule.oid, submoduleRepo.path, { refType: 'revision' });
-		// 		void showInspectView({ commit: ref });
-		// 	}
-		// 	return;
-		// }
-
-		this.suspendLineTracker();
-		void openFile(file, commit, { preserveFocus: true, preview: true });
-	}
-
-	@command('gitlens.openFileOnRemote:')
-	@debug()
-	private async openFileOnRemote(item: DetailsItemContext | ExecuteFileActionParams | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		void openFileOnRemote(file, commit);
-	}
-
-	@command('gitlens.views.stageFile:')
-	@debug()
-	private async stageFile(item: DetailsItemContext | ExecuteFileActionParams | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		await this.container.git.getRepositoryService(commit.repoPath).staging?.stageFile(file.uri);
-	}
-
-	@command('gitlens.views.unstageFile:')
-	@debug()
-	private async unstageFile(item: DetailsItemContext | ExecuteFileActionParams | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		await this.container.git.getRepositoryService(commit.repoPath).staging?.unstageFile(file.uri);
-	}
-
-	private getShowOptions(
-		item: DetailsItemContext | ExecuteFileActionParams | undefined,
-	): TextDocumentShowOptions | undefined {
-		return isDetailsItemContext(item) ? undefined : item?.showOptions;
-
-		// return getContext('gitlens:webview:graph:active') || getContext('gitlens:webview:rebase:active')
-		// 	? { ...params.showOptions, viewColumn: ViewColumn.Beside } : params.showOptions;
-	}
-
-	@command('gitlens.views.copy:')
-	@debug()
-	private async copy(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		void env.clipboard.writeText(file.path);
-	}
-
-	@command('gitlens.copyRelativePathToClipboard:')
-	@debug()
-	private async copyRelativePath(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		const path = this.container.git.getRelativePath(file.uri, commit.repoPath);
-		void env.clipboard.writeText(path);
-	}
-
-	@command('gitlens.copyPatchToClipboard:')
-	@debug()
-	private async copyPatch(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		let args: CreatePatchCommandArgs;
-		if (commit.isUncommitted) {
-			const to = commit.isUncommittedStaged ? uncommittedStaged : uncommitted;
-			args = {
-				repoPath: commit.repoPath,
-				to: to,
-				title: to === uncommittedStaged ? 'Staged Changes' : 'Uncommitted Changes',
-				uris: [file.uri],
-			};
-		} else {
-			if (commit.message == null) {
-				await GitCommit.ensureFullDetails(commit);
-			}
-
-			const { summary: title, body: description } = splitCommitMessage(commit.message);
-
-			args = {
-				repoPath: commit.repoPath,
-				to: commit.ref,
-				from: `${commit.ref}^`,
-				title: title,
-				description: description,
-				uris: [file.uri],
-			};
-		}
-
-		void executeCommand<CreatePatchCommandArgs>('gitlens.copyPatchToClipboard', args);
-	}
-
-	@command('gitlens.views.openFileRevision:')
-	@debug()
-	private async openFileRevision(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		// if (file.submodule != null) {
-		// 	const submodulePath = this.container.git.getAbsoluteUri(file.path, commit.repoPath).fsPath;
-		// 	const submoduleRepo = this.container.git.getRepository(submodulePath);
-		// 	if (submoduleRepo != null) {
-		// 		const ref = createReference(file.submodule.oid, submoduleRepo.path, { refType: 'revision' });
-		// 		void showInspectView({ commit: ref });
-		// 	}
-		// 	return;
-		// }
-
-		this.suspendLineTracker();
-		void openFileAtRevision(file, commit, { preserveFocus: true, preview: false });
-	}
-
-	@command('gitlens.openFileHistory:')
-	@debug()
-	private async openFileHistory(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		void executeCommand('gitlens.openFileHistory', file.uri);
-	}
-
-	@command('gitlens.quickOpenFileHistory:')
-	@debug()
-	private async quickOpenFileHistory(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		void executeCommand('gitlens.quickOpenFileHistory', file.uri);
-	}
-
-	@command('gitlens.visualizeHistory.file:')
-	@debug()
-	private async visualizeFileHistory(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		void executeCommand('gitlens.visualizeHistory.file', file.uri);
-	}
-
-	@command('gitlens.openFileHistoryInGraph:')
-	@debug()
-	private async openFileHistoryInGraph(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		void executeCommand('gitlens.openFileHistoryInGraph', file.uri);
-	}
-
-	@command('gitlens.restore.file:')
-	@debug()
-	private async restoreFile(item: DetailsItemContext | undefined) {
-		if (!isDetailsFileContext(item)) return;
-
-		const { path, repoPath, sha } = item.webviewItemValue;
-		if (sha == null || sha === uncommitted) return;
-
-		try {
-			await this.container.git.getRepositoryService(repoPath).ops?.checkout(sha, { path: path });
-		} catch (ex) {
-			if (CheckoutError.is(ex)) {
-				void showGitErrorMessage(ex);
-			} else {
-				void showGitErrorMessage(ex, 'Unable to restore file');
-			}
-		}
-	}
-
-	@command('gitlens.restorePrevious.file:')
-	@debug()
-	private async restorePreviousFile(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		void restoreFile(file, commit, true);
-	}
-
-	@command('gitlens.views.selectFileForCompare:')
-	@debug()
-	private selectFileForCompare(item: DetailsItemContext | undefined) {
-		if (!isDetailsFileContext(item)) return;
-
-		const { repoPath, sha } = item.webviewItemValue;
-		const uri = getUriFromContext(this.container, item.webviewItemValue);
-		if (uri == null) return;
-
-		void setContext('gitlens:views:canCompare:file', { ref: sha ?? uncommitted, repoPath: repoPath, uri: uri });
-	}
-
-	@command('gitlens.views.compareFileWithSelected:')
-	@debug()
-	private async compareFileWithSelected(item: DetailsItemContext | undefined) {
-		const selectedFile = getContext('gitlens:views:canCompare:file');
-		if (selectedFile == null || !isDetailsFileContext(item)) return;
-
-		void setContext('gitlens:views:canCompare:file', undefined);
-
-		const { repoPath, sha } = item.webviewItemValue;
-		if (selectedFile.repoPath !== repoPath) {
-			this.selectFileForCompare(item);
-			return;
-		}
-
-		const uri = getUriFromContext(this.container, item.webviewItemValue);
-		if (uri == null) return;
-
-		await this.compareFileWith(selectedFile.repoPath, selectedFile.uri, selectedFile.ref, uri, sha ?? uncommitted);
-	}
-
-	private async compareFileWith(
-		repoPath: string,
-		lhsUri: Uri,
-		lhsRef: string,
-		rhsUri: Uri | undefined,
-		rhsRef: string,
-	) {
-		rhsUri ??= await this.container.git.getRepositoryService(repoPath).getWorkingUri(lhsUri);
-
-		return executeCommand<DiffWithCommandArgs, void>('gitlens.diffWith', {
-			repoPath: repoPath,
-			lhs: { sha: lhsRef, uri: lhsUri },
-			rhs: { sha: rhsRef, uri: rhsUri ?? lhsUri },
-		});
-	}
-
-	@command('gitlens.views.applyChanges:')
-	@debug()
-	private async applyChanges(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		void applyChanges(file, commit);
-	}
-
-	@command('gitlens.views.mergeChangesWithWorking:')
-	@debug()
-	private async mergeChangesWithWorking(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		const svc = this.container.git.getRepositoryService(commit.repoPath);
-		if (svc == null) return;
-
-		const nodeUri = await svc.getBestRevisionUri(file.path, commit.ref);
-		if (nodeUri == null) return;
-
-		const input1: MergeEditorInputs['input1'] = {
-			uri: nodeUri,
-			title: `Incoming`,
-			detail: ` ${commit.shortSha}`,
-		};
-
-		const [mergeBaseResult, workingUriResult] = await Promise.allSettled([
-			svc.refs.getMergeBase(commit.ref, 'HEAD'),
-			svc.getWorkingUri(file.uri),
-		]);
-
-		const workingUri = getSettledValue(workingUriResult);
-		if (workingUri == null) {
-			void window.showWarningMessage('Unable to open the merge editor, no working file found');
-			return;
-		}
-		const input2: MergeEditorInputs['input2'] = {
-			uri: workingUri,
-			title: 'Current',
-			detail: ' Working Tree',
-		};
-
-		const headUri = await svc.getBestRevisionUri(file.path, 'HEAD');
-		if (headUri != null) {
-			const branch = await svc.branches.getBranch?.();
-
-			input2.uri = headUri;
-			input2.detail = ` ${branch?.name || 'HEAD'}`;
-		}
-
-		const mergeBase = getSettledValue(mergeBaseResult);
-		const baseUri = mergeBase != null ? await svc.getBestRevisionUri(file.path, mergeBase) : undefined;
-
-		return openMergeEditor({
-			base: baseUri ?? nodeUri,
-			input1: input1,
-			input2: input2,
-			output: workingUri,
-		});
-	}
-
-	@command('gitlens.diffWithRevision:')
-	@debug()
-	private diffWithRevision(item: DetailsItemContext | undefined) {
-		if (!isDetailsFileContext(item)) return;
-
-		const uri = getUriFromContext(this.container, item.webviewItemValue);
-		if (uri == null) return;
-
-		void executeCommand('gitlens.diffWithRevision', uri);
-	}
-
-	@command('gitlens.diffWithRevisionFrom:')
-	@debug()
-	private diffWithRevisionFrom(item: DetailsItemContext | undefined) {
-		if (!isDetailsFileContext(item)) return;
-
-		const uri = getUriFromContext(this.container, item.webviewItemValue);
-		if (uri == null) return;
-
-		void executeCommand('gitlens.diffWithRevisionFrom', uri);
-	}
-
-	@command('gitlens.externalDiff:')
-	@debug()
-	private async externalDiff(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		const previousSha = await GitCommit.getPreviousSha(commit);
-		const ref1 = isUncommitted(previousSha) ? '' : previousSha;
-		const ref2 = commit.isUncommitted ? '' : commit.sha;
-
-		void executeCommand('gitlens.externalDiff', {
-			files: [{ uri: file.uri, staged: commit.isUncommittedStaged, ref1: ref1, ref2: ref2 }],
-		});
-	}
-
-	@command('gitlens.views.highlightChanges:')
-	@debug()
-	private async highlightChanges(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		this.suspendLineTracker();
-		await openFile(file, commit, { preserveFocus: true, preview: true });
-		void (await this.container.fileAnnotations.toggle(
-			window.activeTextEditor,
-			'changes',
-			{ sha: commit.ref },
-			true,
-		));
-	}
-
-	@command('gitlens.views.highlightRevisionChanges:')
-	@debug()
-	private async highlightRevisionChanges(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		this.suspendLineTracker();
-		await openFile(file, commit, { preserveFocus: true, preview: true });
-		void (await this.container.fileAnnotations.toggle(
-			window.activeTextEditor,
-			'changes',
-			{ sha: commit.ref, only: true },
-			true,
-		));
-	}
-
-	@command('gitlens.copyDeepLinkToCommit:')
-	@debug()
-	private async copyDeepLinkToCommit(item: DetailsItemContext | undefined) {
-		const [commit] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		void executeCommand<CopyDeepLinkCommandArgs>('gitlens.copyDeepLinkToCommit', { refOrRepoPath: commit });
-	}
-
-	@command('gitlens.copyDeepLinkToFile:')
-	@debug()
-	private async copyDeepLinkToFile(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		void executeCommand<CopyFileDeepLinkCommandArgs>('gitlens.copyDeepLinkToFile', {
-			ref: commit,
-			filePath: file.path,
-			repoPath: commit.repoPath,
-		});
-	}
-
-	@command('gitlens.copyDeepLinkToFileAtRevision:')
-	@debug()
-	private async copyDeepLinkToFileAtRevision(item: DetailsItemContext | undefined) {
-		const [commit, file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		void executeCommand<CopyFileDeepLinkCommandArgs>('gitlens.copyDeepLinkToFileAtRevision', {
-			ref: commit,
-			filePath: file.path,
-			repoPath: commit.repoPath,
-			chooseRef: true,
-		});
-	}
-
-	@command('gitlens.views.copyRemoteCommitUrl:')
-	@debug()
-	private async copyRemoteCommitUrl(item: DetailsItemContext | undefined) {
-		const [commit] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		void executeCommand<OpenOnRemoteCommandArgs>('gitlens.openOnRemote', {
-			repoPath: commit.repoPath,
-			resource: { type: RemoteResourceType.Commit, sha: commit.ref },
-			clipboard: true,
-		});
-	}
-
-	@command('gitlens.shareAsCloudPatch:')
-	@debug()
-	private async shareAsCloudPatch(item: DetailsItemContext | undefined) {
-		const [commit] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		if (commit.message == null) {
-			await GitCommit.ensureFullDetails(commit);
-		}
-
-		const { summary: title, body: description } = splitCommitMessage(commit.message);
-
-		void executeCommand<CreatePatchCommandArgs>('gitlens.createCloudPatch', {
-			to: commit.ref,
-			repoPath: commit.repoPath,
-			title: title,
-			description: description,
-		});
-	}
-
-	@command('gitlens.copyRemoteFileUrlFrom:')
-	@debug()
-	private async copyRemoteFileUrlFrom(item: DetailsItemContext | undefined) {
-		const [commit, _file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		void executeCommand<OpenFileOnRemoteCommandArgs>('gitlens.copyRemoteFileUrlFrom', {
-			sha: commit.ref,
-			clipboard: true,
-			pickBranchOrTag: true,
-			range: false,
-		});
-	}
-
-	@command('gitlens.copyRemoteFileUrlWithoutRange:')
-	@debug()
-	private async copyRemoteFileUrlWithoutRange(item: DetailsItemContext | undefined) {
-		const [commit, _file] = await this.getFileCommitFromContextOrParams(item);
-		if (commit == null) return;
-
-		void executeCommand<OpenFileOnRemoteCommandArgs>('gitlens.copyRemoteFileUrlWithoutRange', {
-			sha: commit.ref,
-			clipboard: true,
-			range: false,
+		this.host.sendTelemetryEvent('commitDetails/mode/changed', {
+			'mode.old': params.mode === 'wip' ? 'commit' : 'wip', // Assume switching from opposite
+			'mode.new': params.mode,
 		});
 	}
 
@@ -1385,7 +950,6 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 					Promise.resolve({
 						mode: this._showingMode,
 						pinned: this._pinned,
-						navigationStack: this.getNavigationStack(),
 						inReview: this._showingInReview,
 						initialCommit: this._showingCommitRef,
 						initialWipRepoPath: this._showingWipRepoPath,
@@ -1403,6 +967,7 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 					}
 					commit ??= await svc.commits.getCommit(sha);
 					if (commit == null) return undefined;
+
 					signal?.throwIfAborted();
 					// Track what the webview is showing so file actions know which commit to use
 					this._showingCommitRef = { repoPath: repoPath, sha: sha, refType: commit.refType };
@@ -1421,8 +986,11 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 							: this.container.git.getBestRepositoryOrFirst();
 					if (repo == null) return undefined;
 
-					const changes = await this.getWipChange(repo);
-					if (changes == null) return undefined;
+					const wip = await this.getWipChange(repo);
+					if (wip == null) return undefined;
+
+					const { changes, stats } = wip;
+
 					signal?.throwIfAborted();
 
 					// Get branch info (fast, local) but NOT PR or code suggestions (deferred)
@@ -1434,13 +1002,8 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 						repo: repo,
 						repositoryCount: this.container.git.openRepositoryCount,
 						branch: branch,
+						stats: stats,
 					});
-				},
-
-				// ── Navigation ──
-
-				navigate: direction => {
-					return Promise.resolve(this.onNavigateStack({ direction: direction }));
 				},
 
 				setPin: pin => {
@@ -1481,8 +1044,8 @@ export class CommitDetailsWebviewProvider implements WebviewProvider<State, Stat
 
 				// ── AI Operations ──
 
-				explainCommit: (repoPath: string, sha: string, signal?: AbortSignal) =>
-					this.onExplainRequest(repoPath, sha, signal),
+				explainCommit: (repoPath: string, sha: string, prompt?: string, signal?: AbortSignal) =>
+					this.onExplainRequest(repoPath, sha, prompt, signal),
 
 				generateDescription: (repoPath: string, signal?: AbortSignal) =>
 					this.onGenerateRequest(repoPath, signal),
@@ -1516,6 +1079,8 @@ function serializeWipContext(wip?: WipContext): Wip | undefined {
 			uri: wip.repo.uri.toString(),
 			name: wip.repo.name,
 			path: wip.repo.path,
+			isWorktree: wip.repo.isWorktree,
 		},
+		stats: wip.stats,
 	};
 }

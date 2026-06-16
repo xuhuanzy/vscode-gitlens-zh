@@ -28,7 +28,7 @@ export class CommandsService {
 	 * @param args - Optional arguments to pass to the command
 	 */
 	async execute(command: GlExtensionCommands, ...args: unknown[]): Promise<unknown> {
-		return executeCommand(command, ...args) as Promise<unknown>;
+		return executeCommand(command, ...args);
 	}
 
 	/**
@@ -39,6 +39,6 @@ export class CommandsService {
 	 */
 	async executeScoped(command: GlWebviewCommands, args?: Record<string, unknown>): Promise<unknown> {
 		const context = { webview: this.#host.id, webviewInstance: this.#host.instanceId, ...args };
-		return executeCommand(command, context) as Promise<unknown>;
+		return executeCommand(command, context);
 	}
 }

@@ -41,7 +41,7 @@ import { escapeRegex } from '@gitlens/utils/string.js';
 import type { Uri } from '@gitlens/utils/uri.js';
 import { fileUri, joinUriPath, toFsPath } from '@gitlens/utils/uri.js';
 import type { CliGitProviderInternal } from '../cliGitProvider.js';
-import type { GitExecOptions, GitResult } from '../exec/exec.types.js';
+import type { GitResult, GitRunOptions } from '../exec/exec.types.js';
 import type { Git } from '../exec/git.js';
 import { gitConfigsLog, gitConfigsLogWithFiles, GitErrors } from '../exec/git.js';
 import type {
@@ -50,7 +50,12 @@ import type {
 	CommitsWithFilesLogParser,
 	ParsedCommit,
 } from '../parsers/logParser.js';
-import { getCommitsLogParser, getShaAndFilesAndStatsLogParser, getShaLogParser } from '../parsers/logParser.js';
+import {
+	getCommitsLogParser,
+	getShaAndDatesLogParser,
+	getShaAndFilesAndStatsLogParser,
+	getShaLogParser,
+} from '../parsers/logParser.js';
 import { getReflogParser, parseGitRefLog } from '../parsers/reflogParser.js';
 import { parseSignatureOutput, signatureFormat } from '../parsers/signatureParser.js';
 import { createCommitFileset } from './commitFilesetUtils.js';
@@ -75,7 +80,7 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 		message: string,
 		cancellation?: AbortSignal,
 	): Promise<string> {
-		const result = await this.git.exec(
+		const result = await this.git.run(
 			{ cwd: repoPath, cancellation: cancellation, errors: 'throw' },
 			'commit-tree',
 			tree,
@@ -106,7 +111,7 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 
 	@debug({ exit: true })
 	async getCommitCount(repoPath: string, rev: string, cancellation?: AbortSignal): Promise<number | undefined> {
-		const result = await this.git.exec(
+		const result = await this.git.run(
 			{ cwd: repoPath, cancellation: cancellation, errors: 'ignore' },
 			'rev-list',
 			'--count',
@@ -124,10 +129,73 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 		return isNaN(count) ? undefined : count;
 	}
 
+	@debug({ exit: true })
+	async hasUnpublishedCommits(
+		repoPath: string,
+		rev: string,
+		cancellation?: AbortSignal,
+	): Promise<boolean | undefined> {
+		// `<rev> --not --remotes` = commits reachable from `rev` but not from any remote-tracking ref.
+		// `--max-count=1` early-exits at the first such commit, so this is a presence probe, not a count.
+		const result = await this.git.run(
+			{ cwd: repoPath, cancellation: cancellation, errors: 'ignore' },
+			'rev-list',
+			'--max-count=1',
+			rev,
+			'--not',
+			'--remotes',
+			'--',
+		);
+		if (result.cancelled || cancellation?.aborted) {
+			throw new CancellationError();
+		}
+
+		return result.stdout.trim().length > 0;
+	}
+
+	@debug({ exit: true })
+	async getCommitDates(
+		repoPath: string,
+		rev: string,
+		cancellation?: AbortSignal,
+	): Promise<{ authorDate: Date; committerDate: Date } | undefined> {
+		const parser = getShaAndDatesLogParser();
+		const result = await this.git.run(
+			{
+				cwd: repoPath,
+				cancellation: cancellation,
+				errors: 'ignore',
+				// Why: full SHAs identify immutable commits (5-min TTL is safe). Non-SHA refs rely on
+				// gitResults being cleared on 'head'/'heads'/'remotes' events; the 60s TTL is the
+				// failsafe for watcher latency / web (no fs watcher).
+				caching: {
+					cache: this.cache.gitResults,
+					options: { accessTTL: isSha(rev) ? 5 * 60 * 1000 : 60 * 1000 },
+				},
+			},
+			'log',
+			'-1',
+			...parser.arguments,
+			rev,
+		);
+		if (result.cancelled || cancellation?.aborted) return undefined;
+
+		for (const entry of parser.parse(result.stdout)) {
+			const authorSeconds = Number(entry.authorDate);
+			const committerSeconds = Number(entry.committerDate);
+			if (!Number.isFinite(authorSeconds) || !Number.isFinite(committerSeconds)) return undefined;
+			return {
+				authorDate: new Date(authorSeconds * 1000),
+				committerDate: new Date(committerSeconds * 1000),
+			};
+		}
+		return undefined;
+	}
+
 	@debug()
 	async getCommitFiles(repoPath: string, rev: string, cancellation?: AbortSignal): Promise<GitFileChange[]> {
 		const parser = getShaAndFilesAndStatsLogParser();
-		const result = await this.git.exec(
+		const result = await this.git.run(
 			{ cwd: repoPath, cancellation: cancellation, configs: gitConfigsLog },
 			'log',
 			...parser.arguments,
@@ -205,7 +273,7 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 		const getCore = async (cacheable?: CacheController) => {
 			try {
 				// Use for-each-ref with %(HEAD) to mark current branch with *
-				const result = await this.git.exec(
+				const result = await this.git.run(
 					{ cwd: repoPath, cancellation: cancellation, errors: 'ignore' },
 					'for-each-ref',
 					'--contains',
@@ -307,8 +375,8 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 		}
 
 		try {
-			const result = await this.git.exec(
-				{ cwd: repoPath, cancellation: cancellation, configs: gitConfigsLog },
+			const result = await this.git.run(
+				{ cwd: repoPath, cancellation: cancellation, configs: gitConfigsLog, priority: 'background' },
 				'log',
 				...args,
 			);
@@ -365,7 +433,7 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 		// Initial commit SHA is shared across all worktrees
 		return this.cache.getInitialCommitSha(repoPath, async commonPath => {
 			try {
-				const result = await this.git.exec(
+				const result = await this.git.run(
 					{ cwd: commonPath, cancellation: cancellation, errors: 'ignore' },
 					'rev-list',
 					`--max-parents=0`,
@@ -397,7 +465,7 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 			: [];
 
 		const run = async (): Promise<LeftRightCommitCountResult | undefined> => {
-			const result = await this.git.exec(
+			const result = await this.git.run(
 				{ cwd: repoPath, cancellation: cancellation, errors: 'ignore' },
 				'rev-list',
 				'--left-right',
@@ -433,7 +501,7 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 		// Cache key: range + excludeMerges. RepositoryChange events affecting branches/remotes
 		// invalidate this cache via clearCaches('branches').
 		const cacheKey = `${range}\x1f${options?.excludeMerges ? 'no-merges' : ''}`;
-		return this.cache.getLeftRightCommitCount(repoPath, cacheKey, run);
+		return this.cache.leftRightCommitCount.getOrCreate(repoPath, cacheKey, run);
 	}
 
 	@debug()
@@ -527,24 +595,15 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 				args.push(`-n${isSingleCommit ? 1 : limit + 1}`);
 			}
 
-			let stashes: Map<string, GitStashCommit> | undefined;
-			let stdin: string | undefined;
+			let stashes: ReadonlyMap<string, GitStashCommit> | undefined;
 
-			if (!isSingleCommit) {
-				if (options?.stashes) {
-					// There *HAS* to be a better way to get git log to return stashes, but this is the best we've found
-					({ stdin, stashes } = convertStashesToStdin(
-						typeof options.stashes === 'boolean'
-							? await this.provider.stash?.getStash(repoPath, { reachableFrom: rev }, cancellation)
-							: options.stashes,
-					));
-					if (stashes.size) {
-						rev ??= 'HEAD';
-					}
-				}
-
-				if (stdin) {
-					args.push('--stdin');
+			if (!isSingleCommit && options?.stashes) {
+				stashes =
+					typeof options.stashes === 'boolean'
+						? (await this.provider.stash?.getStash(repoPath, { reachableFrom: rev }, cancellation))?.stashes
+						: options.stashes;
+				if (stashes?.size) {
+					rev ??= 'HEAD';
 				}
 			}
 
@@ -582,19 +641,30 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 			const currentUser = await currentUserPromise.catch(() => undefined);
 			if (cancellation?.aborted) throw new CancellationError();
 
-			const cmdOpts: GitExecOptions = {
+			const cmdOpts: GitRunOptions = {
 				cwd: repoPath,
 				cancellation: cancellation,
 				configs: gitConfigsLogWithFiles,
-				stdin: stdin,
+				// Single-commit log serves user-initiated reads (commit details, hover, etc.).
+				// Mirrors getCommitDates: full SHAs are immutable so a 5-min TTL is safe; non-SHA refs
+				// rely on gitResults being cleared on head/heads/remotes events (60s is the failsafe
+				// for watcher latency / web with no fs watcher).
+				...(isSingleCommit && rev
+					? {
+							caching: {
+								cache: this.cache.gitResults,
+								options: { accessTTL: isSha(rev) ? 5 * 60 * 1000 : 60 * 1000 },
+							},
+						}
+					: undefined),
 			};
-			let { commits, count, countStashChildCommits } = await parseCommits(
+			let { commits, count } = await parseCommits(
 				parser,
-				isSingleCommit ? this.git.exec(cmdOpts, ...args) : this.git.stream(cmdOpts, ...args),
+				isSingleCommit ? this.git.run(cmdOpts, ...args) : this.git.stream(cmdOpts, ...args),
 				repoPath,
 				pathspec,
 				limit,
-				stashes,
+				undefined,
 				currentUser,
 			);
 
@@ -616,15 +686,57 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 						args.splice(args.length - 1, 1, pathspec);
 					}
 
-					({ commits, count, countStashChildCommits } = await parseCommits(
+					({ commits, count } = await parseCommits(
 						parser,
-						isSingleCommit ? this.git.exec(cmdOpts, ...args) : this.git.stream(cmdOpts, ...args),
+						isSingleCommit ? this.git.run(cmdOpts, ...args) : this.git.stream(cmdOpts, ...args),
 						repoPath,
 						pathspec,
 						limit,
-						stashes,
+						undefined,
 						currentUser,
 					));
+				}
+			}
+
+			// Merge stashes in-memory rather than via `git log --stdin <stash>` — git would
+			// walk each stash's parent chains and pull in pre-rebase ancestors that aren't
+			// reachable from <rev>. Slot each stash directly above its first parent; stashes
+			// whose parent isn't in the result (rebased away, or below the current limit) are
+			// dropped — the Stashes view still surfaces them, and they reappear here if the
+			// parent loads via "Load more".
+			if (stashes?.size) {
+				// `stashes` arrives in `git stash list` order (newest @{0} first), so per-parent
+				// groups naturally land newest-first without an explicit sort
+				const stashesByParent = new Map<string, GitStashCommit[]>();
+				for (const stash of stashes.values()) {
+					const parentSha = stash.parents[0];
+					if (parentSha == null || !commits.has(parentSha)) continue;
+
+					const group = stashesByParent.get(parentSha);
+					if (group != null) {
+						group.push(stash);
+					} else {
+						stashesByParent.set(parentSha, [stash]);
+					}
+				}
+
+				if (stashesByParent.size) {
+					const cap = limit > 0 ? limit + 1 : Number.POSITIVE_INFINITY;
+					const merged = new Map<string, GitCommit>();
+					outer: for (const c of commits.values()) {
+						const group = stashesByParent.get(c.sha);
+						if (group != null) {
+							for (const s of group) {
+								if (merged.size >= cap) break outer;
+
+								merged.set(s.sha, s);
+							}
+						}
+						if (merged.size >= cap) break;
+
+						merged.set(c.sha, c);
+					}
+					commits = merged;
 				}
 			}
 
@@ -634,7 +746,7 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 				sha: isRevisionRange(rev) ? undefined : rev,
 				count: commits.size,
 				limit: limit,
-				hasMore: overrideHasMore ?? count - countStashChildCommits > commits.size,
+				hasMore: overrideHasMore ?? (limit > 0 && count > limit),
 			};
 
 			if (!isSingleCommit) {
@@ -899,6 +1011,7 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 							filterMap<[string, GitCommit], [string, GitCommit]>(log.commits.entries(), ([sha, c]) => {
 								if (skip) {
 									if (sha !== rev) return undefined;
+
 									skip = false;
 								}
 
@@ -1060,7 +1173,7 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 					args.push(pathspec);
 				}
 
-				const result = await this.git.exec(
+				const result = await this.git.run(
 					{ cwd: repoPath, cancellation: cancellation, configs: gitConfigsLog },
 					'log',
 					...args,
@@ -1069,6 +1182,7 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 			} catch (ex) {
 				scope?.error(ex);
 				if (isCancellationError(ex)) throw ex;
+
 				debugger;
 
 				return [];
@@ -1102,7 +1216,7 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 
 			const parser = getShaLogParser();
 
-			const result = await this.git.exec(
+			const result = await this.git.run(
 				{ cwd: repoPath, cancellation: cancellation, configs: gitConfigsLog },
 				'log',
 				...parser.arguments,
@@ -1116,6 +1230,7 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 		} catch (ex) {
 			scope?.error(ex);
 			if (isCancellationError(ex)) throw ex;
+
 			debugger;
 
 			return undefined;
@@ -1133,7 +1248,7 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 	async isAncestorOf(repoPath: string, rev1: string, rev2: string, cancellation?: AbortSignal): Promise<boolean> {
 		if (repoPath == null) return false;
 
-		const result = await this.git.exec(
+		const result = await this.git.run(
 			{ cwd: repoPath, cancellation: cancellation, errors: 'ignore' },
 			'merge-base',
 			'--is-ancestor',
@@ -1312,11 +1427,14 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 		const scope = getScopedLogger();
 
 		try {
-			const result = await this.git.exec(
+			const result = await this.git.run(
 				{
 					cwd: repoPath,
 					errors: 'ignore',
-					caching: { cache: this.cache.gitResults, options: { accessTTL: 60 * 1000 } },
+					caching: {
+						cache: this.cache.gitResults,
+						options: { accessTTL: isSha(sha) ? 5 * 60 * 1000 : 60 * 1000 },
+					},
 					configs: gitConfigsLog,
 				},
 				'log',
@@ -1339,11 +1457,14 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 		const scope = getScopedLogger();
 
 		try {
-			const result = await this.git.exec(
+			const result = await this.git.run(
 				{
 					cwd: repoPath,
 					errors: 'ignore',
-					caching: { cache: this.cache.gitResults, options: { accessTTL: 60 * 1000 } },
+					caching: {
+						cache: this.cache.gitResults,
+						options: { accessTTL: isSha(sha) ? 5 * 60 * 1000 : 60 * 1000 },
+					},
 				},
 				'cat-file',
 				'commit',

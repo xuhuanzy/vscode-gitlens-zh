@@ -1,3 +1,4 @@
+import type { GkConfigInvalidationTarget } from '../cache.js';
 import type { GitDir } from '../models/repository.js';
 import type { SigningConfig, ValidationResult } from '../models/signature.js';
 import type { GitUser } from '../models/user.js';
@@ -36,6 +37,8 @@ export type GkConfigKeys =
 	| `branch.${string}.gk-last-accessed`
 	/** `gk-last-modified` — ISO 8601 timestamp of when the branch last received a commit */
 	| `branch.${string}.gk-last-modified`
+	/** `gk-agent-last-activity` — ISO 8601 timestamp of when an AI agent was last active on this branch */
+	| `branch.${string}.gk-agent-last-activity`
 	/** `gk-disposition` — user-assigned branch disposition: 'starred' or 'archived' */
 	| `branch.${string}.gk-disposition`
 	/** `gk.defaultRemote` — the user-designated default remote for the repository */
@@ -85,16 +88,13 @@ export interface GitConfigSubProvider {
 		| []
 	>;
 
-	getGkConfig?(
-		repoPath: string,
-		key: GkConfigKeys | DeprecatedGkConfigKeys,
-		options?: { type?: GitConfigType },
-	): Promise<string | undefined>;
+	getGkConfig?(repoPath: string, key: GkConfigKeys | DeprecatedGkConfigKeys): Promise<string | undefined>;
 	getGkConfigRegex?(repoPath: string, pattern: string): Promise<Map<string, string>>;
 	setGkConfig?(
 		repoPath: string,
 		key: GkConfigKeys | DeprecatedGkConfigKeys,
 		value: string | undefined,
+		options?: { skipInvalidation?: readonly GkConfigInvalidationTarget[] },
 	): Promise<void>;
 
 	getSigningConfig?(repoPath: string): Promise<SigningConfig>;

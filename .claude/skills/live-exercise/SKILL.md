@@ -1,6 +1,6 @@
 ---
 name: live-exercise
-description: Use whenever you're working on, verifying, ship-gating, or auditing a feature or change set with visible UI — keep a running instance in the loop and exercise it as a user would. Applies functional walk-through + intent compliance (cold-read when no spec) always; polish heuristics, improvement hunting, simplify, and performance sweep activate on signal or end-of-loop prompt. Not for pure-logic diff review.
+description: Use whenever any UI-bearing work touches a running instance — building or fixing a feature, ship-gating, auditing, OR debugging visible bugs (flaky behavior, intermittent rendering, "sometimes does X" reports, hover/focus/animation glitches, layout overflow). Keep a running instance in the loop and exercise it as a user would. Adaptive depth from tactical fix-loop to ship-gate audit. Not for pure-logic diff review.
 ---
 
 # /live-exercise — Live functionality, intent, and quality loop
@@ -109,16 +109,15 @@ Discipline:
 
 ## Adaptive depth — no upfront prompt
 
-The skill never asks "what mode?" at start. Context signals drive depth.
+The skill never asks "what mode?" at start. Tactical by default (L1 + L2 active, L3 observed, L4 off). The lens table above lists L4 triggers; when any fire, comprehensive mode activates automatically. Phase 6 and 7 gate at end-of-loop (see "Convergence" below).
 
-- **Tactical by default**: L1 + L2 always; L3 observed but non-blocking; L4 off.
-- **Comprehensive mode** activates automatically when any of: explicit signal words ("audit/polish/ship-gate/elevate"), presence of `goals.md`, L2 surfaced ambiguity/can't-form-intent, repeated invocations on the same feature.
-- **Phase 6 simplify** and **Phase 7 perf** gate at end-of-loop — signal → auto, otherwise prompt once.
+**Trivial changes — skip the loop.** A single-line copy edit, color-token swap, icon rename, comment-only change, or any change with no state surface earns build + diff + one-click eyeball verification. No findings doc, no Phase 4 dispatch, no convergence check. The skill exists for state-bearing UI work; don't manufacture ceremony for changes that have nothing to converge on. If you can describe the change in one sentence and it touches no handlers, no state, no layout, and no async paths, you're trivial — verify quick and ship.
 
 ## The loop
 
 ### 1. Scope & spec
 
+0. **Reach starting state without clicking the SUT.** Use `launch({ settings })`, command palette, direct method calls on the component instance, or feature simulators. UI-driven setup conflates the flow you're testing with the state you need — every accidental toggle costs an iteration, and the same icon often does double duty as both setup and SUT. Save real clicks for what you're actually exercising.
 1. Read `goals.md` under the user's pointed `.work/dev/<id>/` (or wherever). If absent, ask the user:
 
    > "No `goals.md` found. In 1–2 sentences: what's the intended user experience for this feature? What problem does it solve, and what does success look like from the user's POV?"
@@ -132,8 +131,8 @@ The skill never asks "what mode?" at start. Context signals drive depth.
 
 `launch` VS Code, then for **every** distinct mode/state/context the feature exposes:
 
-1. Maximize real estate: close sidebar/aux bar/bottom panel. `resize_viewport` to 2400×1400+ so layout-at-width issues surface.
-2. Navigate via `execute_command` or programmatic clicks. Shadow-DOM traversal is the hard part — use `evaluate_in_webview` to dispatch synthetic `MouseEvent`s with modifier keys when needed.
+1. Maximize real estate via `execute_command` to close sidebar/aux bar/bottom panel. Do NOT use `resize_window` to grow the window for general auditing — it resizes the actual Electron window and is clamped by the host display. Only resize when a lens explicitly requires testing a specific responsive breakpoint, and prefer sizes ≤ the launch window. For larger headless render surfaces, configure `launch({ screen_resolution })` at startup instead.
+2. Navigate via `execute_command` or programmatic clicks. Shadow-DOM traversal is the hard part — use `evaluate_in_webview` to dispatch synthetic `MouseEvent`s with modifier keys when needed. Wrap multi-line scripts in `(() => { ... })()` and `JSON.stringify` non-primitive returns. `new Error().stack` is often empty in eval context — patch the source method to get useful stack frames.
 3. Apply all active lenses per state:
    - **L1**: exercise interactions, verify handlers fired (`evaluate_in_webview` → command executed / state updated / event dispatched). Capture layout invariants.
    - **L2**: compare live behavior to goals/intent (or cold-read inference). State inference chains explicitly.
@@ -245,7 +244,7 @@ Bad subagent prompt (will produce static-only verification):
 
 Good subagent prompt:
 
-> Verify compare mode by: (1) launch `mcp__vscode-inspector__launch`; (2) show the graph, click one commit, Ctrl+click another; (3) `read_console { level: "error" }`; (4) inspect that `gl-graph-compare-panel` renders with non-empty `commitFrom`/`commitTo`; (5) evaluate handler fired via `window.__lastCompareEvent`; (6) report console errors and any rendering failures. Do NOT ship based on `tsc` alone.
+> Verify compare mode by: (1) launch `mcp__vscode-inspector__launch`; (2) show the graph, click one commit, Ctrl+click another; (3) `read_console { level: "error" }`; (4) inspect that `gl-details-multicommit-panel` renders with non-empty `commitFrom`/`commitTo`; (5) evaluate handler fired via `window.__lastCompareEvent`; (6) report console errors and any rendering failures. Do NOT ship based on `tsc` alone.
 
 ### 5. Verify & loop
 
@@ -262,33 +261,13 @@ When agents complete:
 6. Update the findings doc — ✅ the resolved items, add new `I2-*` entries.
 7. **Loop to step 4** if there are new unambiguous fixes.
 
-### 6. Simplify — end-of-loop, gated
+### 6 & 7 — End-of-loop gates: Simplify, then Performance
 
-Once Phase 5 converges (nothing new), decide whether to run simplify:
+Phases 6 and 7 share the same gating: **explicit signal** ("done/ship-gate/polish/audit") → run automatically; **no signal** → prompt once, default N. Once opted in for the session, the phase remains part of the convergence loop — no re-prompts on subsequent passes. Either phase producing changes loops back to Phase 5 (re-sweep all active lenses); simplification can introduce regressions (removed "redundant" state that was actually load-bearing, collapsed templates that rendered differently in different contexts), so the re-sweep is non-negotiable.
 
-1. **Explicit signal present** (user said "done/ship-gate/polish/audit") → run `/simplify` automatically.
-2. **No signal** → **prompt once**: "Parallel dispatch accumulates drift. Run `/simplify` now? (y/N)" Default N. User opts in.
+**6. Simplify** — invokes `/simplify` (3 parallel review agents: reuse, quality, efficiency). After it runs: `pnpm run build:quick` + `git diff` + loop back to Phase 5.
 
-Simplify dispatches 3 parallel review agents (reuse, quality, efficiency) and applies fixes. After it runs:
-
-- `pnpm run build:quick`. Fix breakage.
-- **`git diff`** — same rule; trust nothing blindly.
-- **Loop back to Phase 5** — teardown + relaunch, re-measure, re-sweep all active lenses. Simplification can introduce regressions (removed a "redundant" state that was actually load-bearing; collapsed two templates that rendered in different contexts).
-
-Once simplify has been opted into (or signaled) for the session, it remains part of the convergence loop — no re-prompts on subsequent passes.
-
-### 7. Performance sweep — end-of-loop, gated (delegated to `/live-perf`)
-
-Runs **after Phase 6 simplify has converged**, with the same gating:
-
-1. **Explicit signal present** → invoke `/live-perf` automatically.
-2. **No signal** → **prompt once**: "Run perf sweep? (y/N)" Default N. On yes, invoke `/live-perf`.
-
-The `/live-perf` skill owns scope, measurement discipline, and the three-tier classification (measured / conventions / speculation). See `/live-perf` for full details. From this loop's perspective:
-
-- If `/live-perf` produces changes → **loop back to Phase 5** (re-sweep all active lenses).
-- Once opted in for the session, `/live-perf` remains part of the convergence loop — no re-prompts on subsequent passes.
-- Perf findings use `P`-prefix IDs (`PR` regression, `PC` convention, `PS` speculation) and can live in the same `findings.md` or delegated out — `/live-perf` handles artifact placement.
+**7. Performance** — invokes `/live-perf` after Phase 6 converges. `/live-perf` owns scope, measurement discipline, and the three-tier classification (see `/live-perf`). Perf findings use `P`-prefix IDs (`PR` regression, `PC` convention, `PS` speculation) and can live in the same `findings.md` or delegated out.
 
 ## Convergence — full exit criterion
 
@@ -308,24 +287,28 @@ Additional exit conditions:
 
 ## Pitfalls
 
-| Pitfall                         | What happens                                                                                            | Mitigation                                                                                |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| Eyeballing the flow             | "Feels fine" becomes evidence; real handler bugs slip through                                           | `evaluate_in_webview` to verify state/command/event fired, not just clicked               |
-| Skipping L2 when no goals.md    | Completeness findings silently missed                                                                   | Cold-read always applies; solicit intent if absent; state inference chains explicitly     |
-| Polish dominating bugs          | Iteration focuses on spacing while L1 handlers are broken                                               | L1 is gating. Don't move deeper until L1 is clean                                         |
-| Drive-by improvement churn (L4) | Agent proposes changes that don't serve intent                                                          | Every improvement must map to a heuristic gap, an L2 ambiguity, or stated intent          |
-| Liberty overreach               | Agent changes a cross-feature convention (icon, term, pattern) without asking                           | Cross-feature changes → `open-questions.md` always                                        |
-| Missing `decisions.md`          | User has no audit trail of liberties; trust erodes                                                      | Every dispatched liberty goes in `decisions.md`                                           |
-| Speculative perf optimization   | Agent "optimizes" something that was never slow                                                         | Measured-tier requires baseline + post-measurement. Speculation → open-questions only     |
-| Perf rewrite when caching fits  | Agent rewrites an inner loop when a missing `@memoize` would solve it                                   | Prefer caching / memoization / debouncing over rewrites; convention-tier handles most     |
-| Over-eager fix agent            | Prompt says "remove empty div" → agent deletes functional buttons inside                                | Prompt MUST state template location and expected rendering outcome, not only CSS selector |
-| Load-order bug                  | Side-effect module runs too late; the thing it registers fires after consumers already used the default | Register at every webview entry, or in the most-transitively-imported shared wrapper      |
-| Per-realm registration          | One webview ≠ all webviews                                                                              | Plan for N registrations, not 1                                                           |
-| Stale instance state            | Iteration N sees cached state from N−1                                                                  | **Always** teardown + relaunch between iterations                                         |
-| Silent agent regression         | Agent "succeeds" but reverted working code                                                              | Always `git diff` after agents; don't trust their summaries                               |
-| Mimic vs reuse                  | Agent "fixes" icon-fetch by inlining third-party icons instead of using ours                            | Specify source-of-truth in the prompt                                                     |
-| Shadow DOM aria clipping        | `aria_snapshot` reports empty buttons that actually have labels                                         | Use `evaluate_in_webview` to read `aria-label` on the inner button directly               |
-| Guess-fixing                    | "Probably the padding — let me bump it"                                                                 | Measure first. No measurement → no fix                                                    |
+| Pitfall                         | What happens                                                                                                                                                                  | Mitigation                                                                                                                                                                      |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Eyeballing the flow             | "Feels fine" becomes evidence; real handler bugs slip through                                                                                                                 | `evaluate_in_webview` to verify state/command/event fired, not just clicked                                                                                                     |
+| Skipping L2 when no goals.md    | Completeness findings silently missed                                                                                                                                         | Cold-read always applies; solicit intent if absent; state inference chains explicitly                                                                                           |
+| Polish dominating bugs          | Iteration focuses on spacing while L1 handlers are broken                                                                                                                     | L1 is gating. Don't move deeper until L1 is clean                                                                                                                               |
+| Drive-by improvement churn (L4) | Agent proposes changes that don't serve intent                                                                                                                                | Every improvement must map to a heuristic gap, an L2 ambiguity, or stated intent                                                                                                |
+| Liberty overreach               | Agent changes a cross-feature convention (icon, term, pattern) without asking                                                                                                 | Cross-feature changes → `open-questions.md` always                                                                                                                              |
+| Missing `decisions.md`          | User has no audit trail of liberties; trust erodes                                                                                                                            | Every dispatched liberty goes in `decisions.md`                                                                                                                                 |
+| Speculative perf optimization   | Agent "optimizes" something that was never slow                                                                                                                               | Measured-tier requires baseline + post-measurement. Speculation → open-questions only                                                                                           |
+| Perf rewrite when caching fits  | Agent rewrites an inner loop when a missing `@memoize` would solve it                                                                                                         | Prefer caching / memoization / debouncing over rewrites; convention-tier handles most                                                                                           |
+| Over-eager fix agent            | Prompt says "remove empty div" → agent deletes functional buttons inside                                                                                                      | Prompt MUST state template location and expected rendering outcome, not only CSS selector                                                                                       |
+| Load-order bug                  | Side-effect module runs too late; the thing it registers fires after consumers already used the default                                                                       | Register at every webview entry, or in the most-transitively-imported shared wrapper                                                                                            |
+| Per-realm registration          | One webview ≠ all webviews                                                                                                                                                    | Plan for N registrations, not 1                                                                                                                                                 |
+| Stale instance state            | Iteration N sees cached state from N−1                                                                                                                                        | **Always** teardown + relaunch between iterations                                                                                                                               |
+| Silent agent regression         | Agent "succeeds" but reverted working code                                                                                                                                    | Always `git diff` after agents; don't trust their summaries                                                                                                                     |
+| Mimic vs reuse                  | Agent "fixes" icon-fetch by inlining third-party icons instead of using ours                                                                                                  | Specify source-of-truth in the prompt                                                                                                                                           |
+| Shadow DOM aria clipping        | `aria_snapshot` reports empty buttons that actually have labels                                                                                                               | Use `evaluate_in_webview` to read `aria-label` on the inner button directly                                                                                                     |
+| Guess-fixing                    | "Probably the padding — let me bump it"                                                                                                                                       | Measure first. No measurement → no fix                                                                                                                                          |
+| Setup-by-clicking               | The icon you click to _reach_ a state is often also the SUT — accidental toggles cost iterations and mask root causes                                                         | Drive setup via `launch({ settings })`, command palette, direct method calls, or simulators. Save UI clicks for what you're actually testing                                    |
+| Snapshot at the consumer        | "Capture state on the click handler" / "in the bubble listener" fails when state mutates upstream — different task, microtask drained, stopPropagation, Lit re-render between | Instrument inside the function that mutates the state, not in a downstream listener. The producer always runs first by definition                                               |
+| Stacked instrumentation         | Re-running a tracing patch wraps the previous wrapper; one call now logs N times, stacks fragment, traces stop making sense                                                   | Guard each patch with a marker (`if (a.__patched) return; a.__patched = true`) or teardown+relaunch. Webview _reload_ keeps document listeners — only teardown is a clean reset |
+| Spec-grade mental model         | "Microtasks drain at task end" / "capture before bubble" assumed without verification — Playwright dispatches input events as separate tasks, microtasks drain between them   | For any timing/ordering-sensitive design, prove the mechanism with a 5-line `evaluate_in_webview` trace **before** writing the plan                                             |
 
 ## Red flags — pause the loop
 
@@ -354,6 +337,7 @@ Any of these phrases appearing in your reasoning = you're about to ship without 
 - "Polish is subjective, move on"
 - "There's no goals.md so I'll guess at intent"
 - "This could probably be faster" (dispatch bait)
+- "The fix should work because [microtask timing / event ordering / shadow DOM behavior]" — that's a hypothesis, not a verification. Trace the actual ordering live before committing to a design
 - "Ship it" / "LGTM" / "looks good from here"
 
 These are correct outputs AFTER applying lenses live, not substitutes for it.
@@ -370,6 +354,9 @@ These are correct outputs AFTER applying lenses live, not substitutes for it.
 | "It's one small issue, no need for an agent"                        | Single fixes still benefit from the dispatch pattern — you keep doing live inspection while the agent works, and the diff surfaces regressions                          |
 | "Improvement opportunity obviously right, no need for decisions.md" | Clear wins are exactly what `decisions.md` is for — the audit trail is the whole point of "taking liberties"                                                            |
 | "We just did a sweep, skip iteration 2"                             | Iteration 2 catches regressions iteration 1 couldn't see                                                                                                                |
+| "Spec says microtasks drain at task end, so the snapshot works"     | Native events dispatched by real input (Playwright) split into separate tasks; microtasks drain between them. Trace the actual ordering before designing around it      |
+| "I'll capture state on the click handler"                           | Click runs in a later task. Anything mutated in pointerdown's microtask is gone by then. Snapshot in the producer (where the mutation is scheduled), not the consumer   |
+| "Setup by clicking the icon I want to test is fine"                 | The same icon often does double duty as setup and SUT — accidental toggles are silent and burn iterations. Drive setup via config/command/method calls, not the SUT     |
 | "Teardown takes 10s each time — skip it"                            | Cached state in the old instance is the single most common source of false-positive/false-negative findings                                                             |
 | "The build passed, ship it"                                         | Build passing ≠ fix verified. Measure                                                                                                                                   |
 | "This could probably be faster"                                     | Speculation. No measurement → open-questions, never dispatch                                                                                                            |
@@ -391,6 +378,26 @@ You MUST have:
 
 Missing any of those = UI readiness is unverified. "Code paths look clean" is not evidence.
 
+## Exercising Pro-gated features
+
+Features gated by subscription (Commit Graph beyond local repos, Launchpad, Worktrees, Cloud Patches, Composer, all AI features, Drafts, Workspaces, etc.) won't unlock without a Paid/Trial session. Use the **subscription simulator** documented in `/live-inspect` (section: "Exercising Pro-gated features"). Pass `dismissOnboarding: true` on the start call to pre-dismiss every GitLens onboarding overlay — they intercept clicks during automation. State (subscription + onboarding flags) is restored when you call with `state: null`.
+
+```
+execute_command { command: "gitlens.plus.simulate.subscription", args: [{ "state": "Paid", "planId": "pro", "dismissOnboarding": true }] }
+```
+
+Other states for boundary-case sweeps: `"Community"` (paywall UX), `"TrialExpired"` / `"TrialReactivationEligible"` (trial-end UX), `"VerificationRequired"` (email-verify gate), or `"Paid"` with `planId: "advanced" | "teams" | "enterprise"` for plan-tier differences. See `/live-inspect` for the full reference.
+
+## Exercising AI features
+
+Real AI provider calls are non-deterministic and can't be asserted against. Use the **AI simulator** documented in `/live-inspect` (section: "Exercising AI features") — it's Pro-gated, so the subscription simulator above is a prerequisite.
+
+Loop-specific notes:
+
+- **Per finding**: inject content with a unique assertion sentinel before triggering the feature; assert against it in the rendered surface. **Clear between findings** (`{ op: "clear" }`) — leftover injects leak between scenarios.
+- **Negative-path findings (error/cancel/slow/invalid UX)**: switch the global `mode` instead of injecting per call.
+- **Phase 4 dispatch**: subagents don't auto-load `/live-inspect`. When dispatching a fix agent that touches an AI surface, embed the inject command, the content to inject, and the assertion target directly in the agent's prompt.
+
 ## Output artifacts
 
 - `.tasks/<feature>-exercise/findings.md` — severity + status table + detailed entries across lenses + perf
@@ -403,16 +410,16 @@ Missing any of those = UI readiness is unverified. "Code paths look clean" is no
 
 **REQUIRED BACKGROUND:**
 
-- `/live-inspect` — primitive MCP tool reference; used throughout this skill. You'll use its tools for every sweep, verification, and measurement.
-- `/simplify` — 3-agent parallel code cleanup (reuse / quality / efficiency); invoked from Phase 6.
-- `/live-perf` — performance measurement + evaluation + improvement; invoked from Phase 7. Owns all perf discipline (scope, three-tier classification, measure-first rules).
+- `/live-inspect` — primitive MCP tool reference, used throughout
+- `/simplify` — 3-agent parallel code cleanup; invoked from Phase 6
+- `/live-perf` — perf measurement + improvement; invoked from Phase 7
 
 **Interactive counterpart:**
 
-- `/live-pair` — user-driven pair-programming session; the user gives feedback, the agent edits/rebuilds/refreshes live. Use when iteration is exploratory/creative rather than audit-driven. When `/live-pair` detects a structural bug mid-session, it will flag and offer to delegate back to `/live-exercise`.
+- `/live-pair` — user-driven pair-programming. Use when iteration is exploratory/creative; delegates back here on structural bugs.
 
 **Static counterparts:**
 
-- `/ux-review` — static counterpart to L2/L3; useful for pre-merge review without running the extension
-- `/deep-review` — static counterpart to L1 correctness; complements this skill's live handler verification
+- `/ux-review` — static L2/L3 counterpart
+- `/deep-review` — static L1 correctness counterpart
 - `/review` — standards + completeness diff review

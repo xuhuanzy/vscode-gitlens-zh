@@ -116,6 +116,7 @@ export class GutterBlameAnnotationProvider extends BlameAnnotationProviderBase {
 			this._flushViewport();
 			return;
 		}
+
 		super.restore(editor, recompute);
 	}
 
@@ -208,6 +209,7 @@ export class GutterBlameAnnotationProvider extends BlameAnnotationProviderBase {
 			const startAvatarFetch = (commit: GitCommit): void => {
 				const email = commit.author.email;
 				if (email == null || knownEmails!.has(email)) return;
+
 				knownEmails!.add(email);
 
 				// Check sync cache first to avoid async fetch for already-known avatars
@@ -336,6 +338,7 @@ export class GutterBlameAnnotationProvider extends BlameAnnotationProviderBase {
 					lastAvatarCacheSize = avatarCache.size;
 					for (let i = 0; i < lineCount; i++) {
 						if (!resolvedLines[i]) continue;
+
 						const l = blame.lines[i];
 						if (l == null) continue;
 
@@ -430,11 +433,7 @@ export class GutterBlameAnnotationProvider extends BlameAnnotationProviderBase {
 
 					if (computedHeatmap != null && enhanced?.before != null) {
 						enhanced = { ...enhanced, before: { ...enhanced.before } };
-						applyHeatmap(
-							{ renderOptions: enhanced } as Partial<DecorationOptions>,
-							getCommitDate(commit),
-							computedHeatmap,
-						);
+						applyHeatmap({ renderOptions: enhanced }, getCommitDate(commit), computedHeatmap);
 					}
 
 					const avatar = avatarCache?.get(commit.author.email ?? '');
@@ -458,7 +457,7 @@ export class GutterBlameAnnotationProvider extends BlameAnnotationProviderBase {
 								if (commit != null) {
 									compactOpts = { before: { ...compactRenderOptions.before } };
 									applyHeatmap(
-										{ renderOptions: compactOpts } as Partial<DecorationOptions>,
+										{ renderOptions: compactOpts },
 										getCommitDate(commit),
 										computedHeatmap,
 									);
@@ -674,11 +673,7 @@ export class GutterBlameAnnotationProvider extends BlameAnnotationProviderBase {
 				if (compactOpts == null) {
 					compactOpts = { before: { contentText: '\u00a0' } };
 					if (computedHeatmap != null) {
-						applyHeatmap(
-							{ renderOptions: compactOpts } as Partial<DecorationOptions>,
-							getCommitDate(commit),
-							computedHeatmap,
-						);
+						applyHeatmap({ renderOptions: compactOpts }, getCommitDate(commit), computedHeatmap);
 					}
 					compactRenderCache.set(l.sha, compactOpts);
 				}
@@ -696,11 +691,7 @@ export class GutterBlameAnnotationProvider extends BlameAnnotationProviderBase {
 				});
 				leaderOpts = gutter.renderOptions;
 				if (computedHeatmap != null) {
-					applyHeatmap(
-						{ renderOptions: leaderOpts } as Partial<DecorationOptions>,
-						getCommitDate(commit),
-						computedHeatmap,
-					);
+					applyHeatmap({ renderOptions: leaderOpts }, getCommitDate(commit), computedHeatmap);
 				}
 				commitRenderCache.set(l.sha, leaderOpts);
 
@@ -812,6 +803,7 @@ export class GutterBlameAnnotationProvider extends BlameAnnotationProviderBase {
 					vpLeader.push(ld);
 					continue;
 				}
+
 				const cd = allCompact[i];
 				if (cd != null) {
 					vpCompact.push(cd);

@@ -1,0 +1,380 @@
+import { css } from 'lit';
+
+export { panelActionInputStyles, panelHostStyles } from './shared-panel.css.js';
+
+export const multiCommitPanelStyles = css`
+	:host {
+		--mode-header-bg: var(--titlebar-bg, var(--vscode-sideBar-background, var(--color-background)));
+	}
+
+	.compare-metadata {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 0 var(--gl-panel-padding-right, 1.2rem) 0 var(--gl-panel-padding-left, 1.2rem);
+		gap: 0.6rem;
+		flex: none;
+		min-height: var(--gl-metadata-bar-min-height);
+		font-size: var(--gl-font-sm);
+		background-color: var(--gl-metadata-bar-bg);
+		border-top: 1px solid var(--vscode-sideBarSectionHeader-border);
+		border-bottom: 1px solid var(--vscode-sideBarSectionHeader-border);
+	}
+
+	.compare-metadata__left {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		flex: 1;
+		min-width: 0;
+		overflow: hidden;
+	}
+
+	.compare-metadata__sha {
+		flex-shrink: 0;
+		font-size: var(--gl-font-base);
+	}
+
+	.compare-metadata__dots {
+		color: var(--color-foreground--50);
+		font-family: var(--vscode-editor-font-family, monospace);
+	}
+
+	.compare-metadata__right {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		flex-shrink: 0;
+	}
+
+	/* Mode-status snippet — replaces commit-stats in the metadata bar's right side while in
+	   review on a multi-commit anchor. */
+	.compare-metadata__right .mode-status {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.8rem;
+		font-size: var(--gl-font-small, 1.2rem);
+		color: var(--color-foreground--65);
+		white-space: nowrap;
+	}
+
+	.compare-metadata__right .mode-status__group {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.3rem;
+	}
+
+	.compare-metadata__right .mode-status__group code-icon {
+		--code-icon-size: 1.2rem;
+		--code-icon-v-align: text-bottom;
+		opacity: 0.85;
+	}
+
+	.compare-metadata__right .mode-status__resume {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.8rem;
+		padding: 0.2rem 0.6rem;
+		font: inherit;
+		color: inherit;
+		background: transparent;
+		border: none;
+		border-radius: 0.4rem;
+		cursor: pointer;
+	}
+
+	.compare-metadata__right .mode-status__resume:hover {
+		background: var(--vscode-toolbar-hoverBackground);
+		color: var(--vscode-foreground);
+	}
+
+	.compare-metadata__right .mode-status__resume:focus-visible {
+		background: var(--vscode-toolbar-hoverBackground);
+		color: var(--vscode-foreground);
+		outline: 0.1rem solid var(--vscode-focusBorder);
+		outline-offset: -0.1rem;
+	}
+
+	.compare-metadata__right .mode-status__resume-verb {
+		font-weight: 500;
+	}
+
+	.compare-metadata__right .mode-status__resume-arrow {
+		--code-icon-size: 1.2rem;
+		--code-icon-v-align: text-bottom;
+		opacity: 0.85;
+	}
+
+	.compare-poles {
+		display: flex;
+		flex-direction: column;
+		flex: none;
+	}
+
+	.pole-card__popover {
+		display: block;
+		--gl-popover-anchor-width: 100%;
+	}
+
+	/* Pole card wraps the shared gl-commit-row in a hover-popover anchor with optional signature
+	   badge. The row owns its own avatar + headline + meta layout — the card just frames it and
+	   handles the popover/signature concerns. */
+	.pole-card {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.55rem 1.2rem;
+		cursor: pointer;
+		min-width: 0;
+	}
+
+	.pole-card:hover {
+		background: var(--vscode-list-hoverBackground);
+	}
+
+	.pole-card:focus {
+		outline: 1px solid var(--vscode-focusBorder);
+		outline-offset: -1px;
+	}
+
+	.pole-card--loading {
+		padding: 0.8rem 1.2rem;
+		color: var(--color-foreground--50);
+		font-size: var(--gl-font-sm);
+	}
+
+	.pole-card > gl-commit-row {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.pole-card__signature {
+		flex-shrink: 0;
+	}
+
+	.compare-middle {
+		display: flex;
+		align-items: center;
+		position: relative;
+		padding: 0 1.2rem;
+		max-height: 1.6rem;
+	}
+
+	.compare-middle__line {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		flex: 1;
+	}
+
+	.compare-middle__rule {
+		flex: 1;
+		height: 1px;
+		background: var(--vscode-sideBarSectionHeader-border);
+	}
+
+	.compare-middle__count {
+		position: absolute;
+		right: 1.2rem;
+		font-size: var(--gl-font-sm);
+		color: var(--color-foreground--50);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: calc(50% - 2.4rem);
+		padding-left: 0.5rem;
+	}
+
+	.compare-middle__swap {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 1.6rem;
+		height: 1.6rem;
+		border: 0.1rem solid var(--vscode-sideBarSectionHeader-border);
+		background: var(--color-background--level-10);
+		color: var(--color-foreground--65);
+		cursor: pointer;
+		border-radius: 0.4rem;
+		flex-shrink: 0;
+		padding: 0.3rem 0.6rem;
+	}
+
+	.compare-middle__swap code-icon {
+		transform: rotate(90deg);
+	}
+
+	.compare-middle__swap:hover {
+		background: var(--vscode-toolbar-hoverBackground);
+		color: var(--color-foreground);
+		border-color: var(--color-foreground--50);
+	}
+
+	.compare-enrichment {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		padding: 0.4rem 1.2rem 0.4rem 1.2rem;
+		font-size: var(--gl-font-sm);
+		flex: none;
+		min-width: 0;
+	}
+
+	.compare-enrichment gl-action-chip[data-action='autolink-settings'] {
+		color: var(--color-foreground--65);
+		--code-icon-size: 1.2rem;
+	}
+
+	.compare-enrichment gl-action-chip::part(base) {
+		gap: 0.4rem;
+	}
+
+	.compare-enrichment gl-action-chip::part(icon) {
+		line-height: 1;
+		display: inline-flex;
+		align-items: center;
+	}
+
+	/* Inline autolinks loading state — replaces "No autolinks found" while the comparison
+	   identity (commits) is changing. min-height matches gl-action-chip's intrinsic 2rem so
+	   the strip doesn't jump between the spinner and the chip-based states. */
+	.compare-enrichment__loading {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		min-height: 2rem;
+		color: var(--vscode-descriptionForeground);
+	}
+
+	.pole-popover {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		margin: 0.6rem 0.2rem 0.2rem 0.2rem;
+		max-width: 400px;
+	}
+
+	.pole-popover__header {
+		display: flex;
+		align-items: flex-start;
+		gap: 0.5rem;
+	}
+
+	.pole-popover__info {
+		display: flex;
+		gap: 0.625rem;
+		align-items: center;
+		flex: 1;
+		min-width: 0;
+	}
+
+	.pole-popover__avatar {
+		width: 3.2rem;
+		height: 3.2rem;
+		border-radius: 0.8rem;
+		flex-shrink: 0;
+	}
+
+	.pole-popover__details {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+		min-width: 0;
+		flex: 1;
+		line-height: normal;
+	}
+
+	.pole-popover__name {
+		font-weight: 500;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		color: var(--vscode-foreground);
+	}
+
+	.pole-popover__email {
+		font-weight: 400;
+		color: var(--vscode-descriptionForeground);
+	}
+
+	.pole-popover__email a {
+		color: var(--color-link-foreground);
+		text-decoration: none;
+	}
+
+	.pole-popover__message {
+		font-size: var(--gl-font-base);
+		color: var(--color-foreground--85);
+		white-space: pre-wrap;
+		word-break: break-word;
+		max-height: 10rem;
+		overflow: auto;
+	}
+
+	/* Pole popover content is portaled by gl-popover (hoist), so scrollableBase's
+	   :host(:hover) gate never matches when the user is hovering the popover.
+	   Force the scrollbar slider to be visible via the same border-color trick the
+	   shared mixin uses, so future tweaks to scrollbar slider colors flow through. */
+	.pole-popover__message.scrollable {
+		border-color: var(--vscode-scrollbarSlider-background);
+	}
+	.pole-popover__message.scrollable::-webkit-scrollbar-thumb:hover {
+		border-color: var(--vscode-scrollbarSlider-hoverBackground);
+	}
+	.pole-popover__message.scrollable::-webkit-scrollbar-thumb:active {
+		border-color: var(--vscode-scrollbarSlider-activeBackground);
+	}
+
+	.pole-popover__date {
+		font-size: var(--gl-font-sm);
+		color: var(--color-foreground--50);
+		flex-shrink: 0;
+		white-space: nowrap;
+	}
+
+	.compare-section {
+		display: flex;
+		flex-direction: column;
+		flex: none;
+		border-bottom: 1px solid var(--vscode-sideBarSectionHeader-border);
+		padding-bottom: 0.4rem;
+	}
+
+	.compare-files {
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+		min-height: 12rem;
+		overflow: hidden;
+		padding-left: 0.6rem;
+		padding-right: 0.6rem;
+	}
+
+	.compare-files webview-pane-group {
+		flex: 1;
+		min-height: 0;
+		overflow: hidden;
+	}
+
+	/* File-section loading container — sits in the gl-file-tree-pane "before-tree" slot in place
+	   of the "No Files" empty text while the comparison diff is still being fetched. */
+	.compare-files--loading {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.6rem;
+		text-align: center;
+		color: var(--vscode-descriptionForeground);
+		padding: 2rem 1.2rem;
+	}
+
+	.details-loading {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 2rem;
+		color: var(--color-foreground--50);
+		font-size: var(--gl-font-base);
+	}
+`;

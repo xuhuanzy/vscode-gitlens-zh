@@ -260,7 +260,7 @@ export class ContributorsGitSubProvider implements GitContributorsSubProvider {
 				}
 
 				const currentUserPromise = this.provider.config.getCurrentUser(repoPath).catch(() => undefined);
-				const result = await this.git.exec({ cwd: repoPath, cancellation: signal }, ...args);
+				const result = await this.git.run({ cwd: repoPath, cancellation: signal }, ...args);
 				if (!result.stdout) return [];
 
 				const shortlog = parseShortlog(result.stdout, commonPath, await currentUserPromise);
@@ -301,7 +301,7 @@ export class ContributorsGitSubProvider implements GitContributorsSubProvider {
 
 		const scope = getScopedLogger();
 
-		const getCore = async (commonPath: string): Promise<GitContributorsStats | undefined> => {
+		const getCore = async (commonPath: string, signal?: AbortSignal): Promise<GitContributorsStats | undefined> => {
 			try {
 				const args = ['shortlog', '-s', '--all'];
 
@@ -316,10 +316,7 @@ export class ContributorsGitSubProvider implements GitContributorsSubProvider {
 					args.push(`--since=${options.since}`);
 				}
 
-				const result = await this.git.exec(
-					{ cwd: commonPath, cancellation: cancellation, timeout: timeout },
-					...args,
-				);
+				const result = await this.git.run({ cwd: commonPath, cancellation: signal, timeout: timeout }, ...args);
 				if (!result.stdout) return undefined;
 
 				const contributions = result.stdout
@@ -351,11 +348,9 @@ export class ContributorsGitSubProvider implements GitContributorsSubProvider {
 			customCacheTTL = timeout * 2;
 		}
 
-		return this.cache.getContributorsStats(
-			repoPath,
-			cacheKey,
-			getCore,
-			customCacheTTL ? { accessTTL: customCacheTTL } : undefined,
-		);
+		return this.cache.getContributorsStats(repoPath, cacheKey, getCore, {
+			accessTTL: customCacheTTL,
+			cancellation: cancellation,
+		});
 	}
 }

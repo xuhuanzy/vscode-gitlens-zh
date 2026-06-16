@@ -41,94 +41,103 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 	) {}
 
 	@debug()
-	async getCommit(repoPath: string, rev: string, _cancellation?: AbortSignal): Promise<GitCommit | undefined> {
-		if (repoPath == null) return undefined;
+	getCommit(repoPath: string, rev: string, _cancellation?: AbortSignal): Promise<GitCommit | undefined> {
+		if (repoPath == null) return Promise.resolve(undefined);
 
-		const scope = getScopedLogger();
-
-		try {
-			if (isUncommitted(rev, true)) {
+		// Don't cache uncommitted-changes synthesis — it's date-sensitive
+		if (isUncommitted(rev, true)) {
+			return (async () => {
 				return createUncommittedChangesCommit(
 					repoPath,
 					rev,
 					new Date(),
 					await this.provider.config.getCurrentUser(repoPath),
 				);
-			}
-
-			const { metadata, github, session } = await this.provider.ensureRepositoryContext(repoPath);
-
-			const commit = await github.getCommit(
-				toTokenInfo(this.provider.authenticationProviderId, session),
-				metadata.repo.owner,
-				metadata.repo.name,
-				stripOrigin(rev),
-			);
-			if (commit == null) return undefined;
-
-			const repoUri = coerceUri(repoPath);
-
-			const { viewer = session.account.label } = commit;
-
-			return new GitCommit(
-				repoPath,
-				commit.oid,
-				new GitCommitIdentity(
-					commit.author.name,
-					commit.author.email,
-					new Date(commit.author.date),
-					commit.author.avatarUrl,
-					isViewer(commit.author.name, viewer),
-				),
-				new GitCommitIdentity(
-					commit.committer.name,
-					commit.committer.email,
-					new Date(commit.committer.date),
-					undefined,
-					isViewer(commit.committer.name, viewer),
-				),
-				commit.message.split('\n', 1)[0],
-				commit.parents.nodes.map(p => p.oid),
-				commit.message,
-				{
-					files: commit.files?.map(f => toFileChange(repoUri, repoPath, f)),
-				},
-				{
-					files: commit.changedFiles ?? 0,
-					additions: commit.additions ?? 0,
-					deletions: commit.deletions ?? 0,
-				},
-				[],
-			);
-		} catch (ex) {
-			scope?.error(ex);
-			debugger;
-			return undefined;
+			})();
 		}
+
+		// TODO: resolve symbolic refs (HEAD, branch names) to SHA before caching to avoid
+		// short staleness windows. For now we cascade-clear on 'branch'/'branches'.
+		return this.cache.commit.getOrCreate(repoPath, stripOrigin(rev), async () => {
+			const scope = getScopedLogger();
+
+			try {
+				const { metadata, github, session } = await this.provider.ensureRepositoryContext(repoPath);
+
+				const commit = await github.getCommit(
+					toTokenInfo(this.provider.authenticationProviderId, session),
+					metadata.repo.owner,
+					metadata.repo.name,
+					stripOrigin(rev),
+				);
+				if (commit == null) return undefined;
+
+				const repoUri = coerceUri(repoPath);
+
+				const { viewer = session.account.label } = commit;
+
+				return new GitCommit(
+					repoPath,
+					commit.oid,
+					new GitCommitIdentity(
+						commit.author.name,
+						commit.author.email,
+						new Date(commit.author.date),
+						commit.author.avatarUrl,
+						isViewer(commit.author.name, viewer),
+					),
+					new GitCommitIdentity(
+						commit.committer.name,
+						commit.committer.email,
+						new Date(commit.committer.date),
+						undefined,
+						isViewer(commit.committer.name, viewer),
+					),
+					commit.message.split('\n', 1)[0],
+					commit.parents.nodes.map(p => p.oid),
+					commit.message,
+					{
+						files: commit.files?.map(f => toFileChange(repoUri, repoPath, f)),
+					},
+					{
+						files: commit.changedFiles ?? 0,
+						additions: commit.additions ?? 0,
+						deletions: commit.deletions ?? 0,
+					},
+					[],
+				);
+			} catch (ex) {
+				scope?.error(ex);
+				debugger;
+				return undefined;
+			}
+		});
 	}
 
 	@debug()
-	async getCommitCount(repoPath: string, rev: string, _cancellation?: AbortSignal): Promise<number | undefined> {
-		if (repoPath == null) return undefined;
+	getCommitCount(repoPath: string, rev: string, _cancellation?: AbortSignal): Promise<number | undefined> {
+		if (repoPath == null) return Promise.resolve(undefined);
 
-		const scope = getScopedLogger();
+		return this.cache.commitCount.getOrCreate(repoPath, stripOrigin(rev), async () => {
+			const scope = getScopedLogger();
 
-		try {
-			const { metadata, github, session } = await this.provider.ensureRepositoryContext(repoPath);
+			try {
+				const { metadata, github, session } = await this.provider.ensureRepositoryContext(repoPath);
 
-			const count = await github.getCommitCount(
-				toTokenInfo(this.provider.authenticationProviderId, session),
-				metadata.repo.owner,
-				metadata.repo.name,
-				stripOrigin(rev),
-			);
+				const count = await github.getCommitCount(
+					toTokenInfo(this.provider.authenticationProviderId, session),
+					metadata.repo.owner,
+					metadata.repo.name,
+					stripOrigin(rev),
+				);
 
-			return count;
-		} catch (ex) {
-			scope?.error(ex);
-			debugger;
-			return undefined;
-		}
+				return count;
+			} catch (ex) {
+				scope?.error(ex);
+				debugger;
+				return undefined;
+			}
+		});
 	}
 
 	@debug()
@@ -149,102 +158,111 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 	): Promise<GitCommit | undefined> {
 		if (repoPath == null) return undefined;
 
-		const scope = getScopedLogger();
+		const { metadata, github, session } = await this.provider.ensureRepositoryContext(repoPath);
 
-		try {
-			const { metadata, github, session } = await this.provider.ensureRepositoryContext(repoPath);
+		const rootUri = this.provider.getProviderRootUri(this.provider.getAbsoluteUri(pathOrUri, repoPath));
+		const file = this.provider.getRelativePath(this.provider.getAbsoluteUri(pathOrUri, repoPath), rootUri);
 
-			const rootUri = this.provider.getProviderRootUri(this.provider.getAbsoluteUri(pathOrUri, repoPath));
-			const file = this.provider.getRelativePath(this.provider.getAbsoluteUri(pathOrUri, repoPath), rootUri);
+		// Resolve HEAD/empty rev to the metadata revision so the cache key is stable across callers
+		const resolvedRev = !rev || rev === 'HEAD' ? (await metadata.getRevision()).revision : rev;
+		// Path-scoped variant lives in the same slot as `getCommit` but with a `|file` suffix to
+		// keep it distinct from the unscoped commit entry.
+		const cacheKey = `${stripOrigin(resolvedRev)}|${file}`;
 
-			rev = !rev || rev === 'HEAD' ? (await metadata.getRevision()).revision : rev;
-			const commit = await github.getCommitForFile(
-				toTokenInfo(this.provider.authenticationProviderId, session),
-				metadata.repo.owner,
-				metadata.repo.name,
-				stripOrigin(rev),
-				file,
-			);
-			if (commit == null) return undefined;
+		return this.cache.commit.getOrCreate(repoPath, cacheKey, async () => {
+			const scope = getScopedLogger();
 
-			const repoUri = coerceUri(repoPath);
-			const { viewer = session.account.label } = commit;
+			try {
+				const commit = await github.getCommitForFile(
+					toTokenInfo(this.provider.authenticationProviderId, session),
+					metadata.repo.owner,
+					metadata.repo.name,
+					stripOrigin(resolvedRev),
+					file,
+				);
+				if (commit == null) return undefined;
 
-			return new GitCommit(
-				repoPath,
-				commit.oid,
-				new GitCommitIdentity(
-					commit.author.name,
-					commit.author.email,
-					new Date(commit.author.date),
-					commit.author.avatarUrl,
-					isViewer(commit.author.name, viewer),
-				),
-				new GitCommitIdentity(
-					commit.committer.name,
-					commit.committer.email,
-					new Date(commit.committer.date),
-					undefined,
-					isViewer(commit.committer.name, viewer),
-				),
-				commit.message.split('\n', 1)[0],
-				commit.parents.nodes.map(p => p.oid),
-				commit.message,
-				commit.files != null
-					? {
-							files: undefined,
-							filtered: {
-								files: commit.files?.map(f => toFileChange(repoUri, repoPath, f)),
-								pathspec: file,
-							},
-						}
-					: undefined,
-				{
-					files: commit.changedFiles ?? 0,
-					additions: commit.additions ?? 0,
-					deletions: commit.deletions ?? 0,
-				},
-				[],
-			);
-		} catch (ex) {
-			scope?.error(ex);
-			debugger;
-			return undefined;
-		}
+				const repoUri = coerceUri(repoPath);
+				const { viewer = session.account.label } = commit;
+
+				return new GitCommit(
+					repoPath,
+					commit.oid,
+					new GitCommitIdentity(
+						commit.author.name,
+						commit.author.email,
+						new Date(commit.author.date),
+						commit.author.avatarUrl,
+						isViewer(commit.author.name, viewer),
+					),
+					new GitCommitIdentity(
+						commit.committer.name,
+						commit.committer.email,
+						new Date(commit.committer.date),
+						undefined,
+						isViewer(commit.committer.name, viewer),
+					),
+					commit.message.split('\n', 1)[0],
+					commit.parents.nodes.map(p => p.oid),
+					commit.message,
+					commit.files != null
+						? {
+								files: undefined,
+								filtered: {
+									files: commit.files?.map(f => toFileChange(repoUri, repoPath, f)),
+									pathspec: file,
+								},
+							}
+						: undefined,
+					{
+						files: commit.changedFiles ?? 0,
+						additions: commit.additions ?? 0,
+						deletions: commit.deletions ?? 0,
+					},
+					[],
+				);
+			} catch (ex) {
+				scope?.error(ex);
+				debugger;
+				return undefined;
+			}
+		});
 	}
 
 	@debug()
-	async getLeftRightCommitCount(
+	getLeftRightCommitCount(
 		repoPath: string,
 		range: GitRevisionRange,
 		_options?: { authors?: GitUser[]; excludeMerges?: boolean },
 		_cancellation?: AbortSignal,
 	): Promise<LeftRightCommitCountResult | undefined> {
-		if (repoPath == null) return undefined;
+		if (repoPath == null) return Promise.resolve(undefined);
 
-		const scope = getScopedLogger();
+		return this.cache.leftRightCommitCount.getOrCreate(repoPath, stripOrigin(range), async () => {
+			const scope = getScopedLogger();
 
-		const { metadata, github, session } = await this.provider.ensureRepositoryContext(repoPath);
+			const { metadata, github, session } = await this.provider.ensureRepositoryContext(repoPath);
 
-		try {
-			const result = await github.getComparison(
-				toTokenInfo(this.provider.authenticationProviderId, session),
-				metadata.repo.owner,
-				metadata.repo.name,
-				stripOrigin(range),
-			);
+			try {
+				const result = await github.getComparison(
+					toTokenInfo(this.provider.authenticationProviderId, session),
+					metadata.repo.owner,
+					metadata.repo.name,
+					stripOrigin(range),
+				);
 
-			if (result == null) return undefined;
+				if (result == null) return undefined;
 
-			return {
-				left: result.behind_by,
-				right: result.ahead_by,
-			};
-		} catch (ex) {
-			scope?.error(ex);
-			debugger;
-			return undefined;
-		}
+				return {
+					left: result.behind_by,
+					right: result.ahead_by,
+				};
+			} catch (ex) {
+				scope?.error(ex);
+				debugger;
+				return undefined;
+			}
+		});
 	}
 
 	@debug()
@@ -445,6 +463,7 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 
 		const context = await this.provider.ensureRepositoryContext(repoPath);
 		if (context == null) return undefined;
+
 		const { metadata, github, session } = context;
 
 		const uri = this.provider.getAbsoluteUri(path, repoPath);
@@ -601,19 +620,71 @@ export class CommitsGitSubProvider implements GitCommitsSubProvider {
 		options?: GitLogShasOptions,
 		cancellation?: AbortSignal,
 	): Promise<Iterable<string>> {
-		// TODO@eamodio optimize this
+		if (repoPath == null) return [];
 
-		let log: GitLog | undefined;
-		if (options?.pathOrUri != null) {
-			log = await this.getLogForPath(repoPath, options.pathOrUri, rev, options, cancellation);
-		} else {
-			log = await this.getLog(repoPath, rev, options, cancellation);
+		const scope = getScopedLogger();
+
+		// `authors` and `all` filters aren't supported by the lightweight SHA-only query;
+		// fall back to the full log path when set.
+		if (options?.authors?.length || options?.all) {
+			let log: GitLog | undefined;
+			if (options?.pathOrUri != null) {
+				log = await this.getLogForPath(repoPath, options.pathOrUri, rev, options, cancellation);
+			} else {
+				log = await this.getLog(repoPath, rev, options, cancellation);
+			}
+			if (log == null) return [];
+
+			const shas = map(log.commits.values(), c => c.ref);
+			// Note: reversal only applies to the first page — subsequent pages loaded via pagination are not reversed
+			return options?.reverse ? [...shas].reverse() : shas;
 		}
-		if (log == null) return [];
 
-		const shas = map(log.commits.values(), c => c.ref);
-		// Note: reversal only applies to the first page — subsequent pages loaded via pagination are not reversed
-		return options?.reverse ? [...shas].reverse() : shas;
+		const limit = this.provider.getPagingLimit(options?.limit);
+
+		try {
+			const { metadata, github, session } = await this.provider.ensureRepositoryContext(repoPath);
+
+			rev = !rev || rev === 'HEAD' ? (await metadata.getRevision()).revision : rev;
+
+			let path: string | undefined;
+			if (options?.pathOrUri != null) {
+				const rootUri = this.provider.getProviderRootUri(
+					this.provider.getAbsoluteUri(options.pathOrUri, repoPath),
+				);
+				path = this.provider.getRelativePath(
+					this.provider.getAbsoluteUri(options.pathOrUri, repoPath),
+					rootUri,
+				);
+			}
+
+			const strippedRev = stripOrigin(rev);
+			const sinceISO = options?.since ? new Date(options.since).toISOString() : '';
+			const cacheKey = `${strippedRev}|${path ?? ''}|${sinceISO}|${limit}|${options?.cursor ?? ''}`;
+
+			const shas = await this.cache.logShas.getOrCreate(repoPath, cacheKey, async () => {
+				const result = await github.getCommitShas(
+					toTokenInfo(this.provider.authenticationProviderId, session),
+					metadata.repo.owner,
+					metadata.repo.name,
+					strippedRev,
+					{
+						after: options?.cursor,
+						limit: limit,
+						path: path,
+						since: options?.since ? new Date(options.since) : undefined,
+					},
+				);
+				return result.values;
+			});
+
+			// Note: reversal only applies to the first page — subsequent pages loaded via pagination are not reversed
+			return options?.reverse ? shas.toReversed() : shas;
+		} catch (ex) {
+			scope?.error(ex);
+			debugger;
+			return [];
+		}
 	}
 
 	@debug()

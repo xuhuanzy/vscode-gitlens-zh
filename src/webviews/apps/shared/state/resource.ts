@@ -19,6 +19,8 @@ export interface Resource<T, TArgs extends unknown[] = []> {
 	refetch(): Promise<void>;
 	mutate(value: T): void;
 	cancel(): void;
+	/** Cancel any in-flight fetch and clear value/error/status back to the initial idle state. */
+	reset(): void;
 	dispose(): void;
 }
 
@@ -32,8 +34,9 @@ export function createResource<T, TArgs extends unknown[] = []>(
 	options?: ResourceOptions<T>,
 ): Resource<T, TArgs> {
 	const cancelPrevious = options?.cancelPrevious ?? true;
+	const initialValue = options?.initialValue as T;
 
-	const _value = litSignal<T>(options?.initialValue as T);
+	const _value = litSignal<T>(initialValue);
 	const _loading = litSignal(false);
 	const _error = litSignal<string | undefined>(undefined);
 	const _hasResolved = litSignal(false);
@@ -52,7 +55,9 @@ export function createResource<T, TArgs extends unknown[] = []>(
 
 	function cancel(): void {
 		if (_controller != null) {
-			_controller.abort();
+			// Tag the abort reason so any rejection that escapes the consumer chain is diagnosable
+			// rather than the opaque default "signal is aborted without reason".
+			_controller.abort(new DOMException('resource: cancelled by newer fetch', 'AbortError'));
 			_controller = undefined;
 		}
 		_loading.set(false);
@@ -77,10 +82,12 @@ export function createResource<T, TArgs extends unknown[] = []>(
 		try {
 			const result = await fetcher(controller.signal, ...args);
 			if (controller.signal.aborted || requestId !== _currentRequestId) return;
+
 			_value.set(result);
 			_hasResolved.set(true);
 		} catch (ex) {
 			if (controller.signal.aborted || requestId !== _currentRequestId) return;
+
 			_error.set(ex instanceof Error ? ex.message : String(ex));
 		} finally {
 			if (_controller === controller) {
@@ -97,9 +104,18 @@ export function createResource<T, TArgs extends unknown[] = []>(
 
 	function mutate(value: T): void {
 		if (_disposed) return;
+
 		_value.set(value);
 		_error.set(undefined);
 		_hasResolved.set(true);
+	}
+
+	function reset(): void {
+		cancel();
+		_value.set(initialValue);
+		_error.set(undefined);
+		_hasResolved.set(false);
+		_lastArgs = undefined;
 	}
 
 	function dispose(): void {
@@ -117,6 +133,7 @@ export function createResource<T, TArgs extends unknown[] = []>(
 		refetch: refetch,
 		mutate: mutate,
 		cancel: cancel,
+		reset: reset,
 		dispose: dispose,
 	};
 }

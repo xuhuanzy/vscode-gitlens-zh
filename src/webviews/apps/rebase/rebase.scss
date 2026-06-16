@@ -2,7 +2,6 @@
 @use '../shared/styles/properties';
 @use '../shared/styles/theme';
 @use '../shared/styles/scrollbars';
-@use '../shared/styles/utils';
 
 * {
 	box-sizing: border-box;
@@ -48,19 +47,13 @@ body {
 @include scrollbars.scrollbarFix();
 @include scrollbars.scrollableBase();
 
-/* Scrollbar styling for sl-select listbox (hoisted to body) */
-sl-select::part(listbox) {
-	scrollbar-width: thin;
-	scrollbar-color: var(--vscode-scrollbarSlider-background) transparent;
-}
-
 /* Ensure tooltip variables have fallbacks for hoisted tooltips */
 :root {
-	--sl-tooltip-background-color: var(
+	--wa-tooltip-background-color: var(
 		--color-hover-background,
 		var(--vscode-editorHoverWidget-background, var(--vscode-editor-background))
 	);
-	--sl-tooltip-color: var(
+	--wa-tooltip-color: var(
 		--color-hover-foreground,
 		var(--vscode-editorHoverWidget-foreground, var(--vscode-foreground))
 	);

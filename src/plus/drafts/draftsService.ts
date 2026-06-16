@@ -106,6 +106,7 @@ export class DraftService implements Disposable {
 				if (options?.prEntityId == null) {
 					throw new Error('No pull request info provided');
 				}
+
 				prEntityIdBody = {
 					prEntityId: options.prEntityId,
 				};
@@ -115,6 +116,7 @@ export class DraftService implements Disposable {
 				if (providerAuth == null) {
 					throw new Error('No provider integration found');
 				}
+
 				providerAuthHeader = {
 					'Provider-Auth': Buffer.from(JSON.stringify(providerAuth)).toString('base64'),
 				};
@@ -444,6 +446,7 @@ export class DraftService implements Disposable {
 			if (options.providerAuth == null) {
 				throw new Error('No provider integration found');
 			}
+
 			fromPrEntityId = true;
 			queryStrings.push(`prEntityId=${encodeURIComponent(options.prEntityId)}`);
 		}
@@ -662,10 +665,7 @@ export class DraftService implements Disposable {
 
 			const rsp = await this.connection.fetchGkApi(`/v1/drafts/${id}/users`, {
 				method: 'POST',
-				body: JSON.stringify({
-					id: id,
-					users: pendingUsers,
-				} as Request),
+				body: JSON.stringify({ id: id, users: pendingUsers } satisfies Request),
 			});
 
 			if (rsp?.ok === false) {

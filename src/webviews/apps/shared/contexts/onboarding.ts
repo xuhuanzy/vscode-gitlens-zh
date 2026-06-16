@@ -10,6 +10,7 @@ export interface OnboardingState {
 	readonly banners: {
 		integrationBanner: boolean;
 		mcpBanner: boolean;
+		hooksBanner: boolean;
 	};
 	readonly walkthroughProgress: Signal.State<WalkthroughProgressState | undefined>;
 	/** Dismiss a banner by key. No-op before RPC connects; wired by root component. */
@@ -37,6 +38,7 @@ export function createOnboardingState(): OnboardingState {
 		banners: signalObject({
 			integrationBanner: false,
 			mcpBanner: false,
+			hooksBanner: false,
 		}),
 		walkthroughProgress: signal<WalkthroughProgressState | undefined>(undefined),
 		dismiss: noop,

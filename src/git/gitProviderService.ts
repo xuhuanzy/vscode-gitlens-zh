@@ -29,6 +29,7 @@ import type {
 	RepositoryVisibility,
 	RepositoryVisibilityInfo,
 } from '@gitlens/git/providers/types.js';
+import type { ValidateRepoResult } from '@gitlens/git/service.js';
 import { GitService } from '@gitlens/git/service.js';
 import { getBlameRange } from '@gitlens/git/utils/blame.utils.js';
 import { calculateDistribution } from '@gitlens/git/utils/contributor.utils.js';
@@ -277,7 +278,7 @@ export class GitProviderService implements UnifiedDisposable {
 				this.container.telemetry.sendEvent('repository/opened', {
 					'repository.id': repo.idHash,
 					'repository.scheme': repo.uri.scheme,
-					'repository.closed': repo.closed,
+					'repository.closed': !repo.opened,
 					'repository.folder.scheme': repo.folder?.uri.scheme,
 					'repository.provider.id': repo.provider.id,
 					'repository.remoteProviders': join(remoteProviders, ','),
@@ -363,6 +364,24 @@ export class GitProviderService implements UnifiedDisposable {
 			...this.registerCommands(),
 		);
 
+		// The window-state listener above only fires on focus *changes*; prime the global suspend from
+		// the initial focus so repositories discovered during startup while the window is unfocused begin
+		// watching suspended — matching the prior per-repo `suspended: !window.state.focused` behavior.
+		if (!window.state.focused) {
+			this._watchService.suspendAll();
+		}
+
+		if (DEBUG) {
+			void import(/* webpackChunkName: "__debug__" */ './__debug__visibilityDebug.js').then(m => {
+				m.registerVisibilityDebug(this, {
+					clearAccessCache: () => this.clearAccessCache(),
+					invalidateReposVisibilityCache: () => this._reposVisibilityCache.invalidate('visibility'),
+					fireRepositoriesChanged: () =>
+						this._onDidChangeRepositories.fire({ added: [], removed: [], etag: this._etag }),
+				});
+			});
+		}
+
 		this.container.BranchDateFormatting.reset();
 		this.container.CommitDateFormatting.reset();
 		this.container.CommitShaFormatting.reset();
@@ -443,30 +462,30 @@ export class GitProviderService implements UnifiedDisposable {
 	@trace({ args: e => ({ e: `focused=${e.focused}` }) })
 	private onWindowStateChanged(e: WindowState) {
 		if (!e.focused) {
-			this._repositories.forEach(r => r.suspend());
+			this._watchService.suspendAll();
 			return;
 		}
 
-		if (!this.repositoryCount) return;
+		// Always clear the global suspend on focus — even with no repositories — so a repository
+		// added later doesn't inherit a stale suspended state. (No-op over an empty session map.)
+		if (!this.repositoryCount) {
+			this._watchService.resumeAll();
+			return;
+		}
 
-		// Resume repositories with staggered timing to prevent overwhelming the system, except for the "active" one
-		const activeRepo = this.getBestRepositoryOrFirst(window.activeTextEditor);
-		activeRepo?.resume();
+		// Resume with staggered timing to avoid overwhelming the system: the "active" repo resumes
+		// immediately, while other repos with pending changes are staggered.
+		const activePath = this.getBestRepositoryOrFirst(window.activeTextEditor)?.path;
 
-		// Stagger remaining repositories with pending changes
 		const staggerDelay = 50; // ms between each repository with pending changes
 		let delay = 0;
 
-		for (const repo of this._repositories.values()) {
-			if (repo === activeRepo) continue;
+		this._watchService.resumeAll(session => {
+			if (session.repoPath === activePath || !session.hasPendingChanges) return 0;
 
-			if (repo.hasPendingChanges) {
-				delay += staggerDelay;
-				repo.resume(delay);
-			} else {
-				repo.resume();
-			}
-		}
+			delay += staggerDelay;
+			return delay;
+		});
 	}
 
 	@trace({
@@ -486,10 +505,12 @@ export class GitProviderService implements UnifiedDisposable {
 			this._etag = Date.now();
 			void this.discoverRepositories(e.added);
 
-			for (const folder of e.added) {
-				const key = folder.uri.toString();
-				if (!this._initWatchHandles.has(key)) {
-					this._initWatchHandles.set(key, this._repositoryInitWatcher.watch(folder.uri.fsPath));
+			if (configuration.get('advanced.repositorySearch.enabled')) {
+				for (const folder of e.added) {
+					const key = folder.uri.toString();
+					if (!this._initWatchHandles.has(key)) {
+						this._initWatchHandles.set(key, this._repositoryInitWatcher.watch(folder.uri.fsPath));
+					}
 				}
 			}
 		}
@@ -543,14 +564,14 @@ export class GitProviderService implements UnifiedDisposable {
 	get openRepositories(): GlRepository[] {
 		if (this.repositoryCount === 0) return emptyArray as GlRepository[];
 
-		const repositories = [...filter(this.repositories, r => !r.closed)];
+		const repositories = [...filter(this.repositories, r => r.opened)];
 		if (repositories.length === 0) return repositories;
 
 		return sortRepositories(repositories);
 	}
 
 	get openRepositoryCount(): number {
-		return this.repositoryCount === 0 ? 0 : count(this.repositories, r => !r.closed);
+		return this.repositoryCount === 0 ? 0 : count(this.repositories, r => r.opened);
 	}
 
 	get repositories(): IterableIterator<GlRepository> {
@@ -579,6 +600,12 @@ export class GitProviderService implements UnifiedDisposable {
 		);
 		for (const provider of providers) {
 			this._providerDisposables.push(this.register(provider.descriptor.id, provider));
+			// Eagerly register the provider with the package-level GitService so path-based APIs
+			// (`forRepo`, `validateRepo`, `getRepositoryService`) work for any path before
+			// `registrationComplete`'s discovery has fired. Without this, calls like
+			// `getRepositoryService` for a path outside the workspace (e.g. a rebase started from
+			// a terminal in a homebrew tap) race against discovery and can throw.
+			provider.ensureRegistered();
 		}
 
 		// Don't wait here otherwise we will deadlock in certain places
@@ -654,26 +681,51 @@ export class GitProviderService implements UnifiedDisposable {
 				this._etag = Date.now();
 				const repository = this._repositories.get(e.uri);
 				using scope = maybeStartScopedLogger(
-					`${getLoggableName(provider)}.onDidCloseRepository(e=${e.uri.toString()})`,
+					`${getLoggableName(provider)}.onDidCloseRepository(e=${e.uri.toString()}, source=${e.source ?? 'gitlens'})`,
 				);
-				scope?.trace(`repository=${Logger.toLoggable(repository)}`);
+				const wasOpened = repository?.opened;
 
 				if (repository != null) {
-					repository.closed = true;
+					if (e.source === 'scm') {
+						repository.closedByScm = true;
+					}
+					repository.opened = false;
 				}
+
+				scope?.info(
+					`repository=${Logger.toLoggable(repository)}, opened:${wasOpened ?? '<no-repo>'}→false${
+						e.source === 'scm' ? ' (closedByScm=true)' : ''
+					}`,
+				);
 			}),
 			provider.onDidOpenRepository(e => {
 				this._etag = Date.now();
 				const repository = this._repositories.get(e.uri);
 				using scope = maybeStartScopedLogger(
-					`${getLoggableName(provider)}.onDidOpenRepository(e=${e.uri.toString()})`,
+					`${getLoggableName(provider)}.onDidOpenRepository(e=${e.uri.toString()}, source=${e.source ?? 'gitlens'})`,
 				);
-				scope?.trace(`repository=${Logger.toLoggable(repository)}`);
+				const wasOpened = repository?.opened;
 
 				if (repository != null) {
-					repository.closed = false;
+					if (e.source === 'scm') {
+						repository.closedByScm = false;
+					}
+					repository.opened = true;
+					scope?.info(
+						`repository=${Logger.toLoggable(repository)}, opened:${wasOpened ?? '<no-repo>'}→true${
+							e.source === 'scm' ? ' (closedByScm cleared)' : ''
+						}`,
+					);
 				} else {
-					void this.getOrOpenRepository(e.uri, e.source === 'scm' ? { detectNested: true } : undefined);
+					scope?.info(`repository=<unknown>; deferring to getOrAddRepository`);
+					// VS Code opened this repo — surface it (matches the known-repo branch above which
+					// force-sets `opened = true`), regardless of `git.autoRepositoryDetection`.
+					// Non-scm opens leave `detectNested` unset so it honors the `detectNestedRepositories`
+					// config default (only scm opens force nested detection on).
+					void this.getOrAddRepository(e.uri, {
+						opened: true,
+						detectNested: e.source === 'scm' ? true : undefined,
+					});
 				}
 			}),
 		);
@@ -732,11 +784,13 @@ export class GitProviderService implements UnifiedDisposable {
 
 		let { workspaceFolders } = workspace;
 		if (workspaceFolders?.length) {
-			// Set up init watchers for initial workspace folders
-			for (const folder of workspaceFolders) {
-				const key = folder.uri.toString();
-				if (!this._initWatchHandles.has(key)) {
-					this._initWatchHandles.set(key, this._repositoryInitWatcher.watch(folder.uri.fsPath));
+			// Set up init watchers for initial workspace folders (only if repository search is enabled)
+			if (configuration.get('advanced.repositorySearch.enabled')) {
+				for (const folder of workspaceFolders) {
+					const key = folder.uri.toString();
+					if (!this._initWatchHandles.has(key)) {
+						this._initWatchHandles.set(key, this._repositoryInitWatcher.watch(folder.uri.fsPath));
+					}
 				}
 			}
 
@@ -776,18 +830,18 @@ export class GitProviderService implements UnifiedDisposable {
 	}
 
 	getOpenRepositories(id: GitProviderId): Iterable<GlRepository> {
-		return filter(this.repositories, r => !r.closed && (id == null || id === r.provider.id));
+		return filter(this.repositories, r => r.opened && (id == null || id === r.provider.id));
 	}
 
 	getOpenRepositoriesByProvider(): Map<GitProviderId, GlRepository[]> {
-		const repositories = [...filter(this.repositories, r => !r.closed)];
+		const repositories = [...filter(this.repositories, r => r.opened)];
 		if (repositories.length === 0) return new Map();
 
 		return groupByMap(repositories, r => r.provider.id);
 	}
 
 	hasOpenRepositories(id: GitProviderId): boolean {
-		return some(this.repositories, r => !r.closed && (id == null || id === r.provider.id));
+		return some(this.repositories, r => r.opened && (id == null || id === r.provider.id));
 	}
 
 	private _discoveredWorkspaceFolders = new Map<WorkspaceFolder, Promise<GlRepository[]>>();
@@ -838,7 +892,7 @@ export class GitProviderService implements UnifiedDisposable {
 
 			for (const repository of repositories) {
 				this._repositories.add(repository);
-				if (!repository.closed) {
+				if (repository.opened) {
 					added.push(repository);
 				}
 			}
@@ -1043,7 +1097,7 @@ export class GitProviderService implements UnifiedDisposable {
 				?.map<[string, RepositoryVisibilityInfo]>(([key, visibilityInfo]) => [
 					key,
 					{
-						visibility: visibilityInfo.visibility as RepositoryVisibility,
+						visibility: visibilityInfo.visibility,
 						timestamp: visibilityInfo.timestamp,
 						remotesHash: visibilityInfo.remotesHash,
 					},
@@ -1158,7 +1212,7 @@ export class GitProviderService implements UnifiedDisposable {
 						'repository.visibility': visibility,
 						'repository.id': repo?.idHash,
 						'repository.scheme': repo?.uri.scheme,
-						'repository.closed': repo?.closed,
+						'repository.closed': repo != null ? !repo.opened : undefined,
 						'repository.folder.scheme': repo?.folder?.uri.scheme,
 						'repository.provider.id': repo?.provider.id,
 					});
@@ -1609,6 +1663,7 @@ export class GitProviderService implements UnifiedDisposable {
 					this.ensureUncommittedBlameCommit(uri, dirtyBlame);
 					return dirtyBlame;
 				}
+
 				// Ensure uncommitted commit exists for updated snapshots that may contain uncommitted lines from a previous dirty→save cycle
 				this.ensureUncommittedBlameCommit(uri, doc.blameSnapshot.blame);
 				return doc.blameSnapshot.blame;
@@ -1624,13 +1679,13 @@ export class GitProviderService implements UnifiedDisposable {
 		if (blameProvider == null) return undefined;
 
 		try {
-			const start = Date.now();
+			const start = performance.now();
 			const blame = await blameProvider.getBlame(path, uri.sha, undefined, this.getBlameOptions());
 
 			// Create snapshot so it's available for the very next call.
 			// The slow HEAD-content fetch (for HEAD-anchored baselines) runs in the background.
 			if (blame != null && uri.sha == null && doc != null && doc.blameSnapshot == null) {
-				doc.lastBlameDuration = Date.now() - start;
+				doc.lastBlameDuration = performance.now() - start;
 				doc.blameSnapshot = new BlameSnapshot(blame, document!.getText());
 				void this.upgradeBlameSnapshotToHead(doc, blame, document!, root, path);
 			}
@@ -1804,6 +1859,7 @@ export class GitProviderService implements UnifiedDisposable {
 			let blameLine = blame.lines[editorLine];
 			if (blameLine == null) {
 				if (blame.lines.length !== editorLine) return undefined;
+
 				blameLine = blame.lines[editorLine - 1];
 			}
 
@@ -1874,6 +1930,7 @@ export class GitProviderService implements UnifiedDisposable {
 			blameLine = blame.lines[editorLineOrCommitLine];
 			if (blameLine == null) {
 				if (blame.lines.length !== editorLineOrCommitLine) return undefined;
+
 				blameLine = blame.lines[editorLineOrCommitLine - 1];
 			}
 		} else {
@@ -2111,22 +2168,22 @@ export class GitProviderService implements UnifiedDisposable {
 		return [...repositories];
 	}
 
-	getOrOpenRepository(
+	getOrAddRepository(
 		uri: Uri,
-		options?: { closeOnOpen?: boolean; detectNested?: boolean; force?: boolean },
+		options?: { opened?: boolean; detectNested?: boolean; force?: boolean },
 	): Promise<GlRepository | undefined>;
-	getOrOpenRepository(
+	getOrAddRepository(
 		path: string,
-		options?: { closeOnOpen?: boolean; detectNested?: boolean; force?: boolean },
+		options?: { opened?: boolean; detectNested?: boolean; force?: boolean },
 	): Promise<GlRepository | undefined>;
-	getOrOpenRepository(
+	getOrAddRepository(
 		pathOrUri: string | Uri,
-		options?: { closeOnOpen?: boolean; detectNested?: boolean; force?: boolean },
+		options?: { opened?: boolean; detectNested?: boolean; force?: boolean },
 	): Promise<GlRepository | undefined>;
 	@debug({ exit: true })
-	async getOrOpenRepository(
+	async getOrAddRepository(
 		pathOrUri?: string | Uri,
-		options?: { closeOnOpen?: boolean; detectNested?: boolean; force?: boolean },
+		options?: { opened?: boolean; detectNested?: boolean; force?: boolean },
 	): Promise<GlRepository | undefined> {
 		if (pathOrUri == null) return undefined;
 
@@ -2149,16 +2206,39 @@ export class GitProviderService implements UnifiedDisposable {
 				repository = this.getRepository(uri);
 			}
 
+			// `opened: true` means "ensure this repo is surfaced" — re-open a found-but-closed repo (a newly-
+			// discovered repo gets `opened` applied at creation). An explicit open request reflects current user
+			// intent (e.g. following a deep link), so it intentionally overrides a prior `closedByScm`: this only
+			// flips GitLens's own visibility and never touches vscode.git's SCM, so it can't override the user's SCM
+			// close (passive re-opening still respects `closedByScm` — see the auto-reopen skip in GlCliGitProvider).
+			// `opened: false`/unset never mutate a found repo — closing one a consumer merely looked up would be destructive.
+			const ensureOpened = (repo: GlRepository | undefined): GlRepository | undefined => {
+				if (repo != null && options?.opened === true && !repo.opened) {
+					repo.opened = true;
+				}
+
+				return repo;
+			};
+
 			let isDirectory: boolean | undefined;
 
 			const detectNested = options?.detectNested ?? configuration.get('detectNestedRepositories', uri);
+			if (detectNested && !options?.force) {
+				// Prefer the exact registered repo for this path over getRepository()/getClosest's nearest-ancestor
+				// match, which would return the container for a worktree nested inside another repo's working tree.
+				// (`get` keys the same way repos are stored, so it's scheme-safe.) Skipped under `force` (which wants
+				// fresh discovery); on a miss we fall through to the search/discovery below, which resolves the owner.
+				const exactRepo = this._repositories.get(uri);
+				if (exactRepo != null) return ensureOpened(exactRepo);
+			}
+
 			if (!detectNested) {
-				if (repository != null) return repository;
+				if (repository != null) return ensureOpened(repository);
 			} else if (!options?.force) {
 				// Check if we've seen this path before
 				if (this._searchedRepositoryPaths.has(path)) {
 					scope?.trace(`Skipped search as path is known; returning ${Logger.toLoggable(repository)}`);
-					return repository;
+					return ensureOpened(repository);
 				}
 
 				try {
@@ -2170,7 +2250,7 @@ export class GitProviderService implements UnifiedDisposable {
 							scope?.trace(
 								`Skipped search as path is a file and parent is known; returning ${Logger.toLoggable(repository)}`,
 							);
-							return repository;
+							return ensureOpened(repository);
 						}
 
 						uri = Uri.joinPath(uri, '..');
@@ -2203,19 +2283,19 @@ export class GitProviderService implements UnifiedDisposable {
 
 					const autoRepositoryDetection = configuration.getCore('git.autoRepositoryDetection') ?? true;
 
-					let closed =
-						options?.closeOnOpen ??
-						(autoRepositoryDetection !== true && autoRepositoryDetection !== 'openEditors');
-					if (!closed && options?.closeOnOpen !== false && !isDirectory) {
+					let opened =
+						options?.opened ??
+						!(autoRepositoryDetection !== true && autoRepositoryDetection !== 'openEditors');
+					if (opened && options?.opened !== true && !isDirectory) {
 						// If we are trying to open a file inside the .git folder or the file is git-ignored, then treat the repository as closed, unless explicitly requested it to be open
 						// This avoids showing the root repo in worktrees during certain operations (e.g. rebase) and vice-versa
 						if (uri.path.includes('/.git/')) {
-							closed = true;
+							opened = false;
 						} else {
 							const filteredUris = await provider.excludeIgnoredUris(repoUri.fsPath, [uri]);
 							if (!filteredUris.length) {
 								scope?.trace(`File is gitignored; treating repository as closed`);
-								closed = true;
+								opened = false;
 							}
 						}
 					}
@@ -2225,13 +2305,13 @@ export class GitProviderService implements UnifiedDisposable {
 					if (gitDir == null) {
 						scope?.warn(`Unable to get gitDir for '${repoUri.toString(true)}'`);
 					}
-					const repositories = provider.openRepository(root?.folder, repoUri, gitDir, false, closed);
+					const repositories = provider.addRepository(root?.folder, repoUri, gitDir, false, opened);
 
 					const added: GlRepository[] = [];
 
 					for (const repository of repositories) {
 						this._repositories.add(repository);
-						if (!repository.closed) {
+						if (repository.opened) {
 							added.push(repository);
 						}
 					}
@@ -2258,7 +2338,7 @@ export class GitProviderService implements UnifiedDisposable {
 			}
 
 			try {
-				return await promise;
+				return ensureOpened(await promise);
 			} catch (ex) {
 				this._pendingRepositories.delete(key);
 				throw ex;
@@ -2273,13 +2353,15 @@ export class GitProviderService implements UnifiedDisposable {
 	}
 
 	@debug()
-	async getOrOpenRepositoryForEditor(editor?: TextEditor): Promise<GlRepository | undefined> {
+	async getOrAddRepositoryForEditor(editor?: TextEditor): Promise<GlRepository | undefined> {
 		editor = editor ?? window.activeTextEditor;
 		if (editor == null) return this.highlander;
 
 		const scope = getScopedLogger();
 		try {
-			return await this.getOrOpenRepository(editor.document.uri);
+			// Resolve the active editor's repo as a model only — don't surface it (it may be a worktree
+			// file, and the workspace repo is already open). Visibility is owned by the open/SCM path.
+			return await this.getOrAddRepository(editor.document.uri, { opened: false });
 		} catch (ex) {
 			scope?.error(ex);
 			return undefined;
@@ -2325,10 +2407,46 @@ export class GitProviderService implements UnifiedDisposable {
 			if (repoService == null) {
 				throw new Error(`RepositoryService not available for '${path}' — provider may not be registered`);
 			}
+
 			service = new GitRepositoryService(this, provider, path, repoService, this.container.events);
 			services.set(path, service);
 		}
 		return service;
+	}
+
+	/**
+	 * Like {@link getRepositoryService}, but first validates that the path points at a
+	 * (safe) git repository via {@link GitService.validateRepo} and uses the validated
+	 * canonical repo path. Use this when receiving paths from outside the workspace
+	 * (e.g. opening a file by URI from a terminal) where we don't yet know whether the
+	 * path is a repository at all.
+	 */
+	@debug()
+	async getValidatedRepositoryService(repoPath: string | Uri): Promise<GitRepositoryService> {
+		const result = await this._gitService.validateRepo(repoPath);
+		if (!result.valid) {
+			throw new Error(
+				`Path is not a git repository: '${repoPath instanceof Uri ? repoPath.toString() : repoPath}'`,
+			);
+		}
+		if (!result.safe) {
+			throw new Error(
+				`Repository is not in a safe state: '${repoPath instanceof Uri ? repoPath.toString() : repoPath}'`,
+			);
+		}
+
+		return this.getRepositoryService(result.repoPath);
+	}
+
+	/**
+	 * Pre-discovery: validates whether `pathOrUri` points to (or resides inside) a git
+	 * repository, returning `repoPath` / `gitDir` / `commonGitDir` / `superprojectPath` when it
+	 * does. Has no side effects — does not register the repository or fire any events. Useful
+	 * when a host-side caller needs gitDir info for an arbitrary cwd without forcing the repo
+	 * to be opened.
+	 */
+	validateRepo(pathOrUri: string | Uri): Promise<ValidateRepoResult> {
+		return this._gitService.validateRepo(pathOrUri);
 	}
 
 	@debug()

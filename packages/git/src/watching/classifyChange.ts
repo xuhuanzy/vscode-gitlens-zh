@@ -17,6 +17,15 @@ const classifyRegex =
  *   handles it as a last-fetched timestamp).
  */
 export function classifyGitDirChange(relativePath: string): RepositoryChange[] | undefined {
+	// User-edited todo file (and its backup) — handled by VS Code's TextDocument
+	// events in the rebase webview (see `rebaseWebviewProvider.ts`). Suppress here
+	// to avoid thrashing the repo update path on every save during an interactive
+	// rebase; rebase lifecycle (start/stop/step) still fires from sibling files
+	// in `rebase-merge/` and the directory itself.
+	if (relativePath.endsWith('/git-rebase-todo') || relativePath.endsWith('/git-rebase-todo.backup')) {
+		return undefined;
+	}
+
 	const match = classifyRegex.exec(relativePath);
 	if (match == null) return undefined;
 

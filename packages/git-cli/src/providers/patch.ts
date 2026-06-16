@@ -11,7 +11,7 @@ import { getSettledValue } from '@gitlens/utils/promise.js';
 import type { CliGitProviderInternal } from '../cliGitProvider.js';
 import { RunError } from '../exec/exec.errors.js';
 import type { Git } from '../exec/git.js';
-import { gitConfigsLog, GitError } from '../exec/git.js';
+import { classifySigningError, gitConfigsLog, GitError } from '../exec/git.js';
 
 export class PatchGitSubProvider implements GitPatchSubProvider {
 	constructor(
@@ -27,7 +27,7 @@ export class PatchGitSubProvider implements GitPatchSubProvider {
 		if (options?.threeWay) {
 			args.push('--3way');
 		}
-		await this.git.exec({ cwd: repoPath, stdin: patch }, ...args);
+		await this.git.run({ cwd: repoPath, stdin: patch }, ...args);
 	}
 
 	@debug()
@@ -113,6 +113,7 @@ export class PatchGitSubProvider implements GitPatchSubProvider {
 			}
 		} catch (ex) {
 			if (ex instanceof ApplyPatchCommitError) throw ex;
+
 			scope?.error(ex);
 
 			if (CherryPickError.is(ex, 'wouldOverwriteChanges')) {
@@ -209,7 +210,7 @@ export class PatchGitSubProvider implements GitPatchSubProvider {
 			const [signingConfigResult, applyResult] = await Promise.allSettled([
 				this.provider.config.getSigningConfig?.(repoPath),
 				// Apply the patch to our temp index, without touching the working directory
-				this.git.exec(
+				this.git.run(
 					{ cwd: repoPath, configs: gitConfigsLog, env: env, stdin: patch },
 					'apply',
 					'--cached',
@@ -224,7 +225,7 @@ export class PatchGitSubProvider implements GitPatchSubProvider {
 			_signingFormat = signingConfig?.format ?? 'gpg';
 
 			// Create a new tree from our patched index
-			let result = await this.git.exec({ cwd: repoPath, env: env }, 'write-tree');
+			let result = await this.git.run({ cwd: repoPath, env: env }, 'write-tree');
 			const tree = result.stdout.trim();
 
 			// Set the author if provided
@@ -247,7 +248,7 @@ export class PatchGitSubProvider implements GitPatchSubProvider {
 			args.push('-m', message);
 
 			// Create new commit from the tree
-			result = await this.git.exec({ cwd: repoPath, env: finalEnv }, ...args);
+			result = await this.git.run({ cwd: repoPath, env: finalEnv }, ...args);
 			const sha = result.stdout.trim();
 
 			if (shouldSign) {
@@ -260,33 +261,11 @@ export class PatchGitSubProvider implements GitPatchSubProvider {
 
 			// Handle signing-specific errors
 			if (shouldSign && ex instanceof Error) {
-				const errorMessage = ex.message.toLowerCase();
-				const gitCommand: GitCommandContext = { repoPath: repoPath, args: ['commit-tree'] };
-				let signingError: SigningError | undefined;
-
-				if (errorMessage.includes('gpg failed to sign') || errorMessage.includes('error: gpg')) {
-					signingError = new SigningError({ reason: 'passphraseFailed', gitCommand: gitCommand }, ex);
-				} else if (
-					errorMessage.includes('secret key not available') ||
-					errorMessage.includes('no secret key') ||
-					errorMessage.includes('no signing key')
-				) {
-					signingError = new SigningError({ reason: 'noKey', gitCommand: gitCommand }, ex);
-				} else if (
-					errorMessage.includes('gpg: command not found') ||
-					(errorMessage.includes('gpg') && errorMessage.includes('not found'))
-				) {
-					signingError = new SigningError({ reason: 'gpgNotFound', gitCommand: gitCommand }, ex);
-				} else if (errorMessage.includes('ssh-keygen') && errorMessage.includes('not found')) {
-					signingError = new SigningError({ reason: 'sshNotFound', gitCommand: gitCommand }, ex);
-				}
-
-				if (signingError != null) {
-					this.context.hooks?.commits?.onSigningFailed?.(
-						signingError.details.reason ?? 'unknown',
-						_signingFormat,
-						options?.source,
-					);
+				const reason = classifySigningError(ex);
+				if (reason != null) {
+					const gitCommand: GitCommandContext = { repoPath: repoPath, args: ['commit-tree'] };
+					const signingError = new SigningError({ reason: reason, gitCommand: gitCommand }, ex);
+					this.context.hooks?.commits?.onSigningFailed?.(reason, _signingFormat, options?.source);
 					throw signingError;
 				}
 			}
@@ -296,19 +275,19 @@ export class PatchGitSubProvider implements GitPatchSubProvider {
 	}
 
 	async createEmptyInitialCommit(repoPath: string): Promise<string> {
-		const emptyTree = await this.git.exec({ cwd: repoPath, stdin: '' }, 'hash-object', '-t', 'tree', '--stdin');
-		const result = await this.git.exec({ cwd: repoPath }, 'commit-tree', emptyTree.stdout.trim(), '-m', 'temp');
+		const emptyTree = await this.git.run({ cwd: repoPath, stdin: '' }, 'hash-object', '-t', 'tree', '--stdin');
+		const result = await this.git.run({ cwd: repoPath }, 'commit-tree', emptyTree.stdout.trim(), '-m', 'temp');
 		// create refs/heads/main and point to it
-		await this.git.exec({ cwd: repoPath }, 'update-ref', 'refs/heads/main', result.stdout.trim());
+		await this.git.run({ cwd: repoPath }, 'update-ref', 'refs/heads/main', result.stdout.trim());
 		// point HEAD to the branch
-		await this.git.exec({ cwd: repoPath }, 'symbolic-ref', 'HEAD', 'refs/heads/main');
+		await this.git.run({ cwd: repoPath }, 'symbolic-ref', 'HEAD', 'refs/heads/main');
 		return result.stdout.trim();
 	}
 
 	@debug({ args: repoPath => ({ repoPath: repoPath }) })
 	async validatePatch(repoPath: string | undefined, contents: string): Promise<boolean> {
 		try {
-			await this.git.exec({ cwd: repoPath, configs: gitConfigsLog, stdin: contents }, 'apply', '--check', '-');
+			await this.git.run({ cwd: repoPath, configs: gitConfigsLog, stdin: contents }, 'apply', '--check', '-');
 			return true;
 		} catch (ex) {
 			if (ex instanceof RunError || ex instanceof GitError) {

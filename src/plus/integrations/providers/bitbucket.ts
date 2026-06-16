@@ -279,6 +279,7 @@ export class BitbucketIntegration extends GitHostIntegration<
 
 		const api = await this.container.bitbucket;
 		if (!api) return undefined;
+
 		const issueResult = await flatSettled(
 			repos.map(repo => {
 				return api.getUsersIssuesForRepo(
@@ -343,9 +344,4 @@ export class BitbucketIntegration extends GitHostIntegration<
 		this._accounts = undefined;
 		this._workspaces = undefined;
 	}
-}
-
-const bitbucketCloudDomainRegex = /^bitbucket\.org$/i;
-export function isBitbucketCloudDomain(domain: string | undefined): boolean {
-	return domain != null && bitbucketCloudDomainRegex.test(domain);
 }

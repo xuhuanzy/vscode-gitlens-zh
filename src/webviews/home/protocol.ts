@@ -7,19 +7,20 @@ import type { GitPausedOperationStatus } from '@gitlens/git/models/pausedOperati
 import type { GitBranchReference } from '@gitlens/git/models/reference.js';
 import type { RemoteProviderSupportedFeatures } from '@gitlens/git/models/remoteProvider.js';
 import type { GitBranchMergedStatus } from '@gitlens/git/providers/branches.js';
+import type { AgentSessionState } from '../../agents/models/agentSessionState.js';
 import type { IntegrationDescriptor } from '../../constants.integrations.js';
-import type { Source } from '../../constants.telemetry.js';
 import type { WalkthroughContextKeys } from '../../constants.walkthroughs.js';
 import type { RepositoryShape } from '../../git/models/repositoryShape.js';
 import type { Subscription } from '../../plus/gk/models/subscription.js';
 import type { LaunchpadSummaryResult } from '../../plus/launchpad/launchpadIndicator.js';
 import type { LaunchpadItem } from '../../plus/launchpad/launchpadProvider.js';
 import type { LaunchpadGroup } from '../../plus/launchpad/models/launchpad.js';
-import type { OpenWorkspaceLocation } from '../../system/-webview/vscode/workspaces.js';
 import type { IpcScope } from '../ipc/models/ipc.js';
 import { IpcNotification } from '../ipc/models/ipc.js';
 import type { WebviewState } from '../protocol.js';
+import type { OverviewBranch, OverviewRecentThreshold, OverviewStaleThreshold } from '../shared/overviewBranches.js';
 
+export type { OverviewRecentThreshold, OverviewStaleThreshold } from '../shared/overviewBranches.js';
 export const scope: IpcScope = 'home';
 
 // ============================================================
@@ -36,7 +37,6 @@ export interface State extends WebviewState<'gitlens.views.home'> {
 		ai: boolean;
 	};
 	aiEnabled: boolean;
-	experimentalComposerEnabled: boolean;
 	mcpBannerCollapsed: boolean;
 	mcpCanAutoRegister: boolean;
 	hasAnyIntegrationConnected: boolean;
@@ -55,7 +55,10 @@ export interface State extends WebviewState<'gitlens.views.home'> {
 	previewEnabled: boolean;
 	newInstall: boolean;
 	hostAppName: string;
+	agentSessions?: AgentSessionState[];
 }
+
+export type { AgentSessionState };
 
 export interface SubscriptionState {
 	subscription: Subscription;
@@ -77,9 +80,6 @@ export interface DidChangeRepositoriesParams {
 	hasUnsafe: boolean;
 	trusted: boolean;
 }
-
-export type OverviewRecentThreshold = 'OneDay' | 'OneWeek' | 'OneMonth';
-export type OverviewStaleThreshold = 'OneYear';
 
 export interface OverviewFilters {
 	recent: {
@@ -225,6 +225,7 @@ export interface GetOverviewBranch {
 
 	worktree?: {
 		name: string;
+		path: string;
 		uri: string;
 		isDefault: boolean;
 	};
@@ -236,22 +237,20 @@ export type OverviewRepository = RepositoryShape;
 // Overview Branch (sync fields only — no enrichment)
 // ============================================================
 
-/** Branch data with only synchronous fields. Used for fast initial render before enrichment. */
-export interface OverviewBranch {
-	reference: GitBranchReference;
-	repoPath: string;
-	id: string;
-	name: string;
-	opened: boolean;
-	timestamp?: number;
-	status: GitBranchStatus;
-	upstream: GitTrackingUpstream | undefined;
-	worktree?: {
-		name: string;
-		uri: string;
-		isDefault: boolean;
-	};
-}
+// Re-export shared overview types for convenience
+export type {
+	GetOverviewEnrichmentResponse,
+	GetOverviewWipResponse,
+	OverviewBranch,
+	OverviewBranchContributor,
+	OverviewBranchEnrichment,
+	OverviewBranchIssue,
+	OverviewBranchLaunchpadItem,
+	OverviewBranchMergeTarget,
+	OverviewBranchPullRequest,
+	OverviewBranchRemote,
+	OverviewBranchWip,
+} from '../shared/overviewBranches.js';
 
 export type GetOverviewBranchesResponse =
 	| {
@@ -261,36 +260,6 @@ export type GetOverviewBranchesResponse =
 			stale?: OverviewBranch[];
 	  }
 	| undefined;
-
-// ============================================================
-// Overview WIP (lightweight — local git status only)
-// ============================================================
-
-/** WIP data keyed by branch ID. Only branches with worktrees or active branches have WIP. */
-export type GetOverviewWipResponse = Record<string, OverviewBranchWip | undefined>;
-
-export interface OverviewBranchWip {
-	workingTreeState?: GitDiffFileStats;
-	hasConflicts?: boolean;
-	conflictsCount?: number;
-	pausedOpStatus?: GitPausedOperationStatus;
-}
-
-// ============================================================
-// Overview Enrichment (expensive — API calls, git log, etc.)
-// ============================================================
-
-/** Enrichment data keyed by branch ID. */
-export type GetOverviewEnrichmentResponse = Record<string, OverviewBranchEnrichment>;
-
-export interface OverviewBranchEnrichment {
-	remote?: Awaited<GetOverviewBranch['remote']>;
-	pr?: Awaited<GetOverviewBranch['pr']>;
-	autolinks?: Awaited<GetOverviewBranch['autolinks']>;
-	issues?: Awaited<GetOverviewBranch['issues']>;
-	contributors?: Awaited<GetOverviewBranch['contributors']>;
-	mergeTarget?: Awaited<GetOverviewBranch['mergeTarget']>;
-}
 
 // ============================================================
 // Legacy monolithic responses (consumed by UI — built by webview from skeleton + wip + enrichment)
@@ -321,31 +290,12 @@ export type OpenInTimelineParams =
 	| { type: 'branch'; repoPath: string; branchId: string }
 	| undefined;
 
-export interface BranchRef {
-	repoPath: string;
-	branchId: string;
-	branchName: string;
-	branchUpstreamName?: string;
-	worktree?: {
-		name: string;
-		isDefault: boolean;
-	};
-}
-
-export interface OpenWorktreeCommandArgs extends BranchRef {
-	location?: OpenWorkspaceLocation;
-}
-
-export interface BranchAndTargetRefs extends BranchRef {
-	mergeTargetId: string;
-	mergeTargetName: string;
-}
-
-export interface CreatePullRequestCommandArgs {
-	ref: BranchRef;
-	describeWithAI?: boolean;
-	source?: Source;
-}
+export type {
+	BranchAndTargetRefs,
+	BranchRef,
+	CreatePullRequestCommandArgs,
+	OpenWorktreeCommandArgs,
+} from '../shared/branchRefs.js';
 
 // ============================================================
 // Legacy IPC (kept for shared contexts like promos.ts)

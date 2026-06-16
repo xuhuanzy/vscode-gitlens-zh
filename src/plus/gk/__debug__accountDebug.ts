@@ -1,10 +1,15 @@
-import type { Disposable } from 'vscode';
-import { ThemeIcon, window } from 'vscode';
+import type { Disposable, QuickInputButton } from 'vscode';
+import { QuickInputButtonLocation, ThemeIcon, window } from 'vscode';
+import type { RepositoryVisibility } from '@gitlens/git/providers/types.js';
 import { proFeaturePreviewUsages, proTrialLengthInDays, SubscriptionState } from '../../constants.subscription.js';
 import type { Container } from '../../container.js';
+import { setSimulatedRepoVisibility } from '../../git/__debug__visibilityDebug.js';
 import type { QuickPickItemOfT } from '../../quickpicks/items/common.js';
 import { createQuickPickSeparator } from '../../quickpicks/items/common.js';
 import { registerCommand } from '../../system/-webview/command.js';
+import { supportedInVSCodeVersion } from '../../system/-webview/vscode.js';
+import type { OnboardingSnapshot } from '../__debug__onboardingHelper.js';
+import { dismissAllOnboarding, restoreOnboarding } from '../__debug__onboardingHelper.js';
 import type { GKCheckInResponse, GKLicenses, GKLicenseType, GKUser } from './models/checkin.js';
 import type { Organization } from './models/organization.js';
 import type { PaidSubscriptionPlanIds, SubscriptionPlanIds } from './models/subscription.js';
@@ -24,6 +29,8 @@ type SubscriptionServiceFacade = {
 	onDidCheckIn: SubscriptionService['_onDidCheckIn'];
 	changeSubscription: SubscriptionService['changeSubscription'];
 	getStoredSubscription: SubscriptionService['getStoredSubscription'];
+	/** Re-fires the subscription change event with the current value to nudge access consumers. */
+	refireSubscriptionChange: () => void;
 };
 
 export function registerAccountDebug(container: Container, service: SubscriptionServiceFacade): void {
@@ -36,13 +43,21 @@ interface SimulatedFeaturePreviews {
 }
 
 export type SimulationState =
-	| { state: null; reactivatedTrial?: never; expiredPaid?: never; planId?: never; featurePreviews?: never }
+	| {
+			state: null;
+			reactivatedTrial?: never;
+			expiredPaid?: never;
+			planId?: never;
+			featurePreviews?: never;
+			dismissOnboarding?: never;
+	  }
 	| {
 			state: SubscriptionState.Community;
 			reactivatedTrial?: never;
 			expiredPaid?: never;
 			planId?: never;
 			featurePreviews?: SimulatedFeaturePreviews;
+			dismissOnboarding?: boolean;
 	  }
 	| {
 			state: Exclude<SubscriptionState, SubscriptionState.Trial | SubscriptionState.Paid>;
@@ -50,6 +65,7 @@ export type SimulationState =
 			expiredPaid?: never;
 			planId?: never;
 			featurePreviews?: never;
+			dismissOnboarding?: boolean;
 	  }
 	| {
 			state: SubscriptionState.Trial;
@@ -57,6 +73,7 @@ export type SimulationState =
 			expiredPaid?: never;
 			planId?: Extract<'advanced' | 'student', SubscriptionPlanIds>;
 			featurePreviews?: never;
+			dismissOnboarding?: boolean;
 	  }
 	| {
 			state: SubscriptionState.Paid;
@@ -64,12 +81,38 @@ export type SimulationState =
 			expiredPaid?: boolean;
 			planId?: PaidSubscriptionPlanIds;
 			featurePreviews?: never;
+			dismissOnboarding?: boolean;
 	  };
 
 type SimulateQuickPickItem = QuickPickItemOfT<SimulationState>;
 
+function getVisibilityButton(visibility: RepositoryVisibility | undefined): QuickInputButton {
+	const inline = supportedInVSCodeVersion('quickpick-button-location') ? QuickInputButtonLocation.Inline : undefined;
+	switch (visibility) {
+		case 'public':
+			return { iconPath: new ThemeIcon('globe'), tooltip: 'Simulating Public Repos', location: inline };
+		case 'private':
+			return { iconPath: new ThemeIcon('lock'), tooltip: 'Simulating Private Repos', location: inline };
+		default:
+			return { iconPath: new ThemeIcon('eye'), tooltip: 'Simulate Repo Visibility', location: inline };
+	}
+}
+
+function nextSimulatedVisibility(current: RepositoryVisibility | undefined): RepositoryVisibility | undefined {
+	switch (current) {
+		case undefined:
+			return 'private';
+		case 'private':
+			return 'public';
+		default:
+			return undefined;
+	}
+}
+
 class AccountDebug {
 	private simulatingPick: SimulateQuickPickItem | undefined;
+	private simulatedVisibility: RepositoryVisibility | undefined;
+	private onboardingSnapshot: OnboardingSnapshot | undefined;
 
 	constructor(
 		private readonly container: Container,
@@ -77,7 +120,7 @@ class AccountDebug {
 	) {
 		this.container.context.subscriptions.push(
 			registerCommand(
-				'gitlens.plus.simulateSubscription',
+				'gitlens.plus.simulate.subscription',
 				(state?: SimulationState) => this.simulateSubscription(state),
 				undefined,
 				{ returnResult: true },
@@ -282,14 +325,23 @@ class AccountDebug {
 							return;
 						}
 
+						this.simulatingPick = item;
+
 						const [items, picked] = getItemsAndPicked(this.simulatingPick);
 						quickpick.items = items;
 						quickpick.activeItems = picked ? [picked] : [];
+					}),
+					quickpick.onDidTriggerButton(() => {
+						this.simulatedVisibility = nextSimulatedVisibility(this.simulatedVisibility);
+						setSimulatedRepoVisibility(this.simulatedVisibility);
+						this.service.refireSubscriptionChange();
+						quickpick.buttons = [getVisibilityButton(this.simulatedVisibility)];
 					}),
 				);
 
 				quickpick.title = 'Subscription Simulator';
 				quickpick.placeholder = 'Choose the subscription state to simulate';
+				quickpick.buttons = [getVisibilityButton(this.simulatedVisibility)];
 
 				const [items, picked] = getItemsAndPicked(this.simulatingPick);
 				quickpick.items = items;
@@ -305,16 +357,30 @@ class AccountDebug {
 
 	private endSimulation() {
 		this.simulatingPick = undefined;
+		this.simulatedVisibility = undefined;
+		setSimulatedRepoVisibility(undefined);
 
 		this.service.restoreFeaturePreviews();
 		this.service.restoreSession();
 		this.service.changeSubscription(this.service.getStoredSubscription(), undefined, { store: false });
+
+		if (this.onboardingSnapshot != null) {
+			const snapshot = this.onboardingSnapshot;
+			this.onboardingSnapshot = undefined;
+			void restoreOnboarding(this.container, snapshot);
+		}
 	}
 
 	private async startSimulation(simulatedState: SimulationState | undefined): Promise<boolean> {
 		if (simulatedState?.state == null) {
 			this.endSimulation();
 			return false;
+		}
+
+		// Snapshot + dismiss onboarding only on first start that requests it; subsequent
+		// starts don't re-snapshot (preserves the original "what was undismissed" record).
+		if (simulatedState.dismissOnboarding && this.onboardingSnapshot == null) {
+			this.onboardingSnapshot = await dismissAllOnboarding(this.container);
 		}
 
 		const { state, reactivatedTrial, expiredPaid, planId, featurePreviews } = simulatedState;

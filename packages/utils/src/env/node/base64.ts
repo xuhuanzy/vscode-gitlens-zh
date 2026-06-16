@@ -5,7 +5,7 @@ export function base64(data: string | Uint8Array): string {
 }
 
 export function fromBase64(s: string): Uint8Array {
-	return Buffer.from(s, 'base64') as unknown as Uint8Array;
+	return Buffer.from(s, 'base64');
 }
 
 /**

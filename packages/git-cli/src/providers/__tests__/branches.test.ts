@@ -1,8 +1,8 @@
 import * as assert from 'assert';
+import * as sinon from 'sinon';
 import type { Cache } from '@gitlens/git/cache.js';
 import type { GitServiceContext } from '@gitlens/git/context.js';
-import type { GitResult } from '@gitlens/git/exec.types.js';
-import * as sinon from 'sinon';
+import type { GitResult } from '@gitlens/git/run.types.js';
 import type { CliGitProviderInternal } from '../../cliGitProvider.js';
 import type { Git } from '../../exec/git.js';
 import { BranchesGitSubProvider } from '../branches.js';
@@ -31,23 +31,35 @@ suite('BranchesGitSubProvider Test Suite', () => {
 			supports(_feature: string) {
 				return Promise.resolve(true);
 			}
-			exec(..._args: any[]) {
+			run(..._args: any[]) {
 				return Promise.resolve(createGitResult(''));
+			}
+			async *stream(..._args: any[]): AsyncGenerator<string> {
+				// Default: empty stream. Tests override with `.callsFake(...)`.
 			}
 		}
 
 		gitStub = sandbox.createStubInstance(MockGit) as unknown as sinon.SinonStubbedInstance<Git>;
 
 		const context = {} as unknown as GitServiceContext;
-		// Mock cache with conflictDetection that bypasses caching and calls the factory directly
+		// Mock cache with caches that bypass and call the factory directly
 		const cache = {
 			conflictDetection: {
 				getOrCreate: (_repoPath: string, _key: string, factory: () => Promise<unknown>) => factory(),
 			},
+			getRefs: (
+				repoPath: string,
+				factory: (
+					commonPath: string,
+					cacheable: { invalidate: () => void },
+					cancellation?: AbortSignal,
+				) => Promise<unknown>,
+				cancellation?: AbortSignal,
+			) => factory(repoPath, { invalidate: () => {} }, cancellation),
 		} as unknown as Cache;
 		const provider = {} as unknown as CliGitProviderInternal;
 
-		branchesProvider = new BranchesGitSubProvider(context, gitStub as unknown as Git, cache, provider);
+		branchesProvider = new BranchesGitSubProvider(context, gitStub, cache, provider);
 	});
 
 	teardown(() => {
@@ -62,17 +74,17 @@ suite('BranchesGitSubProvider Test Suite', () => {
 		gitStub.supports.withArgs('git:merge-tree:write-tree').resolves(true);
 
 		// rev-parse to resolve all parent refs in a single call
-		gitStub.exec
+		gitStub.run
 			.withArgs(sinon.match.has('cwd', repoPath), 'rev-parse', 'commit1^', 'commit2^')
 			.resolves(createGitResult('parent1\nparent2'));
 
 		// rev-parse target^{tree} (initial tree)
-		gitStub.exec
+		gitStub.run
 			.withArgs(sinon.match.has('cwd', repoPath), 'rev-parse', `${target}^{tree}`)
 			.resolves(createGitResult('tree_0'));
 
 		// Step 1: commit1 - merge-tree --write-tree --merge-base (clean)
-		gitStub.exec
+		gitStub.run
 			.withArgs(
 				sinon.match.has('cwd', repoPath),
 				'merge-tree',
@@ -87,7 +99,7 @@ suite('BranchesGitSubProvider Test Suite', () => {
 			.resolves(createGitResult('tree_1\0'));
 
 		// Step 2: commit2 - merge-tree --write-tree --merge-base (CONFLICT)
-		gitStub.exec
+		gitStub.run
 			.withArgs(
 				sinon.match.has('cwd', repoPath),
 				'merge-tree',
@@ -119,17 +131,17 @@ suite('BranchesGitSubProvider Test Suite', () => {
 		gitStub.supports.withArgs('git:merge-tree:write-tree').resolves(true);
 
 		// rev-parse to resolve all parent refs in a single call
-		gitStub.exec
+		gitStub.run
 			.withArgs(sinon.match.has('cwd', repoPath), 'rev-parse', 'commit1^', 'commit2^', 'commit3^')
 			.resolves(createGitResult('parent1\nparent2\nparent3'));
 
 		// rev-parse target^{tree} (initial tree)
-		gitStub.exec
+		gitStub.run
 			.withArgs(sinon.match.has('cwd', repoPath), 'rev-parse', `${target}^{tree}`)
 			.resolves(createGitResult('tree_0'));
 
 		// Step 1: commit1 - CONFLICT on file1.txt
-		gitStub.exec
+		gitStub.run
 			.withArgs(
 				sinon.match.has('cwd', repoPath),
 				'merge-tree',
@@ -144,7 +156,7 @@ suite('BranchesGitSubProvider Test Suite', () => {
 			.resolves(createGitResult('tree_1\0file1.txt\0'));
 
 		// Step 2: commit2 - clean merge
-		gitStub.exec
+		gitStub.run
 			.withArgs(
 				sinon.match.has('cwd', repoPath),
 				'merge-tree',
@@ -159,7 +171,7 @@ suite('BranchesGitSubProvider Test Suite', () => {
 			.resolves(createGitResult('tree_2\0'));
 
 		// Step 3: commit3 - CONFLICT on file2.txt
-		gitStub.exec
+		gitStub.run
 			.withArgs(
 				sinon.match.has('cwd', repoPath),
 				'merge-tree',
@@ -200,7 +212,7 @@ suite('BranchesGitSubProvider Test Suite', () => {
 		const commits = ['root_commit'];
 
 		// rev-parse fails for root commit (no parent)
-		gitStub.exec
+		gitStub.run
 			.withArgs(sinon.match.has('cwd', repoPath), 'rev-parse', 'root_commit^')
 			.rejects(new Error('unknown revision'));
 

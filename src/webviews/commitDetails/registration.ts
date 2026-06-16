@@ -1,4 +1,5 @@
 import type { CommitSelectedEvent } from '../../eventBus.js';
+import { loadChunk } from '../../system/-webview/loadChunk.js';
 import type { WebviewsController, WebviewViewProxy } from '../webviewsController.js';
 import type { ShowWipArgs, State } from './protocol.js';
 
@@ -21,35 +22,10 @@ export function registerCommitDetailsWebviewView(
 			},
 		},
 		async (container, host) => {
-			const { CommitDetailsWebviewProvider } = await import(
-				/* webpackChunkName: "webview-commitDetails" */ './commitDetailsWebview.js'
+			const { CommitDetailsWebviewProvider } = await loadChunk(
+				() => import(/* webpackChunkName: "webview-commitDetails" */ './commitDetailsWebview.js'),
 			);
-			return new CommitDetailsWebviewProvider(container, host, { attachedTo: 'default' });
-		},
-	);
-}
-
-export function registerGraphDetailsWebviewView(
-	controller: WebviewsController,
-): WebviewViewProxy<'gitlens.views.graphDetails', CommitDetailsWebviewShowingArgs, State> {
-	return controller.registerWebviewView<'gitlens.views.graphDetails', State, State, CommitDetailsWebviewShowingArgs>(
-		{
-			id: 'gitlens.views.graphDetails',
-			fileName: 'commitDetails.html',
-			title: 'Commit Graph Inspect',
-			contextKeyPrefix: `gitlens:webviewView:graphDetails`,
-			trackingFeature: 'graphDetailsView',
-			type: 'graphDetails',
-			plusFeature: false,
-			webviewHostOptions: {
-				retainContextWhenHidden: true,
-			},
-		},
-		async (container, host) => {
-			const { CommitDetailsWebviewProvider } = await import(
-				/* webpackChunkName: "webview-commitDetails" */ './commitDetailsWebview.js'
-			);
-			return new CommitDetailsWebviewProvider(container, host, { attachedTo: 'graph' });
+			return new CommitDetailsWebviewProvider(container, host);
 		},
 	);
 }

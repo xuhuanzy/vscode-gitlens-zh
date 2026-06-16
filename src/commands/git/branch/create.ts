@@ -17,10 +17,12 @@ import type { Container } from '../../../container.js';
 import type { GlRepository } from '../../../git/models/repository.js';
 import { addAssociatedIssueToBranch } from '../../../git/utils/-webview/branch.issue.utils.js';
 import { showGitErrorMessage } from '../../../messages.js';
-import type { ChatActions } from '../../../plus/chat/chatActions.js';
+import type { StartReviewChatAction, StartWorkChatAction } from '../../../plus/chat/chatActions.js';
 import { getIssueOwner } from '../../../plus/integrations/providers/utils.js';
 import type { FlagsQuickPickItem } from '../../../quickpicks/items/flags.js';
 import { createFlagsQuickPickItem } from '../../../quickpicks/items/flags.js';
+import { executeCommand } from '../../../system/-webview/command.js';
+import type { OpenChatActionCommandArgs } from '../../openChatAction.js';
 import type {
 	PartialStepState,
 	StepGenerator,
@@ -34,7 +36,7 @@ import type { QuickPickStep } from '../../quick-wizard/models/steps.quickpick.js
 import { QuickCommand } from '../../quick-wizard/quickCommand.js';
 import { inputBranchNameStep } from '../../quick-wizard/steps/branches.js';
 import { pickBranchOrTagStep } from '../../quick-wizard/steps/references.js';
-import { pickRepositoryStep } from '../../quick-wizard/steps/repositories.js';
+import { canSkipRepositoryPick, pickRepositoryStep } from '../../quick-wizard/steps/repositories.js';
 import { StepsController } from '../../quick-wizard/stepsController.js';
 import { getSteps } from '../../quick-wizard/utils/quickWizard.utils.js';
 import {
@@ -70,13 +72,13 @@ interface State<Repo = string | GlRepository> {
 	associateWithIssue?: IssueShape;
 
 	// Pass through to worktree command
-	worktreeDefaultOpen?: 'new' | 'current';
+	worktreeDefaultOpen?: 'new' | 'current' | 'none';
 
 	// Result tracking
 	result?: Deferred<{ branch: GitBranch; worktree?: GitWorktree }>;
 
 	// Chat action for deeplink storage
-	chatAction?: ChatActions;
+	chatAction?: StartWorkChatAction | StartReviewChatAction;
 }
 export type BranchCreateState = State;
 
@@ -117,8 +119,8 @@ export class BranchCreateGitCommand extends QuickCommand<State> {
 				context.title = this.title;
 
 				if (steps.isAtStep(Steps.PickRepo) || state.repo == null || typeof state.repo === 'string') {
-					// Only show the picker if there are multiple repositories
-					if (context.repos.length === 1) {
+					// Skip the picker only when the sole available repo is the one requested
+					if (canSkipRepositoryPick(context.repos, state.repo)) {
 						[state.repo] = context.repos;
 					} else {
 						using step = steps.enterStep(Steps.PickRepo);
@@ -185,6 +187,7 @@ export class BranchCreateGitCommand extends QuickCommand<State> {
 				}
 
 				if (!steps.isAtStepOrUnset(Steps.Confirm)) continue;
+
 				if (this.confirm(state.confirm)) {
 					using step = steps.enterStep(Steps.Confirm);
 
@@ -233,8 +236,11 @@ export class BranchCreateGitCommand extends QuickCommand<State> {
 						try {
 							const worktree = await worktreeResult.promise;
 							if (worktree) {
-								// Get the branch from the worktree repository
-								const worktreeRepo = await this.container.git.getOrOpenRepository(worktree.uri);
+								// Get the branch from the worktree repository — resolve the model only; don't
+								// surface the worktree as a visible repo
+								const worktreeRepo = await this.container.git.getOrAddRepository(worktree.uri, {
+									opened: false,
+								});
 								const branch = worktreeRepo
 									? await worktreeRepo.git.branches.getBranch(state.name)
 									: undefined;
@@ -305,6 +311,17 @@ export class BranchCreateGitCommand extends QuickCommand<State> {
 					} else {
 						state.result.cancel();
 					}
+				}
+
+				// Non-worktree paths don't go through the deep-link bridge (which only fires on
+				// new-window worktree open). When `chatAction.agent` is set, the user explicitly
+				// chose an agent — fire the dispatch inline in the current window so the agent
+				// actually launches. Without this, picking `--switch` (no worktree) silently
+				// drops the agent dispatch.
+				if (state.chatAction?.agent != null && !state.flags.includes('--worktree')) {
+					void executeCommand('gitlens.openChatAction', {
+						chatAction: state.chatAction,
+					} as OpenChatActionCommandArgs);
 				}
 			}
 		} finally {

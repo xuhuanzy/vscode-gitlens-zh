@@ -157,7 +157,7 @@ export abstract class RepositoryFolderNode<
 								providerName ? ` on ${providerName}` : ''
 							}`,
 						})}`
-					: `hasn't been published to ${providerName ?? 'a remote'}`
+					: ` hasn't been published to ${providerName ?? 'a remote'}`
 			}`,
 			true,
 		);

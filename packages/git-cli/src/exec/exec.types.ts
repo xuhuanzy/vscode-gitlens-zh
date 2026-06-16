@@ -1,8 +1,8 @@
 export type {
 	GitCommandPriority,
 	GitErrorHandling,
-	GitExecOptions,
+	GitRunOptions,
 	GitResult,
 	GitResultCache,
 	GitSpawnOptions,
-} from '@gitlens/git/exec.types.js';
+} from '@gitlens/git/run.types.js';

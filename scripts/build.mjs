@@ -12,14 +12,14 @@ const { values } = parseArgs({
 		build: { type: 'string', default: undefined, multiple: true }, // (extension | webviews)[]
 		debug: { type: 'boolean', default: false },
 		target: { type: 'string', default: undefined, multiple: true }, // (node | webworker)[]
-		quick: { type: 'string', default: undefined }, // true | turbo
+		quick: { type: 'boolean', default: false }, // skip type-checking, linting, docs, and asset generation
 		trace: { type: 'boolean', default: false },
 		webview: { type: 'string', default: undefined, multiple: true },
 		watch: { type: 'boolean', default: false },
 	},
 });
 
-/** @type {{ mode: 'production' | 'development' | 'none' | undefined; build: ('extension' | 'webviews' | 'unit-tests')[] | undefined; debug: boolean; target: ('node' | 'webworker')[] | undefined; quick: 'true' | 'turbo' | undefined; trace: boolean; webview: string[] | undefined; watch: boolean }} */
+/** @type {{ mode: 'production' | 'development' | 'none' | undefined; build: ('extension' | 'webviews' | 'unit-tests')[] | undefined; debug: boolean; target: ('node' | 'webworker')[] | undefined; quick: boolean; trace: boolean; webview: string[] | undefined; watch: boolean }} */
 const { mode, build, debug, target, quick, trace, webview: webviews, watch } = values;
 
 const env = {
@@ -118,7 +118,7 @@ if (build?.length || webviews?.length) {
 }
 
 if (quick) {
-	cmd += ` --env quick=${quick}`;
+	cmd += ` --env quick`;
 }
 
 if (trace) {
@@ -144,6 +144,9 @@ if (build?.includes('unit-tests')) {
 	}
 }
 
+// A "full" build targets no specific config (the default `pnpm run build`) — these are the ones
+// we split across processes below.
+const isFullBuild = !build?.length && !target?.length && !webviews?.length;
 if (shouldBuildLocalizedWebviews) {
 	const generateLocalizedWebviewsCmd = `node ./i18n/cli.mts webviews generate --dynamic-sources-only`;
 	console.log(`Running: ${generateLocalizedWebviewsCmd}`);
@@ -188,12 +191,64 @@ if (!quick && !watch) {
 	}
 }
 
-const child = spawn(cmd, [], {
-	shell: true,
-	stdio: 'inherit',
-	env: env,
-});
+/** @param {string} command @returns {Promise<number>} exit code (always resolves; never rejects) */
+function run(command) {
+	console.log(`Running: ${command}`);
+	const child = spawn(command, [], { shell: true, stdio: 'inherit', env: env });
+	return new Promise(resolve => {
+		child.on('exit', code => resolve(code || 0));
+		// Spawn failures emit 'error' without 'exit' — resolve as failure so the batch never hangs.
+		child.on('error', () => resolve(1));
+	});
+}
 
-child.on('exit', code => {
-	process.exit(code || 0);
-});
+// For one-shot full builds, split the 6-config webpack MultiCompiler (which shares a single Node
+// event loop, leaving most cores idle) into parallel webpack processes — one per bucket — so the
+// CPU-bound work (module-graph build, codegen, source maps) spreads across cores. Buckets keep
+// configs that share in-process state together (webviews:common + webviews). Watch and targeted
+// builds keep the single-process path.
+let bundleCmds;
+if (isFullBuild && !watch) {
+	let baseCmd = `webpack --mode ${mode}`;
+	if (quick) {
+		baseCmd += ` --env quick`;
+	}
+	if (trace) {
+		baseCmd += ` --env trace`;
+	}
+
+	bundleCmds = [
+		`${baseCmd} --config-name extension:node`,
+		`${baseCmd} --config-name extension:webworker`,
+		// `common` is pure codegen (empty entry; Docs/Licenses/Fantasticon/contributions all run as
+		// blocking spawnSync) — isolate it so that blocking work gets its own core instead of stalling
+		// a bundling process's event loop.
+		`${baseCmd} --config-name common`,
+		// Keep webviews:common + webviews in one process (CompileComposerTemplatesPlugin shares state).
+		`${baseCmd} --config-name webviews:common --config-name webviews --config-name unit-tests`,
+	];
+} else {
+	bundleCmds = [cmd];
+}
+
+// Run the bundle process(es) and, for one-shot builds, a single whole-project oxlint (lint +
+// type-check) pass concurrently. tsgo-backed type checking and Rust-native linting both run inside
+// oxlint, so it replaces the old ForkTsChecker + ESLint plugins. Watch builds lint incrementally via
+// the inline OxLintWebpackPlugin (added whenever not in quick mode), so they skip this standalone pass.
+const tasks = bundleCmds.map(c => run(c));
+if (!quick && !watch) {
+	tasks.push(run(`oxlint --type-aware --type-check`));
+}
+
+// allSettled (not all) so a failure in one process never abandons the others mid-flight — every
+// bundle process runs to completion, then we fail the build with the first non-zero exit code.
+const results = await Promise.allSettled(tasks);
+const codes = results.map(result => (result.status === 'fulfilled' ? result.value : 1));
+const failed = codes.find(code => code !== 0) ?? 0;
+
+// With multiple bundle processes, each prints its own per-process status; emit one aggregate line.
+if (bundleCmds.length > 1) {
+	console.log(failed ? '[build] Compiled with problems' : '[build] Compiled successfully');
+}
+
+process.exit(failed);

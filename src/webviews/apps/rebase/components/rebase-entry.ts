@@ -1,4 +1,3 @@
-import type SlSelect from '@shoelace-style/shoelace/dist/components/select/select.js';
 import { html, LitElement, nothing } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
@@ -9,15 +8,14 @@ import { commitRebaseActions } from '@gitlens/git/utils/rebase.utils.js';
 import type { Author, RebaseEntry } from '../../../rebase/protocol.js';
 import { isCommitEntry } from '../../../rebase/protocol.js';
 import type { AvatarShape } from '../../shared/components/avatar/avatar-list.js';
+import type { GlSelect } from '../../shared/components/select/select.js';
 import { entryStyles } from './rebase-entry.css.js';
-import '@shoelace-style/shoelace/dist/components/option/option.js';
-import '@shoelace-style/shoelace/dist/components/select/select.js';
 import '../../shared/components/avatar/avatar-list.js';
-import '../../shared/components/shoelace-stub.js';
 import '../../shared/components/chips/ref-overflow-chip.js';
 import '../../shared/components/markdown/markdown.js';
 import '../../shared/components/overlays/popover.js';
 import '../../shared/components/overlays/tooltip.js';
+import '../../shared/components/select/select.js';
 
 const allCommitActions = [...commitRebaseActions.values()];
 const oldestCommitActions = allCommitActions.filter(a => a !== 'squash' && a !== 'fixup');
@@ -48,7 +46,7 @@ const commandDescriptions: Record<string, string> = {
 export class GlRebaseEntryElement extends LitElement {
 	static override styles = [entryStyles];
 
-	@query('.action-select') private readonly _actionSelect!: SlSelect;
+	@query('.action-select') private readonly _actionSelect!: GlSelect;
 
 	@property({
 		type: Object,
@@ -95,7 +93,7 @@ export class GlRebaseEntryElement extends LitElement {
 	private onActionChanged = (e: Event) => {
 		if (!isCommitEntry(this.entry)) return;
 
-		const select = e.target as SlSelect;
+		const select = e.target as GlSelect;
 		const action = select.value as RebaseTodoCommitAction;
 		this.dispatchEvent(
 			new CustomEvent('action-changed', {
@@ -109,7 +107,7 @@ export class GlRebaseEntryElement extends LitElement {
 	private onClick = (e: MouseEvent) => {
 		// Don't trigger on interactive elements (they handle their own clicks)
 		const target = e.target as HTMLElement;
-		if (target.closest('sl-select, a, button')) return;
+		if (target.closest('gl-select, a, button')) return;
 
 		// Ensure the entry row gets focus
 		(e.currentTarget as HTMLElement)?.focus();
@@ -133,7 +131,7 @@ export class GlRebaseEntryElement extends LitElement {
 
 		// Don't trigger on interactive elements
 		const target = e.target as HTMLElement;
-		if (target.closest('sl-select, a, button')) return;
+		if (target.closest('gl-select, a, button')) return;
 
 		// Dispatch reveal event for the commit
 		this.dispatchRevealCommit();
@@ -142,11 +140,13 @@ export class GlRebaseEntryElement extends LitElement {
 	private onShaClick = (e: MouseEvent) => {
 		e.preventDefault();
 		if (!isCommitEntry(this.entry)) return;
+
 		this.dispatchRevealCommit();
 	};
 
 	private dispatchRevealCommit() {
 		if (!isCommitEntry(this.entry)) return;
+
 		this.dispatchEvent(
 			new CustomEvent('gl-reveal-commit', {
 				detail: { sha: this.entry.sha },
@@ -221,18 +221,13 @@ export class GlRebaseEntryElement extends LitElement {
 
 				${!isBase
 					? html`<div class="entry-action">
-							<sl-select
+							<gl-select
 								class="action-select"
 								value=${action}
-								@sl-change=${this.onActionChanged}
+								.options=${this.availableActions.map(a => ({ value: a, label: a }))}
+								@change=${this.onActionChanged}
 								?disabled=${isDone}
-								hoist
-							>
-								<code-icon icon="chevron-down" slot="expand-icon"></code-icon>
-								${this.availableActions.map(
-									action => html`<sl-option value=${action}>${action}</sl-option>`,
-								)}
-							</sl-select>
+							></gl-select>
 						</div>`
 					: nothing}
 				<gl-popover class="entry-message" hoist placement="bottom-start" trigger="hover">
@@ -250,14 +245,13 @@ export class GlRebaseEntryElement extends LitElement {
 				${!isBase && updateRefs?.length ? this.renderUpdateRefBadges(updateRefs) : nothing}
 				${this.renderAvatar(author, committer)}
 				${commit?.formattedDate
-					? html`<gl-tooltip class="entry-date" hoist hide-on-click .content=${commit.date ?? ''}>
+					? html`<gl-tooltip class="entry-date" hide-on-click .content=${commit.date ?? ''}>
 							<span class="entry-date-content">${commit.formattedDate}</span>
 						</gl-tooltip>`
 					: nothing}
 
 				<gl-tooltip
 					class="entry-sha"
-					hoist
 					hide-on-click
 					content=${this.revealLocation === 'graph' ? 'Open in Commit Graph' : 'Open in Inspect View'}
 				>
@@ -267,7 +261,7 @@ export class GlRebaseEntryElement extends LitElement {
 					</a>
 				</gl-tooltip>
 
-				<gl-tooltip class="entry-conflict-indicator" hoist content="This commit will cause conflicts">
+				<gl-tooltip class="entry-conflict-indicator" content="This commit will cause conflicts">
 					<code-icon icon="warning"></code-icon>
 				</gl-tooltip>
 			</div>
@@ -304,18 +298,16 @@ export class GlRebaseEntryElement extends LitElement {
 				</span>
 
 				<div class="entry-action">
-					<sl-select class="action-select" value=${action} disabled>
-						<sl-option value=${action}>${action}</sl-option>
-					</sl-select>
+					<gl-select
+						class="action-select"
+						value=${action}
+						.options=${[{ value: action, label: action }]}
+						disabled
+					></gl-select>
 				</div>
 
 				${action === 'exec' && command
-					? html`<gl-tooltip
-							class="entry-message"
-							hoist
-							hide-on-click
-							placement="bottom-start"
-							.content=${command}
+					? html`<gl-tooltip class="entry-message" hide-on-click placement="bottom-start" .content=${command}
 							><span class="entry-message-content"
 								>${description} <code>${command}</code></span
 							></gl-tooltip

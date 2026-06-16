@@ -9,6 +9,7 @@ import { getRepositoryKey } from '@gitlens/utils/uri.js';
 import type { Source } from '../constants.telemetry.js';
 import type { Container } from '../container.js';
 import { configuration } from '../system/-webview/configuration.js';
+import { loadChunk } from '../system/-webview/loadChunk.js';
 import { buildRemoteProviderConfigs } from './remotes/remoteProviderConfigs.js';
 import { getIntegrationRepositoryInfo, sortRemotes } from './utils/-webview/remote.utils.js';
 
@@ -47,6 +48,17 @@ export function createGitProviderContext(container: Container): GitServiceContex
 				onlyFollowFirstParent: configuration.get('graph.onlyFollowFirstParent'),
 				avatars: configuration.get('graph.avatars'),
 				maxSearchItems: configuration.get('graph.searchItemLimit'),
+			};
+		},
+		get push() {
+			return {
+				useForceWithLease: configuration.getCore('git.useForcePushWithLease') ?? true,
+				useForceIfIncludes: configuration.getCore('git.useForcePushIfIncludes') ?? true,
+			};
+		},
+		get signing() {
+			return {
+				enabled: configuration.getCore('git.enableCommitSigning'),
 			};
 		},
 	};
@@ -91,11 +103,11 @@ export function createGitProviderContext(container: Container): GitServiceContex
 		},
 
 		fs: {
-			readDirectory: async (uri: Uri) => workspace.fs.readDirectory(uri as VscodeUri),
-			readFile: async (uri: Uri) => workspace.fs.readFile(uri as VscodeUri),
+			readDirectory: async (uri: Uri) => workspace.fs.readDirectory(uri),
+			readFile: async (uri: Uri) => workspace.fs.readFile(uri),
 			stat: async (uri: Uri) => {
 				try {
-					return await workspace.fs.stat(uri as VscodeUri);
+					return await workspace.fs.stat(uri);
 				} catch {
 					return undefined;
 				}
@@ -118,8 +130,8 @@ export function createGitProviderContext(container: Container): GitServiceContex
 
 		searchQuery: {
 			preprocessQuery: async (search, source) => {
-				const { processNaturalLanguageToSearchQuery } = await import(
-					/* webpackChunkName: "ai" */ './search.naturalLanguage.js'
+				const { processNaturalLanguageToSearchQuery } = await loadChunk(
+					() => import(/* webpackChunkName: "ai" */ './search.naturalLanguage.js'),
 				);
 				return processNaturalLanguageToSearchQuery(container, search, source as Source);
 			},

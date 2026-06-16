@@ -1,15 +1,18 @@
 {
 	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
+		"noEmit": true,
 		"rootDir": ".",
 		"outDir": "out/tests",
 		"paths": {
 			"@env/*": ["./src/env/node/*"],
 			"#env/*": ["./packages/utils/src/env/node/*"],
 			"@gitlens/utils/*": ["./packages/utils/src/*"],
+			"@gitlens/ipc/*": ["./packages/ipc/src/*"],
 			"@gitlens/git/*": ["./packages/git/src/*"],
 			"@gitlens/git-cli/*": ["./packages/git-cli/src/*"],
-			"@gitlens/git-github/*": ["./packages/plus/git-github/src/*"]
+			"@gitlens/git-github/*": ["./packages/plus/git-github/src/*"],
+			"@gitlens/agents/*": ["./packages/plus/agents/src/*"]
 		},
 		"tsBuildInfoFile": "tsconfig.test.tsbuildinfo"
 	},

@@ -25,6 +25,11 @@ export const splitPanelStyles = css`
 			var(--gl-split-panel-divider-width, 4px) 1fr;
 	}
 
+	/* :host { display: grid } overrides the UA [hidden] rule; re-assert it. */
+	:host([hidden]) {
+		display: none;
+	}
+
 	:host([dragging]) {
 		user-select: none;
 	}
@@ -98,5 +103,60 @@ export const splitPanelStyles = css`
 		.divider {
 			outline: solid 1px transparent;
 		}
+	}
+
+	/*
+	 * Overlay mode — start panel floats over the end panel instead of redistributing space.
+	 * Drag/snap/percentage math is unchanged; only the layout switches from grid to absolute
+	 * positioning. The end panel always fills the container; the start panel is sized via the
+	 * same --_start-size custom property the grid track would have used.
+	 */
+	:host([mode='overlay']) {
+		display: block;
+		position: relative;
+		grid-template-columns: unset;
+		grid-template-rows: unset;
+	}
+
+	:host([mode='overlay']) ::slotted([slot='start']) {
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: var(--_start-size, 0%);
+		max-width: 100%;
+		z-index: 2;
+		box-shadow: 0 0 0.5rem var(--vscode-widget-shadow, rgba(0, 0, 0, 0.36));
+		transition: width 0.08s ease-out;
+	}
+
+	:host([mode='overlay'][dragging]) ::slotted([slot='start']) {
+		transition: none;
+	}
+
+	:host([mode='overlay']) ::slotted([slot='end']) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+	}
+
+	:host([mode='overlay']) .divider {
+		position: absolute;
+		/* Sit flush against the panel's right edge — not centered on the boundary like split
+		   mode — so the visible divider stays entirely outside the floating panel.
+		   The ::after hit area still extends 2px into the panel, keeping it grabbable. */
+		left: var(--_start-size, 0%);
+		top: 0;
+		bottom: 0;
+		width: var(--gl-split-panel-divider-width, 4px);
+		height: auto;
+		z-index: 3;
+		transition:
+			background-color 0.1s ease-out,
+			left 0.08s ease-out;
+	}
+
+	:host([mode='overlay'][dragging]) .divider {
+		transition: none;
 	}
 `;

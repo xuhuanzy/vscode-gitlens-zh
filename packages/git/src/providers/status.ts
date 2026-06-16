@@ -3,6 +3,7 @@ import type { GitFile } from '../models/file.js';
 import type { GitConflictFile } from '../models/staging.js';
 import type { GitStatus } from '../models/status.js';
 import type { GitStatusFile } from '../models/statusFile.js';
+import type { GitCommandPriority } from '../run.types.js';
 
 export interface GitWorkingChangesState {
 	staged: boolean;
@@ -11,7 +12,11 @@ export interface GitWorkingChangesState {
 }
 
 export interface GitStatusSubProvider {
-	getStatus(repoPath: string | undefined, cancellation?: AbortSignal): Promise<GitStatus | undefined>;
+	getStatus(
+		repoPath: string | undefined,
+		options?: { priority?: GitCommandPriority },
+		cancellation?: AbortSignal,
+	): Promise<GitStatus | undefined>;
 	getStatusForFile?(
 		repoPath: string,
 		pathOrUri: string | Uri,

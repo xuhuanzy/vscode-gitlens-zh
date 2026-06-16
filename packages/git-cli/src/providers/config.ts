@@ -1,7 +1,7 @@
 import { promises as fs } from 'fs';
 import { hostname, userInfo } from 'os';
 import { env as process_env } from 'process';
-import type { Cache } from '@gitlens/git/cache.js';
+import type { Cache, GkConfigInvalidationTarget } from '@gitlens/git/cache.js';
 import type { GitServiceContext } from '@gitlens/git/context.js';
 import { WorkspaceUntrustedError } from '@gitlens/git/errors.js';
 import type { GitDir } from '@gitlens/git/models/repository.js';
@@ -27,15 +27,24 @@ import type { Git } from '../exec/git.js';
 const mappedAuthorRegex = /(.+)\s<(.+)>/;
 const emptyArray: readonly never[] = Object.freeze([]);
 
+/** Catch-all pattern matching every key in `.git/gk/config` for the one-shot bulk read. */
+const gkConfigAllPattern = '.';
+
 /**
- * Namespaces whose individual reads should be served from one --get-regex fetch instead
- * of one `git config --get` per key. The regex cache backing getGkConfigRegex dedupes
- * concurrent callers so a burst of per-branch reads produces a single subprocess.
+ * Canonicalizes a git config key for lookup against `--get-regexp` output, which git emits with the
+ * section and variable-name lowercased and only the subsection case-preserved. Without this a
+ * subsection-less key like `gk.defaultRemote` would miss the lowercased `gk.defaultremote` in the map.
  */
-const gkConfigCacheableSets: readonly { match: RegExp; pattern: string }[] = [
-	{ match: /^branch\..+\.gk-associated-issues$/, pattern: '^branch\\..+\\.gk-associated-issues$' },
-	{ match: /^branch\..+\.gk-merge-target-user$/, pattern: '^branch\\..+\\.gk-merge-target-user$' },
-];
+function canonicalizeGitConfigKey(key: string): string {
+	const first = key.indexOf('.');
+	if (first === -1) return key.toLowerCase();
+
+	const last = key.lastIndexOf('.');
+	// `section.name` (no subsection) → fully lowercased; `section.subsection.name` → lowercase
+	// section + name, preserve the case-sensitive subsection in the middle.
+	if (first === last) return key.toLowerCase();
+	return `${key.slice(0, first).toLowerCase()}${key.slice(first, last)}${key.slice(last).toLowerCase()}`;
+}
 
 /**
  * Parses git config --get-regex output into a Map.
@@ -59,6 +68,7 @@ function parseConfigRegexOutput(data: string | undefined): Map<string, string> {
 
 function parseGitBoolean(value: string | undefined): boolean {
 	if (value == null) return false;
+
 	const normalized = value.toLowerCase().trim();
 	return normalized === 'true' || normalized === 'yes' || normalized === 'on' || normalized === '1';
 }
@@ -70,6 +80,13 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 		private readonly cache: Cache,
 		private readonly provider: CliGitProviderInternal,
 	) {}
+
+	/**
+	 * Pending `setGkConfig` writes keyed by `(commonPath, key, value, skip-option)`. Concurrent
+	 * callers writing the same `(key, value)` pair share the in-flight Promise so only one
+	 * `git config --set` subprocess actually runs. Cleared on settle.
+	 */
+	private readonly _pendingGkConfigWrites = new Map<string, Promise<void>>();
 
 	@trace()
 	getConfig(
@@ -99,7 +116,7 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 		}
 		args.push(key);
 
-		const result = await this.git.exec(
+		const result = await this.git.run(
 			{ cwd: repoPath ?? '', errors: 'ignore', runLocally: options?.runGitLocally },
 			...args,
 		);
@@ -131,7 +148,7 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 		}
 		args.push(pattern);
 
-		const result = await this.git.exec(
+		const result = await this.git.run(
 			{ cwd: repoPath ?? '', errors: 'ignore', runLocally: options?.runGitLocally },
 			...args,
 		);
@@ -169,7 +186,7 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 			args.push(key, value);
 		}
 
-		await this.git.exec({ cwd: repoPath ?? '', runLocally: true }, ...args);
+		await this.git.run({ cwd: repoPath ?? '', runLocally: true }, ...args);
 
 		// Only invalidate cache when not using a custom file (custom files aren't cached)
 		if (!options?.file) {
@@ -218,7 +235,7 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 
 			const author = `${user.name} <${user.email}>`;
 			// Check if there is a mailmap for the current user
-			const result = await this.git.exec({ cwd: repoPath, errors: 'ignore' }, 'check-mailmap', author);
+			const result = await this.git.run({ cwd: repoPath, errors: 'ignore' }, 'check-mailmap', author);
 
 			if (result.stdout && result.stdout !== author) {
 				const match = mappedAuthorRegex.exec(result.stdout);
@@ -243,6 +260,7 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 	async getDefaultWorktreePath(repoPath: string): Promise<string | undefined> {
 		const gitDir = await this.getGitDir(repoPath);
 		if (gitDir == null) return undefined;
+
 		const basePath = (gitDir.commonUri ?? gitDir.uri).fsPath;
 		return getBestPath(normalizePath(joinPaths(basePath, '..')));
 	}
@@ -291,51 +309,56 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 	private async getGkConfigPath(repoPath: string): Promise<string | undefined> {
 		const gitDir = await this.getGitDir(repoPath);
 		if (gitDir == null) return undefined;
+
 		// Use commonUri (main .git dir) for worktrees, otherwise use uri
 		const basePath = (gitDir.commonUri ?? gitDir.uri).fsPath;
 		return joinPaths(basePath, 'gk', 'config');
 	}
 
 	@debug()
-	async getGkConfig(
-		repoPath: string,
-		key: GkConfigKeys | DeprecatedGkConfigKeys,
-		options?: { type?: GitConfigType },
-	): Promise<string | undefined> {
-		await this.migrateGkConfigFromGitConfig(this.cache.getCommonPath(repoPath));
-
-		// Per-branch keys are commonly read in fan-out loops (e.g. Home overview enrichment).
-		// Satisfy the read from a single --get-regex over the namespace instead of spawning
-		// one `git config --get` per branch.
-		const set = gkConfigCacheableSets.find(s => s.match.test(key));
-		if (set != null) {
-			return this.cache.getGkConfig(repoPath, key, async () => {
-				const entries = await this.getGkConfigRegex(repoPath, set.pattern);
-				return entries.get(key);
-			});
-		}
-
-		return this.cache.getGkConfig(repoPath, key, () => this.getGkConfigCore(repoPath, key, options));
-	}
-
-	private async getGkConfigCore(
-		repoPath: string,
-		key: string,
-		options?: { type?: GitConfigType },
-	): Promise<string | undefined> {
-		const gkConfigPath = await this.getGkConfigPath(repoPath);
-		if (!gkConfigPath) return undefined;
-		return this.getConfigCore(repoPath, key, {
-			...options,
-			runGitLocally: true,
-			file: gkConfigPath,
-		});
+	async getGkConfig(repoPath: string, key: GkConfigKeys | DeprecatedGkConfigKeys): Promise<string | undefined> {
+		// Served in-memory from a single bulk read of the whole `.git/gk/config` (no gk read needs `--type`).
+		// Canonicalize the key the way git does for `--get-regexp` output so subsection-less keys
+		// (e.g. `gk.defaultRemote`) match, and coerce an empty value to undefined to match the old
+		// `git config --get` (`.trim() || undefined`) contract.
+		return (await this.getGkConfigMap(repoPath)).get(canonicalizeGitConfigKey(key)) || undefined;
 	}
 
 	@debug()
 	async getGkConfigRegex(repoPath: string, pattern: string): Promise<Map<string, string>> {
+		const all = await this.getGkConfigMap(repoPath);
+
+		// Filter the bulk map in-memory. The old path passed `pattern` to `git config --get-regex`
+		// (errors ignored → empty result on a bad pattern); preserve that no-throw contract here
+		// rather than letting an invalid-JS pattern reject the read.
+		let re: RegExp;
+		try {
+			re = new RegExp(pattern);
+		} catch {
+			return new Map();
+		}
+
+		const result = new Map<string, string>();
+		for (const [k, v] of all) {
+			if (re.test(k)) {
+				result.set(k, v);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Reads the entire `.git/gk/config` in one `git config --get-regexp` and caches the parsed map
+	 * per commonPath. Per-key (getGkConfig) and per-namespace (getGkConfigRegex) lookups are served
+	 * from this single cached read — so a branch-overview render that fans out across several gk
+	 * namespaces costs one `git config` call instead of one per namespace.
+	 */
+	private async getGkConfigMap(repoPath: string): Promise<Map<string, string>> {
+		// Migrate BEFORE populating the cache, not inside the factory: a first-time migration calls
+		// clearCaches('gkConfig'), which would otherwise evict the in-flight gkConfigMap entry the
+		// cache wrapper synchronously stored and force a redundant bulk re-read.
 		await this.migrateGkConfigFromGitConfig(this.cache.getCommonPath(repoPath));
-		return this.cache.getGkConfigRegex(repoPath, pattern, () => this.getGkConfigRegexCore(repoPath, pattern));
+		return this.cache.getGkConfigMap(repoPath, () => this.getGkConfigRegexCore(repoPath, gkConfigAllPattern));
 	}
 
 	private async getGkConfigRegexCore(repoPath: string, pattern: string): Promise<Map<string, string>> {
@@ -349,6 +372,33 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 		repoPath: string,
 		key: GkConfigKeys | DeprecatedGkConfigKeys,
 		value: string | undefined,
+		options?: { skipInvalidation?: readonly GkConfigInvalidationTarget[] },
+	): Promise<void> {
+		// Encode the skip-invalidation option in the dedup key: a self-write (with skip targets)
+		// and a user-driven write of the same `(key, value)` (no skip targets) have different
+		// cache-invalidation semantics, so sharing their Promise would silently let the user-driven
+		// write skip invalidation. Sort the array so callers passing the same targets in different
+		// orders share a single in-flight write.
+		const commonPath = this.cache.getCommonPath(repoPath);
+		const skipKey = options?.skipInvalidation?.length ? options.skipInvalidation.toSorted().join(',') : '';
+		const dedupKey = `${commonPath}\0${key}\0${value ?? ''}\0${skipKey}`;
+
+		const pending = this._pendingGkConfigWrites.get(dedupKey);
+		if (pending != null) return pending;
+
+		const promise = this.setGkConfigCore(repoPath, key, value, options);
+		this._pendingGkConfigWrites.set(dedupKey, promise);
+		// Swallow the cleanup chain's rejection so a failed write doesn't surface as an unhandled
+		// rejection separate from the caller's own handling of the returned promise.
+		void promise.finally(() => this._pendingGkConfigWrites.delete(dedupKey)).catch(() => {});
+		return promise;
+	}
+
+	private async setGkConfigCore(
+		repoPath: string,
+		key: GkConfigKeys | DeprecatedGkConfigKeys,
+		value: string | undefined,
+		options?: { skipInvalidation?: readonly GkConfigInvalidationTarget[] },
 	): Promise<void> {
 		const scope = getScopedLogger();
 
@@ -361,8 +411,10 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 
 		await this.setConfigCore(repoPath, key, value, { file: gkConfigPath });
 
-		// Invalidate the cached value for this key and clear all regex patterns for this scope
-		this.cache.deleteGkConfig(repoPath, key);
+		// Invalidate the bulk map (so the next read re-fetches) and the derived caches for this key's
+		// ref. The `.git/gk/config` file-watcher also fires `'gkConfig'` shortly after, which clears
+		// the same caches coarsely — both paths are idempotent.
+		this.cache.deleteGkConfig(repoPath, key, options);
 	}
 
 	@debug()
@@ -381,11 +433,10 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 		const sshProgram = configMap.get('gpg.ssh.program');
 		const allowedSignersFile = configMap.get('gpg.ssh.allowedsignersfile');
 
-		// Check if git config has commit signing enabled
-		const isEnabled = parseGitBoolean(enabledRaw);
-
-		// Note: To override commit signing, pass it via the host/caller.
-		// The library no longer reads a config for this.
+		// Check if git config has commit signing enabled, falling back to the host-level override
+		// (e.g. VS Code's `git.enableCommitSigning`) when `commit.gpgsign` is unset/false. The host
+		// override can only enable signing, never force it off.
+		const isEnabled = parseGitBoolean(enabledRaw) || this.context.config?.signing?.enabled === true;
 
 		return {
 			enabled: isEnabled,
@@ -475,7 +526,7 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 		if (this.context.workspace?.isTrusted === false) {
 			try {
 				await fs.stat(joinPaths(cwd, 'HEAD'));
-				result = await this.git.exec(
+				result = await this.git.run(
 					{ cwd: cwd, errors: 'throw', configs: ['-C', cwd] },
 					'rev-parse',
 					'--show-cdup',
@@ -490,7 +541,7 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 		}
 
 		try {
-			result = await this.git.exec(
+			result = await this.git.run(
 				{ cwd: cwd, errors: 'throw' },
 				'rev-parse',
 				'--show-toplevel',
@@ -551,7 +602,7 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 
 			const inDotGit = /this operation must be run in a work tree/.test(ex.stderr);
 			if (inDotGit && this.context.workspace?.isTrusted !== false) {
-				result = await this.git.exec({ cwd: cwd, errors: 'ignore' }, 'rev-parse', '--is-bare-repository');
+				result = await this.git.run({ cwd: cwd, errors: 'ignore' }, 'rev-parse', '--is-bare-repository');
 				if (result.stdout.trim() === 'true') {
 					const result = await this.revParseGitDir(cwd);
 					const repoPath = result?.commonPath ?? result?.path;
@@ -578,12 +629,7 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 	}
 
 	private async revParseGitDir(cwd: string): Promise<{ path: string; commonPath?: string } | undefined> {
-		const result = await this.git.exec(
-			{ cwd: cwd, errors: 'ignore' },
-			'rev-parse',
-			'--git-dir',
-			'--git-common-dir',
-		);
+		const result = await this.git.run({ cwd: cwd, errors: 'ignore' }, 'rev-parse', '--git-dir', '--git-common-dir');
 		if (!result.stdout) return undefined;
 
 		let [dotGitPath, commonDotGitPath] = result.stdout.split('\n').map(r => r.trimStart());
@@ -653,6 +699,7 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 			this._migratedRepos.add(repoPath);
 			return;
 		}
+
 		const gkConfigFolder = joinPaths(gkConfigPath, '..');
 
 		// If .git/gk/config already exists, consider migration done — it was either
@@ -667,6 +714,7 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 
 		// If .git/gk/config doesn't exist, create an empty file to prevent multiple migration attempts in future sessions
 		if (!(await this.ensureGkConfigFolder(gkConfigFolder, scope))) return;
+
 		try {
 			await fs.writeFile(gkConfigPath, new Uint8Array());
 		} catch (ex) {
@@ -704,7 +752,7 @@ export class ConfigGitSubProvider implements GitConfigSubProvider {
 		// Remove legacy keys from regular git config (use --unset-all defensively)
 		for (const [key] of migrateConfig) {
 			try {
-				await this.git.exec(
+				await this.git.run(
 					{ cwd: repoPath, errors: 'ignore', runLocally: true },
 					'config',
 					'--local',

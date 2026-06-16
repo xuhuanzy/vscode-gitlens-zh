@@ -98,8 +98,7 @@ export class RevisionGitSubProvider implements GitRevisionSubProvider {
 			});
 		}
 
-		// TODO@eamodio: Implement this
-		return [];
+		return result;
 	}
 
 	@debug()

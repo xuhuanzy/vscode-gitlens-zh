@@ -177,10 +177,7 @@ export class GitCommit implements GitRevisionReference {
 
 			const stashFiles = getSettledValue(stashFilesResult);
 			if (stashFiles?.length) {
-				commit.applyFileset({
-					files: stashFiles as readonly GitFileChange[],
-					filtered: commit.fileset?.filtered,
-				});
+				commit.applyFileset({ files: stashFiles, filtered: commit.fileset?.filtered });
 			}
 			enrichCommit(commit, { stashUntrackedFilesLoaded: true });
 		} else {
@@ -218,7 +215,6 @@ export class GitCommit implements GitRevisionReference {
 	readonly stashNumber: string | undefined;
 	readonly stashOnRef: string | undefined;
 	readonly tips: string[] | undefined;
-	readonly parentTimestamps?: GitStashParentInfo[] | undefined;
 
 	constructor(
 		public readonly repoPath: string,
@@ -234,13 +230,11 @@ export class GitCommit implements GitRevisionReference {
 		tips?: string[],
 		stashName?: string | undefined,
 		stashOnRef?: string | undefined,
-		parentTimestamps?: GitStashParentInfo[] | undefined,
 		shaLength: number = getAbbreviatedShaLength(),
 	) {
 		this.ref = sha;
 		this.shortSha = sha.substring(0, shaLength);
 		this.tips = tips;
-		this.parentTimestamps = parentTimestamps;
 
 		if (stashName) {
 			this.refType = 'stash';
@@ -457,7 +451,6 @@ export class GitCommit implements GitRevisionReference {
 		stats?: GitCommitStats | null;
 		stashUntrackedFilesLoaded?: boolean;
 		resolvedPreviousSha?: string;
-		parentTimestamps?: GitStashParentInfo[] | null;
 	}): T {
 		const commit = new GitCommit(
 			this.repoPath,
@@ -473,7 +466,6 @@ export class GitCommit implements GitRevisionReference {
 			this.tips,
 			this.stashName,
 			this.stashOnRef,
-			this.getChangedValue(changes.parentTimestamps, this.parentTimestamps),
 			this.shortSha.length,
 		);
 		commit._etagWorkingTree = this._etagWorkingTree;
@@ -522,7 +514,6 @@ export class GitCommit implements GitRevisionReference {
 			this.tips,
 			this.stashName,
 			this.stashOnRef,
-			this.parentTimestamps,
 		);
 		commit._etagWorkingTree = this._etagWorkingTree;
 		return commit as T;
@@ -530,6 +521,7 @@ export class GitCommit implements GitRevisionReference {
 
 	protected computeFileStats(): void {
 		if (!this._recomputeStats || this._fileset == null) return;
+
 		this._recomputeStats = false;
 
 		const changedFiles = { added: 0, deleted: 0, changed: 0 };
@@ -672,17 +664,10 @@ export interface GitCommitStats<Files extends number | GitDiffFileStats = number
 	readonly deletions: number;
 }
 
-export interface GitStashParentInfo {
-	readonly sha: string;
-	readonly authorDate?: number;
-	readonly committerDate?: number;
-}
-
 export interface GitStashCommit extends GitCommit {
 	readonly refType: GitStashReference['refType'];
 	readonly stashName: string;
 	readonly stashNumber: string;
-	readonly parentTimestamps?: GitStashParentInfo[];
 }
 
 export type GitCommitWithFullDetails = GitCommit & { message: string; fileset: GitCommitFileset };

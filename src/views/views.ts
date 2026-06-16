@@ -19,10 +19,7 @@ import { executeCommand, executeCoreCommand, registerCommand } from '../system/-
 import { configuration } from '../system/-webview/configuration.js';
 import { getContext, setContext } from '../system/-webview/context.js';
 import { getViewFocusCommand } from '../system/-webview/vscode/views.js';
-import {
-	registerCommitDetailsWebviewView,
-	registerGraphDetailsWebviewView,
-} from '../webviews/commitDetails/registration.js';
+import { registerCommitDetailsWebviewView } from '../webviews/commitDetails/registration.js';
 import { registerHomeWebviewView } from '../webviews/home/registration.js';
 import { registerGraphWebviewView } from '../webviews/plus/graph/registration.js';
 import { registerPatchDetailsWebviewView } from '../webviews/plus/patchDetails/registration.js';
@@ -434,7 +431,6 @@ export class Views implements Disposable {
 		return [
 			(this._commitDetailsView = registerCommitDetailsWebviewView(webviews)),
 			(this._graphView = registerGraphWebviewView(webviews)),
-			(this._graphDetailsView = registerGraphDetailsWebviewView(webviews)),
 			(this._homeView = registerHomeWebviewView(webviews)),
 			(this._patchDetailsView = registerPatchDetailsWebviewView(webviews)),
 			(this._timelineView = registerTimelineWebviewView(webviews)),
@@ -552,9 +548,7 @@ export class Views implements Disposable {
 		const buttons = newInstall ? [confirm] : [confirm, Restore];
 
 		const result = await window.showInformationMessage(
-			newInstall
-				? 'GitLens groups many related views—Commits, Branches, Stashes, etc—together for easier view management. Use the tabs in the view header to navigate, detach, or regroup views.'
-				: "In GitLens 16, we've grouped many related views—Commits, Branches, Stashes, etc—together for easier view management. Use the tabs in the view header to navigate, detach, or regroup views.",
+			'GitLens groups many related views—Commits, Branches, Stashes, etc—together for easier view management. Use the tabs in the view header to navigate, detach, or regroup views.',
 			...buttons,
 		);
 
@@ -737,11 +731,6 @@ export class Views implements Disposable {
 	private _graphView!: ReturnType<typeof registerGraphWebviewView>;
 	get graph(): ReturnType<typeof registerGraphWebviewView> {
 		return this._graphView;
-	}
-
-	private _graphDetailsView!: ReturnType<typeof registerGraphDetailsWebviewView>;
-	get graphDetails(): ReturnType<typeof registerGraphDetailsWebviewView> {
-		return this._graphDetailsView;
 	}
 
 	private _homeView!: ReturnType<typeof registerHomeWebviewView>;

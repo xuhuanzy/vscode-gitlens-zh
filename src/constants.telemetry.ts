@@ -3,6 +3,7 @@ import type { AIActionType } from '@gitlens/ai/models/model.js';
 import type { GitContributionTiers } from '@gitlens/git/models/contributor.js';
 import type { Flatten } from '@gitlens/utils/object.js';
 import type { Config, GraphBranchesVisibility, GraphConfig } from './config.js';
+import type { OrganizationRole } from './plus/gk/models/organization.js';
 import type { GlCommands, GlCommandsDeprecated } from './constants.commands.js';
 import type { IntegrationIds, SupportedCloudIntegrationIds } from './constants.integrations.js';
 import type { WalkthroughSteps } from './constants.js';
@@ -14,8 +15,9 @@ import type {
 	WebviewTypes,
 	WebviewViewTypes,
 } from './constants.views.js';
-import type { WalkthroughContextKeys } from './constants.walkthroughs.js';
+import type { GraphWalkthroughContextKeys, WalkthroughContextKeys } from './constants.walkthroughs.js';
 import type { FeaturePreviews, FeaturePreviewStatus } from './features.js';
+import type { AgentDescriptor, AgentRoute } from './plus/agents/agentDescriptor.js';
 import type { Subscription, SubscriptionAccount, SubscriptionStateString } from './plus/gk/models/subscription.js';
 import type { GraphColumnConfig } from './webviews/plus/graph/protocol.js';
 import type { TimelinePeriod, TimelineScopeType, TimelineSliceBy } from './webviews/plus/timeline/protocol.js';
@@ -65,8 +67,15 @@ export interface TelemetryEvents extends WebviewShowAbortedEvents, WebviewShownE
 	/** Sent when GitLens is activated */
 	activate: ActivateEvent;
 
+	/** Sent when a lazily-loaded webpack chunk fails to load — typically because VS Code
+	 * background-upgraded the extension while the host kept running the old build */
+	'extension/chunkLoad/failed': ExtensionChunkLoadFailedEvent;
+
 	/** Sent when explaining changes from wip, commits, stashes, patches, etc. */
 	'ai/explain': AIExplainEvent;
+
+	/** Sent when reviewing changes from wip, commits, or commit ranges */
+	'ai/review': AIReviewEvent;
 
 	/** Sent when generating summaries from commits, stashes, patches, etc. */
 	'ai/generate': AIGenerateEvent;
@@ -80,6 +89,11 @@ export interface TelemetryEvents extends WebviewShowAbortedEvents, WebviewShownE
 	/** Sent when a user provides feedback (rating and optional details) for an AI feature */
 	'ai/feedback': AIFeedbackEvent;
 
+	/** Sent when the user clicks "Get More Credits" on the weekly AI usage-limit notification */
+	'ai/credits/addOnClicked': AICreditsNotificationEvent;
+	/** Sent when the user dismisses the weekly AI usage-limit notification */
+	'ai/credits/addOnDismissed': AICreditsNotificationEvent;
+
 	/** Sent when user dismisses the AI All Access banner */
 	'aiAllAccess/bannerDismissed': void;
 
@@ -88,6 +102,23 @@ export interface TelemetryEvents extends WebviewShowAbortedEvents, WebviewShownE
 
 	/** Sent when user opts in to AI All Access */
 	'aiAllAccess/optedIn': void;
+
+	/** Sent when an agent hook is installed */
+	'agents/hookInstalled': AgentProviderEvent;
+	/** Sent when an agent hook is uninstalled */
+	'agents/hookUninstalled': AgentProviderEvent;
+	/** Sent when an agent session starts */
+	'agents/session/started': AgentProviderEvent;
+	/** Sent when an agent session ends */
+	'agents/session/ended': AgentProviderEvent;
+	/** Sent when a permission request is resolved */
+	'agents/permission/resolved': AgentPermissionResolvedEvent;
+	/** Sent when a reconciliation poll (`list-sessions`) finds the polled session set differs from
+	 *  what the live IPC hook path had already tracked. In a single window this should be rare and
+	 *  usually means a hook event was dropped; a nonzero `sync.discovered` is expected in multi-window
+	 *  setups, where the machine-wide poll can surface a session owned by another window that never
+	 *  routed its hook events here — so don't treat every event as a dropped IPC signal */
+	'agents/session/syncDiscrepancy': AgentSyncDiscrepancyEvent;
 
 	/** Sent when a CLI install attempt is started */
 	'cli/install/started': CLIInstallStartedEvent;
@@ -212,6 +243,9 @@ export interface TelemetryEvents extends WebviewShowAbortedEvents, WebviewShownE
 	/** Sent when a Commit Graph command is executed */
 	'graph/command': CommandEventData;
 
+	/** Sent when GitLens auto-fetch fires a `git fetch` for the visible Commit Graph */
+	'graph/autoFetch': GraphAutoFetchEvent;
+
 	/** Sent when the user clicks on the Jump to HEAD/Reference (alt) header button on the Commit Graph */
 	'graph/action/jumpTo': GraphActionJumpToEvent;
 	/** Sent when the user clicks on the "Jump to HEAD"/"Jump to Reference" (alt) header button on the Commit Graph */
@@ -221,10 +255,16 @@ export interface TelemetryEvents extends WebviewShowAbortedEvents, WebviewShownE
 
 	/** Sent when the user changes the "branches visibility" on the Commit Graph */
 	'graph/branchesVisibility/changed': GraphBranchesVisibilityChangedEvent;
+	/** Sent when the user scopes the Commit Graph to a specific branch (Focus Branch feature) */
+	'graph/scope/changed': GraphScopeChangedEvent;
+	/** Sent when the user clears the active Commit Graph scope */
+	'graph/scope/cleared': GraphContextEventData;
 	/** Sent when the user changes the columns on the Commit Graph */
 	'graph/columns/changed': GraphColumnsChangedEvent;
 	/** Sent when the user changes the filters on the Commit Graph */
 	'graph/filters/changed': GraphFiltersChangedEvent;
+	/** Sent when the user clears all filters on the Commit Graph */
+	'graph/filters/cleared': GraphFiltersClearedEvent;
 	/** Sent when the user selects (clicks on) a day on the minimap on the Commit Graph */
 	'graph/minimap/day/selected': GraphContextEventData;
 	/** Sent when the user changes the current repository on the Commit Graph */
@@ -239,10 +279,25 @@ export interface TelemetryEvents extends WebviewShowAbortedEvents, WebviewShownE
 	/** Sent when a search was performed on the Commit Graph */
 	'graph/searched': GraphSearchedEvent;
 
-	/** Sent when the Graph Details view is shown */
-	'graphDetails/shown': DetailsShownEvent;
-	/** Sent when the user changes the selected tab (mode) on the Graph Details view */
-	'graphDetails/mode/changed': DetailsModeChangedEvent;
+	/** Sent when a commit from the Graph's WIP panel fails (e.g. a hook rejection or signing failure) */
+	'graph/wip/commit/failed': GraphWipCommitFailedEvent;
+
+	/** Sent when a virtual-FS-backed file (e.g. a Graph Compose proposed commit) is opened */
+	'graph/virtualFile/opened': GraphVirtualFileOpenedEvent;
+	/** Sent when opening a virtual-FS-backed file fails (e.g. the compose session is no longer registered) */
+	'graph/virtualFile/failed': GraphVirtualFileFailedEvent;
+
+	/** Sent when the Graph Overview panel becomes visible (mounted in the active sidebar slot) */
+	'graph/overview/shown': GraphOverviewShownEvent;
+	/** Sent when the user invokes an action item on a Graph Overview branch card */
+	'graph/overview/action': GraphOverviewActionEvent;
+
+	/** Sent when the integrated graph details panel is expanded */
+	'graphDetails/shown': GraphDetailsShownEvent;
+	/** Sent when the integrated graph details panel is collapsed */
+	'graphDetails/closed': GraphDetailsClosedEvent;
+	/** Sent when the active mode of the integrated graph details panel changes while open */
+	'graphDetails/mode/changed': GraphDetailsModeChangedEvent;
 	/** Sent when commit reachability is successfully loaded in Graph Details */
 	'graphDetails/reachability/loaded': DetailsReachabilityLoadedEvent;
 	/** Sent when commit reachability fails to load in Graph Details */
@@ -338,6 +393,12 @@ export interface TelemetryEvents extends WebviewShowAbortedEvents, WebviewShownE
 	'rebaseEditor/action/openConflictFile': RebaseEditorOpenConflictFileEvent;
 	/** Sent when the user opens current or incoming changes for a conflict file */
 	'rebaseEditor/action/openConflictChanges': RebaseEditorOpenConflictChangesEvent;
+	/** Sent when the user resolves a single conflict file by taking one side */
+	'rebaseEditor/action/resolveConflict': RebaseEditorResolveConflictEvent;
+	/** Sent when the user stages a single conflict file (marks as resolved) */
+	'rebaseEditor/action/stageConflict': RebaseEditorStageConflictEvent;
+	/** Sent when the user resolves all conflict files by taking one side */
+	'rebaseEditor/action/resolveAllConflicts': RebaseEditorResolveAllConflictsEvent;
 	/** Sent when the user reveals a ref (commit/branch) in graph or commit details */
 	'rebaseEditor/action/revealRef': RebaseEditorRevealRefEvent;
 
@@ -384,6 +445,8 @@ export interface TelemetryEvents extends WebviewShowAbortedEvents, WebviewShownE
 	'startReview/title/action': StartReviewTitleActionEvent;
 	/** Sent when the user chooses to manage integrations */
 	'startReview/action': StartReviewActionEvent;
+	/** Sent when the manual-vs-agent flow resolves (manual, cancel, or a specific agent) */
+	'startReview/agent/resolved': StartReviewAgentResolvedEvent;
 
 	/** Sent when the user opens Start Work; use `instance` to correlate a StartWork "session" */
 	'startWork/open': StartWorkEventDataBase;
@@ -401,6 +464,8 @@ export interface TelemetryEvents extends WebviewShowAbortedEvents, WebviewShownE
 	'startWork/title/action': StartWorkTitleActionEvent;
 	/** Sent when the user chooses to manage integrations */
 	'startWork/action': StartWorkActionEvent;
+	/** Sent when the manual-vs-agent flow resolves (manual, cancel, or a specific agent) */
+	'startWork/agent/resolved': StartWorkAgentResolvedEvent;
 
 	/** Sent when the user opens Start Work; use `instance` to correlate an Associate Issue with Branch "session" */
 	'associateIssueWithBranch/open': StartWorkEventDataBase;
@@ -459,7 +524,7 @@ type WebviewShowAbortedEvents = {
 type WebviewShownEvents = {
 	[K in `${Exclude<
 		WebviewTypes,
-		'commitDetails' | 'graph' | 'graphDetails' | 'rebaseEditor' | 'timeline'
+		'commitDetails' | 'graph' | 'rebaseEditor' | 'timeline'
 	>}/shown`]: WebviewShownEventData & Record<`context.${string}`, string | number | boolean | undefined>;
 };
 
@@ -483,9 +548,36 @@ interface AccountValidationFailedEvent {
 	statusCode: number | undefined;
 }
 
+interface AgentProviderEvent {
+	'agent.provider': string;
+}
+
+interface AgentPermissionResolvedEvent {
+	'agent.provider': string;
+	'permission.tool': string;
+	'permission.decision': string;
+}
+
+interface AgentSyncDiscrepancyEvent {
+	'agent.provider': string;
+	/** Sessions the poll reported alive that the live IPC path had not tracked. */
+	'sync.discovered': number;
+	/** Tracked sessions the poll no longer reports alive (teardown the live path missed). */
+	'sync.missing': number;
+	/** Total alive sessions reported by the poll. */
+	'sync.polled': number;
+	/** Total sessions tracked (from the live path) before the poll reconciled. */
+	'sync.tracked': number;
+}
+
 interface ActivateEvent extends ConfigEventData {
 	'activation.elapsed': number;
 	'activation.mode': string | undefined;
+}
+
+interface ExtensionChunkLoadFailedEvent {
+	'error.code': string | undefined;
+	'error.message': string;
 }
 
 interface AIEventDataBase {
@@ -538,7 +630,19 @@ interface AIEventDataSendBase extends AIEventDataBase {
 
 interface AIExplainEvent extends AIEventDataSendBase {
 	type: 'change';
-	changeType: 'wip' | 'stash' | 'commit' | 'branch' | `draft-${'patch' | 'stash' | 'suggested_pr_change'}`;
+	changeType:
+		| 'wip'
+		| 'stash'
+		| 'commit'
+		| 'branch'
+		| 'compare'
+		| `draft-${'patch' | 'stash' | 'suggested_pr_change'}`;
+}
+
+interface AIReviewEvent extends AIEventDataSendBase {
+	type: 'review';
+	reviewType: 'commit' | 'wip' | 'compare';
+	reviewMode: 'single-pass' | 'two-pass';
 }
 
 export interface AIGenerateChangelogEventData extends AIEventDataSendBase {
@@ -562,6 +666,10 @@ export interface AIGenerateCommitsEventData extends AIEventDataSendBase {
 	type: 'commits';
 }
 
+export interface AIGenerateResolveConflictsEventData extends AIEventDataSendBase {
+	type: 'resolveConflicts';
+}
+
 export interface AIGenerateSearchQueryEventData extends AIEventDataSendBase {
 	type: 'searchQuery';
 }
@@ -576,6 +684,7 @@ type AIGenerateEvent =
 	| AIGenerateCreateDraftEventData
 	| AIGenerateCreatePullRequestEventData
 	| AIGenerateCommitsEventData
+	| AIGenerateResolveConflictsEventData
 	| AIGenerateSearchQueryEventData
 	| AIGenerateStashMessageEventData;
 
@@ -600,6 +709,10 @@ export interface AIFeedbackEvent extends AIEventDataBase {
 	'unhelpful.reasons'?: string;
 	/** Custom feedback provided (if any) */
 	'unhelpful.custom'?: string;
+}
+
+interface AICreditsNotificationEvent {
+	'organization.role': OrganizationRole | undefined;
 }
 
 export interface CLIInstallStartedEvent {
@@ -794,6 +907,43 @@ type DetailsModeChangedEvent = InspectContextEventData & {
 	'mode.new': 'wip' | 'commit';
 };
 
+export type GraphDetailsMode = 'commit' | 'wip' | 'multicommit' | 'review' | 'compose' | 'resolve' | 'compare' | 'none';
+
+interface GraphDetailsShownEvent {
+	/** What caused the panel to be shown */
+	trigger:
+		| 'toggle'
+		| 'request-compare'
+		| 'request-mode'
+		| 'request-agents'
+		| 'request-graph-wip-bar'
+		| 'auto-restore';
+	/** Which graph host the panel is in: editor area or bottom panel */
+	host: 'editor' | 'panel';
+	/** Active panel mode at time of show */
+	mode: GraphDetailsMode;
+	/** Number of rows currently selected in the graph (0, 1, or N) */
+	'selection.count': number;
+	/** Whether the active selection is the WIP / uncommitted row */
+	'selection.uncommitted': boolean;
+	/** Split-pane position percentage from the closed edge (0–100) */
+	position: number | undefined;
+	/** Where the details panel is anchored relative to the graph */
+	location: 'right' | 'bottom';
+}
+
+interface GraphDetailsClosedEvent {
+	/** How long the panel was open in milliseconds */
+	duration: number;
+	/** Active panel mode at time of close */
+	mode: GraphDetailsMode;
+}
+
+interface GraphDetailsModeChangedEvent extends GraphContextEventData {
+	'mode.old': GraphDetailsMode;
+	'mode.new': GraphDetailsMode;
+}
+
 interface DetailsReachabilityLoadedEvent {
 	'refs.count': number;
 	duration: number;
@@ -859,6 +1009,11 @@ interface GraphActionJumpToEvent extends GraphContextEventData {
 	target: 'HEAD' | 'choose';
 }
 
+interface GraphAutoFetchEvent extends GraphContextEventData {
+	intervalSeconds: number;
+	sinceLastFetchedMs: number;
+}
+
 interface GraphActionSidebarEvent extends GraphContextEventData {
 	action: string;
 }
@@ -866,6 +1021,15 @@ interface GraphActionSidebarEvent extends GraphContextEventData {
 interface GraphBranchesVisibilityChangedEvent extends GraphContextEventData {
 	'branchesVisibility.old': GraphBranchesVisibility;
 	'branchesVisibility.new': GraphBranchesVisibility;
+}
+
+interface GraphScopeChangedEvent extends GraphContextEventData {
+	/** Where the user initiated the scope change */
+	source: 'popover' | 'overview-card';
+	/** Whether the scoped branch has a tracked upstream resolved at the time of the scope change */
+	'scope.hasUpstream': boolean;
+	/** Whether the scope's merge-target tip SHA is known at scope time (proxy for "merge-target resolved") */
+	'scope.hasMergeTarget': boolean;
 }
 
 type GraphColumnEventData = {
@@ -881,6 +1045,13 @@ interface GraphColumnsChangedEvent extends GraphColumnEventData, GraphContextEve
 interface GraphFiltersChangedEvent extends GraphContextEventData {
 	key: string;
 	value: boolean;
+}
+
+interface GraphFiltersClearedEvent extends GraphContextEventData {
+	'cleared.branchesVisibility': boolean;
+	'cleared.excludeTypes': boolean;
+	'cleared.includeOnlyRefs': boolean;
+	'cleared.excludeRefs': boolean;
 }
 
 interface GraphRepositoryChangedEvent extends RepositoryEventData, GraphContextEventData {}
@@ -909,6 +1080,68 @@ interface GraphSearchedEvent extends GraphContextEventData {
 	'failed.error.detail'?: string;
 }
 
+export type GraphVirtualFileMode = 'diff' | 'comparePrevious' | 'multiDiff';
+export type GraphVirtualFileFailureReason = 'provider-missing' | 'parent-missing' | 'unknown';
+
+/** Classified reason a WIP-panel commit failed; mirrors `CommitFailureReason` in the repository RPC service */
+export type GraphWipCommitFailureReason =
+	| 'hookRejected'
+	| 'signingFailed'
+	| 'nothingToCommit'
+	| 'conflicts'
+	| 'identityMissing'
+	| 'unknown';
+
+interface GraphWipCommitFailedEvent extends GraphContextEventData {
+	reason: GraphWipCommitFailureReason;
+	/** Whether raw output (hook/git stderr) was captured and surfaced via "View Full Output" */
+	hasOutput: boolean;
+	/** Whether the failed commit was an amend */
+	amend: boolean;
+}
+
+interface GraphVirtualFileOpenedEvent extends GraphContextEventData {
+	/** Which open operation the user triggered */
+	mode: GraphVirtualFileMode;
+	/** Number of files being opened (1 for single-file modes, N for multiDiff) */
+	'files.count': number;
+}
+
+interface GraphVirtualFileFailedEvent extends GraphContextEventData {
+	mode: GraphVirtualFileMode;
+	/** Best-effort categorization of the failure */
+	reason: GraphVirtualFileFailureReason;
+	'files.count': number;
+	'error.message'?: string;
+}
+
+interface GraphOverviewShownEvent extends GraphContextEventData {
+	/** Number of branches in the "active" section at the time of show */
+	'branches.active.count': number;
+	/** Number of branches in the "recent" section at the time of show */
+	'branches.recent.count': number;
+}
+
+export type GraphOverviewActionName =
+	| 'pull'
+	| 'push'
+	| 'fetch'
+	| 'publishBranch'
+	| 'switch'
+	| 'openWorktree'
+	| 'compareWithHead'
+	| 'compareWithWorking'
+	| 'compareWithPr'
+	| 'other';
+
+interface GraphOverviewActionEvent extends GraphContextEventData {
+	name: GraphOverviewActionName;
+	/** Where on the card the action was invoked */
+	location: 'inline' | 'hover';
+	/** Whether the user held Alt/Shift to swap to the alt action */
+	alt: boolean;
+}
+
 export type HomeTelemetryContext = WebviewTelemetryContext;
 
 interface HomeFailedEvent {
@@ -919,7 +1152,6 @@ interface HomeFailedEvent {
 
 type InspectWipContextEventData = {
 	'context.mode': 'wip';
-	'context.attachedTo': 'graph' | 'default';
 	'context.autolinks': number;
 	'context.inReview': boolean;
 	'context.codeSuggestions': number;
@@ -927,7 +1159,6 @@ type InspectWipContextEventData = {
 
 type InspectCommitContextEventData = {
 	'context.mode': 'commit';
-	'context.attachedTo': 'graph' | 'default';
 	'context.autolinks': number;
 	'context.pinned': boolean;
 	'context.type': 'commit' | 'stash' | undefined;
@@ -1252,6 +1483,35 @@ interface RebaseEditorOpenConflictChangesEvent extends RebaseEditorContextEventD
 	side: 'current' | 'incoming';
 }
 
+interface RebaseEditorResolveConflictEvent extends RebaseEditorContextEventData {
+	/** Which side of the conflict was taken */
+	'conflict.resolution': 'current' | 'incoming';
+	/** File extension of the resolved conflict file (e.g. '.ts', '.json') */
+	'conflict.fileExtension': string;
+	/** Two-character conflict status (e.g. 'UU', 'AU') */
+	'conflict.status': string;
+}
+
+interface RebaseEditorStageConflictEvent extends RebaseEditorContextEventData {
+	/** File extension of the staged conflict file (e.g. '.ts', '.json') */
+	'conflict.fileExtension': string;
+	/** Two-character conflict status (e.g. 'UU', 'AU') */
+	'conflict.status': string;
+}
+
+interface RebaseEditorResolveAllConflictsEvent extends RebaseEditorContextEventData {
+	/** Which side of the conflict was taken for all files */
+	'conflict.resolution': 'current' | 'incoming';
+	/** Total number of conflicted files at the time of confirmation */
+	'conflict.fileCount': number;
+	/** Number of files successfully resolved (checked out or deleted, and then staged) */
+	'conflict.fileCount.resolved': number;
+	/** Number of files skipped because the requested side is unsupported for their status */
+	'conflict.fileCount.skipped': number;
+	/** Number of files whose resolution failed (checkout or staging error) */
+	'conflict.fileCount.failed': number;
+}
+
 interface RebaseEditorRevealRefEvent extends RebaseEditorContextEventData {
 	/** Type of ref being revealed */
 	'ref.type': 'commit' | 'branch';
@@ -1306,6 +1566,9 @@ export type RebaseEditorTelemetryEvent =
 	| 'rebaseEditor/action/showConflicts'
 	| 'rebaseEditor/action/openConflictFile'
 	| 'rebaseEditor/action/openConflictChanges'
+	| 'rebaseEditor/action/resolveConflict'
+	| 'rebaseEditor/action/stageConflict'
+	| 'rebaseEditor/action/resolveAllConflicts'
 	| 'rebaseEditor/action/revealRef'
 	| 'rebaseEditor/entries/changed'
 	| 'rebaseEditor/entries/moved'
@@ -1369,6 +1632,8 @@ interface RepositoryVisibilityEvent extends Partial<RepositoryEventData> {
 interface StartReviewEventDataBase {
 	/** @order 1 */
 	instance: number;
+	/** Route requested by the caller for the manual-vs-agent flow; `undefined` when the caller didn't opt in. */
+	'context.showOpenInAgent'?: AgentRoute;
 }
 
 interface StartReviewEventData extends StartReviewEventDataBase {
@@ -1395,9 +1660,13 @@ type StartReviewActionEvent = StartReviewConnectedEventData & {
 	action: 'manage' | 'connect';
 };
 
+type StartReviewAgentResolvedEvent = StartReviewConnectedEventData & AgentResolvedEventData;
+
 interface StartWorkEventDataBase {
 	/** @order 1 */
 	instance: number;
+	/** Route requested by the caller for the manual-vs-agent flow; `undefined` when the caller didn't opt in. */
+	'context.showOpenInAgent'?: AgentRoute;
 }
 
 interface StartWorkEventData extends StartWorkEventDataBase {
@@ -1423,6 +1692,18 @@ type StartWorkTitleActionEvent = StartWorkConnectedEventData & {
 type StartWorkActionEvent = StartWorkConnectedEventData & {
 	action: 'manage' | 'connect';
 };
+
+type StartWorkAgentResolvedEvent = StartWorkConnectedEventData & AgentResolvedEventData;
+
+type AgentResolvedEventData =
+	| {
+			'agent.resolution': 'manual' | 'cancel';
+	  }
+	| {
+			'agent.resolution': 'agent';
+			'agent.id': string;
+			'agent.kind': AgentDescriptor['kind'];
+	  };
 
 export type SubscriptionFeaturePreviewsEventData = {
 	[F in FeaturePreviews]: {
@@ -1563,7 +1844,7 @@ type WalkthroughActionEvent =
 	| { type: 'url'; name: WalkthroughActionNames; url: string; detail?: string };
 
 interface WalkthroughCompletionEvent {
-	'context.key': WalkthroughContextKeys;
+	'context.key': WalkthroughContextKeys | GraphWalkthroughContextKeys;
 }
 
 type WelcomeActionNames =
@@ -1589,7 +1870,7 @@ type WebviewContextEventData = {
 	'context.webview.id': string;
 	'context.webview.type': string;
 	'context.webview.instanceId': string | undefined;
-	'context.webview.host': 'editor' | 'view';
+	'context.webview.host': 'editor' | 'view' | 'panel';
 };
 export type WebviewTelemetryContext = WebviewContextEventData;
 
@@ -1602,9 +1883,9 @@ type WebviewShownEventData = WebviewContextEventData & {
 export type WebviewTelemetryEvents = {
 	[K in keyof TelemetryEvents]: Omit<
 		TelemetryEvents[K],
-		keyof (K extends `commitDetails/${string}` | `graphDetails/${string}`
+		keyof (K extends `commitDetails/${string}`
 			? InspectTelemetryContext
-			: K extends `graph/${string}`
+			: K extends `graph/${string}` | `graphDetails/${string}`
 				? GraphTelemetryContext
 				: K extends `timeline/${string}`
 					? TimelineTelemetryContext
@@ -1641,6 +1922,10 @@ export type Sources =
 	| 'gk-mcp-provider'
 	| 'graph'
 	| 'graph-details'
+	| 'graph-header'
+	| 'graph-kanban'
+	| 'graph-sidebar'
+	| 'graph-treemap'
 	| 'home'
 	| 'inspect'
 	| 'inspect-overview'
@@ -1698,8 +1983,20 @@ export type TrackedUsage = {
  */
 export type TrackedGlActions =
 	| 'gitlens.ai.generateCommits'
+	| 'gitlens.ai.openInAgent'
+	| 'gitlens.ai.openInAgent.dispatchFailed'
+	| 'gitlens.ai.openInAgent.useDefaultsFallback'
+	| 'gitlens.ai.review.copied'
+	| 'gitlens.ai.review.sentToChat'
+	| 'gitlens.graph.details.compareMode'
+	| 'gitlens.graph.details.composeMode'
+	| 'gitlens.graph.details.resolveMode'
+	| 'gitlens.graph.details.reviewMode'
+	| 'gitlens.graph.details.wipShown'
+	| 'gitlens.graph.overview.shown'
+	| 'gitlens.graph.scope.changed'
+	| 'gitlens.graph.walkthrough.started'
 	| 'gitlens.mcp.ipcRequest'
-	| 'gitlens.mcp.chatInteraction'
 	| 'gitlens.mcp.bundledMcpDefinitionProvided';
 
 export type TrackedUsageFeatures =

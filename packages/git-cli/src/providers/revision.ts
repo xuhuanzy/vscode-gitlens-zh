@@ -19,7 +19,7 @@ import { splitPath } from '@gitlens/utils/path.js';
 import type { Uri } from '@gitlens/utils/uri.js';
 import { toFsPath } from '@gitlens/utils/uri.js';
 import type { CliGitProviderInternal } from '../cliGitProvider.js';
-import type { GitErrorHandling, GitExecOptions } from '../exec/exec.types.js';
+import type { GitErrorHandling, GitRunOptions } from '../exec/exec.types.js';
 import type { Git } from '../exec/git.js';
 import { defaultExceptionHandler, getGitCommandError, gitConfigsLog, GitErrors } from '../exec/git.js';
 import { parseGitLsFilesStaged } from '../parsers/indexParser.js';
@@ -65,7 +65,7 @@ export class RevisionGitSubProvider implements GitRevisionSubProvider {
 				args.push('-c', '-o');
 			}
 
-			const result = await this.git.exec({ cwd: repoPath, errors: 'ignore' }, ...args, '--', path);
+			const result = await this.git.run({ cwd: repoPath, errors: 'ignore' }, ...args, '--', path);
 			return Boolean(result.stdout.trim());
 		});
 	}
@@ -86,7 +86,7 @@ export class RevisionGitSubProvider implements GitRevisionSubProvider {
 		const [relativePath, root] = splitPath(submodulePath, repoPath);
 		const submoduleFullPath = this.provider.getAbsoluteUri(relativePath, root).fsPath;
 
-		const result = await this.git.exec({ cwd: submoduleFullPath, errors: 'ignore' }, 'rev-parse', 'HEAD');
+		const result = await this.git.run({ cwd: submoduleFullPath, errors: 'ignore' }, 'rev-parse', 'HEAD');
 		const sha = result.stdout.trim();
 		return sha || undefined;
 	}
@@ -99,7 +99,7 @@ export class RevisionGitSubProvider implements GitRevisionSubProvider {
 		const [relativePath, root] = splitPath(path, repoPath);
 
 		if (isUncommittedStaged(rev)) {
-			let result = await this.git.exec(
+			let result = await this.git.run(
 				{ cwd: root, errors: 'ignore' },
 				'ls-files',
 				'-z',
@@ -112,7 +112,7 @@ export class RevisionGitSubProvider implements GitRevisionSubProvider {
 			if (entries.length === 0) return undefined;
 
 			const entry = entries[0];
-			result = await this.git.exec({ cwd: root }, 'cat-file', '-s', entry.oid);
+			result = await this.git.run({ cwd: root }, 'cat-file', '-s', entry.oid);
 			const size = parseInt(result.stdout.trim(), 10) || 0;
 
 			return { ref: rev, oid: entry.oid, path: relativePath, size: size, type: 'blob' };
@@ -126,7 +126,7 @@ export class RevisionGitSubProvider implements GitRevisionSubProvider {
 	async getTrackedFiles(repoPath: string): Promise<string[]> {
 		if (!repoPath) return [];
 
-		const result = await this.git.exec({ cwd: repoPath, errors: 'ignore' }, 'ls-files', '-z');
+		const result = await this.git.run({ cwd: repoPath, errors: 'ignore' }, 'ls-files', '-z');
 		const data = result.stdout;
 		if (!data) return [];
 
@@ -142,7 +142,7 @@ export class RevisionGitSubProvider implements GitRevisionSubProvider {
 	private async getTreeForRevisionCore(repoPath: string, rev: string, path?: string): Promise<GitTreeEntry[]> {
 		const hasPath = Boolean(path);
 		const args = hasPath ? ['ls-tree', '-l', rev, '--', path] : ['ls-tree', '-lrt', rev, '--'];
-		const result = await this.git.exec({ cwd: repoPath, errors: 'ignore' }, ...args);
+		const result = await this.git.run({ cwd: repoPath, errors: 'ignore' }, ...args);
 		const data = result.stdout.trim();
 		if (!data) return emptyArray as GitTreeEntry[];
 
@@ -165,7 +165,7 @@ export class RevisionGitSubProvider implements GitRevisionSubProvider {
 		}
 		if (isUncommitted(rev)) throw new Error(`ref=${rev} is uncommitted`);
 
-		const opts: GitExecOptions = {
+		const opts: GitRunOptions = {
 			configs: gitConfigsLog,
 			cwd: root,
 			encoding: options?.encoding ?? 'utf8',
@@ -175,7 +175,7 @@ export class RevisionGitSubProvider implements GitRevisionSubProvider {
 		const params = ['show', '--textconv', args, '--'];
 
 		try {
-			const result = await this.git.exec<T>(opts, ...params);
+			const result = await this.git.run<T>(opts, ...params);
 			return result.stdout;
 		} catch (ex) {
 			const msg: string = ex?.toString() ?? '';
@@ -268,7 +268,7 @@ export class RevisionGitSubProvider implements GitRevisionSubProvider {
 		const resolvedRevisionCaching = { cache: this.cache.gitResults, options: { accessTTL: 5 * 60 * 1000 } };
 
 		const parser = getShaAndFileSummaryLogParser();
-		let result = await this.git.exec(
+		let result = await this.git.run(
 			{ cwd: repoPath, errors: 'ignore', caching: resolvedRevisionCaching },
 			'log',
 			...parser.arguments,
@@ -300,7 +300,7 @@ export class RevisionGitSubProvider implements GitRevisionSubProvider {
 
 		if (file.status === 'D') {
 			// If the file was deleted, check if it was moved or renamed
-			result = await this.git.exec(
+			result = await this.git.run(
 				{ cwd: repoPath, errors: 'ignore', caching: resolvedRevisionCaching },
 				'log',
 				...parser.arguments,

@@ -6,6 +6,7 @@ import type { GitConflictFile } from '@gitlens/git/models/staging.js';
 import { GitStatus } from '@gitlens/git/models/status.js';
 import type { GitStatusFile } from '@gitlens/git/models/statusFile.js';
 import type { GitStatusSubProvider, GitWorkingChangesState } from '@gitlens/git/providers/status.js';
+import type { GitCommandPriority } from '@gitlens/git/run.types.js';
 import { isCancellationError } from '@gitlens/utils/cancellation.js';
 import { gate } from '@gitlens/utils/decorators/gate.js';
 import { debug } from '@gitlens/utils/decorators/log.js';
@@ -33,19 +34,35 @@ export class StatusGitSubProvider implements GitStatusSubProvider {
 
 	@gate(rp => rp ?? '')
 	@debug()
-	async getStatus(repoPath: string | undefined, cancellation?: AbortSignal): Promise<GitStatus | undefined> {
+	async getStatus(
+		repoPath: string | undefined,
+		options?: { priority?: GitCommandPriority },
+		cancellation?: AbortSignal,
+	): Promise<GitStatus | undefined> {
 		if (repoPath == null) return undefined;
 
 		const porcelainVersion = (await this.git.supports('git:status:porcelain-v2')) ? 2 : 1;
 
-		const result = await this.statusCore(repoPath, porcelainVersion, {}, cancellation);
+		const result = await this.statusCore(
+			repoPath,
+			porcelainVersion,
+			{
+				similarityThreshold: this.context.config?.commits.similarityThreshold,
+				priority: options?.priority,
+			},
+			cancellation,
+		);
 		const repoUri = fileUri(normalizePath(repoPath));
 		const status = parseGitStatus(result.stdout, repoPath, porcelainVersion, p =>
 			joinUriPath(repoUri, normalizePath(p)),
 		);
 
 		if (status?.detached) {
-			const pausedOpStatus = await this.provider.pausedOps?.getPausedOperationStatus?.(repoPath, cancellation);
+			const pausedOpStatus = await this.provider.pausedOps?.getPausedOperationStatus?.(
+				repoPath,
+				undefined,
+				cancellation,
+			);
 			if (pausedOpStatus?.type === 'rebase') {
 				return new GitStatus(
 					repoPath,
@@ -102,7 +119,7 @@ export class StatusGitSubProvider implements GitStatusSubProvider {
 		const result = await this.statusCore(
 			repoPath,
 			porcelainVersion,
-			{},
+			{ similarityThreshold: this.context.config?.commits.similarityThreshold },
 			cancellation,
 			// If we want renames, don't include the path as Git won't do rename detection
 			...(renames ? [] : [relativePath]),
@@ -126,7 +143,7 @@ export class StatusGitSubProvider implements GitStatusSubProvider {
 	private async statusCore(
 		repoPath: string,
 		porcelainVersion: number = 1,
-		options?: { similarityThreshold?: number },
+		options?: { similarityThreshold?: number | null; priority?: GitCommandPriority },
 		cancellation?: AbortSignal,
 		...pathspecs: string[]
 	): Promise<GitResult> {
@@ -142,12 +159,13 @@ export class StatusGitSubProvider implements GitStatusSubProvider {
 			);
 		}
 
-		return this.git.exec(
+		return this.git.run(
 			{
 				cwd: repoPath,
 				cancellation: cancellation,
 				configs: gitConfigsStatus,
 				env: { GIT_OPTIONAL_LOCKS: '0' },
+				...(options?.priority != null ? { priority: options.priority } : undefined),
 			},
 			...params,
 			'--',
@@ -168,7 +186,7 @@ export class StatusGitSubProvider implements GitStatusSubProvider {
 			const staged = options?.staged ?? true;
 			const unstaged = options?.unstaged ?? true;
 			if (staged || unstaged) {
-				const result = await this.git.exec(
+				const result = await this.git.run(
 					{ cwd: repoPath, cancellation: cancellation, errors: 'ignore' },
 					'diff',
 					'--quiet',
@@ -218,14 +236,14 @@ export class StatusGitSubProvider implements GitStatusSubProvider {
 		try {
 			const [stagedResult, unstagedResult, untrackedResult] = await Promise.allSettled([
 				// Check for staged changes
-				this.git.exec(
+				this.git.run(
 					{ cwd: repoPath, cancellation: cancellation, errors: 'ignore' },
 					'diff',
 					'--quiet',
 					'--staged',
 				),
 				// Check for unstaged changes
-				this.git.exec({ cwd: repoPath, cancellation: cancellation, errors: 'ignore' }, 'diff', '--quiet'),
+				this.git.run({ cwd: repoPath, cancellation: cancellation, errors: 'ignore' }, 'diff', '--quiet'),
 				// Check for untracked files
 				this.hasUntrackedFiles(repoPath, cancellation),
 			]);
@@ -247,6 +265,7 @@ export class StatusGitSubProvider implements GitStatusSubProvider {
 			return result;
 		} catch (ex) {
 			if (isCancellationError(ex)) throw ex;
+
 			scope?.error(ex);
 			scope?.addExitInfo('error checking for changes');
 			// Return all false on error for graceful degradation
@@ -279,7 +298,7 @@ export class StatusGitSubProvider implements GitStatusSubProvider {
 		const scope = getScopedLogger();
 
 		try {
-			const result = await this.git.exec(
+			const result = await this.git.run(
 				{ cwd: repoPath, cancellation: cancellation, errors: 'ignore' },
 				'ls-files',
 				'-z',
@@ -337,7 +356,7 @@ export class StatusGitSubProvider implements GitStatusSubProvider {
 		const scope = getScopedLogger();
 
 		try {
-			const result = await this.git.exec(
+			const result = await this.git.run(
 				{ cwd: repoPath, cancellation: cancellation, errors: 'ignore' },
 				'ls-files',
 				'-z',

@@ -1,16 +1,14 @@
-import { extensions } from 'vscode';
 import { wait } from '@gitlens/utils/promise.js';
 import type { ChatViewOpenOptions } from '../../../../@types/vscode.chat.js';
 import { callUsingClipboard } from '../../../../system/-webview/clipboard.js';
 import { executeCoreCommand } from '../../../../system/-webview/command.js';
-import { getHostAppName, isHostVSCode } from '../../../../system/-webview/vscode.js';
+import { getHostAppName } from '../../../../system/-webview/vscode.js';
 
-export async function openChat(
-	args: string,
-	options?: {
-		execute?: boolean;
-	},
-): Promise<void> {
+/** Chat mode hint honored by Copilot Chat (`workbench.action.chat.open`); other hosts already
+ *  open their dedicated agent-mode chat command, so this is a no-op for them. */
+export type ChatMode = 'agent' | 'edit' | 'ask';
+
+export async function openChat(args: string, options?: { execute?: boolean; mode?: ChatMode }): Promise<void> {
 	const appName = await getHostAppName();
 	if ((await supportsChat(appName)) === false) return;
 
@@ -28,6 +26,7 @@ export async function openChat(
 	return openCopilotChat({
 		query: args,
 		isPartialQuery: options?.execute != null ? !options.execute : true,
+		mode: options?.mode,
 	});
 }
 
@@ -78,20 +77,7 @@ export function openTraeChat(args: string): Thenable<void> {
 	});
 }
 
-const copilotChatExtensionId = 'GitHub.copilot-chat';
-export function isCopilotChatExtensionInstalled(): boolean {
-	const ext = extensions.getExtension(copilotChatExtensionId);
-	return ext != null;
-}
-
-export async function supportsChatParticipant(appName?: string): Promise<boolean> {
-	appName ??= await getHostAppName();
-	if (appName == null) return false;
-
-	return isHostVSCode(appName) && isCopilotChatExtensionInstalled();
-}
-
-const supportedChatHosts = ['code', 'code-insiders', 'code-exploration', 'cursor', 'windsurf', 'kiro', 'trae'];
+export const supportedChatHosts = ['code', 'code-insiders', 'code-exploration', 'cursor', 'windsurf', 'kiro', 'trae'];
 export async function supportsChat(appName?: string): Promise<boolean> {
 	appName ??= await getHostAppName();
 	if (appName == null) return false;

@@ -146,7 +146,7 @@ export class CliGitProvider implements GitProvider {
 			folderPath = joinPaths(parentPath, `${remoteName}-${count}`);
 		}
 
-		await this._git.exec({ cwd: parentPath }, 'clone', url, folderPath);
+		await this._git.run({ cwd: parentPath }, 'clone', url, folderPath);
 
 		return folderPath;
 	}

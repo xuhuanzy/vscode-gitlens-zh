@@ -62,6 +62,7 @@ export namespace DOM {
 			return {
 				dispose: () => {
 					if (disposed) return;
+
 					disposed = true;
 
 					document.removeEventListener(name, filteredListener as EventListener, options ?? true);
@@ -70,12 +71,13 @@ export namespace DOM {
 		}
 
 		const newListener = function (this: T, e: (DocumentEventMap | WindowEventMap)[K]) {
-			listener(e, this as unknown as T);
+			listener(e, this);
 		};
 		sourceOrSelector.addEventListener(name, newListener as EventListener, options ?? false);
 		return {
 			dispose: () => {
 				if (disposed) return;
+
 				disposed = true;
 
 				sourceOrSelector.removeEventListener(name, newListener as EventListener, options ?? false);

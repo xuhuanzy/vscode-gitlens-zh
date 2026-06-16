@@ -2,6 +2,7 @@ import type { TextDocument, TextDocumentShowOptions, TextEditor } from 'vscode';
 import { Uri, ViewColumn, window } from 'vscode';
 import { Logger } from '@gitlens/utils/logger.js';
 import { extname } from '@gitlens/utils/path.js';
+import type { CoreCommands } from '../../../constants.commands.js';
 import { imageMimetypes, Schemes } from '../../../constants.js';
 import { isGitUri } from '../../../git/gitUri.js';
 import { executeCoreCommand } from '../command.js';
@@ -91,7 +92,7 @@ export async function openChangesEditor(
 ): Promise<void> {
 	try {
 		if (options?.viewColumn === ViewColumn.Beside) {
-			let column = (options?.sourceViewColumn ?? window.tabGroups.activeTabGroup?.viewColumn ?? 0) + 1;
+			let column = (options.sourceViewColumn ?? window.tabGroups.activeTabGroup?.viewColumn ?? 0) + 1;
 			if (column > ViewColumn.Nine) {
 				column = ViewColumn.One;
 			}
@@ -102,16 +103,50 @@ export async function openChangesEditor(
 				await executeCoreCommand('workbench.action.newGroupRight');
 			}
 		}
+
 		await executeCoreCommand(
 			'vscode.changes',
 			title,
 			resources.map(r => [r.uri, r.lhs, r.rhs]),
 		);
+
+		if (options?.preserveFocus && options.sourceViewColumn != null) {
+			const focusCommand = focusGroupByColumnCommand(options.sourceViewColumn);
+			if (focusCommand != null) {
+				await executeCoreCommand(focusCommand);
+			}
+		}
 	} catch (ex) {
 		Logger.error(ex, 'openChangesEditor');
 		debugger;
 	}
 }
+
+function focusGroupByColumnCommand(column: ViewColumn): CoreCommands | undefined {
+	switch (column) {
+		case ViewColumn.One:
+			return 'workbench.action.focusFirstEditorGroup';
+		case ViewColumn.Two:
+			return 'workbench.action.focusSecondEditorGroup';
+		case ViewColumn.Three:
+			return 'workbench.action.focusThirdEditorGroup';
+		case ViewColumn.Four:
+			return 'workbench.action.focusFourthEditorGroup';
+		case ViewColumn.Five:
+			return 'workbench.action.focusFifthEditorGroup';
+		case ViewColumn.Six:
+			return 'workbench.action.focusSixthEditorGroup';
+		case ViewColumn.Seven:
+			return 'workbench.action.focusSeventhEditorGroup';
+		case ViewColumn.Eight:
+			return 'workbench.action.focusEighthEditorGroup';
+		case ViewColumn.Nine:
+			return 'workbench.action.focusLastEditorGroup';
+		default:
+			return undefined;
+	}
+}
+
 export async function openDiffEditor(
 	lhs: Uri,
 	rhs: Uri,

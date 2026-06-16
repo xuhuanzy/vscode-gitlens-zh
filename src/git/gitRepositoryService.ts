@@ -1,18 +1,24 @@
 import type { Uri } from 'vscode';
 import { ProgressLocation, window } from 'vscode';
-import { CheckoutError, FetchError, PullError, PushError } from '@gitlens/git/errors.js';
+import { CheckoutError, FetchError, PullError, PushError, SigningError } from '@gitlens/git/errors.js';
 import type { GitFile } from '@gitlens/git/models/file.js';
 import type { GitBranchReference, GitReference } from '@gitlens/git/models/reference.js';
 import { deletedOrMissing } from '@gitlens/git/models/revision.js';
 import type { GitProviderDescriptor } from '@gitlens/git/providers/types.js';
 import type { RepositoryService } from '@gitlens/git/repositoryService.js';
+import type { UnsafeGit } from '@gitlens/git/run.types.js';
 import { isBranchReference } from '@gitlens/git/utils/reference.utils.js';
 import { getRemoteThemeIconString } from '@gitlens/git/utils/remote.utils.js';
+import type { WatcherRepoChangeEvent, WorkingTreeChangeEvent } from '@gitlens/git/watching/changeEvent.js';
 import { debug, trace } from '@gitlens/utils/decorators/log.js';
+import type { UnifiedDisposable } from '@gitlens/utils/disposable.js';
+import { mixinDisposable } from '@gitlens/utils/disposable.js';
+import type { Event } from '@gitlens/utils/event.js';
 import { groupByFilterMap } from '@gitlens/utils/iterable.js';
 import { Logger } from '@gitlens/utils/logger.js';
 import { getSettledValue } from '@gitlens/utils/promise.js';
 import { GlyphChars, Schemes } from '../constants.js';
+import type { Source } from '../constants.telemetry.js';
 import type { EventBus } from '../eventBus.js';
 import type { FeatureAccess, Features, PlusFeatures } from '../features.js';
 import { showGitErrorMessage } from '../messages.js';
@@ -27,12 +33,12 @@ import type { GlRepository } from './models/repository.js';
 // Merge the RepositoryService sub-provider interface onto GitRepositoryService
 // so that sub-provider properties (branches, commits, etc.) are recognized by TypeScript.
 // The actual property descriptors are copied from RepositoryService at construction time.
-// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+// oxlint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export interface GitRepositoryService extends RepositoryService {}
 
-const skipOverlappingProperties = new Set(['path', 'provider', 'getAbsoluteUri']);
+const skipOverlappingProperties = new Set(['path', 'provider', 'getAbsoluteUri', 'exec', 'run']);
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
+// oxlint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging
 export class GitRepositoryService {
 	constructor(
 		private readonly _svc: GitProviderService,
@@ -52,6 +58,7 @@ export class GitRepositoryService {
 		for (const key of Object.keys(descriptors)) {
 			// Skip properties already defined on GitRepositoryService
 			if (skipOverlappingProperties.has(key)) continue;
+
 			Object.defineProperty(this, key, descriptors[key]);
 		}
 	}
@@ -59,6 +66,70 @@ export class GitRepositoryService {
 	@debug({ args: uris => ({ uris: uris.length }) })
 	excludeIgnoredUris(uris: Uri[]): Promise<Uri[]> {
 		return this._provider.excludeIgnoredUris(this.path, uris);
+	}
+
+	/**
+	 * Build an {@link UnsafeGit} escape hatch for this repository, or `undefined`
+	 * if the provider doesn't support raw git (virtual GitHub repos, `vscode-vfs://`,
+	 * PRs).
+	 *
+	 * Hand the result to libraries that need to issue raw `git <args>` commands
+	 * (`@gitkraken/compose-tools`, `@gitkraken/shared-tools` undo). Inside GitLens,
+	 * use the typed sub-providers (`this.branches`, `this.commits`, `this.diff`, …)
+	 * for everything else — those carry cancellation, caching, signing-awareness,
+	 * and decorator behaviors that raw invocation skips.
+	 *
+	 * The `UnsafeGit` type name is the discouragement: any callsite holding one
+	 * just to call `run(...)` for an ad-hoc command should be reviewed as a
+	 * layering violation. New callers should be the rare exception, not the rule.
+	 */
+	createUnsafeGit(): UnsafeGit | undefined {
+		return this._provider.createUnsafeGit?.(this.path);
+	}
+
+	/**
+	 * Subscribe to filesystem-driven change events for this repository — repo changes
+	 * (`onDidChange`: index, head, refs, paused-op, etc.) and working-tree edits
+	 * (`onDidChangeWorkingTree`). Routes through the shared watch service so it works
+	 * regardless of whether a corresponding {@link GlRepository} is open or closed —
+	 * a not-open `GlRepository` holds no repo-change watch lease, so its `onDidChange` is
+	 * dead, so callers that need events for not-currently-open repos (e.g. the Graph's
+	 * secondary-worktree WIP rows) must come through this method instead of
+	 * `repo.watchWorkingTree` / `repo.onDidChange`.
+	 *
+	 * Returns `undefined` when the git directory can't be resolved (transient or non-repo
+	 * paths). The returned object disposes both event subscriptions and the underlying
+	 * service-level watch handle, decrementing the ref count so the session tears down
+	 * cleanly when the last subscriber leaves.
+	 */
+	@trace()
+	async watch(opts?: { workingTreeDelayMs?: number }): Promise<
+		| (UnifiedDisposable & {
+				readonly onDidChange: Event<WatcherRepoChangeEvent>;
+				readonly onDidChangeWorkingTree: Event<WorkingTreeChangeEvent>;
+		  })
+		| undefined
+	> {
+		const gitDir = await this.config.getGitDir?.();
+		if (gitDir == null) return undefined;
+
+		const handle = this._svc.watchService.watch(this.path, gitDir);
+		if (handle == null) return undefined;
+
+		const wtSub = handle.session.subscribeToWorkingTree({ delayMs: opts?.workingTreeDelayMs ?? 500 });
+		const repoSub = handle.session.subscribe();
+
+		return mixinDisposable(
+			{
+				onDidChange: repoSub.onDidChange,
+				onDidChangeWorkingTree: wtSub.onDidChangeWorkingTree,
+			},
+			() => {
+				wtSub.dispose();
+				repoSub.dispose();
+				handle.dispose();
+			},
+		);
 	}
 
 	@trace()
@@ -174,7 +245,7 @@ export class GitRepositoryService {
 	}
 
 	@trace({ exit: true })
-	getLastFetchedTimestamp(): Promise<number | undefined> {
+	getLastFetched(): Promise<number | undefined> {
 		return this._provider.getLastFetchedTimestamp(this.path);
 	}
 
@@ -193,8 +264,8 @@ export class GitRepositoryService {
 	}
 
 	@debug()
-	getOrOpenScmRepository(): Promise<ScmRepository | undefined> {
-		return this._provider.getOrOpenScmRepository(this.path);
+	getOrOpenScmRepository(source?: Source): Promise<ScmRepository | undefined> {
+		return this._provider.getOrOpenScmRepository(this.path, source);
 	}
 
 	@debug({ exit: true })
@@ -289,7 +360,7 @@ export class GitRepositoryService {
 		if (commonUri == null) return repo;
 
 		// If the repository isn't already opened, then open it as a "closed" repo (won't show up in the UI)
-		return this._svc.getOrOpenRepository(commonUri, { detectNested: false, force: true, closeOnOpen: true });
+		return this._svc.getOrAddRepository(commonUri, { detectNested: false, force: true, opened: false });
 	}
 
 	@gate()
@@ -325,8 +396,14 @@ export class GitRepositoryService {
 		pull?: boolean;
 		remote?: string;
 	}) {
+		// Virtual provider — no-op rather than lying via markFetched.
+		if (this.ops == null) return;
+
 		try {
-			await this.ops?.fetch(options);
+			await this.ops.fetch(options);
+			// `markFetched` tracks the fetch attempt; modern git skips rewriting FETCH_HEAD when
+			// all refs are up-to-date, so the on-disk mtime alone can lag the actual attempt.
+			this.getRepository()?.markFetched();
 		} catch (ex) {
 			Logger.error(ex);
 
@@ -355,21 +432,32 @@ export class GitRepositoryService {
 	}
 
 	private async pullCore(options?: { rebase?: boolean }) {
+		// Virtual provider — no-op rather than lying via markFetched.
+		if (this.ops == null) return;
+
 		const repo = this.getRepository();
+		// Pull may fail after fetch lands (e.g., merge conflict) — still mark the attempt.
+		let didFetch = false;
 		try {
 			const withTags = configuration.getCore('git.pullTags', repo?.uri);
 			if (configuration.getCore('git.fetchOnPull', repo?.uri)) {
-				await this.ops?.fetch();
+				await this.ops.fetch();
+				didFetch = true;
 			}
 
-			await this.ops?.pull({ ...options, tags: withTags });
+			await this.ops.pull({ ...options, tags: withTags });
+			didFetch = true;
 		} catch (ex) {
 			Logger.error(ex);
 
-			if (PullError.is(ex)) {
+			if (PullError.is(ex) || SigningError.is(ex)) {
 				void showGitErrorMessage(ex);
 			} else {
 				void showGitErrorMessage(ex, 'Unable to pull');
+			}
+		} finally {
+			if (didFetch) {
+				repo?.markFetched();
 			}
 		}
 	}

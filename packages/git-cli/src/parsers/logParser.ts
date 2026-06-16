@@ -176,6 +176,10 @@ const stashMapping = {
 	parents: '%P',
 	stashName: '%gd',
 	summary: '%gs',
+	// %s (commit subject) is git's authoritative `On <branch>: …` / `WIP on <branch>: …` record,
+	// present even when the reflog message (%gs) was customized (autostash, `git stash store -m`).
+	// Used downstream to extract `stashOnRef` reliably.
+	commitSubject: '%s',
 };
 
 type StashLogParser = LogParser<typeof stashMapping>;
@@ -416,6 +420,7 @@ function createLogParserWithFilesAndStats<T extends Record<string, string> | voi
 
 				endIndex = line.indexOf(' ', startIndex);
 				if (endIndex === -1) continue;
+
 				const newMode = line.substring(startIndex, endIndex);
 
 				// Parse old_sha and new_sha positions
@@ -882,7 +887,7 @@ function createLogParserWithPatch<T extends Record<string, string>>(
 		}
 
 		return {
-			status: (fileMatch[1] === 'rename' ? 'R' : 'M') as GitFileIndexStatus,
+			status: (fileMatch[1] === 'rename' ? 'R' : 'M') satisfies GitFileIndexStatus,
 			path: fileMatch[2],
 			originalPath: fileMatch[1] === 'rename' ? fileMatch[3] : undefined,
 			range: range,

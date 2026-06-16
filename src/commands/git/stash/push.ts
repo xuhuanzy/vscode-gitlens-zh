@@ -1,5 +1,5 @@
-import type { QuickInputButton, Uri } from 'vscode';
-import { InputBoxValidationSeverity, QuickInputButtons, ThemeIcon, window } from 'vscode';
+import type { Uri } from 'vscode';
+import { InputBoxValidationSeverity, QuickInputButtons, window } from 'vscode';
 import type { AIModel } from '@gitlens/ai/models/model.js';
 import { StashPushError } from '@gitlens/git/errors.js';
 import { uncommitted, uncommittedStaged } from '@gitlens/git/models/revision.js';
@@ -24,8 +24,9 @@ import type {
 	StepState,
 } from '../../quick-wizard/models/steps.js';
 import { StepResultBreak } from '../../quick-wizard/models/steps.js';
+import { GenerateStashMessageQuickInputButton } from '../../quick-wizard/quickButtons.js';
 import { QuickCommand } from '../../quick-wizard/quickCommand.js';
-import { pickRepositoryStep } from '../../quick-wizard/steps/repositories.js';
+import { canSkipRepositoryPick, pickRepositoryStep } from '../../quick-wizard/steps/repositories.js';
 import { StepsController } from '../../quick-wizard/stepsController.js';
 import {
 	appendReposToTitle,
@@ -95,8 +96,8 @@ export class StashPushGitCommand extends QuickCommand<State> {
 			context.title = this.title;
 
 			if (steps.isAtStep(Steps.PickRepo) || state.repo == null || typeof state.repo === 'string') {
-				// Only show the picker if there are multiple repositories
-				if (context.repos.length === 1) {
+				// Skip the picker only when the sole available repo is the one requested
+				if (canSkipRepositoryPick(context.repos, state.repo)) {
 					[state.repo] = context.repos;
 				} else {
 					using step = steps.enterStep(Steps.PickRepo);
@@ -213,11 +214,6 @@ export class StashPushGitCommand extends QuickCommand<State> {
 	): AsyncStepResultGenerator<string> {
 		using scope = maybeStartScopedLogger(`${getLoggableName(this)}.inputMessageStep`);
 
-		const generateMessageButton: QuickInputButton = {
-			iconPath: new ThemeIcon('sparkle'),
-			tooltip: 'Generate Stash Message',
-		};
-
 		const annotations: string[] = [];
 		if (state.uris != null) {
 			annotations.push(
@@ -251,11 +247,11 @@ export class StashPushGitCommand extends QuickCommand<State> {
 			prompt: 'Please provide a stash message',
 			buttons:
 				this.container.ai.enabled && this.container.ai.allowed
-					? [QuickInputButtons.Back, generateMessageButton]
+					? [QuickInputButtons.Back, GenerateStashMessageQuickInputButton]
 					: [QuickInputButtons.Back],
 			validate: (_value: string | undefined): [boolean, string | undefined] => [true, undefined],
 			onDidClickButton: async (input, button) => {
-				if (button === generateMessageButton) {
+				if (button === GenerateStashMessageQuickInputButton) {
 					using resume = step.freeze?.();
 
 					try {

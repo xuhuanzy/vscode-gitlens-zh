@@ -160,6 +160,14 @@ export function getCommitAuthorCachedAvatarUri(commit: GitCommit, options?: { si
 	return getCachedAvatarUri(commit.author.email, options);
 }
 
+export function getCommitCommitterAvatarUri(
+	commit: GitCommit,
+	options?: { defaultStyle?: GravatarDefaultStyle; size?: number },
+): Uri | Promise<Uri> {
+	if (commit.committer.avatarUrl != null) return Uri.parse(commit.committer.avatarUrl);
+	return getAvatarUri(commit.committer.email, commit, options);
+}
+
 // #endregion
 
 // #region Stats formatting
@@ -279,7 +287,13 @@ export async function findCommitFile(
 	options?: { allowFilteredFiles?: boolean; include?: { stats?: boolean } },
 ): Promise<GitFileChange | undefined> {
 	if (!commit.hasFullDetails(options)) {
-		await GitCommit.ensureFullDetails(commit, options);
+		// For uncommitted commits, explicitly request the working-tree files — otherwise
+		// `ensureFullDetailsCore` only loads them when the repo's working-tree etag is set (an
+		// active watch session), silently leaving the fileset empty otherwise.
+		await GitCommit.ensureFullDetails(
+			commit,
+			commit.isUncommitted ? { ...options, include: { ...options?.include, uncommittedFiles: true } } : options,
+		);
 		if (commit.fileset == null) return undefined;
 	}
 
@@ -313,6 +327,52 @@ export async function getCommitForFile(
 		sha: foundFile.staged ? uncommittedStaged : commit.sha,
 		fileset: { ...commit.fileset!, filtered: { files: [foundFile], pathspec: path } },
 	});
+}
+
+/**
+ * Resolves a path + ref pair into a `(commit, file)` tuple. If `ref` is nullish or the uncommitted sentinel,
+ * the lookup targets the uncommitted commit for the repo; otherwise the specified ref. Returns `[]` if the
+ * commit cannot be resolved or the file is missing from it.
+ */
+export async function getCommitAndFileByPath(
+	repoPath: string,
+	path: string,
+	ref: { ref: string; stash?: boolean } | undefined,
+	staged: boolean | undefined,
+): Promise<[commit: GitCommit, file: GitFileChange] | [commit?: undefined, file?: undefined]> {
+	const svc = Container.instance.git.getRepositoryService(repoPath);
+	const sha = ref != null && ref.ref !== uncommitted ? ref.ref : uncommitted;
+
+	// `commits.getCommit` goes through `git log`, which yields a `refType: 'revision'` commit
+	// even for a stash sha. That branch of `ensureFullDetails` doesn't merge in untracked stash
+	// files (those live in `stash^3`), so untracked stash entries are missing from its fileset.
+	// When the caller knows the ref is a stash, go straight to the stash sub-provider whose
+	// commit has `refType: 'stash'` and a fileset that already includes untracked files.
+	let commit: GitCommit | undefined;
+	if (ref?.stash && sha !== uncommitted) {
+		const stashes = await svc.stash?.getStash();
+		commit = stashes?.stashes.get(sha);
+	} else {
+		commit = await svc.commits.getCommit(sha);
+	}
+
+	let matched: GitCommit | undefined;
+	if (commit != null) {
+		matched = await getCommitForFile(commit, path, staged);
+	}
+
+	// Safety net for callers that didn't pass the stash hint — if the file wasn't found in the
+	// regular commit's fileset, retry via the stash sub-provider so untracked stash files still
+	// resolve correctly.
+	if (matched == null && !ref?.stash && sha !== uncommitted) {
+		const stashes = await svc.stash?.getStash();
+		const stashCommit = stashes?.stashes.get(sha);
+		if (stashCommit != null) {
+			matched = await getCommitForFile(stashCommit, path, staged);
+		}
+	}
+
+	return matched != null ? [matched, matched.file!] : [];
 }
 
 export async function getCommitsForFiles(

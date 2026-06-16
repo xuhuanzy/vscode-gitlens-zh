@@ -13,12 +13,14 @@
 
 @include utils.dark-theme {
 	--popover-bg: var(--color-background--lighten-15);
-	--titlebar-bg: var(--color-background--lighten-075);
+	// --titlebar-bg: var(--color-background--lighten-075);
+	--titlebar-bg: var(--color-background);
 }
 
 @include utils.light-theme {
 	--popover-bg: var(--color-background--darken-15);
-	--titlebar-bg: var(--color-background--darken-075);
+	// --titlebar-bg: var(--color-background--darken-075);
+	--titlebar-bg: var(--color-background);
 }
 
 :root {
@@ -47,12 +49,12 @@
 
 	--color-graph-minimap-line0: var(--vscode-progressBar-background);
 	--color-graph-minimap-focusLine: var(--vscode-foreground);
-	--color-graph-minimap-visibleAreaBackground: var(--vscode-scrollbarSlider-background);
 
 	--color-graph-minimap-marker-head: var(--vscode-gitlens-graphMinimapMarkerHeadColor);
 	--color-graph-scroll-marker-head: var(--vscode-gitlens-graphScrollMarkerHeadColor);
 	--color-graph-minimap-marker-upstream: var(--vscode-gitlens-graphMinimapMarkerUpstreamColor);
 	--color-graph-scroll-marker-upstream: var(--vscode-gitlens-graphScrollMarkerUpstreamColor);
+	--color-graph-minimap-marker-worktree: var(--vscode-gitlens-graphMinimapMarkerWorktreeColor);
 	--color-graph-minimap-marker-highlights: var(--vscode-gitlens-graphMinimapMarkerHighlightsColor);
 	--color-graph-scroll-marker-highlights: var(--vscode-gitlens-graphScrollMarkerHighlightsColor);
 	--color-graph-minimap-marker-local-branches: var(--vscode-gitlens-graphMinimapMarkerLocalBranchesColor);
@@ -65,6 +67,13 @@
 	--color-graph-scroll-marker-stashes: var(--vscode-gitlens-graphScrollMarkerStashesColor);
 	--color-graph-minimap-marker-tags: var(--vscode-gitlens-graphMinimapMarkerTagsColor);
 	--color-graph-scroll-marker-tags: var(--vscode-gitlens-graphScrollMarkerTagsColor);
+	--color-graph-scroll-marker-wip: var(--vscode-gitlens-graphScrollMarkerWipColor);
+	--color-graph-minimap-marker-scope: var(--vscode-statusBarItem-prominentBackground, var(--vscode-foreground));
+	--color-graph-minimap-marker-scope-highlight: color-mix(
+		in srgb,
+		var(--vscode-statusBarItem-prominentBackground) 18%,
+		transparent
+	);
 
 	--color-graph-minimap-tip-headBackground: var(--color-graph-scroll-marker-head);
 	--color-graph-minimap-tip-headBorder: var(--color-graph-scroll-marker-head);
@@ -101,6 +110,12 @@
 	--color-graph-minimap-tip-upstreamBorder: var(--color-graph-scroll-marker-upstream);
 	--color-graph-minimap-tip-upstreamForeground: var(--vscode-editor-foreground, var(--vscode-foreground));
 
+	--color-graph-minimap-tip-worktreeBackground: var(--color-graph-minimap-marker-worktree);
+	--color-graph-minimap-tip-worktreeBorder: var(--color-graph-minimap-marker-worktree);
+	/* Violet bg is luminance-extreme in opposite directions per theme — using editor-background as
+	   the foreground inverts correctly in both. */
+	--color-graph-minimap-tip-worktreeForeground: var(--vscode-editor-background, var(--vscode-foreground));
+
 	--graph-stats-bar-height: 40%;
 	--graph-stats-bar-border-radius: 3px;
 
@@ -109,13 +124,15 @@
 	--branch-status-both-foreground: var(--vscode-gitlens-decorations\.branchDivergedForegroundColor);
 
 	--graph-column-scrollbar-thickness: 14px;
+
+	--color-graph-background: var(--vscode-editor-background, var(--color-background));
 }
 
 @include utils.dark-theme($selectorPrefix: ':root:has(', $selectorPostfix: ')') {
 	--graph-theme-opacity-factor: '1';
 
 	--color-graph-actionbar-background: color-mix(in srgb, #fff 5%, var(--color-background));
-	--color-graph-background: color-mix(in srgb, #fff 5%, var(--color-background));
+	--color-graph-background1: color-mix(in srgb, #fff 5%, var(--color-background));
 	--color-graph-background2: color-mix(in srgb, #fff 10%, var(--color-background));
 }
 
@@ -123,8 +140,16 @@
 	--graph-theme-opacity-factor: '0.5';
 
 	--color-graph-actionbar-background: color-mix(in srgb, #000 5%, var(--color-background));
-	--color-graph-background: color-mix(in srgb, #000 5%, var(--color-background));
+	--color-graph-background1: color-mix(in srgb, #000 5%, var(--color-background));
 	--color-graph-background2: color-mix(in srgb, #000 10%, var(--color-background));
+
+	.graph-container .wip-stats-pill {
+		background-color: color-mix(
+			in srgb,
+			var(--vscode-sideBarSectionHeader-background) 96%,
+			var(--vscode-foreground) 4%
+		);
+	}
 }
 
 // Light DOM
@@ -800,8 +825,6 @@ button:not([disabled]),
 		&::before {
 			font-family: codicon;
 			@include iconUtils.codicon('git-branch');
-			top: 0px;
-			margin: 0 0 0 0;
 		}
 	}
 
@@ -816,8 +839,6 @@ button:not([disabled]),
 		&::before {
 			font-family: codicon;
 			@include iconUtils.codicon('git-commit');
-			top: 0px;
-			margin: 0 0 0 0;
 		}
 	}
 
@@ -860,6 +881,13 @@ button:not([disabled]),
 		&::before {
 			font-family: glicons;
 			@include iconUtils.glicon('worktrees-view');
+		}
+	}
+
+	&--pin {
+		&::before {
+			font-family: codicon;
+			@include iconUtils.codicon('pinned');
 		}
 	}
 
@@ -908,13 +936,121 @@ button:not([disabled]),
 		}
 	}
 
-	&--filter,
+	&--filter {
+		&::before {
+			font-family: codicon;
+			@include iconUtils.codicon('filter');
+		}
+	}
+
 	&--undefined-icon {
 		&::before {
 			font-family: codicon;
 			@include iconUtils.codicon('blank');
 		}
 	}
+}
+
+// Header icons render at the library's expected metrics, not the global `.graph-icon`
+// `14px / line-height: 2rem` which would stretch the header row.
+.gk-graph .graph-header .graph-icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.6rem;
+	height: 1.6rem;
+	font-size: 1.4rem;
+	line-height: 1;
+}
+
+// Vertically center every header item (zone icon, filter button, label) in the row.
+// `:has()` covers both `.resizable > .contents > div > .columns-btn` and `.is-last-header
+// > div > .columns-btn`. `.columns-filter-icon` uses `!important` to beat the library's
+// inline `height: 22px; margin-bottom: 2px` (which overflows the padded filter button).
+.gk-graph .graph-header div:has(> .columns-btn) {
+	display: flex;
+	align-items: center;
+	height: 100%;
+}
+.gk-graph .graph-header .header-columns-icons {
+	top: 0;
+	bottom: 0;
+	display: flex;
+	align-items: center;
+
+	// Swap rendered order so the filter funnel appears before the settings gear.
+	// The library renders settings first in the DOM; the parent is already flex,
+	// so `order` reorders them without touching the external component.
+	.columns-filter {
+		order: 0;
+	}
+	.columns-settings {
+		order: 1;
+	}
+}
+.gk-graph .graph-header .columns-filter-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: auto !important;
+	margin-bottom: 0 !important;
+}
+.gk-graph .graph-header .columns-btn {
+	align-items: center;
+	margin-top: 0;
+}
+
+// In narrow columns (compact mode shrinks zone buttons to a few px) the GitLens override
+// at L1290 `justify-content: center` would center a 16px icon inside a 5px box, overflowing
+// left and getting clipped by `.contents { overflow: hidden }`. Pin to icon width.
+.gk-graph .graph-header .columns-btn.small-btn.justify-start {
+	min-width: 1.6rem;
+}
+
+// Filter button: hidden until header hover/focus or `.filtering` (active filter). Active
+// state is signalled by the filled glyph alone — `.button.active`'s background and the
+// library's `--text-selected` recolor are both overridden away.
+// `.columns-btn.columns-filter` matches the library's `.columns-btn.small-btn` specificity
+// so our padding wins on every variant (incl. the ref column's non-small-btn filter).
+.gk-graph .graph-header .columns-btn.columns-filter {
+	margin-right: 0.3rem;
+	padding: 0.2rem;
+	cursor: pointer;
+
+	&:not(.filtering) {
+		opacity: 0;
+		transition: opacity 120ms ease;
+
+		&:hover {
+			background-color: var(--vscode-toolbar-hoverBackground);
+		}
+	}
+
+	&.filtering,
+	&.filtering:hover {
+		background-color: transparent;
+
+		.columns-filter-icon {
+			color: inherit;
+
+			.icon--filter::before {
+				@include iconUtils.codicon('filter-filled');
+			}
+		}
+	}
+}
+.gk-graph .graph-header:hover .columns-filter:not(.filtering),
+.gk-graph .graph-header .columns-filter:not(.filtering):focus-visible,
+.gk-graph .graph-header .columns-filter:not(.filtering):focus-within {
+	opacity: 1;
+}
+
+// Frost the graph rows behind the floating HEAD pill — the library paints it with a 10%
+// tinted but otherwise transparent fill, which gets lost over dense lane/SHA content.
+// Skip hover/focus since the library already swaps to an opaque background there.
+.gk-graph .graph-component .graph-head-pill:not(:hover):not(:focus-visible) {
+	backdrop-filter: blur(0.6rem) saturate(1.2);
+	-webkit-backdrop-filter: blur(0.6rem) saturate(1.2);
 }
 
 // header - move to graph.css.ts
@@ -1177,6 +1313,55 @@ web-graph {
 	}
 }
 
+// Reformat the third-party graph component's TARGET/BASE pills:
+//   - Default state shows "<icon> TARGET" / "<icon> BASE".
+//   - When the ref column is shrunk, the pill collapses to icon-only.
+// The pill itself stays flex-shrink: 0 so it never gets squished; the
+// container query on the .flex parent (which has the column-width inline
+// style) drives the icon-only ↔ icon+text mode swap. Padding/margin are
+// tightened so the dashed right border doesn't clip against the parent's
+// overflow:hidden at minimum width.
+.gk-graph .ref-zone > .flex:has(> .merge-target-ref-node),
+.gk-graph .ref-zone > .flex:has(> .merge-base-ref-node) {
+	container-type: inline-size;
+	container-name: refcol;
+}
+
+.gk-graph .ref-zone .merge-base-ref-node,
+.gk-graph .ref-zone .merge-target-ref-node {
+	flex-shrink: 0;
+	white-space: nowrap;
+	font-size: 0;
+	margin-left: 0;
+	padding: 0 4px;
+	align-items: center;
+
+	&::before {
+		font-size: 13px;
+		line-height: 1;
+		display: inline-block;
+	}
+}
+
+.gk-graph .ref-zone .merge-target-ref-node::before {
+	font-family: 'glicons';
+	@include iconUtils.glicon('merge-target');
+}
+
+.gk-graph .ref-zone .merge-base-ref-node::before {
+	font-family: codicon;
+	@include iconUtils.codicon('git-branch');
+}
+
+@container refcol (min-width: 100px) {
+	.gk-graph .ref-zone .merge-base-ref-node,
+	.gk-graph .ref-zone .merge-target-ref-node {
+		font-size: 11px;
+		padding: 0 6px;
+		gap: 4px;
+	}
+}
+
 // Light DOM
 .graph-app:not(:hover) {
 	.gk-graph .graph-header {
@@ -1188,6 +1373,8 @@ web-graph {
 
 // Light DOM
 .graph-container {
+	container-type: inline-size;
+
 	& .resizable-handle.horizontal {
 		display: none;
 	}
@@ -1198,7 +1385,7 @@ web-graph {
 
 	& .graph-adjust-commit-count {
 		display: flex;
-		width: calc(100vw - var(--graph-column-scrollbar-thickness));
+		width: calc(100cqw - var(--graph-column-scrollbar-thickness));
 		align-items: center;
 		justify-content: center;
 	}
@@ -1207,11 +1394,45 @@ web-graph {
 		margin-left: 2px;
 	}
 
+	& .wip-stats-pill {
+		background-color: color-mix(
+			in srgb,
+			var(--vscode-sideBarSectionHeader-background) 90%,
+			var(--vscode-foreground) 10%
+		);
+		border: 1px solid
+			color-mix(in srgb, var(--vscode-sideBarSectionHeader-border) 100%, var(--vscode-foreground) 70%) !important;
+		border-radius: 0.4rem;
+		font-weight: 600;
+
+		& .graph-icon {
+			font-weight: 600;
+		}
+	}
+
+	/* Package default selector chain is 5 classes; `!important` is the simplest reliable beat. */
+	& .wip-stats-pill__item--added {
+		color: var(--gl-stat-added) !important;
+	}
+	& .wip-stats-pill__item--modified {
+		color: var(--gl-stat-modified) !important;
+	}
+	& .wip-stats-pill__item--deleted {
+		color: var(--gl-stat-removed) !important;
+	}
+	& .wip-stats-pill__check {
+		color: var(--gl-stat-added) !important;
+	}
+
 	// Graph footer styles
 	& .graph-footer__message {
 		color: var(--vscode-descriptionForeground);
 		font-size: 1.2rem;
 		font-style: italic;
+	}
+
+	& .graph-footer__message + .graph-footer__link {
+		margin-left: 0.5rem;
 	}
 
 	& .graph-footer__link {
@@ -1293,6 +1514,8 @@ web-graph {
 		flex: 1;
 		overflow: hidden;
 		z-index: 0;
+		border: 1px solid transparent;
+		border-color: var(--vscode-sideBarSectionHeader-border, transparent);
 	}
 
 	&__panes {
@@ -1300,39 +1523,493 @@ web-graph {
 	}
 
 	&__graph-pane {
-		display: grid;
-		grid-template-columns: min-content 1fr;
-		grid-template-rows: auto 1fr;
-		grid-template-areas: 'minimap minimap' 'sidebar main';
+		display: flex;
+		flex-direction: column;
 		height: 100%;
 		overflow: hidden;
-
-		gl-graph-minimap-container {
-			grid-area: minimap;
-		}
-
-		gl-graph-sidebar {
-			grid-area: sidebar;
-		}
-
-		gl-graph-wrapper {
-			grid-area: main;
-		}
 	}
 
-	&__sidebar-split {
-		grid-area: main;
+	&__graph-pane-body {
+		display: flex;
+		flex: 1;
+		min-height: 0;
+		overflow: hidden;
+
+		gl-graph-sidebar {
+			flex: none;
+		}
+
+		.graph__sidebar-split,
+		.graph__graph-content {
+			flex: 1;
+			min-width: 0;
+		}
+
+		// Outer-document override of `:host { display: grid }` / `display: flex` —
+		// guarantees the graph subtree hides when timeline mode mounts a sibling.
+		.graph__sidebar-split[hidden],
+		.graph__graph-content[hidden] {
+			display: none !important;
+		}
 	}
 
 	&__graph-content {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
 		height: 100%;
+		overflow: hidden;
 		position: relative;
 		z-index: 0;
+
+		// display: flex overrides the UA [hidden] rule; re-assert it.
+		&[hidden] {
+			display: none;
+		}
+
+		gl-graph-minimap-container {
+			position: relative;
+			// Above the gitkraken-components graph internals, which use z-indexes up to 16 —
+			// ensures the minimap's Billboard.js tooltips and settings popover render over the graph.
+			z-index: 100;
+		}
+
+		.graph__minimap-split {
+			flex: 1;
+			min-height: 0;
+		}
+
+		.graph__graph-column {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			min-height: 0;
+			height: 100%;
+			overflow: hidden;
+		}
+
+		// Light DOM custom elements default to display:inline — force block for flex sizing
+		gl-graph-wrapper,
+		gl-graph-wrapper > gl-graph {
+			display: block;
+			height: 100%;
+		}
+
+		gl-graph-wrapper {
+			flex: 1;
+			min-height: 0;
+			overflow: hidden;
+		}
 	}
 	&__graph-root {
 		width: 100%;
 		height: 100%;
 	}
+
+	&__details-pane {
+		// Provide the CSS variables that details-base.scss normally sets on :root
+		--gitlens-gutter-width: 20px;
+		--gitlens-scrollbar-gutter-width: 10px;
+		--gitlens-tree-foreground: var(--vscode-sideBar-foreground, var(--vscode-foreground));
+
+		height: 100%;
+		overflow: hidden;
+		background-color: var(--vscode-sideBar-background, var(--color-background));
+		color: var(--vscode-sideBar-foreground, var(--color-foreground));
+		display: flex;
+		flex-direction: column;
+		font-size: var(--font-size);
+
+		.graph__details-split[orientation='horizontal'] & {
+			border-left: 1px solid var(--vscode-sideBar-border);
+		}
+
+		.graph__details-split[orientation='vertical'] & {
+			border-top: 1px solid var(--vscode-sideBar-border);
+		}
+
+		gl-graph-details-panel {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			min-height: 0;
+			overflow: hidden;
+			position: relative;
+		}
+
+		// Single accent for both modes — the title verb ("Composing Changes" / "Reviewing
+		// Changes"), the chip icon (wand / checklist), and the active-state chip together
+		// carry mode identity, so color is redundant. Using one accent unifies the visual
+		// vocabulary. `--color-highlight` is GitLens's brand accent (wraps the VS Code button
+		// background), with `--vscode-focusBorder` as a safety fallback.
+		gl-graph-details-panel[data-mode='compose'],
+		gl-graph-details-panel[data-mode='review'] {
+			--mode-accent: var(--color-highlight, var(--vscode-focusBorder));
+		}
+
+		// Override graph-column scrollbar thickness for the details pane
+		--graph-column-scrollbar-thickness: 10px;
+
+		// Non-scrolling wrapper that anchors the compare sheet's positioning to the visible
+		// viewport — `.details-content` itself scrolls, so an absolutely-positioned sheet inside
+		// it would scroll along with the content. Hosting the sheet as a sibling of
+		// `.details-content` keeps the sheet header pinned to the top of the panel.
+		.details-host {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			min-height: 0;
+			position: relative;
+			overflow: hidden;
+		}
+
+		.details-content {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			min-height: 0;
+			overflow-y: auto;
+			scrollbar-gutter: auto;
+			position: relative;
+			border-color: transparent;
+			transition: border-color 1s linear;
+		}
+
+		// Commit box pinned to the bottom of the scrolling area so it stays visible while the
+		// file list scrolls behind it. The host has no background of its own — supply one here
+		// to obscure files scrolling past. Matches both the no-agents case (commit-box is a
+		// direct child of .details-content) and the agents case (commit-box sits inside
+		// .agent-status-split__bottom, which is itself inside .details-content).
+		.details-content gl-commit-box {
+			position: sticky;
+			bottom: 0;
+			z-index: 1;
+			background-color: var(--vscode-sideBar-background, var(--vscode-editor-background));
+		}
+
+		&:hover .details-content,
+		&:focus-within .details-content {
+			border-color: var(--vscode-scrollbarSlider-background);
+			transition: none;
+		}
+
+		gl-details-commit-panel,
+		gl-details-wip-panel,
+		gl-details-multicommit-panel,
+		gl-details-review-mode-panel,
+		gl-details-compose-mode-panel {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			min-height: 0;
+			overflow: visible;
+		}
+
+		// Pinned-compare nested split layout. The host details-content lives in the start slot
+		// and the compare panel lives in the end slot — both sides are siblings of a horizontal
+		// or vertical split, share the panel area, and stay independently scrollable.
+		// `display` is intentionally NOT overridden here — gl-split-panel's shadow CSS sets
+		// `:host { display: grid }` to power position-driven sizing. Override that and the
+		// position attribute silently does nothing and you fall back to 50/50.
+		.compare-pinned-split {
+			flex: 1;
+			min-height: 0;
+		}
+
+		.compare-pinned-split__start,
+		.compare-pinned-split__end {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			min-height: 0;
+			min-width: 0;
+			overflow: hidden;
+		}
+
+		.compare-pinned-host {
+			display: flex;
+			flex-direction: column;
+			flex: 1;
+			min-height: 0;
+			background: var(--vscode-sideBar-background, var(--color-background));
+			border-left: 0.1rem solid var(--vscode-widget-border, var(--color-foreground--25));
+		}
+
+		.compare-pinned-host__header {
+			flex: 0 0 auto;
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 0.8rem;
+			padding: 0.8rem 0.8rem 0.8rem 1.6rem;
+			border-bottom: 0.1rem solid var(--vscode-widget-border, var(--color-foreground--25));
+			min-height: 4.2rem;
+			background: var(--vscode-sideBarSectionHeader-background, var(--vscode-sideBar-background));
+			box-sizing: border-box;
+		}
+
+		.compare-pinned-host__title {
+			flex: 1 1 auto;
+			min-width: 0;
+			font-size: 1.4rem;
+			font-weight: 600;
+			color: var(--vscode-sideBarTitle-foreground, var(--vscode-foreground));
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+		}
+
+		.compare-pinned-host__actions {
+			flex: 0 0 auto;
+			display: inline-flex;
+			align-items: center;
+			gap: 0.2rem;
+		}
+
+		.compare-pinned-host__body {
+			flex: 1 1 auto;
+			min-height: 0;
+			display: flex;
+			flex-direction: column;
+			overflow: hidden;
+		}
+
+		.commit-panel {
+			&__files {
+				display: flex;
+				flex-direction: column;
+				flex: 1;
+				min-height: 100px;
+				overflow: visible;
+			}
+		}
+
+		.agent-status-split {
+			flex: 1;
+			min-height: 0;
+
+			// Auto-size mode (collapsed / partial) caps the agents pane at a fixed 80% — content
+			// in these modes (heading bar or a handful of needs-input cards) almost always lands
+			// well below the cap, so `fit-content` resolves to the natural content height. The
+			// cap matters only in the edge case of many concurrent needs-input cards in partial
+			// mode, where it prevents the auto-peek from completely swallowing the WIP content.
+			// Kept in sync with `AGENT_STATUS_MAX_PCT` in gl-graph-details-panel.ts.
+			&--auto-size:not([dragging]) {
+				--gl-split-panel-start-size: fit-content(80%);
+			}
+
+			// When the agent-status section is showing no cards (collapsed — bar only — or
+			// partial with no needs-input sessions present), force the heading row to its
+			// content height regardless of any previously-dragged position. Without this,
+			// dragging the splitter while cards are visible and then collapsing back to no-cards
+			// leaves the heading floating in a large empty area the size of the user's drag.
+			// The split-panel still preserves `position` internally so the dragged height is
+			// restored when cards reappear.
+			&--no-cards:not([dragging]) {
+				--gl-split-panel-start-size: max-content;
+			}
+
+			// Disabled splitter — drop the divider entirely so collapsed/partial states (where
+			// the agents pane is auto-sized and non-draggable) don't show a hover-affordance
+			// line implying it can be grabbed. `visibility: hidden` (not `display: none`) is
+			// load-bearing — removing the divider from the grid item flow causes auto-placement
+			// to shove the bottom slot into the 0px middle track instead of the 1fr end track,
+			// collapsing the WIP panel.
+			&[disabled]:not([dragging]) {
+				--gl-split-panel-divider-width: 0px;
+			}
+
+			&[disabled]:not([dragging])::part(divider) {
+				visibility: hidden;
+			}
+
+			// Sash gets a 1px line at rest, grows to fill on hover/drag (cf. rebase .conflict-split).
+			&:not([disabled])::part(divider) {
+				background-image: linear-gradient(
+					var(--vscode-sideBarSectionHeader-border, var(--vscode-widget-border)),
+					var(--vscode-sideBarSectionHeader-border, var(--vscode-widget-border))
+				);
+				background-size: 100% 1px;
+				background-position: center;
+				background-repeat: no-repeat;
+				transition: background-color 0.1s ease-out;
+			}
+
+			&:not([disabled])::part(divider):hover,
+			&:not([disabled])[dragging]::part(divider) {
+				background-image: linear-gradient(
+					var(--vscode-sash-hoverBorder, var(--vscode-focusBorder)),
+					var(--vscode-sash-hoverBorder, var(--vscode-focusBorder))
+				);
+				background-size: 100% 100%;
+				transition: background-color 0.1s ease-out 0.2s;
+			}
+
+			&__top {
+				display: flex;
+				flex-direction: column;
+				overflow-y: auto;
+			}
+
+			// Bottom slot is a non-scrolling flex column: the file panel (.commit-panel__files)
+			// fills the available height and scrolls internally via webview-pane's `.content`,
+			// while `gl-commit-box` sits flex-pinned at the bottom — outside the scroll. This is
+			// why files don't disappear "behind" the commit box: they never share a scroll
+			// region with it.
+			&__bottom {
+				display: flex;
+				flex-direction: column;
+				min-height: 0;
+				overflow: hidden;
+			}
+
+			&__bottom .commit-panel__files {
+				display: flex;
+				flex-direction: column;
+				flex: 1;
+				min-height: 0;
+				overflow: hidden;
+			}
+		}
+	}
+}
+
+.graph__details-split {
+	--gl-split-panel-divider-hit-area: var(--vscode-sash-hoverSize, 8px);
+
+	// Keep divider width stable (4px) when disabled so the graph pane width
+	// doesn't shift when selection toggles (e.g. applying a scope clears the
+	// current selection, which disables the split). Suppress interactive
+	// visuals instead of collapsing the track.
+	&[disabled]::part(divider) {
+		pointer-events: none;
+		cursor: default;
+	}
+}
+
+@keyframes details-fade-in {
+	from {
+		opacity: 0;
+		transform: translateX(8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+@keyframes details-fade-in-vertical {
+	from {
+		opacity: 0;
+		transform: translateY(8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.details-opening {
+	animation: details-fade-in 0.2s ease-out;
+	overflow: hidden;
+
+	&.-vertical {
+		animation-name: details-fade-in-vertical;
+	}
+}
+
+@keyframes skeleton-pulse {
+	0%,
+	100% {
+		opacity: 0.15;
+	}
+	50% {
+		opacity: 0.25;
+	}
+}
+
+.details-skeleton {
+	display: flex;
+	flex-direction: column;
+	gap: 1.2rem;
+	padding: 1.2rem;
+
+	&__header {
+		display: flex;
+		align-items: center;
+		gap: 0.8rem;
+	}
+
+	&__avatar {
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		background: var(--color-foreground);
+		animation: skeleton-pulse 1.5s ease-in-out infinite;
+	}
+
+	&__lines {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		flex: 1;
+	}
+
+	&__line {
+		height: 10px;
+		border-radius: 3px;
+		background: var(--color-foreground);
+		animation: skeleton-pulse 1.5s ease-in-out infinite;
+	}
+
+	&__line--short {
+		height: 8px;
+	}
+
+	&__lines > &__line:nth-child(1) {
+		width: 60%;
+	}
+	&__lines > &__line:nth-child(2) {
+		width: 40%;
+	}
+
+	&__body > &__line:nth-child(1) {
+		width: 90%;
+	}
+	&__body > &__line:nth-child(2) {
+		width: 70%;
+	}
+	&__body > &__line:nth-child(3) {
+		width: 50%;
+	}
+
+	&__bar {
+		height: 28px;
+		border-radius: 4px;
+		background: var(--color-foreground);
+		animation: skeleton-pulse 1.5s ease-in-out infinite;
+	}
+
+	&__body {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+}
+
+.details-loading {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2rem 1.2rem;
+	color: var(--vscode-descriptionForeground, var(--color-foreground--50));
+	font-size: 1.2rem;
+}
+
+.details-stale {
+	opacity: 0.85;
+	pointer-events: none;
+	transition: opacity 0.5s ease-out 0.5s;
 }
 
 .graph-row-actions {
@@ -1343,6 +2020,49 @@ web-graph {
 
 	gl-button {
 		height: 100%;
+	}
+
+	// The unpushed indicator IS the Push to Commit action on commits ahead of HEAD's upstream:
+	// a toolbar button colorized with the "ahead" decoration color so it reads as a badge at rest
+	// while staying live and clickable (hover gets the usual toolbar background). The row's
+	// `dynamic: 'interaction'` adornment keeps it present at rest, so no CSS reveal hack is needed.
+	.unpushed-push-button {
+		color: var(--branch-status-ahead-foreground);
+	}
+
+	// Agent indicator — leftmost button on a WIP row when the worktree has at least one
+	// surfacing agent. Color drives both the main `robot` glyph and the suffix modifier so
+	// the dot of color reads as a status badge rather than two unrelated icons. Tokens come
+	// from theme.scss so this stays aligned with gl-details-agent-status, the status pill,
+	// and the WIP file decoration. `--button-gap: 0` collapses the slot gap inside gl-button
+	// so the robot and its phase suffix sit flush, reading as a single status badge rather
+	// than two adjacent icons.
+	.agent-indicator {
+		--agent-indicator-color: inherit;
+		--button-gap: 0;
+		color: var(--agent-indicator-color);
+
+		&--needs-input {
+			--agent-indicator-color: var(--gl-agent-waiting-color);
+		}
+
+		&--working {
+			--agent-indicator-color: var(--gl-agent-working-color);
+		}
+
+		&--idle {
+			--agent-indicator-color: var(--gl-agent-idle-color);
+		}
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
 	}
 }
 

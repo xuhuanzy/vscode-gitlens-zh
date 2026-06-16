@@ -39,7 +39,7 @@ export async function getTags(
 		filter: options?.filter != null ? { tags: options.filter } : undefined,
 		picked: options?.picked,
 		sort: options?.sort != null ? { tags: options.sort } : true,
-	}) as Promise<TagQuickPickItem[]>;
+	});
 }
 
 export async function* inputTagNameStep<

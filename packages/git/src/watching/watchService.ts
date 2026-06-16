@@ -38,7 +38,16 @@ export interface WatchHandle {
 interface SessionRecord {
 	readonly session: RepositoryWatchSession;
 	readonly gitDir: GitDir;
-	readonly watchHooks?: WatchHooks;
+	/**
+	 * Hooks contributed by all current `watch()` callers for this repo path. Earlier
+	 * implementations stored just the first caller's hooks (`WatchHooks | undefined`) and
+	 * silently dropped subsequent callers' hooks — that broke the case where a low-level
+	 * subscriber (e.g. the Graph's secondary-worktree WIP watcher) opened the session
+	 * first without hooks, and a later `Repository.watch()` for the same path lost
+	 * its `markFetched` / `onIgnoresChanged` wiring. Each `watch()` call adds its hooks
+	 * to this set and removes them on dispose; fire sites iterate the set.
+	 */
+	readonly watchHooks: Set<WatchHooks>;
 	refCount: number;
 }
 
@@ -69,6 +78,8 @@ export class RepositoryWatchService implements UnifiedDisposable {
 	private readonly watchGroups = new Map<string, WatchGroup>();
 	private readonly wtWatchers = new Map<string, { watcher: FileWatcher; filter?: GitIgnoreFilter }>();
 	private _disposed = false;
+	/** Global suspend state (driven by window focus); inherited by sessions created via {@link watch}. */
+	private _suspended = false;
 
 	constructor(options: WatchServiceOptions) {
 		this.provider = options.watchingProvider;
@@ -83,6 +94,7 @@ export class RepositoryWatchService implements UnifiedDisposable {
 
 	dispose(): void {
 		if (this._disposed) return;
+
 		this._disposed = true;
 
 		for (const record of this.sessionMap.values()) {
@@ -117,11 +129,15 @@ export class RepositoryWatchService implements UnifiedDisposable {
 		let record = this.sessionMap.get(repoPath);
 		if (record != null) {
 			record.refCount++;
+			if (watchHooks != null) {
+				record.watchHooks.add(watchHooks);
+			}
 		} else {
 			const session = new RepositoryWatchSession({
 				repoPath: repoPath,
 				defaultRepoDelayMs: this.defaultRepoDelayMs,
 				defaultWorkingTreeDelayMs: this.defaultWorkingTreeDelayMs,
+				suspended: this._suspended,
 				lifecycle: {
 					onFirstRepoSubscriber: (): void => {
 						const rec = this.sessionMap.get(repoPath);
@@ -150,10 +166,15 @@ export class RepositoryWatchService implements UnifiedDisposable {
 				},
 			});
 
+			const watchHooksSet = new Set<WatchHooks>();
+			if (watchHooks != null) {
+				watchHooksSet.add(watchHooks);
+			}
+
 			record = {
 				session: session,
 				gitDir: gitDir,
-				watchHooks: watchHooks,
+				watchHooks: watchHooksSet,
 				refCount: 1,
 			};
 			this.sessionMap.set(repoPath, record);
@@ -166,12 +187,16 @@ export class RepositoryWatchService implements UnifiedDisposable {
 			session: sessionRef,
 			dispose: (): void => {
 				if (handleDisposed) return;
+
 				handleDisposed = true;
 
 				const rec = this.sessionMap.get(repoPath);
 				if (rec == null) return;
 
 				rec.refCount--;
+				if (watchHooks != null) {
+					rec.watchHooks.delete(watchHooks);
+				}
 				if (rec.refCount <= 0) {
 					this.sessionMap.delete(repoPath);
 					this.disposeSessionRecord(rec);
@@ -185,15 +210,17 @@ export class RepositoryWatchService implements UnifiedDisposable {
 		return this.sessionMap.get(repoPath)?.session;
 	}
 
-	/** Suspend all sessions */
+	/** Suspend all sessions and mark the service suspended so late-joining sessions start suspended */
 	suspendAll(): void {
+		this._suspended = true;
 		for (const record of this.sessionMap.values()) {
 			record.session.suspend();
 		}
 	}
 
-	/** Resume all sessions, with optional per-session delay */
+	/** Resume all sessions (clearing the global suspend state), with optional per-session delay */
 	resumeAll(getDelay?: (session: RepositoryWatchSession) => number): void {
+		this._suspended = false;
 		for (const record of this.sessionMap.values()) {
 			const delayMs = getDelay?.(record.session);
 			record.session.resume(delayMs);
@@ -229,11 +256,18 @@ export class RepositoryWatchService implements UnifiedDisposable {
 				session.pushRepoChanges(changes);
 			},
 			onFetchHeadChanged: function (repoPath: string): void {
-				watchHooks?.onFetchHeadChanged?.(repoPath);
+				// Iterate at fire time so callers that joined after the group was wired up
+				// still receive events (e.g. a `Repository.watch()` whose hooks landed
+				// after a hookless `GitRepositoryService.watch` registered first).
+				for (const h of watchHooks) {
+					h.onFetchHeadChanged?.(repoPath);
+				}
 			},
 			onIgnoresChanged: (repoPath: string): void => {
 				this.refreshWorkingTreeFilter(repoPath);
-				watchHooks?.onIgnoresChanged?.(repoPath);
+				for (const h of watchHooks) {
+					h.onIgnoresChanged?.(repoPath);
+				}
 			},
 		};
 
@@ -293,7 +327,10 @@ export class RepositoryWatchService implements UnifiedDisposable {
 				if (filter != null) {
 					void filter.refresh();
 				}
-				watchHooks?.onGitIgnoreChanged?.(repoPath);
+				// See `connectToWatchGroup` for the iterate-at-fire-time rationale.
+				for (const h of watchHooks) {
+					h.onGitIgnoreChanged?.(repoPath);
+				}
 				// Don't push .gitignore itself as a working tree change
 				return;
 			}
@@ -341,6 +378,7 @@ function filterWorkingTreePaths(absolutePaths: string[], repoPath: string, filte
 	const result: string[] = [];
 	for (const p of absolutePaths) {
 		if (!isDescendant(p, repoPath)) continue;
+
 		const relativePath = relative(repoPath, p);
 		if (!filter.isIgnored(relativePath)) {
 			result.push(p);

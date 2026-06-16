@@ -2,7 +2,6 @@ import { Logger } from '@gitlens/utils/logger.js';
 import type { Container } from '../container.js';
 import { showGenericErrorMessage } from '../messages.js';
 import { command, executeCommand } from '../system/-webview/command.js';
-import { configuration } from '../system/-webview/configuration.js';
 import type { ComposerCommandArgs, ComposerWebviewShowingArgs } from '../webviews/plus/composer/registration.js';
 import type { WebviewPanelShowCommandArgs } from '../webviews/webviewsController.js';
 import { GlCommandBase } from './commandBase.js';
@@ -30,7 +29,7 @@ export class ComposeCommand extends GlCommandBase {
 				const group = context.scmResourceGroups[0];
 				const uri = group?.resourceStates[0]?.resourceUri;
 				if (uri != null) {
-					const repo = await this.container.git.getOrOpenRepository(uri);
+					const repo = await this.container.git.getOrAddRepository(uri, { opened: false });
 					args.repoPath = repo?.path;
 
 					if (group.id === 'workingTree') {
@@ -53,7 +52,7 @@ export class ComposeCommand extends GlCommandBase {
 		}
 
 		if (args != null) {
-			args.mode = configuration.get('ai.experimental.composer.enabled') ? 'experimental' : 'preview';
+			args.mode = 'preview';
 		}
 
 		return this.execute(args);

@@ -29,6 +29,27 @@ export interface FileShowOptions {
 	readonly preview?: boolean;
 }
 
+/**
+ * Arguments for opening a file set in VS Code's native multi-diff editor.
+ *
+ * `rhs === ''` means the right side is the working tree. The host forces multi-diff
+ * regardless of the `views.openChangesInMultiDiffEditor` setting.
+ *
+ * `wip: true` forces per-file HEAD↔index↔working semantics regardless of `lhs`/`rhs`.
+ * Use when the user is acting on their working tree directly (e.g. WIP details panel,
+ * compare-mode scoped to the WIP pseudo-commit). Default (false/undefined) means the
+ * standard `lhs → rhs` per-file diff; with `rhs === ''` the right side resolves to
+ * the working tree (S&C-style cumulative diff against `lhs`).
+ */
+export interface OpenMultipleChangesArgs {
+	readonly files: readonly GitFileChangeShape[];
+	readonly repoPath: string;
+	readonly lhs: string;
+	readonly rhs: string;
+	readonly wip?: boolean;
+	readonly title?: string;
+}
+
 // ============================================================
 // Serialized Types
 // ============================================================
@@ -145,6 +166,25 @@ export interface AIState {
 		readonly settingEnabled: boolean;
 		readonly installed: boolean;
 	};
+	/** AI hooks state — whether a hook-supporting agent is detected. */
+	readonly hooks: {
+		/** Per-agent Claude hook state from `gk agents list`. `supported` may be false if gkcli is missing. */
+		readonly claude: {
+			readonly detected: boolean;
+			readonly supported: boolean;
+			readonly installed: boolean;
+		};
+		/**
+		 * True when the install action is currently relevant (supported, detected, not yet installed).
+		 * Banners and the integrations-chip "Install" CTA gate on this; the uninstall CTA gates on `claude.installed`.
+		 */
+		readonly canInstallClaudeHook: boolean;
+	};
+	/**
+	 * Currently-selected default coding agent (resolved from `gitlens.ai.defaultAgent`).
+	 * Undefined when no default is set or the persisted agent is not currently available.
+	 */
+	readonly defaultAgent: { readonly id: string; readonly label: string } | undefined;
 }
 
 // ============================================================
@@ -195,6 +235,7 @@ export interface SerializedGitCommit {
 	readonly message: string | undefined;
 	readonly summary: string;
 	readonly stashNumber: string | undefined;
+	readonly stashOnRef: string | undefined;
 	readonly refType: 'revision' | 'stash';
 }
 
@@ -251,13 +292,23 @@ export interface WipStatus {
 }
 
 /**
+ * WIP file change — extends `GitFileChangeShape` with the unresolved conflict-marker count
+ * (when the file is conflicted and the count is known).
+ */
+export interface WipFileChange extends GitFileChangeShape {
+	conflictMarkers?: number;
+}
+
+/**
  * WIP change — branch + repository + changed files.
  * Used by Commit Details for WIP display, and by DraftsService for patch creation.
  */
 export interface WipChange {
 	branchName: string;
 	repository: { name: string; path: string; uri: string };
-	files: GitFileChangeShape[];
+	files: WipFileChange[];
+	hasConflicts?: boolean;
+	pausedOpStatus?: GitPausedOperationStatus;
 }
 
 // ============================================================

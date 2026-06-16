@@ -52,6 +52,14 @@ function nextIpcId() {
 	return `webview:${ipcSequencer.next()}`;
 }
 
+// Stable per-JS-module-evaluation fingerprint. Two readies with the same `clientId` came from the same iframe; two readies
+// with different `clientId`s came from different iframes (VS Code recreated the iframe).
+const _clientId = `wv-${Math.random().toString(36).slice(2, 10)}`;
+const _clientLoadedAt = Date.now();
+export function getWebviewClientInfo(): { clientId: string; clientLoadedAt: number } {
+	return { clientId: _clientId, clientLoadedAt: _clientLoadedAt };
+}
+
 type PendingHandler = (msg: IpcMessage) => void;
 
 @logName(c => `${c.appName}(HostIpc)`)

@@ -800,7 +800,7 @@ export class ComposerApp extends LitElement {
 
 		document.addEventListener('dragleave', e => {
 			// Only clear if we're leaving the document or going to a non-droppable area
-			if (!e.relatedTarget || !(e.relatedTarget as HTMLElement).closest('.composer-container')) {
+			if (!(e.relatedTarget as HTMLElement | null)?.closest('.composer-container')) {
 				this.currentDropTarget = null;
 			}
 		});
@@ -1352,7 +1352,7 @@ export class ComposerApp extends LitElement {
 		if (this.state.generatingCommits) {
 			return this.renderLoadingDialog(
 				'Generating Commits',
-				'Commits are being generated.',
+				this.state.generatingCommitsStatus ?? 'Commits are being generated.',
 				this.handleCancelGenerateCommits,
 			);
 		}
@@ -1675,7 +1675,7 @@ export class ComposerApp extends LitElement {
 							html`<gl-repo-button-group
 								.icon=${false}
 								.repository=${this.state.repositoryState!.current}
-								?hasMultipleRepositories=${this.state.repositoryState!.hasMultipleRepositories}
+								.hasMultipleRepositories=${this.state.repositoryState!.hasMultipleRepositories}
 								@gl-click=${this.onRepositorySelectorClicked}
 							></gl-repo-button-group>`,
 					)}

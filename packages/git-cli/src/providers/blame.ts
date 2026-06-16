@@ -234,6 +234,7 @@ export class BlameGitSubProvider implements GitBlameSubProvider {
 			let blameLine = blame.lines[editorLine];
 			if (blameLine == null) {
 				if (blame.lines.length !== editorLine) return undefined;
+
 				blameLine = blame.lines[editorLine - 1];
 			}
 
@@ -393,7 +394,7 @@ export class BlameGitSubProvider implements GitBlameSubProvider {
 		const { root, file, params, stdin } = await this.buildBlameArgs(repoPath, fileName, options);
 
 		try {
-			return await this.git.exec({ cwd: root, stdin: stdin }, ...params, '--', file);
+			return await this.git.run({ cwd: root, stdin: stdin }, ...params, '--', file);
 		} catch (ex) {
 			// Since `-c blame.ignoreRevsFile=` doesn't work (despite what the docs suggest),
 			// detect the error and throw a more helpful one

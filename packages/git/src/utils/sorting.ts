@@ -46,6 +46,23 @@ export function compareReachableRefs(
 	return 0;
 }
 
+// Hoisted from `compareRefTips` so we don't re-allocate the lookup per sort iteration.
+const refTipTypeOrder = { branch: 0, remote: 1, tag: 2 } as const;
+
+/**
+ * Comparator for `GitRefTip` arrays — local branch < remote branch < tag, tags by version desc.
+ * Mirrors `compareReachableRefs` for the lighter ref-tip shape.
+ */
+export function compareRefTips(a: { type: 'branch' | 'remote' | 'tag'; name: string }, b: typeof a): number {
+	if (a.type !== b.type) {
+		return refTipTypeOrder[a.type] - refTipTypeOrder[b.type];
+	}
+	if (a.type === 'tag') {
+		return compareByVersionDescending(a.name, b.name);
+	}
+	return 0;
+}
+
 export function sortBranches(branches: GitBranch[], options?: BranchSortOptions): GitBranch[] {
 	options = { current: true, groupByType: true, orderBy: 'date:desc', ...options };
 

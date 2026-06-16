@@ -94,25 +94,6 @@ function handleCommitSelected(
 	// Clear stale search metadata when the new selection is not coming from search.
 	state.searchContext.set(event.searchContext);
 
-	// Host requested a specific mode (graph-attached panels only).
-	// Graph Details auto-switches between WIP and commit tabs based on selection.
-	if (event.requestedMode != null && !isPinned) {
-		if (event.requestedMode === 'wip') {
-			if (state.mode.get() !== 'wip') {
-				actions.switchMode('wip');
-			} else {
-				// Already in WIP mode — refetch for potentially different repo
-				void actions.fetchWipState(event.repoPath);
-			}
-			return;
-		}
-
-		// requestedMode === 'commit' — switch from WIP to commit if needed
-		if (state.mode.get() !== 'commit') {
-			actions.switchMode('commit');
-		}
-	}
-
 	// Only fetch when in commit mode — avoids unnecessary network round-trip while in WIP mode
 	if (state.mode.get() === 'commit') {
 		void actions.fetchCommit(event.repoPath, event.sha);

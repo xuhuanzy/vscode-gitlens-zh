@@ -33,12 +33,18 @@ export type GlCommandsDeprecated =
 	| 'gitlens.showFileHistoryInView';
 
 type InternalGraphWebviewCommands =
+	| 'gitlens.deleteBranchOrWorktree:graph'
+	| 'gitlens.git.branch.setMergeTarget:graph'
+	| 'gitlens.mergeIntoCurrent:graph'
+	| 'gitlens.openMergeTargetComparison:graph'
 	| 'gitlens.pausedOperation.abort:graph'
 	| 'gitlens.pausedOperation.continue:graph'
 	| 'gitlens.pausedOperation.open:graph'
 	| 'gitlens.pausedOperation.showConflicts:graph'
 	| 'gitlens.pausedOperation.skip:graph'
-	| 'gitlens.visualizeHistory.repo:graph';
+	| 'gitlens.pushBranch:graph'
+	| 'gitlens.rebaseCurrentOnto:graph'
+	| 'gitlens.shareWipAsCloudPatch:graph';
 
 type InternalHomeWebviewCommands =
 	| 'gitlens.git.branch.setMergeTarget:home'
@@ -74,6 +80,12 @@ type InternalHomeWebviewCommands =
 	| 'gitlens.visualizeHistory.repo:home'
 	| 'gitlens.visualizeHistory.branch:home';
 
+type InternalAgentCommands =
+	| 'gitlens.agents.installClaudeHook'
+	| 'gitlens.agents.uninstallClaudeHook'
+	| 'gitlens.agents.resolvePermission'
+	| 'gitlens.agents.openPlanFile';
+
 type InternalLaunchPadCommands = 'gitlens.launchpad.indicator.action';
 
 type InternalPlusCommands =
@@ -90,6 +102,8 @@ type InternalRebaseEditorCommands = 'gitlens.pausedOperation.showConflicts:rebas
 type InternalScmGroupedViewCommands =
 	| 'gitlens.views.scm.grouped.welcome.dismiss'
 	| 'gitlens.views.scm.grouped.welcome.restore';
+
+type InternalGraphWebviewViewCommands = 'gitlens.views.graph.openTimelineInTab';
 
 type InternalTimelineWebviewViewCommands = 'gitlens.views.timeline.openInTab';
 
@@ -150,6 +164,7 @@ type InternalGlCommands =
 	| 'gitlens.openWorkingFile:command'
 	| 'gitlens.refreshHover'
 	| 'gitlens.regenerateMarkdownDocument'
+	| 'gitlens.runPromptInAgent'
 	| 'gitlens.sendToChat'
 	| 'gitlens.showComposerPage'
 	| 'gitlens.showInCommitGraphView'
@@ -165,7 +180,9 @@ type InternalGlCommands =
 	| 'gitlens.toggleFileHeatmap:mode'
 	| 'gitlens.toggleFileHeatmap:statusbar'
 	| 'gitlens.visualizeHistory'
+	| InternalAgentCommands
 	| InternalGraphWebviewCommands
+	| InternalGraphWebviewViewCommands
 	| InternalHomeWebviewCommands
 	| InternalLaunchPadCommands
 	| InternalPlusCommands
@@ -221,6 +238,15 @@ export type CoreCommands =
 	| 'workbench.action.closePanel'
 	| 'workbench.action.closeWindow'
 	| 'workbench.action.moveEditorToNewWindow'
+	| 'workbench.action.focusFirstEditorGroup'
+	| 'workbench.action.focusSecondEditorGroup'
+	| 'workbench.action.focusThirdEditorGroup'
+	| 'workbench.action.focusFourthEditorGroup'
+	| 'workbench.action.focusFifthEditorGroup'
+	| 'workbench.action.focusSixthEditorGroup'
+	| 'workbench.action.focusSeventhEditorGroup'
+	| 'workbench.action.focusEighthEditorGroup'
+	| 'workbench.action.focusLastEditorGroup'
 	| 'workbench.action.focusRightGroup'
 	| 'workbench.action.nextEditor'
 	| 'workbench.action.newGroupRight'
@@ -228,6 +254,9 @@ export type CoreCommands =
 	| 'workbench.action.openWalkthrough'
 	| 'workbench.action.reopenTextEditor'
 	| 'workbench.action.reopenWithEditor'
+	| 'workbench.action.reloadWindow'
+	| 'workbench.action.terminal.paste'
+	| 'workbench.action.terminal.sendSequence'
 	| 'workbench.action.toggleMaximizedPanel'
 	| 'workbench.action.focusPanel'
 	| 'workbench.action.togglePanel'
@@ -245,13 +274,17 @@ export type CoreCommands =
 	| `${ViewIds}.${'focus' | 'open' | 'removeView' | 'resetViewLocation' | 'toggleVisibility'}`;
 
 export type CoreGitCommands =
+	| 'git.commit'
+	| 'git.commitAmend'
 	| 'git.fetch'
 	| 'git.publish'
 	| 'git.pull'
 	| 'git.pullRebase'
 	| 'git.push'
 	| 'git.pushForce'
-	| 'git.undoCommit';
+	| 'git.stageAll'
+	| 'git.undoCommit'
+	| 'git.unstageAll';
 
 type ExtractSuffix<Prefix extends string, U> = U extends `${Prefix}${infer V}` ? V : never;
 type FilterCommands<Prefix extends string, U, Suffix extends string = ''> = U extends `${Prefix}${infer V}${Suffix}`

@@ -1,7 +1,7 @@
 import type { Disposable } from 'vscode';
 import { Uri, workspace } from 'vscode';
-import type { GitExecOptions, GitResult, GitSpawnOptions } from '@gitlens/git/exec.types.js';
 import type { GitProviderDescriptor } from '@gitlens/git/providers/types.js';
+import type { GitResult, GitRunOptions, GitSpawnOptions } from '@gitlens/git/run.types.js';
 import type { CliGitProvider, CliGitProviderOptions } from '@gitlens/git-cli/cliGitProvider.js';
 import type { GitOptions } from '@gitlens/git-cli/exec/git.js';
 import { Git } from '@gitlens/git-cli/exec/git.js';
@@ -26,11 +26,11 @@ export class VslsGit extends Git {
 		this.localGit = new Git(locator, { isTrusted: () => workspace.isTrusted });
 	}
 
-	override async exec<T extends string | Buffer>(options: GitExecOptions, ...args: any[]): Promise<GitResult<T>> {
+	override async run<T extends string | Buffer>(options: GitRunOptions, ...args: any[]): Promise<GitResult<T>> {
 		if (options.runLocally) {
 			// Since we will have a live share path here, just blank it out
 			options.cwd = '';
-			return this.localGit.exec<T>(options, ...args);
+			return this.localGit.run<T>(options, ...args);
 		}
 
 		const guest = await Container.instance.vsls.guest();
@@ -108,7 +108,7 @@ export class VslsGitProvider extends GlCliGitProvider {
 					continue;
 				}
 
-				result.push(...this.openRepository(undefined, repoUri, gitDir, r.root, r.closed));
+				result.push(...this.addRepository(undefined, repoUri, gitDir, r.root, !r.closed));
 			}
 			return result;
 		} catch (ex) {

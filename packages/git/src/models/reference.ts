@@ -45,3 +45,36 @@ export interface GitTagReference {
 }
 
 export type GitReference = GitBranchReference | GitRevisionReference | GitStashReference | GitTagReference;
+
+/**
+ * Lightweight ref-tip tuple — the minimum needed to map a SHA back to the refs that point at it.
+ * No upstream tracking, ahead/behind, annotation, etc. — use `GitBranch`/`GitTag` for those.
+ */
+export interface GitRefTip {
+	readonly type: 'branch' | 'remote' | 'tag';
+	/** Short name: `main`, `origin/main`, `v1.2.0` */
+	readonly name: string;
+	/** Full refname: `refs/heads/main`, `refs/remotes/origin/main`, `refs/tags/v1.2.0` */
+	readonly fullName: string;
+	/** Tip object SHA. For annotated tags, the peeled commit SHA */
+	readonly sha: string;
+}
+
+/**
+ * Raw parsed `git for-each-ref` record covering every field the unified format emits.
+ * Inapplicable fields come back as empty strings from git (e.g. `upstream` on a tag,
+ * `peeledObjectname` on a branch).
+ */
+export interface RefRecord {
+	current: string;
+	name: string;
+	objectname: string;
+	peeledObjectname: string;
+	upstream: string;
+	upstreamTracking: string;
+	committerDate: string;
+	creatorDate: string;
+	authorDate: string;
+	subject: string;
+	worktreePath?: string;
+}

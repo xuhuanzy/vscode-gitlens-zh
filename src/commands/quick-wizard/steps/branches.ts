@@ -39,7 +39,7 @@ export async function getBranches(
 		filter: options?.filter != null ? { branches: options.filter } : undefined,
 		picked: options?.picked,
 		sort: options?.sort != null ? { branches: options.sort } : true,
-	}) as Promise<BranchQuickPickItem[]>;
+	});
 }
 
 export async function* inputBranchNameStep<

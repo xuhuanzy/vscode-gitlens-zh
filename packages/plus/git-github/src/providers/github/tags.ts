@@ -33,72 +33,71 @@ export class TagsGitSubProvider implements GitTagsSubProvider {
 	): Promise<PagedResult<GitTag>> {
 		if (repoPath == null) return emptyPagedResult;
 
+		const path = repoPath;
+
 		const scope = getScopedLogger();
 
-		const tagsPromise = options?.paging?.cursor
-			? undefined
-			: this.cache.tags.getOrCreate(
-					repoPath,
-					async cancellable => {
-						try {
-							const { metadata, github, session } = await this.provider.ensureRepositoryContext(repoPath);
+		// Compose cache key with cursor so re-loads of the same page hit the cache;
+		// `repoPath` (no suffix) is reserved for the full "all tags" entry.
+		// TODO: `cache.tags` is `PromiseMap<RepoPath, ...>` keyed exactly by repoPath, so
+		// `clearCaches('tags')` / `unregisterRepoPath` will not invalidate composite-key entries.
+		// Acceptable today because tags rarely move during a virtual-repo session, but the entries
+		// leak in memory until provider GC. Long-term: switch to RepoPromiseCacheMap or add prefix-invalidate.
+		const cacheKey = options?.paging?.cursor != null ? `${path}#${options.paging.cursor}` : path;
+		const tagsPromise = this.cache.tags.getOrCreate(
+			cacheKey,
+			async cancellable => {
+				try {
+					const { metadata, github, session } = await this.provider.ensureRepositoryContext(path);
 
-							const tags: GitTag[] = [];
+					const tags: GitTag[] = [];
 
-							let cursor = options?.paging?.cursor;
-							const loadAll = cursor == null;
+					let cursor = options?.paging?.cursor;
+					const loadAll = cursor == null;
 
-							let authoredDate;
-							let committedDate;
+					let authoredDate;
+					let committedDate;
 
-							while (true) {
-								const result = await github.getTags(
-									toTokenInfo(this.provider.authenticationProviderId, session),
-									metadata.repo.owner,
-									metadata.repo.name,
-									{ cursor: cursor },
-								);
+					while (true) {
+						const result = await github.getTags(
+							toTokenInfo(this.provider.authenticationProviderId, session),
+							metadata.repo.owner,
+							metadata.repo.name,
+							{ cursor: cursor },
+						);
 
-								for (const tag of result.values) {
-									authoredDate =
-										tag.target.authoredDate ??
-										tag.target.target?.authoredDate ??
-										tag.target.tagger?.date;
-									committedDate =
-										tag.target.committedDate ??
-										tag.target.target?.committedDate ??
-										tag.target.tagger?.date;
+						for (const tag of result.values) {
+							authoredDate =
+								tag.target.authoredDate ?? tag.target.target?.authoredDate ?? tag.target.tagger?.date;
+							committedDate =
+								tag.target.committedDate ?? tag.target.target?.committedDate ?? tag.target.tagger?.date;
 
-									tags.push(
-										new GitTag(
-											repoPath,
-											tag.name,
-											tag.target.target?.oid ?? tag.target.oid,
-											tag.target.message ?? tag.target.target?.message ?? '',
-											authoredDate != null ? new Date(authoredDate) : undefined,
-											committedDate != null ? new Date(committedDate) : undefined,
-										),
-									);
-								}
-
-								if (!result.paging?.more || !loadAll) return { ...result, values: tags };
-
-								cursor = result.paging.cursor;
-							}
-						} catch (ex) {
-							cancellable.invalidate();
-							scope?.error(ex);
-							debugger;
-
-							return emptyPagedResult;
+							tags.push(
+								new GitTag(
+									path,
+									tag.name,
+									tag.target.target?.oid ?? tag.target.oid,
+									tag.target.message ?? tag.target.target?.message ?? '',
+									authoredDate != null ? new Date(authoredDate) : undefined,
+									committedDate != null ? new Date(committedDate) : undefined,
+								),
+							);
 						}
-					},
-					cancellation,
-				);
 
-		if (tagsPromise == null) {
-			return emptyPagedResult;
-		}
+						if (!result.paging?.more || !loadAll) return { ...result, values: tags };
+
+						cursor = result.paging.cursor;
+					}
+				} catch (ex) {
+					cancellable.invalidate();
+					scope?.error(ex);
+					debugger;
+
+					return emptyPagedResult;
+				}
+			},
+			cancellation,
+		);
 
 		let result = await tagsPromise;
 		if (options?.filter != null) {

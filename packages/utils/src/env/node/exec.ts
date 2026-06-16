@@ -287,6 +287,7 @@ export function run<T extends number | string>(
 								`Non-UTF-8 encoding '${encoding}' requested but no decode function configured`,
 							);
 						}
+
 						stdoutDecoded = await decode(
 							Buffer.from(stdout, 'binary'),
 							encoding ? { encoding: encoding } : undefined,
@@ -311,6 +312,7 @@ export function run<T extends number | string>(
 					if (decode == null) {
 						throw new Error(`Non-UTF-8 encoding '${encoding}' requested but no decode function configured`);
 					}
+
 					resolve(
 						(await decode(
 							Buffer.from(stdout, 'binary'),
@@ -373,8 +375,8 @@ export function runSpawn<T extends string | Buffer>(
 		function getStdio<T>(
 			encoding: BufferEncoding | 'buffer' | string,
 		): { stdout: T; stderr: T } | Promise<{ stdout: T; stderr: T }> {
-			const stdout = Buffer.concat(stdoutBuffers as ReadonlyArray<Uint8Array>);
-			const stderr = Buffer.concat(stderrBuffers as ReadonlyArray<Uint8Array>);
+			const stdout = Buffer.concat(stdoutBuffers);
+			const stderr = Buffer.concat(stderrBuffers);
 			if (encoding === 'utf8' || encoding === 'binary') {
 				return { stdout: stdout.toString(encoding) as T, stderr: stderr.toString(encoding) as T };
 			}

@@ -56,6 +56,14 @@ export interface WebviewProvider<
 	includeEndOfBody?(): string | Promise<string>;
 
 	onReady?(): void | Promise<void>;
+	/**
+	 * Called when the webview iframe sends `core/webview/ready` while the host already considered the controller ready —
+	 * i.e., the iframe was reloaded under us (e.g., panel layout settle, editor-tab webview restored after a window reload).
+	 * The host replays the buffered post-bootstrap IPC log automatically, so providers usually do NOT need to re-push state.
+	 * Use this hook only for things outside the IPC log: re-establishing RPC subscriptions, re-deriving non-IPC state,
+	 * telemetry, or one-shot reconnect side effects.
+	 */
+	onReconnect?(): void | Promise<void>;
 	onRefresh?(force?: boolean): void;
 	onReloaded?(): void;
 	onMessageReceived?(e: IpcMessage): void;
@@ -113,7 +121,7 @@ export interface WebviewHost<ID extends WebviewIds | CustomEditorIds> {
 
 	addPendingIpcNotification(
 		type: IpcNotification<any>,
-		mapping: Map<IpcNotification<any>, () => Promise<boolean>>,
+		mapping: Map<IpcNotification<any>, () => Promise<boolean | void>>,
 		thisArg: any,
 	): void;
 	clearPendingIpcNotifications(): void;

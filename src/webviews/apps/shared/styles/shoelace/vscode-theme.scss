@@ -4,302 +4,342 @@
 @include utils.dark-theme($selectorPrefix: ':root:has(', $selectorPostfix: ')') {
 	// color-scheme: dark;
 
-	--sl-color-red-50: hsl(0 56% 23.9%);
-	--sl-color-red-100: hsl(0.6 60% 33.9%);
-	--sl-color-red-200: hsl(0.9 67.2% 37.1%);
-	--sl-color-red-300: hsl(1.1 71.3% 43.7%);
-	--sl-color-red-400: hsl(1 76% 52.5%);
-	--sl-color-red-500: hsl(0.7 89.6% 57.2%);
-	--sl-color-red-600: hsl(0 98.6% 67.9%);
-	--sl-color-red-700: hsl(0 100% 72.3%);
-	--sl-color-red-800: hsl(0 100% 85.6%);
-	--sl-color-red-900: hsl(0 100% 90.3%);
-	--sl-color-red-950: hsl(0 100% 95.9%);
+	--wa-color-red-50: hsl(0 56% 23.9%);
+	--wa-color-red-100: hsl(0.6 60% 33.9%);
+	--wa-color-red-200: hsl(0.9 67.2% 37.1%);
+	--wa-color-red-300: hsl(1.1 71.3% 43.7%);
+	--wa-color-red-400: hsl(1 76% 52.5%);
+	--wa-color-red-500: hsl(0.7 89.6% 57.2%);
+	--wa-color-red-600: hsl(0 98.6% 67.9%);
+	--wa-color-red-700: hsl(0 100% 72.3%);
+	--wa-color-red-800: hsl(0 100% 85.6%);
+	--wa-color-red-900: hsl(0 100% 90.3%);
+	--wa-color-red-950: hsl(0 100% 95.9%);
 
-	--sl-color-amber-50: hsl(21.9 66.3% 21.1%);
-	--sl-color-amber-100: hsl(21.5 73.6% 29.7%);
-	--sl-color-amber-200: hsl(22.3 77.6% 33.3%);
-	--sl-color-amber-300: hsl(25.4 84.2% 39.6%);
-	--sl-color-amber-400: hsl(31.4 87.4% 46.7%);
-	--sl-color-amber-500: hsl(37 96.6% 48.3%);
-	--sl-color-amber-600: hsl(43.3 100% 53.4%);
-	--sl-color-amber-700: hsl(46.5 100% 61.1%);
-	--sl-color-amber-800: hsl(49.3 100% 73%);
-	--sl-color-amber-900: hsl(51.8 100% 85%);
-	--sl-color-amber-950: hsl(60 100% 94.6%);
+	--wa-color-amber-50: hsl(21.9 66.3% 21.1%);
+	--wa-color-amber-100: hsl(21.5 73.6% 29.7%);
+	--wa-color-amber-200: hsl(22.3 77.6% 33.3%);
+	--wa-color-amber-300: hsl(25.4 84.2% 39.6%);
+	--wa-color-amber-400: hsl(31.4 87.4% 46.7%);
+	--wa-color-amber-500: hsl(37 96.6% 48.3%);
+	--wa-color-amber-600: hsl(43.3 100% 53.4%);
+	--wa-color-amber-700: hsl(46.5 100% 61.1%);
+	--wa-color-amber-800: hsl(49.3 100% 73%);
+	--wa-color-amber-900: hsl(51.8 100% 85%);
+	--wa-color-amber-950: hsl(60 100% 94.6%);
 
-	--sl-color-green-50: hsl(144.3 53.6% 16%);
-	--sl-color-green-100: hsl(143.2 55.4% 23.5%);
-	--sl-color-green-200: hsl(141.5 58.2% 26.3%);
-	--sl-color-green-300: hsl(140.8 64.2% 31.8%);
-	--sl-color-green-400: hsl(140.3 68% 39.2%);
-	--sl-color-green-500: hsl(141.1 64.9% 43%);
-	--sl-color-green-600: hsl(141.6 72.4% 55.2%);
-	--sl-color-green-700: hsl(141.7 82.7% 70.1%);
-	--sl-color-green-800: hsl(141 90.9% 82.1%);
-	--sl-color-green-900: hsl(142 100% 89.1%);
-	--sl-color-green-950: hsl(144 100% 95.5%);
+	--wa-color-green-50: hsl(144.3 53.6% 16%);
+	--wa-color-green-100: hsl(143.2 55.4% 23.5%);
+	--wa-color-green-200: hsl(141.5 58.2% 26.3%);
+	--wa-color-green-300: hsl(140.8 64.2% 31.8%);
+	--wa-color-green-400: hsl(140.3 68% 39.2%);
+	--wa-color-green-500: hsl(141.1 64.9% 43%);
+	--wa-color-green-600: hsl(141.6 72.4% 55.2%);
+	--wa-color-green-700: hsl(141.7 82.7% 70.1%);
+	--wa-color-green-800: hsl(141 90.9% 82.1%);
+	--wa-color-green-900: hsl(142 100% 89.1%);
+	--wa-color-green-950: hsl(144 100% 95.5%);
 }
 
 // raw light color tokens, only referenced in this file
 @include utils.light-theme($selectorPrefix: ':root:has(', $selectorPostfix: ')') {
 	// color-scheme: light;
 
-	--sl-color-red-50: hsl(0 85.7% 97.3%);
-	--sl-color-red-100: hsl(0 93.3% 94.1%);
-	--sl-color-red-200: hsl(0 96.3% 89.4%);
-	--sl-color-red-300: hsl(0 93.5% 81.8%);
-	--sl-color-red-400: hsl(0 90.6% 70.8%);
-	--sl-color-red-500: hsl(0 84.2% 60.2%);
-	--sl-color-red-600: hsl(0 72.2% 50.6%);
-	--sl-color-red-700: hsl(0 73.7% 41.8%);
-	--sl-color-red-800: hsl(0 70% 35.3%);
-	--sl-color-red-900: hsl(0 62.8% 30.6%);
-	--sl-color-red-950: hsl(0 60% 19.6%);
+	--wa-color-red-50: hsl(0 85.7% 97.3%);
+	--wa-color-red-100: hsl(0 93.3% 94.1%);
+	--wa-color-red-200: hsl(0 96.3% 89.4%);
+	--wa-color-red-300: hsl(0 93.5% 81.8%);
+	--wa-color-red-400: hsl(0 90.6% 70.8%);
+	--wa-color-red-500: hsl(0 84.2% 60.2%);
+	--wa-color-red-600: hsl(0 72.2% 50.6%);
+	--wa-color-red-700: hsl(0 73.7% 41.8%);
+	--wa-color-red-800: hsl(0 70% 35.3%);
+	--wa-color-red-900: hsl(0 62.8% 30.6%);
+	--wa-color-red-950: hsl(0 60% 19.6%);
 
-	--sl-color-amber-50: hsl(48 100% 96.1%);
-	--sl-color-amber-100: hsl(48 96.5% 88.8%);
-	--sl-color-amber-200: hsl(48 96.6% 76.7%);
-	--sl-color-amber-300: hsl(45.9 96.7% 64.5%);
-	--sl-color-amber-400: hsl(43.3 96.4% 56.3%);
-	--sl-color-amber-500: hsl(37.7 92.1% 50.2%);
-	--sl-color-amber-600: hsl(32.1 94.6% 43.7%);
-	--sl-color-amber-700: hsl(26 90.5% 37.1%);
-	--sl-color-amber-800: hsl(22.7 82.5% 31.4%);
-	--sl-color-amber-900: hsl(21.7 77.8% 26.5%);
-	--sl-color-amber-950: hsl(22.9 74.1% 16.7%);
+	--wa-color-amber-50: hsl(48 100% 96.1%);
+	--wa-color-amber-100: hsl(48 96.5% 88.8%);
+	--wa-color-amber-200: hsl(48 96.6% 76.7%);
+	--wa-color-amber-300: hsl(45.9 96.7% 64.5%);
+	--wa-color-amber-400: hsl(43.3 96.4% 56.3%);
+	--wa-color-amber-500: hsl(37.7 92.1% 50.2%);
+	--wa-color-amber-600: hsl(32.1 94.6% 43.7%);
+	--wa-color-amber-700: hsl(26 90.5% 37.1%);
+	--wa-color-amber-800: hsl(22.7 82.5% 31.4%);
+	--wa-color-amber-900: hsl(21.7 77.8% 26.5%);
+	--wa-color-amber-950: hsl(22.9 74.1% 16.7%);
 
-	--sl-color-green-50: hsl(138.5 76.5% 96.7%);
-	--sl-color-green-100: hsl(140.6 84.2% 92.5%);
-	--sl-color-green-200: hsl(141 78.9% 85.1%);
-	--sl-color-green-300: hsl(141.7 76.6% 73.1%);
-	--sl-color-green-400: hsl(141.9 69.2% 58%);
-	--sl-color-green-500: hsl(142.1 70.6% 45.3%);
-	--sl-color-green-600: hsl(142.1 76.2% 36.3%);
-	--sl-color-green-700: hsl(142.4 71.8% 29.2%);
-	--sl-color-green-800: hsl(142.8 64.2% 24.1%);
-	--sl-color-green-900: hsl(143.8 61.2% 20.2%);
-	--sl-color-green-950: hsl(144.3 60.7% 12%);
+	--wa-color-green-50: hsl(138.5 76.5% 96.7%);
+	--wa-color-green-100: hsl(140.6 84.2% 92.5%);
+	--wa-color-green-200: hsl(141 78.9% 85.1%);
+	--wa-color-green-300: hsl(141.7 76.6% 73.1%);
+	--wa-color-green-400: hsl(141.9 69.2% 58%);
+	--wa-color-green-500: hsl(142.1 70.6% 45.3%);
+	--wa-color-green-600: hsl(142.1 76.2% 36.3%);
+	--wa-color-green-700: hsl(142.4 71.8% 29.2%);
+	--wa-color-green-800: hsl(142.8 64.2% 24.1%);
+	--wa-color-green-900: hsl(143.8 61.2% 20.2%);
+	--wa-color-green-950: hsl(144.3 60.7% 12%);
 }
 
 // generic semantic tokens
 :root {
-	--sl-color-success-50: var(--sl-color-green-50);
-	--sl-color-success-100: var(--sl-color-green-100);
-	--sl-color-success-200: var(--sl-color-green-200);
-	--sl-color-success-300: var(--sl-color-green-300);
-	--sl-color-success-400: var(--sl-color-green-400);
-	--sl-color-success-500: var(--sl-color-green-500);
-	--sl-color-success-600: var(--sl-color-green-600);
-	--sl-color-success-700: var(--sl-color-green-700);
-	--sl-color-success-800: var(--sl-color-green-800);
-	--sl-color-success-900: var(--sl-color-green-900);
-	--sl-color-success-950: var(--sl-color-green-950);
+	--wa-color-success-50: var(--wa-color-green-50);
+	--wa-color-success-100: var(--wa-color-green-100);
+	--wa-color-success-200: var(--wa-color-green-200);
+	--wa-color-success-300: var(--wa-color-green-300);
+	--wa-color-success-400: var(--wa-color-green-400);
+	--wa-color-success-500: var(--wa-color-green-500);
+	--wa-color-success-600: var(--wa-color-green-600);
+	--wa-color-success-700: var(--wa-color-green-700);
+	--wa-color-success-800: var(--wa-color-green-800);
+	--wa-color-success-900: var(--wa-color-green-900);
+	--wa-color-success-950: var(--wa-color-green-950);
 
-	--sl-color-warning-50: var(--sl-color-amber-50);
-	--sl-color-warning-100: var(--sl-color-amber-100);
-	--sl-color-warning-200: var(--sl-color-amber-200);
-	--sl-color-warning-300: var(--sl-color-amber-300);
-	--sl-color-warning-400: var(--sl-color-amber-400);
-	--sl-color-warning-500: var(--sl-color-amber-500);
-	--sl-color-warning-600: var(--sl-color-amber-600);
-	--sl-color-warning-700: var(--sl-color-amber-700);
-	--sl-color-warning-800: var(--sl-color-amber-800);
-	--sl-color-warning-900: var(--sl-color-amber-900);
-	--sl-color-warning-950: var(--sl-color-amber-950);
+	--wa-color-warning-50: var(--wa-color-amber-50);
+	--wa-color-warning-100: var(--wa-color-amber-100);
+	--wa-color-warning-200: var(--wa-color-amber-200);
+	--wa-color-warning-300: var(--wa-color-amber-300);
+	--wa-color-warning-400: var(--wa-color-amber-400);
+	--wa-color-warning-500: var(--wa-color-amber-500);
+	--wa-color-warning-600: var(--wa-color-amber-600);
+	--wa-color-warning-700: var(--wa-color-amber-700);
+	--wa-color-warning-800: var(--wa-color-amber-800);
+	--wa-color-warning-900: var(--wa-color-amber-900);
+	--wa-color-warning-950: var(--wa-color-amber-950);
 
-	--sl-color-danger-50: var(--sl-color-red-50);
-	--sl-color-danger-100: var(--sl-color-red-100);
-	--sl-color-danger-200: var(--sl-color-red-200);
-	--sl-color-danger-300: var(--sl-color-red-300);
-	--sl-color-danger-400: var(--sl-color-red-400);
-	--sl-color-danger-500: var(--sl-color-red-500);
-	--sl-color-danger-600: var(--sl-color-red-600);
-	--sl-color-danger-700: var(--sl-color-red-700);
-	--sl-color-danger-800: var(--sl-color-red-800);
-	--sl-color-danger-900: var(--sl-color-red-900);
-	--sl-color-danger-950: var(--sl-color-red-950);
+	--wa-color-danger-50: var(--wa-color-red-50);
+	--wa-color-danger-100: var(--wa-color-red-100);
+	--wa-color-danger-200: var(--wa-color-red-200);
+	--wa-color-danger-300: var(--wa-color-red-300);
+	--wa-color-danger-400: var(--wa-color-red-400);
+	--wa-color-danger-500: var(--wa-color-red-500);
+	--wa-color-danger-600: var(--wa-color-red-600);
+	--wa-color-danger-700: var(--wa-color-red-700);
+	--wa-color-danger-800: var(--wa-color-red-800);
+	--wa-color-danger-900: var(--wa-color-red-900);
+	--wa-color-danger-950: var(--wa-color-red-950);
 
-	--sl-color-neutral-50: color-mix(in srgb, var(--vscode-foreground) 5%, var(--vscode-editor-background));
-	--sl-color-neutral-100: color-mix(in srgb, var(--vscode-foreground) 10%, var(--vscode-editor-background));
-	--sl-color-neutral-200: color-mix(in srgb, var(--vscode-foreground) 20%, var(--vscode-editor-background));
-	--sl-color-neutral-300: color-mix(in srgb, var(--vscode-foreground) 30%, var(--vscode-editor-background));
-	--sl-color-neutral-400: color-mix(in srgb, var(--vscode-foreground) 40%, var(--vscode-editor-background));
-	--sl-color-neutral-500: color-mix(in srgb, var(--vscode-foreground) 50%, var(--vscode-editor-background));
-	--sl-color-neutral-600: color-mix(in srgb, var(--vscode-foreground) 60%, var(--vscode-editor-background));
-	--sl-color-neutral-700: color-mix(in srgb, var(--vscode-foreground) 70%, var(--vscode-editor-background));
-	--sl-color-neutral-800: color-mix(in srgb, var(--vscode-foreground) 80%, var(--vscode-editor-background));
-	--sl-color-neutral-900: color-mix(in srgb, var(--vscode-foreground) 90%, var(--vscode-editor-background));
-	--sl-color-neutral-950: color-mix(in srgb, var(--vscode-foreground) 95%, var(--vscode-editor-background));
+	--wa-color-neutral-50: color-mix(in srgb, var(--vscode-foreground) 5%, var(--vscode-editor-background));
+	--wa-color-neutral-100: color-mix(in srgb, var(--vscode-foreground) 10%, var(--vscode-editor-background));
+	--wa-color-neutral-200: color-mix(in srgb, var(--vscode-foreground) 20%, var(--vscode-editor-background));
+	--wa-color-neutral-300: color-mix(in srgb, var(--vscode-foreground) 30%, var(--vscode-editor-background));
+	--wa-color-neutral-400: color-mix(in srgb, var(--vscode-foreground) 40%, var(--vscode-editor-background));
+	--wa-color-neutral-500: color-mix(in srgb, var(--vscode-foreground) 50%, var(--vscode-editor-background));
+	--wa-color-neutral-600: color-mix(in srgb, var(--vscode-foreground) 60%, var(--vscode-editor-background));
+	--wa-color-neutral-700: color-mix(in srgb, var(--vscode-foreground) 70%, var(--vscode-editor-background));
+	--wa-color-neutral-800: color-mix(in srgb, var(--vscode-foreground) 80%, var(--vscode-editor-background));
+	--wa-color-neutral-900: color-mix(in srgb, var(--vscode-foreground) 90%, var(--vscode-editor-background));
+	--wa-color-neutral-950: color-mix(in srgb, var(--vscode-foreground) 95%, var(--vscode-editor-background));
 
-	--sl-color-neutral-0: var(--vscode-editor-background);
-	--sl-color-neutral-1000: var(--vscode-foreground);
+	--wa-color-neutral-0: var(--vscode-editor-background);
+	--wa-color-neutral-1000: var(--vscode-foreground);
 
-	--sl-color-primary-500: var(--vscode-button-background);
-	--sl-color-primary-600: var(--vscode-button-hoverBackground);
+	--wa-color-primary-500: var(--vscode-button-background);
+	--wa-color-primary-600: var(--vscode-button-hoverBackground);
 
-	--sl-border-radius-small: 0.3rem; // 0.1875rem;
-	--sl-border-radius-medium: 0.4rem; // 0.25rem;
-	--sl-border-radius-large: 0.8rem; // 0.5rem;
-	--sl-border-radius-x-large: 1.6rem; // 1rem;
+	--wa-border-radius-small: 0.3rem; // 0.1875rem;
+	--wa-border-radius-medium: 0.4rem; // 0.25rem;
+	--wa-border-radius-large: 0.8rem; // 0.5rem;
+	--wa-border-radius-x-large: 1.6rem; // 1rem;
 
-	--sl-border-radius-circle: 50%;
-	--sl-border-radius-pill: 9999px;
+	--wa-border-radius-circle: 50%;
+	--wa-border-radius-pill: 9999px;
 
-	--sl-shadow-x-small: 0 1px 2px var(--vscode-widget-shadow);
-	--sl-shadow-small: 0 1px 2px var(--vscode-widget-shadow);
-	--sl-shadow-medium: 0 2px 4px var(--vscode-widget-shadow);
-	--sl-shadow-large: 0 2px 8px var(--vscode-widget-shadow);
-	--sl-shadow-x-large: 0 4px 16px var(--vscode-widget-shadow);
+	--wa-shadow-x-small: 0 1px 2px var(--vscode-widget-shadow);
+	--wa-shadow-small: 0 1px 2px var(--vscode-widget-shadow);
+	--wa-shadow-medium: 0 2px 4px var(--vscode-widget-shadow);
+	--wa-shadow-large: 0 2px 8px var(--vscode-widget-shadow);
+	--wa-shadow-x-large: 0 4px 16px var(--vscode-widget-shadow);
 
-	--sl-spacing-3x-small: 0.2rem; // 0.125rem;
-	--sl-spacing-2x-small: 0.4rem; // 0.25rem;
-	--sl-spacing-x-small: 0.8rem; // 0.5rem;
-	--sl-spacing-small: 1.2rem; // 0.75rem;
-	--sl-spacing-medium: 1.6rem; // 1rem;
-	--sl-spacing-large: 2rem; // 1.25rem;
-	--sl-spacing-x-large: 2.8rem; // 1.75rem;
-	--sl-spacing-2x-large: 3.6rem; // 2.25rem;
-	--sl-spacing-3x-large: 4.8rem; // 3rem;
-	--sl-spacing-4x-large: 4.5rem; // 4.5rem;
+	--wa-spacing-3x-small: 0.2rem; // 0.125rem;
+	--wa-spacing-2x-small: 0.4rem; // 0.25rem;
+	--wa-spacing-x-small: 0.8rem; // 0.5rem;
+	--wa-spacing-small: 1.2rem; // 0.75rem;
+	--wa-spacing-medium: 1.6rem; // 1rem;
+	--wa-spacing-large: 2rem; // 1.25rem;
+	--wa-spacing-x-large: 2.8rem; // 1.75rem;
+	--wa-spacing-2x-large: 3.6rem; // 2.25rem;
+	--wa-spacing-3x-large: 4.8rem; // 3rem;
+	--wa-spacing-4x-large: 4.5rem; // 4.5rem;
 
-	--sl-transition-x-slow: 1000ms;
-	--sl-transition-slow: 500ms;
-	--sl-transition-medium: 250ms;
-	--sl-transition-fast: 150ms;
-	--sl-transition-x-fast: 50ms;
+	--wa-transition-x-slow: 1000ms;
+	--wa-transition-slow: 500ms;
+	--wa-transition-medium: 250ms;
+	--wa-transition-fast: 150ms;
+	--wa-transition-x-fast: 50ms;
 
-	--sl-font-mono: var(--vscode-editor-font-family);
-	--sl-font-sans: var(--vscode-font-family);
-	--sl-font-serif: Georgia, 'Times New Roman', serif;
+	--wa-font-mono: var(--vscode-editor-font-family);
+	--wa-font-sans: var(--vscode-font-family);
+	--wa-font-serif: Georgia, 'Times New Roman', serif;
 
-	--sl-font-size-2x-small: calc(var(--vscode-font-size) * 0.625);
-	--sl-font-size-x-small: calc(var(--vscode-font-size) * 0.75);
-	--sl-font-size-small: calc(var(--vscode-font-size) * 0.875);
-	--sl-font-size-medium: calc(var(--vscode-font-size) * 1);
-	--sl-font-size-large: calc(var(--vscode-font-size) * 1.25);
-	--sl-font-size-x-large: calc(var(--vscode-font-size) * 1.5);
-	--sl-font-size-2x-large: calc(var(--vscode-font-size) * 2.25);
-	--sl-font-size-3x-large: calc(var(--vscode-font-size) * 3);
-	--sl-font-size-4x-large: calc(var(--vscode-font-size) * 4.5);
+	--wa-font-size-2x-small: calc(var(--vscode-font-size) * 0.625);
+	--wa-font-size-x-small: calc(var(--vscode-font-size) * 0.75);
+	--wa-font-size-small: calc(var(--vscode-font-size) * 0.875);
+	--wa-font-size-medium: calc(var(--vscode-font-size) * 1);
+	--wa-font-size-large: calc(var(--vscode-font-size) * 1.25);
+	--wa-font-size-x-large: calc(var(--vscode-font-size) * 1.5);
+	--wa-font-size-2x-large: calc(var(--vscode-font-size) * 2.25);
+	--wa-font-size-3x-large: calc(var(--vscode-font-size) * 3);
+	--wa-font-size-4x-large: calc(var(--vscode-font-size) * 4.5);
 
-	--sl-font-weight-light: 300;
-	--sl-font-weight-normal: 400;
-	--sl-font-weight-semibold: 500;
-	--sl-font-weight-bold: 700;
+	--wa-font-weight-light: 300;
+	--wa-font-weight-normal: 400;
+	--wa-font-weight-semibold: 500;
+	--wa-font-weight-bold: 700;
 
-	--sl-letter-spacing-denser: -0.03em;
-	--sl-letter-spacing-dense: -0.015em;
-	--sl-letter-spacing-normal: normal;
-	--sl-letter-spacing-loose: 0.075em;
-	--sl-letter-spacing-looser: 0.15em;
+	--wa-letter-spacing-denser: -0.03em;
+	--wa-letter-spacing-dense: -0.015em;
+	--wa-letter-spacing-normal: normal;
+	--wa-letter-spacing-loose: 0.075em;
+	--wa-letter-spacing-looser: 0.15em;
 
-	--sl-line-height-denser: 1;
-	--sl-line-height-dense: 1.4;
-	--sl-line-height-normal: 1.8;
-	--sl-line-height-loose: 2.2;
-	--sl-line-height-looser: 2.6;
+	--wa-line-height-denser: 1;
+	--wa-line-height-dense: 1.4;
+	--wa-line-height-normal: 1.8;
+	--wa-line-height-loose: 2.2;
+	--wa-line-height-looser: 2.6;
 
-	--sl-focus-ring-color: var(--vscode-focusBorder);
-	--sl-focus-ring-style: solid;
-	--sl-focus-ring-width: 1px;
-	--sl-focus-ring: var(--sl-focus-ring-style) var(--sl-focus-ring-width) var(--sl-focus-ring-color);
-	--sl-focus-ring-offset: 1px;
+	--wa-focus-ring-color: var(--vscode-focusBorder);
+	--wa-focus-ring-style: solid;
+	--wa-focus-ring-width: 1px;
+	--wa-focus-ring: var(--wa-focus-ring-style) var(--wa-focus-ring-width) var(--wa-focus-ring-color);
+	--wa-focus-ring-offset: 1px;
 
-	--sl-button-font-size-small: var(--sl-font-size-x-small);
-	--sl-button-font-size-medium: var(--sl-font-size-small);
-	--sl-button-font-size-large: var(--sl-font-size-medium);
+	--wa-button-font-size-small: var(--wa-font-size-x-small);
+	--wa-button-font-size-medium: var(--wa-font-size-small);
+	--wa-button-font-size-large: var(--wa-font-size-medium);
 
-	--sl-input-height-small: 1.875rem;
-	--sl-input-height-medium: 2.5rem;
-	--sl-input-height-large: 3.125rem;
+	--wa-input-height-small: 1.875rem;
+	--wa-input-height-medium: 2.5rem;
+	--wa-input-height-large: 3.125rem;
 
-	--sl-input-background-color: var(--sl-color-neutral-0);
-	--sl-input-background-color-hover: var(--sl-input-background-color);
-	--sl-input-background-color-focus: var(--sl-input-background-color);
-	--sl-input-background-color-disabled: var(--sl-color-neutral-100);
-	--sl-input-border-color: var(--sl-color-neutral-300);
-	--sl-input-border-color-hover: var(--sl-color-neutral-400);
-	--sl-input-border-color-focus: var(--vscode-focusBorder);
-	--sl-input-border-color-disabled: var(--sl-color-neutral-300);
-	--sl-input-border-width: 1px;
-	--sl-input-required-content: '*';
-	--sl-input-required-content-offset: -2px;
-	--sl-input-required-content-color: var(--sl-input-label-color);
+	--wa-input-background-color: var(--wa-color-neutral-0);
+	--wa-input-background-color-hover: var(--wa-input-background-color);
+	--wa-input-background-color-focus: var(--wa-input-background-color);
+	--wa-input-background-color-disabled: var(--wa-color-neutral-100);
+	--wa-input-border-color: var(--wa-color-neutral-300);
+	--wa-input-border-color-hover: var(--wa-color-neutral-400);
+	--wa-input-border-color-focus: var(--vscode-focusBorder);
+	--wa-input-border-color-disabled: var(--wa-color-neutral-300);
+	--wa-input-border-width: 1px;
+	--wa-input-required-content: '*';
+	--wa-input-required-content-offset: -2px;
+	--wa-input-required-content-color: var(--wa-input-label-color);
 
-	--sl-input-border-radius-small: var(--sl-border-radius-medium);
-	--sl-input-border-radius-medium: var(--sl-border-radius-medium);
-	--sl-input-border-radius-large: var(--sl-border-radius-medium);
+	--wa-input-border-radius-small: var(--wa-border-radius-medium);
+	--wa-input-border-radius-medium: var(--wa-border-radius-medium);
+	--wa-input-border-radius-large: var(--wa-border-radius-medium);
 
-	--sl-input-font-family: var(--sl-font-sans);
-	--sl-input-font-weight: var(--sl-font-weight-normal);
-	--sl-input-font-size-small: var(--sl-font-size-small);
-	--sl-input-font-size-medium: var(--sl-font-size-medium);
-	--sl-input-font-size-large: var(--sl-font-size-large);
-	--sl-input-letter-spacing: var(--sl-letter-spacing-normal);
+	--wa-input-font-family: var(--wa-font-sans);
+	--wa-input-font-weight: var(--wa-font-weight-normal);
+	--wa-input-font-size-small: var(--wa-font-size-small);
+	--wa-input-font-size-medium: var(--wa-font-size-medium);
+	--wa-input-font-size-large: var(--wa-font-size-large);
+	--wa-input-letter-spacing: var(--wa-letter-spacing-normal);
 
-	--sl-input-color: var(--sl-color-neutral-700);
-	--sl-input-color-hover: var(--sl-color-neutral-700);
-	--sl-input-color-focus: var(--sl-color-neutral-700);
-	--sl-input-color-disabled: var(--sl-color-neutral-900);
-	--sl-input-icon-color: var(--sl-color-neutral-500);
-	--sl-input-icon-color-hover: var(--sl-color-neutral-600);
-	--sl-input-icon-color-focus: var(--sl-color-neutral-600);
-	--sl-input-placeholder-color: var(--sl-color-neutral-500);
-	--sl-input-placeholder-color-disabled: var(--sl-color-neutral-600);
-	--sl-input-spacing-small: var(--sl-spacing-small);
-	--sl-input-spacing-medium: var(--sl-spacing-medium);
-	--sl-input-spacing-large: var(--sl-spacing-large);
+	--wa-input-color: var(--wa-color-neutral-700);
+	--wa-input-color-hover: var(--wa-color-neutral-700);
+	--wa-input-color-focus: var(--wa-color-neutral-700);
+	--wa-input-color-disabled: var(--wa-color-neutral-900);
+	--wa-input-icon-color: var(--wa-color-neutral-500);
+	--wa-input-icon-color-hover: var(--wa-color-neutral-600);
+	--wa-input-icon-color-focus: var(--wa-color-neutral-600);
+	--wa-input-placeholder-color: var(--wa-color-neutral-500);
+	--wa-input-placeholder-color-disabled: var(--wa-color-neutral-600);
+	--wa-input-spacing-small: var(--wa-spacing-small);
+	--wa-input-spacing-medium: var(--wa-spacing-medium);
+	--wa-input-spacing-large: var(--wa-spacing-large);
 
-	--sl-input-focus-ring-color: var(--vscode-focusBorder);
-	--sl-input-focus-ring-offset: 0;
+	--wa-input-focus-ring-color: var(--vscode-focusBorder);
+	--wa-input-focus-ring-offset: 0;
 
-	--sl-input-filled-background-color: var(--sl-color-neutral-100);
-	--sl-input-filled-background-color-hover: var(--sl-color-neutral-100);
-	--sl-input-filled-background-color-focus: var(--sl-color-neutral-100);
-	--sl-input-filled-background-color-disabled: var(--sl-color-neutral-100);
-	--sl-input-filled-color: var(--sl-color-neutral-800);
-	--sl-input-filled-color-hover: var(--sl-color-neutral-800);
-	--sl-input-filled-color-focus: var(--sl-color-neutral-700);
-	--sl-input-filled-color-disabled: var(--sl-color-neutral-800);
+	--wa-input-filled-background-color: var(--wa-color-neutral-100);
+	--wa-input-filled-background-color-hover: var(--wa-color-neutral-100);
+	--wa-input-filled-background-color-focus: var(--wa-color-neutral-100);
+	--wa-input-filled-background-color-disabled: var(--wa-color-neutral-100);
+	--wa-input-filled-color: var(--wa-color-neutral-800);
+	--wa-input-filled-color-hover: var(--wa-color-neutral-800);
+	--wa-input-filled-color-focus: var(--wa-color-neutral-700);
+	--wa-input-filled-color-disabled: var(--wa-color-neutral-800);
 
-	--sl-input-label-font-size-small: var(--sl-font-size-small);
-	--sl-input-label-font-size-medium: var(--sl-font-size-medium);
-	--sl-input-label-font-size-large: var(--sl-font-size-large);
-	--sl-input-label-color: inherit;
+	--wa-input-label-font-size-small: var(--wa-font-size-small);
+	--wa-input-label-font-size-medium: var(--wa-font-size-medium);
+	--wa-input-label-font-size-large: var(--wa-font-size-large);
+	--wa-input-label-color: inherit;
 
-	--sl-input-help-text-font-size-small: var(--sl-font-size-x-small);
-	--sl-input-help-text-font-size-medium: var(--sl-font-size-small);
-	--sl-input-help-text-font-size-large: var(--sl-font-size-medium);
-	--sl-input-help-text-color: var(--sl-color-neutral-500);
+	--wa-input-help-text-font-size-small: var(--wa-font-size-x-small);
+	--wa-input-help-text-font-size-medium: var(--wa-font-size-small);
+	--wa-input-help-text-font-size-large: var(--wa-font-size-medium);
+	--wa-input-help-text-color: var(--wa-color-neutral-500);
 
-	--sl-toggle-size-small: 0.875rem;
-	--sl-toggle-size-medium: 1.125rem;
-	--sl-toggle-size-large: 1.375rem;
+	--wa-toggle-size-small: 0.875rem;
+	--wa-toggle-size-medium: 1.125rem;
+	--wa-toggle-size-large: 1.375rem;
 
-	--sl-overlay-background-color: var(--vscode-widget-shadow);
+	--wa-overlay-background-color: var(--vscode-widget-shadow);
 
-	--sl-panel-background-color: var(--vscode-menu-background);
-	--sl-panel-border-color: var(--vscode-menu-border);
-	--sl-panel-border-width: 1px;
+	--wa-panel-background-color: var(--vscode-menu-background);
+	--wa-panel-border-color: var(--vscode-menu-border);
+	--wa-panel-border-width: 1px;
 
-	--sl-tooltip-border-radius: var(--sl-border-radius-small);
-	--sl-tooltip-background-color: var(--color-hover-background);
-	--sl-tooltip-color: var(--color-hover-foreground);
-	--sl-tooltip-font-family: var(--sl-font-sans);
-	--sl-tooltip-font-weight: var(--sl-font-weight-normal);
-	--sl-tooltip-font-size: 12px; //var(--sl-font-size-small);
-	--sl-tooltip-line-height: var(--sl-line-height-dense);
-	--sl-tooltip-padding: var(--sl-spacing-2x-small) var(--sl-spacing-x-small);
-	--sl-tooltip-arrow-size: 6px;
+	--wa-tooltip-border-radius: var(--wa-border-radius-small);
+	--wa-tooltip-background-color: var(--color-hover-background);
+	--wa-tooltip-color: var(--color-hover-foreground);
+	--wa-tooltip-font-family: var(--wa-font-sans);
+	--wa-tooltip-font-weight: var(--wa-font-weight-normal);
+	--wa-tooltip-font-size: 12px; //var(--wa-font-size-small);
+	--wa-tooltip-line-height: var(--wa-line-height-dense);
+	--wa-tooltip-padding: var(--wa-spacing-2x-small) var(--wa-spacing-x-small);
+	--wa-tooltip-arrow-size: 6px;
 	--gl-tooltip-border-color: var(--color-hover-border);
 	--gl-tooltip-shadow: var(--vscode-widget-shadow);
 
-	--sl-z-index-drawer: 700;
-	--sl-z-index-dialog: 800;
-	--sl-z-index-dropdown: 900;
-	--sl-z-index-toast: 950;
-	--sl-z-index-tooltip: 1000;
+	--wa-z-index-drawer: 700;
+	--wa-z-index-dialog: 800;
+	--wa-z-index-dropdown: 900;
+	--wa-z-index-toast: 950;
+	--wa-z-index-tooltip: 1000;
+
+	/* Web Awesome form-control / semantic tokens (in addition to the Shoelace-shaped
+	   tokens above). wa-select, wa-option, wa-slider all reference these — without
+	   these definitions the components fall through to undefined values and render
+	   with no background, no hover state, invisible slider thumbs, etc. */
+	--wa-form-control-background-color: var(--vscode-dropdown-background);
+	--wa-form-control-border-color: var(--vscode-dropdown-border);
+	--wa-form-control-border-radius: 3px;
+	--wa-form-control-border-style: solid;
+	--wa-form-control-border-width: 1px;
+	--wa-form-control-padding-inline: 4px;
+	--wa-form-control-placeholder-color: var(--vscode-input-placeholderForeground);
+	--wa-form-control-value-color: var(--vscode-dropdown-foreground);
+	--wa-form-control-value-font-weight: normal;
+	--wa-form-control-value-line-height: 1.35;
+	--wa-form-control-activated-color: var(--vscode-foreground);
+	--wa-color-focus: var(--vscode-focusBorder);
+	--wa-color-mix-hover: var(--vscode-list-hoverBackground);
+	--wa-color-mix-active: var(--vscode-list-activeSelectionBackground);
+	--wa-color-surface-default: var(--vscode-editor-background);
+	--wa-color-surface-border: var(--vscode-dropdown-border);
+	--wa-color-surface-raised: var(--vscode-dropdown-background);
+	--wa-color-text-normal: var(--vscode-foreground);
+	--wa-color-text-quiet: var(--vscode-descriptionForeground);
+	--wa-color-neutral-fill-normal: var(--vscode-list-hoverBackground);
+	--wa-color-neutral-on-normal: var(--vscode-list-hoverForeground);
+	--wa-color-neutral-fill-quiet: transparent;
+	--wa-color-neutral-on-quiet: var(--vscode-foreground);
+	--wa-color-brand-fill-loud: var(--vscode-list-activeSelectionBackground);
+	--wa-color-brand-on-loud: var(--vscode-list-activeSelectionForeground);
+	--wa-shadow-m: 0 2px 8px rgba(0, 0, 0, 0.15);
+	--wa-border-style: solid;
+	--wa-border-width-s: 1px;
+	--wa-border-radius-m: 3px;
+	--wa-line-height-condensed: 1.35;
+	--wa-font-size-smaller: 0.875em;
+	--wa-font-weight-semibold: 600;
+	--wa-focus-ring-offset: -1px;
+	--wa-focus-ring: 1px solid var(--vscode-focusBorder);
+	--wa-tooltip-content-color: var(--color-hover-foreground);
 }
 
 @supports (scrollbar-gutter: stable) {
@@ -311,7 +351,7 @@
 
 @supports not (scrollbar-gutter: stable) {
 	.sl-scroll-lock body {
-		padding-right: var(--sl-scroll-lock-size) !important;
+		padding-right: var(--wa-scroll-lock-size) !important;
 		overflow: hidden !important;
 	}
 }
@@ -320,7 +360,7 @@
 	position: fixed;
 	top: 0;
 	inset-inline-end: 0;
-	z-index: var(--sl-z-index-toast);
+	z-index: var(--wa-z-index-toast);
 	width: 28rem;
 	max-width: 100%;
 	max-height: 100%;
@@ -328,9 +368,9 @@
 }
 
 .sl-toast-stack sl-alert {
-	margin: var(--sl-spacing-medium);
+	margin: var(--wa-spacing-medium);
 }
 
 .sl-toast-stack sl-alert::part(base) {
-	box-shadow: var(--sl-shadow-large);
+	box-shadow: var(--wa-shadow-large);
 }

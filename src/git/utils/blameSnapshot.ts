@@ -62,7 +62,7 @@ export class BlameSnapshot {
 	private _headHashes: Uint32Array | undefined;
 
 	private _editRecords: EditRecord[] = [];
-	private _createdAt: number = Date.now();
+	private _createdAt: number = performance.now();
 	private _initialMappedCount: number = 0;
 	private _cachedDirtyBlame:
 		| { version: number; blame: GitBlame; lines: readonly string[]; hashes: Uint32Array }
@@ -145,6 +145,7 @@ export class BlameSnapshot {
 					continue;
 				}
 			}
+
 			// Unmapped or uncommitted — use HEAD blame if available
 			if (headBlame != null) {
 				const headLine = headBlame.lines[headIdx];
@@ -356,7 +357,7 @@ export class BlameSnapshot {
 	 * @param minInterval — minimum ms between resets (typically the last blame duration)
 	 */
 	shouldReset(minInterval: number): boolean {
-		const elapsed = Date.now() - this._createdAt;
+		const elapsed = performance.now() - this._createdAt;
 
 		// Throttle: never refresh faster than the last blame took
 		if (elapsed < minInterval) return false;

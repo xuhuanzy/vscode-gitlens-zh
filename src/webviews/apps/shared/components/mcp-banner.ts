@@ -46,6 +46,9 @@ export class GlMcpBanner extends LitElement {
 	@property({ type: Boolean })
 	private canAutoRegister: boolean = false;
 
+	@property({ type: Boolean, attribute: 'can-install-claude-hook' })
+	canInstallClaudeHook: boolean = false;
+
 	@property({ type: Boolean, attribute: 'show-cleanup-notice' })
 	showCleanupNotice: boolean = false;
 
@@ -53,6 +56,10 @@ export class GlMcpBanner extends LitElement {
 		if (this.collapsed) {
 			return nothing;
 		}
+
+		const installClaudeHookHref = this.canInstallClaudeHook
+			? createCommandLink('gitlens.agents.installClaudeHook')
+			: undefined;
 
 		if (this.canAutoRegister) {
 			const cleanupNote = this.showCleanupNotice
@@ -71,6 +78,8 @@ export class GlMcpBanner extends LitElement {
 					primary-button-href="${createCommandLink('gitlens.ai.mcp.selectAgents', {
 						source: this.source,
 					})}"
+					secondary-button=${installClaudeHookHref ? 'Install Claude Hooks' : nothing}
+					secondary-button-href=${installClaudeHookHref ?? nothing}
 					dismissible
 					dismiss-href="${createCommandLink('gitlens.onboarding.dismiss', {
 						id: 'mcp:banner',
@@ -90,6 +99,8 @@ export class GlMcpBanner extends LitElement {
 				body="${bodyHtml}"
 				primary-button="Install GitKraken MCP"
 				primary-button-href="${createCommandLink('gitlens.ai.mcp.install', { source: this.source })}"
+				secondary-button=${installClaudeHookHref ? 'Install Claude Hooks' : nothing}
+				secondary-button-href=${installClaudeHookHref ?? nothing}
 				dismissible
 				dismiss-href="${createCommandLink('gitlens.onboarding.dismiss', {
 					id: 'mcp:banner',

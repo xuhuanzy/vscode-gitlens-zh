@@ -13,6 +13,7 @@ import type { Container } from '../../../container.js';
 import { openComparisonChanges } from '../../../git/actions/commit.js';
 import { getBranchAssociatedPullRequest } from '../../../git/utils/-webview/branch.utils.js';
 import { getCommitAssociatedPullRequest } from '../../../git/utils/-webview/commit.utils.js';
+import { getBestRemoteWithIntegration, getRemoteIntegration } from '../../../git/utils/-webview/remote.utils.js';
 import { executeCommand } from '../../../system/-webview/command.js';
 
 export class PullRequestsService {
@@ -24,8 +25,14 @@ export class PullRequestsService {
 	 * Looks up the commit by SHA and resolves its associated PR
 	 * via the remote integration provider.
 	 */
-	async getPullRequestForCommit(repoPath: string, sha: string): Promise<PullRequestShape | undefined> {
+	async getPullRequestForCommit(
+		repoPath: string,
+		sha: string,
+		signal?: AbortSignal,
+	): Promise<PullRequestShape | undefined> {
+		signal?.throwIfAborted();
 		const pr = await getCommitAssociatedPullRequest(repoPath, sha);
+		signal?.throwIfAborted();
 		return pr != null ? serializePullRequest(pr) : undefined;
 	}
 
@@ -88,16 +95,33 @@ export class PullRequestsService {
 	}
 
 	/**
-	 * Open the pull request details view for the current branch's associated PR.
+	 * Open the pull request details view.
 	 *
-	 * Looks up the current branch in the repository, finds its associated PR,
-	 * and shows it in the Pull Request details view.
+	 * When `prId` and `prProvider` are both provided, resolves the PR directly via the
+	 * matching integration so the correct PR opens regardless of which branch is currently
+	 * checked out. This is the path used by non-WIP PR chips (multicommit, compare,
+	 * single-commit) where the PR is not necessarily on the repo's current branch.
 	 *
-	 * Note: The `prId` and `prProvider` parameters are accepted for interface
-	 * compatibility with the shared actions module but are not currently used —
-	 * the PR is resolved from the repository's current branch instead.
+	 * When either is empty, falls back to resolving via the repo's current branch — the
+	 * legacy behavior preserved for callers that don't have id/provider context (e.g.,
+	 * single-WIP scenarios where the current branch IS the PR's branch).
 	 */
-	async openPullRequestDetails(repoPath: string, _prId: string, _prProvider: string): Promise<void> {
+	async openPullRequestDetails(repoPath: string, prId: string, prProvider: string): Promise<void> {
+		if (prId && prProvider) {
+			const remote = await getBestRemoteWithIntegration(repoPath, {
+				filter: r => r.provider.id === prProvider,
+			});
+			if (remote != null) {
+				const integration = await getRemoteIntegration(remote);
+				const pr = await integration?.getPullRequest(remote.provider.repoDesc, prId);
+				if (pr != null) {
+					void this.container.views.pullRequest.showPullRequest(pr, repoPath);
+					return;
+				}
+			}
+		}
+
+		// Fallback: resolve via the repo's current branch.
 		const repoService = this.container.git.getRepositoryService(repoPath);
 		const status = await repoService.status.getStatus();
 		if (status?.branch == null) return;

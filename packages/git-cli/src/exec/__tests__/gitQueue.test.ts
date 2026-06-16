@@ -15,14 +15,14 @@ suite('GitQueue Test Suite', () => {
 	suite('execute()', () => {
 		test('runs a function and returns its result', async () => {
 			const queue = new GitQueue({ maxConcurrent: 2 });
-			const result = await queue.execute('normal', async () => 42);
+			const result = await queue.run('normal', async () => 42);
 			assert.strictEqual(result, 42);
 		});
 
 		test('propagates errors from the executed function', async () => {
 			const queue = new GitQueue({ maxConcurrent: 2 });
 			await assert.rejects(
-				queue.execute('normal', async () => {
+				queue.run('normal', async () => {
 					throw new Error('boom');
 				}),
 				(err: Error) => {
@@ -36,7 +36,7 @@ suite('GitQueue Test Suite', () => {
 			const queue = new GitQueue();
 			queue.dispose();
 			await assert.rejects(
-				queue.execute('normal', async () => 'should not run'),
+				queue.run('normal', async () => 'should not run'),
 				(err: Error) => {
 					assert.ok(err.message.includes('disposed'));
 					return true;
@@ -53,7 +53,7 @@ suite('GitQueue Test Suite', () => {
 
 			const tasks = Array.from({ length: 5 }, () => {
 				const d = deferred();
-				const task = queue.execute('normal', async () => {
+				const task = queue.run('normal', async () => {
 					running++;
 					maxRunning = Math.max(maxRunning, running);
 					await d.promise;
@@ -88,7 +88,7 @@ suite('GitQueue Test Suite', () => {
 
 			// Fill the single slot
 			const blocker = deferred();
-			const blockerTask = queue.execute('normal', async () => {
+			const blockerTask = queue.run('normal', async () => {
 				await blocker.promise;
 			});
 
@@ -96,13 +96,13 @@ suite('GitQueue Test Suite', () => {
 			await new Promise(r => setTimeout(r, 10));
 
 			// Queue tasks at different priorities (they'll all wait)
-			const bgTask = queue.execute('background', async () => {
+			const bgTask = queue.run('background', async () => {
 				order.push('background');
 			});
-			const normalTask = queue.execute('normal', async () => {
+			const normalTask = queue.run('normal', async () => {
 				order.push('normal');
 			});
-			const interactiveTask = queue.execute('interactive', async () => {
+			const interactiveTask = queue.run('interactive', async () => {
 				order.push('interactive');
 			});
 
@@ -125,7 +125,7 @@ suite('GitQueue Test Suite', () => {
 			for (let i = 0; i < 2; i++) {
 				const d = deferred();
 				deferreds.push(d);
-				void queue.execute('normal', () => d.promise);
+				void queue.run('normal', () => d.promise);
 			}
 
 			await new Promise(r => setTimeout(r, 10));
@@ -133,7 +133,7 @@ suite('GitQueue Test Suite', () => {
 			// At capacity: interactive should still be able to burst
 			let interactiveRan = false;
 			const interactiveDeferred = deferred();
-			const interactiveTask = queue.execute('interactive', async () => {
+			const interactiveTask = queue.run('interactive', async () => {
 				interactiveRan = true;
 				await interactiveDeferred.promise;
 			});
@@ -144,7 +144,7 @@ suite('GitQueue Test Suite', () => {
 			// A second interactive burst slot should also work (burst capacity = 2)
 			let secondInteractiveRan = false;
 			const secondDeferred = deferred();
-			const secondTask = queue.execute('interactive', async () => {
+			const secondTask = queue.run('interactive', async () => {
 				secondInteractiveRan = true;
 				await secondDeferred.promise;
 			});
@@ -154,7 +154,7 @@ suite('GitQueue Test Suite', () => {
 
 			// But normal should be queued (not running)
 			let normalRan = false;
-			const normalTask = queue.execute('normal', async () => {
+			const normalTask = queue.run('normal', async () => {
 				normalRan = true;
 			});
 
@@ -162,7 +162,9 @@ suite('GitQueue Test Suite', () => {
 			assert.ok(!normalRan, 'Normal task should be queued when at burst capacity');
 
 			// Clean up
-			for (const d of deferreds) d.resolve();
+			for (const d of deferreds) {
+				d.resolve();
+			}
 			interactiveDeferred.resolve();
 			secondDeferred.resolve();
 			await Promise.all([interactiveTask, secondTask, normalTask]);
@@ -175,17 +177,17 @@ suite('GitQueue Test Suite', () => {
 
 			// Fill the active slot
 			const blocker = deferred();
-			void queue.execute('normal', () => blocker.promise);
+			void queue.run('normal', () => blocker.promise);
 
 			await new Promise(r => setTimeout(r, 10));
 
 			// Fill the queue to its depth limit
-			void queue.execute('normal', async () => {});
-			void queue.execute('normal', async () => {});
+			void queue.run('normal', async () => {});
+			void queue.run('normal', async () => {});
 
 			// The next one should be rejected
 			await assert.rejects(
-				queue.execute('normal', async () => {}),
+				queue.run('normal', async () => {}),
 				(err: Error) => {
 					assert.ok(err.message.includes('queue is full'));
 					return true;
@@ -203,13 +205,13 @@ suite('GitQueue Test Suite', () => {
 
 			// Fill the active slot
 			const blocker = deferred();
-			void queue.execute('normal', () => blocker.promise);
+			void queue.run('normal', () => blocker.promise);
 
 			await new Promise(r => setTimeout(r, 10));
 
 			// Queue some tasks
-			const task1 = queue.execute('normal', async () => 'task1');
-			const task2 = queue.execute('background', async () => 'task2');
+			const task1 = queue.run('normal', async () => 'task1');
+			const task2 = queue.run('background', async () => 'task2');
 
 			// Dispose should reject queued tasks
 			queue.dispose();
@@ -235,13 +237,13 @@ suite('GitQueue Test Suite', () => {
 
 			// Fill the single slot with a blocking normal task
 			const blocker = deferred();
-			void queue.execute('normal', () => blocker.promise);
+			void queue.run('normal', () => blocker.promise);
 
 			await new Promise(r => setTimeout(r, 10));
 
 			// Queue normal and background tasks (they must wait)
-			void queue.execute('normal', async () => {});
-			void queue.execute('background', async () => {});
+			void queue.run('normal', async () => {});
+			void queue.run('background', async () => {});
 
 			const stats = queue.getStats();
 			// Only the blocker is active; normal and background are queued.
@@ -275,15 +277,183 @@ suite('GitQueue Test Suite', () => {
 			assert.strictEqual(queue.getStats().maxConcurrent, 10);
 		});
 	});
+
+	suite('cancellation', () => {
+		test('rejects immediately when signal is already aborted', async () => {
+			const queue = new GitQueue({ maxConcurrent: 2 });
+			const controller = new AbortController();
+			controller.abort(new Error('pre-aborted'));
+
+			let ran = false;
+			await assert.rejects(
+				queue.run(
+					'normal',
+					async () => {
+						ran = true;
+					},
+					controller.signal,
+				),
+				(err: Error) => {
+					assert.strictEqual(err.message, 'pre-aborted');
+					return true;
+				},
+			);
+			assert.strictEqual(ran, false, 'fn must not run when signal is pre-aborted');
+		});
+
+		test('removes a queued command when its signal aborts before it runs', async () => {
+			const queue = new GitQueue({ maxConcurrent: 1 });
+
+			// Saturate the single slot with a blocking task
+			const blocker = deferred();
+			void queue.run('normal', () => blocker.promise);
+			await new Promise(r => setTimeout(r, 10));
+
+			// Queue a task with an abortable signal
+			const controller = new AbortController();
+			let ran = false;
+			const queuedTask = queue.run(
+				'normal',
+				async () => {
+					ran = true;
+				},
+				controller.signal,
+			);
+
+			// Confirm it's queued
+			assert.strictEqual(queue.getStats().queued.normal, 1);
+
+			// Abort while still queued
+			controller.abort(new Error('cancelled'));
+
+			await assert.rejects(queuedTask, (err: Error) => {
+				assert.strictEqual(err.message, 'cancelled');
+				return true;
+			});
+			assert.strictEqual(ran, false, 'aborted queued task must never run');
+			assert.strictEqual(queue.getStats().queued.normal, 0, 'aborted task must be removed from queue');
+
+			blocker.resolve();
+			await new Promise(r => setTimeout(r, 10));
+		});
+
+		test('does not interrupt a running task when its signal aborts mid-flight', async () => {
+			const queue = new GitQueue({ maxConcurrent: 2 });
+			const controller = new AbortController();
+
+			// Task starts running immediately (capacity available)
+			const taskDeferred = deferred();
+			let ran = false;
+			let aborted = false;
+			const task = queue.run(
+				'normal',
+				async () => {
+					ran = true;
+					await taskDeferred.promise;
+					return 'done';
+				},
+				controller.signal,
+			);
+
+			// Wait for task to start
+			await new Promise(r => setTimeout(r, 10));
+			assert.strictEqual(ran, true);
+
+			// Abort once the task is running — the queue must not interrupt it
+			// (in-flight cancellation is the running operation's responsibility).
+			controller.abort();
+			try {
+				taskDeferred.resolve();
+				const result = await task;
+				assert.strictEqual(result, 'done');
+			} catch {
+				aborted = true;
+			}
+			assert.strictEqual(aborted, false, 'queue must not abort a task that is already running');
+		});
+
+		test('aborting one queued command does not affect siblings', async () => {
+			const queue = new GitQueue({ maxConcurrent: 1 });
+
+			const blocker = deferred();
+			void queue.run('normal', () => blocker.promise);
+			await new Promise(r => setTimeout(r, 10));
+
+			const controllerA = new AbortController();
+			const controllerB = new AbortController();
+			let aRan = false;
+			let bRan = false;
+
+			const taskA = queue.run(
+				'normal',
+				async () => {
+					aRan = true;
+				},
+				controllerA.signal,
+			);
+			const taskB = queue.run(
+				'normal',
+				async () => {
+					bRan = true;
+				},
+				controllerB.signal,
+			);
+
+			assert.strictEqual(queue.getStats().queued.normal, 2);
+
+			// Abort only A
+			controllerA.abort(new Error('only A'));
+			await assert.rejects(taskA);
+			assert.strictEqual(queue.getStats().queued.normal, 1, 'B must remain queued');
+
+			blocker.resolve();
+			await taskB;
+			assert.strictEqual(aRan, false);
+			assert.strictEqual(bRan, true);
+		});
+
+		test('abort listener is detached when a task starts running', async () => {
+			// Sanity check: aborting *after* a task has already dequeued and started running
+			// must not throw or interfere with completion.
+			const queue = new GitQueue({ maxConcurrent: 2 });
+			const controller = new AbortController();
+			const taskDeferred = deferred();
+
+			const task = queue.run(
+				'normal',
+				async () => {
+					await taskDeferred.promise;
+					return 'completed';
+				},
+				controller.signal,
+			);
+
+			// Wait for it to start
+			await new Promise(r => setTimeout(r, 10));
+
+			// Abort after it has dequeued — the listener must already be removed,
+			// so the queue takes no action; the task completes normally.
+			controller.abort();
+			taskDeferred.resolve();
+
+			const result = await task;
+			assert.strictEqual(result, 'completed');
+		});
+	});
 });
 
 suite('inferGitCommandPriority() Test Suite', () => {
-	test('log is background priority', () => {
-		assert.strictEqual(inferGitCommandPriority(['log', '--oneline']), 'background');
+	test('log is normal priority (polymorphic — heavy callers must tag explicitly)', () => {
+		assert.strictEqual(inferGitCommandPriority(['log', '--oneline']), 'normal');
+		assert.strictEqual(inferGitCommandPriority(['log']), 'normal');
+		assert.strictEqual(inferGitCommandPriority(['log', '-1']), 'normal');
+		assert.strictEqual(inferGitCommandPriority(['log', '--all', '--graph']), 'normal');
 	});
 
-	test('rev-list is background priority', () => {
-		assert.strictEqual(inferGitCommandPriority(['rev-list', '--count', 'HEAD']), 'background');
+	test('rev-list is normal priority (polymorphic — heavy callers must tag explicitly)', () => {
+		assert.strictEqual(inferGitCommandPriority(['rev-list', '--count', 'HEAD']), 'normal');
+		assert.strictEqual(inferGitCommandPriority(['rev-list', 'HEAD']), 'normal');
+		assert.strictEqual(inferGitCommandPriority(['rev-list', '-1', 'HEAD']), 'normal');
 	});
 
 	test('for-each-ref is background priority', () => {
@@ -298,6 +468,26 @@ suite('inferGitCommandPriority() Test Suite', () => {
 		assert.strictEqual(inferGitCommandPriority(['reflog', 'show']), 'background');
 	});
 
+	test('name-rev is background priority', () => {
+		assert.strictEqual(inferGitCommandPriority(['name-rev', '--name-only', 'HEAD']), 'background');
+	});
+
+	test('describe is background priority', () => {
+		assert.strictEqual(inferGitCommandPriority(['describe', '--tags']), 'background');
+	});
+
+	test('cherry is background priority', () => {
+		assert.strictEqual(inferGitCommandPriority(['cherry', 'main']), 'background');
+	});
+
+	test('count-objects is background priority', () => {
+		assert.strictEqual(inferGitCommandPriority(['count-objects', '-v']), 'background');
+	});
+
+	test('fsck is background priority', () => {
+		assert.strictEqual(inferGitCommandPriority(['fsck']), 'background');
+	});
+
 	test('commit is normal priority', () => {
 		assert.strictEqual(inferGitCommandPriority(['commit', '-m', 'msg']), 'normal');
 	});
@@ -310,28 +500,73 @@ suite('inferGitCommandPriority() Test Suite', () => {
 		assert.strictEqual(inferGitCommandPriority(['status', '--porcelain']), 'normal');
 	});
 
+	test('merge-base is normal priority', () => {
+		assert.strictEqual(inferGitCommandPriority(['merge-base', 'A', 'B']), 'normal');
+	});
+
+	test('blame is normal priority', () => {
+		assert.strictEqual(inferGitCommandPriority(['blame', 'file.ts']), 'normal');
+	});
+
+	test('ls-files is normal priority', () => {
+		assert.strictEqual(inferGitCommandPriority(['ls-files']), 'normal');
+	});
+
+	test('diff is normal priority', () => {
+		assert.strictEqual(inferGitCommandPriority(['diff', 'HEAD']), 'normal');
+	});
+
+	test('show is normal priority', () => {
+		assert.strictEqual(inferGitCommandPriority(['show', 'HEAD']), 'normal');
+	});
+
 	test('skips -c flag and its value arg to find the real command', () => {
 		// -c key=value is a git global option; the value arg must be skipped
-		assert.strictEqual(inferGitCommandPriority(['-c', 'gc.auto=0', 'log', '--oneline']), 'background');
 		assert.strictEqual(
 			inferGitCommandPriority(['-c', 'color.ui=false', '-c', 'core.quotepath=false', 'for-each-ref']),
 			'background',
 		);
+		assert.strictEqual(inferGitCommandPriority(['-c', 'gc.auto=0', 'shortlog']), 'background');
 		assert.strictEqual(inferGitCommandPriority(['-c', 'merge.autoStash=true', 'push', 'origin']), 'normal');
 	});
 
 	test('skips -C flag and its value arg to find the real command', () => {
 		// -C <path> changes the working directory
-		assert.strictEqual(inferGitCommandPriority(['-C', '/some/path', 'log', '--oneline']), 'background');
+		assert.strictEqual(inferGitCommandPriority(['-C', '/some/path', 'shortlog']), 'background');
+	});
+
+	test('skips --work-tree, --git-dir, --namespace, --super-prefix and their value args', () => {
+		// Separated forms of git global options must consume the next positional as their value
+		assert.strictEqual(inferGitCommandPriority(['--work-tree', '/x', 'shortlog']), 'background');
+		assert.strictEqual(inferGitCommandPriority(['--git-dir', '/x.git', 'reflog']), 'background');
+		assert.strictEqual(inferGitCommandPriority(['--namespace', 'foo', 'for-each-ref']), 'background');
+		assert.strictEqual(inferGitCommandPriority(['--super-prefix', 'sub/', 'name-rev', 'HEAD']), 'background');
+	});
+
+	test('handles =-form global options without consuming an extra arg', () => {
+		// --name=value is a single token; the leading-dash skip covers it
+		assert.strictEqual(inferGitCommandPriority(['--exec-path=/usr/libexec', 'fsck']), 'background');
+		assert.strictEqual(inferGitCommandPriority(['--git-dir=/x.git', 'reflog']), 'background');
+	});
+
+	test('does not consume a value-taking option’s value if it looks like another flag', () => {
+		// peek rule: only consume next arg if it doesn't start with '-'
+		// Here '--foo' is treated as a flag of its own, and the next positional ('shortlog') is the command
+		assert.strictEqual(inferGitCommandPriority(['-c', '--foo', 'shortlog']), 'background');
 	});
 
 	test('skips flag-only leading args', () => {
-		// '--no-pager' starts with '-' so is skipped, 'log' is the command
-		assert.strictEqual(inferGitCommandPriority(['--no-pager', 'log', '--oneline']), 'background');
+		// '--no-pager' starts with '-' so is skipped, 'shortlog' is the command
+		assert.strictEqual(inferGitCommandPriority(['--no-pager', 'shortlog', '-sn']), 'background');
 	});
 
 	test('skips undefined args', () => {
-		assert.strictEqual(inferGitCommandPriority([undefined, 'log']), 'background');
+		assert.strictEqual(inferGitCommandPriority([undefined, 'shortlog']), 'background');
+	});
+
+	test('handles dangling value-taking option at end of args', () => {
+		// The command was found before the dangling '-c'; result is still its priority
+		assert.strictEqual(inferGitCommandPriority(['shortlog', '-c']), 'background');
 	});
 
 	test('returns normal for empty args', () => {

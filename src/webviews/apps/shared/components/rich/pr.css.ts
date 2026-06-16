@@ -10,4 +10,7 @@ export const prIconStyles = css`
 	.pr-icon--merged {
 		color: var(--vscode-gitlens-mergedPullRequestIconColor);
 	}
+	.pr-icon--draft {
+		color: var(--vscode-descriptionForeground);
+	}
 `;

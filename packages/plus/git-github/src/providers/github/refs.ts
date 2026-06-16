@@ -1,9 +1,10 @@
 import type { Cache } from '@gitlens/git/cache.js';
 import type { GitBranch } from '@gitlens/git/models/branch.js';
-import type { GitReference } from '@gitlens/git/models/reference.js';
+import type { GitReference, GitRefTip } from '@gitlens/git/models/reference.js';
 import { deletedOrMissing } from '@gitlens/git/models/revision.js';
 import type { GitTag } from '@gitlens/git/models/tag.js';
 import type { GitRefsSubProvider } from '@gitlens/git/providers/refs.js';
+import type { GitCommandPriority } from '@gitlens/git/run.types.js';
 import { createReference } from '@gitlens/git/utils/reference.utils.js';
 import {
 	createRevisionRange,
@@ -16,7 +17,7 @@ import { toTokenInfo } from '../../api/tokenUtils.js';
 import type { GitHubGitProviderInternal } from '../githubProvider.js';
 
 // Since negative lookbehind isn't supported in all browsers, this leaves out the negative lookbehind condition `(?<!\.lock)` to ensure the branch name doesn't end with `.lock`
-// eslint-disable-next-line no-control-regex
+// oxlint-disable-next-line no-control-regex
 const validBranchOrTagRegex = /^[^/](?!.*\/\.)(?!.*\.\.)(?!.*\/\/)(?!.*@\{)[^\x00-\x1F\x7F ~^:?*[\\]+[^./]$/;
 
 export class RefsGitSubProvider implements GitRefsSubProvider {
@@ -31,32 +32,42 @@ export class RefsGitSubProvider implements GitRefsSubProvider {
 	}
 
 	@debug()
-	async getMergeBase(
+	getMergeBase(
 		repoPath: string,
 		ref1: string,
 		ref2: string,
-		_options?: { forkPoint?: boolean },
+		_options?: { forkPoint?: boolean; priority?: GitCommandPriority },
 		_cancellation?: AbortSignal,
 	): Promise<string | undefined> {
-		if (repoPath == null) return undefined;
+		if (repoPath == null) return Promise.resolve(undefined);
 
-		const scope = getScopedLogger();
+		const a = stripOrigin(ref1);
+		const b = stripOrigin(ref2);
+		// `merge-base` is symmetric, so normalize ref order in the cache key to coalesce
+		// `(A, B)` and `(B, A)` lookups onto a single entry.
+		const [left, right] = a < b ? [a, b] : [b, a];
+		const cacheKey = `${left}...${right}`;
+		const queryRange = createRevisionRange(a, b, '...');
 
-		const { metadata, github, session } = await this.provider.ensureRepositoryContext(repoPath);
+		return this.cache.mergeBase.getOrCreate(repoPath, cacheKey, async () => {
+			const scope = getScopedLogger();
 
-		try {
-			const result = await github.getComparison(
-				toTokenInfo(this.provider.authenticationProviderId, session),
-				metadata.repo.owner,
-				metadata.repo.name,
-				createRevisionRange(stripOrigin(ref1), stripOrigin(ref2), '...'),
-			);
-			return result?.merge_base_commit?.sha;
-		} catch (ex) {
-			scope?.error(ex);
-			debugger;
-			return undefined;
-		}
+			const { metadata, github, session } = await this.provider.ensureRepositoryContext(repoPath);
+
+			try {
+				const result = await github.getComparison(
+					toTokenInfo(this.provider.authenticationProviderId, session),
+					metadata.repo.owner,
+					metadata.repo.name,
+					queryRange,
+				);
+				return result?.merge_base_commit?.sha;
+			} catch (ex) {
+				scope?.error(ex);
+				debugger;
+				return undefined;
+			}
+		});
 	}
 
 	@debug()
@@ -88,6 +99,30 @@ export class RefsGitSubProvider implements GitRefsSubProvider {
 		}
 
 		return createReference(ref, repoPath, { refType: 'revision' });
+	}
+
+	@debug()
+	getRefTips(
+		_repoPath: string,
+		_options?: { include?: ReadonlyArray<'heads' | 'remotes' | 'tags'> },
+		_cancellation?: AbortSignal,
+	): Promise<GitRefTip[]> {
+		// Not implemented for GitHub virtual repos — current consumers (timeline slice-by-branch)
+		// gate this off via `!repo.virtual`. A future implementation can use GraphQL `refs` /
+		// `commit.associatedRefs`.
+		return Promise.resolve([]);
+	}
+
+	@debug()
+	getRefsContainingShas(
+		_repoPath: string,
+		_shas: ReadonlySet<string> | readonly string[],
+		_oldestSha: string,
+		_options?: { include?: ReadonlyArray<'heads' | 'remotes' | 'tags'> },
+		_cancellation?: AbortSignal,
+	): Promise<Map<string, GitRefTip[]>> {
+		// See `getRefTips` — gated off for virtual repos until GraphQL `commit.associatedRefs` lands.
+		return Promise.resolve(new Map<string, GitRefTip[]>());
 	}
 
 	@debug()

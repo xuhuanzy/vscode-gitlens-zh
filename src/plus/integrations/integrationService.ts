@@ -27,6 +27,7 @@ import type { Container } from '../../container.js';
 import { getRemoteIntegration } from '../../git/utils/-webview/remote.utils.js';
 import { executeCommand } from '../../system/-webview/command.js';
 import { configuration } from '../../system/-webview/configuration.js';
+import { loadChunk } from '../../system/-webview/loadChunk.js';
 import { openUrl } from '../../system/-webview/vscode/uris.js';
 import { gate } from '../../system/decorators/gate.js';
 import type { SubscriptionChangeEvent } from '../gk/subscriptionService.js';
@@ -251,6 +252,7 @@ export class IntegrationService implements Disposable {
 
 		if (account == null) {
 			if (code == null) return false;
+
 			await this.container.subscription.loginWithCode({ code: code }, source);
 			account = (await this.container.subscription.getSubscription()).account;
 			if (account == null) return false;
@@ -299,7 +301,7 @@ export class IntegrationService implements Disposable {
 			switch (id) {
 				case GitCloudHostIntegrationId.GitHub:
 					integration = new (
-						await import(/* webpackChunkName: "integrations" */ './providers/github.js')
+						await loadChunk(() => import(/* webpackChunkName: "integrations" */ './providers/github.js'))
 					).GitHubIntegration(
 						this.container,
 						this.authenticationService,
@@ -322,7 +324,9 @@ export class IntegrationService implements Disposable {
 							if (configuredDomain == null) throw new Error(`Domain is required for '${id}' integration`);
 
 							integration = new (
-								await import(/* webpackChunkName: "integrations" */ './providers/github.js')
+								await loadChunk(
+									() => import(/* webpackChunkName: "integrations" */ './providers/github.js'),
+								)
 							).GitHubEnterpriseIntegration(
 								this.container,
 								this.authenticationService,
@@ -341,7 +345,7 @@ export class IntegrationService implements Disposable {
 					}
 
 					integration = new (
-						await import(/* webpackChunkName: "integrations" */ './providers/github.js')
+						await loadChunk(() => import(/* webpackChunkName: "integrations" */ './providers/github.js'))
 					).GitHubEnterpriseIntegration(
 						this.container,
 						this.authenticationService,
@@ -356,7 +360,7 @@ export class IntegrationService implements Disposable {
 					if (domain == null) throw new Error(`Domain is required for '${id}' integration`);
 
 					integration = new (
-						await import(/* webpackChunkName: "integrations" */ './providers/github.js')
+						await loadChunk(() => import(/* webpackChunkName: "integrations" */ './providers/github.js'))
 					).GitHubEnterpriseIntegration(
 						this.container,
 						this.authenticationService,
@@ -369,7 +373,7 @@ export class IntegrationService implements Disposable {
 
 				case GitCloudHostIntegrationId.GitLab:
 					integration = new (
-						await import(/* webpackChunkName: "integrations" */ './providers/gitlab.js')
+						await loadChunk(() => import(/* webpackChunkName: "integrations" */ './providers/gitlab.js'))
 					).GitLabIntegration(
 						this.container,
 						this.authenticationService,
@@ -392,7 +396,9 @@ export class IntegrationService implements Disposable {
 							if (configuredDomain == null) throw new Error(`Domain is required for '${id}' integration`);
 
 							integration = new (
-								await import(/* webpackChunkName: "integrations" */ './providers/gitlab.js')
+								await loadChunk(
+									() => import(/* webpackChunkName: "integrations" */ './providers/gitlab.js'),
+								)
 							).GitLabSelfHostedIntegration(
 								this.container,
 								this.authenticationService,
@@ -411,7 +417,7 @@ export class IntegrationService implements Disposable {
 					}
 
 					integration = new (
-						await import(/* webpackChunkName: "integrations" */ './providers/gitlab.js')
+						await loadChunk(() => import(/* webpackChunkName: "integrations" */ './providers/gitlab.js'))
 					).GitLabSelfHostedIntegration(
 						this.container,
 						this.authenticationService,
@@ -426,7 +432,7 @@ export class IntegrationService implements Disposable {
 					if (domain == null) throw new Error(`Domain is required for '${id}' integration`);
 
 					integration = new (
-						await import(/* webpackChunkName: "integrations" */ './providers/gitlab.js')
+						await loadChunk(() => import(/* webpackChunkName: "integrations" */ './providers/gitlab.js'))
 					).GitLabSelfHostedIntegration(
 						this.container,
 						this.authenticationService,
@@ -439,7 +445,7 @@ export class IntegrationService implements Disposable {
 
 				case GitCloudHostIntegrationId.Bitbucket:
 					integration = new (
-						await import(/* webpackChunkName: "integrations" */ './providers/bitbucket.js')
+						await loadChunk(() => import(/* webpackChunkName: "integrations" */ './providers/bitbucket.js'))
 					).BitbucketIntegration(
 						this.container,
 						this.authenticationService,
@@ -460,7 +466,12 @@ export class IntegrationService implements Disposable {
 							if (configuredDomain == null) throw new Error(`Domain is required for '${id}' integration`);
 
 							integration = new (
-								await import(/* webpackChunkName: "integrations" */ './providers/bitbucket-server.js')
+								await loadChunk(
+									() =>
+										import(
+											/* webpackChunkName: "integrations" */ './providers/bitbucket-server.js'
+										),
+								)
 							).BitbucketServerIntegration(
 								this.container,
 								this.authenticationService,
@@ -478,7 +489,9 @@ export class IntegrationService implements Disposable {
 					}
 
 					integration = new (
-						await import(/* webpackChunkName: "integrations" */ './providers/bitbucket-server.js')
+						await loadChunk(
+							() => import(/* webpackChunkName: "integrations" */ './providers/bitbucket-server.js'),
+						)
 					).BitbucketServerIntegration(
 						this.container,
 						this.authenticationService,
@@ -490,7 +503,9 @@ export class IntegrationService implements Disposable {
 
 				case GitCloudHostIntegrationId.AzureDevOps:
 					integration = new (
-						await import(/* webpackChunkName: "integrations" */ './providers/azureDevOps.js')
+						await loadChunk(
+							() => import(/* webpackChunkName: "integrations" */ './providers/azureDevOps.js'),
+						)
 					).AzureDevOpsIntegration(
 						this.container,
 						this.authenticationService,
@@ -511,7 +526,9 @@ export class IntegrationService implements Disposable {
 							if (configuredDomain == null) throw new Error(`Domain is required for '${id}' integration`);
 
 							integration = new (
-								await import(/* webpackChunkName: "integrations" */ './providers/azureDevOps.js')
+								await loadChunk(
+									() => import(/* webpackChunkName: "integrations" */ './providers/azureDevOps.js'),
+								)
 							).AzureDevOpsServerIntegration(
 								this.container,
 								this.authenticationService,
@@ -529,7 +546,9 @@ export class IntegrationService implements Disposable {
 					}
 
 					integration = new (
-						await import(/* webpackChunkName: "integrations" */ './providers/azureDevOps.js')
+						await loadChunk(
+							() => import(/* webpackChunkName: "integrations" */ './providers/azureDevOps.js'),
+						)
 					).AzureDevOpsServerIntegration(
 						this.container,
 						this.authenticationService,
@@ -541,7 +560,7 @@ export class IntegrationService implements Disposable {
 
 				case IssuesCloudHostIntegrationId.Jira:
 					integration = new (
-						await import(/* webpackChunkName: "integrations" */ './providers/jira.js')
+						await loadChunk(() => import(/* webpackChunkName: "integrations" */ './providers/jira.js'))
 					).JiraIntegration(
 						this.container,
 						this.authenticationService,
@@ -552,7 +571,7 @@ export class IntegrationService implements Disposable {
 
 				case IssuesCloudHostIntegrationId.Linear:
 					integration = new (
-						await import(/* webpackChunkName: "integrations" */ './providers/linear.js')
+						await loadChunk(() => import(/* webpackChunkName: "integrations" */ './providers/linear.js'))
 					).LinearIntegration(
 						this.container,
 						this.authenticationService,
@@ -619,6 +638,7 @@ export class IntegrationService implements Disposable {
 			for (const remote of remotes) {
 				const remoteIntegration = await getRemoteIntegration(remote);
 				if (remoteIntegration == null) continue;
+
 				if (remoteIntegration.id === GitCloudHostIntegrationId.AzureDevOps) {
 					hasOpenAzureRepository = true;
 				}
@@ -783,7 +803,7 @@ export class IntegrationService implements Disposable {
 		cancellation?: CancellationToken,
 		silent?: boolean,
 	): Promise<IntegrationResult<PullRequest[] | undefined>> {
-		const start = Date.now();
+		const start = performance.now();
 
 		const promises: Promise<IntegrationResult<PullRequest[] | undefined>>[] = [];
 		for (const [integration, repos] of integrations) {
@@ -816,7 +836,7 @@ export class IntegrationService implements Disposable {
 		return {
 			value: successfulResults,
 			error: error,
-			duration: Date.now() - start,
+			duration: performance.now() - start,
 		};
 	}
 
@@ -1027,7 +1047,7 @@ export class IntegrationService implements Disposable {
 			const authenticationService = this.authenticationService;
 			async function load() {
 				return new (
-					await import(/* webpackChunkName: "integrations" */ './providers/providersApi.js')
+					await loadChunk(() => import(/* webpackChunkName: "integrations" */ './providers/providersApi.js'))
 				).ProvidersApi(container, authenticationService);
 			}
 
@@ -1092,6 +1112,7 @@ export class IntegrationService implements Disposable {
 				const integrationId = toIntegrationId[p.provider];
 				// GKDev includes some integrations like "google" that we don't support
 				if (integrationId == null) return;
+
 				connectedIntegrations.add(toIntegrationId[p.provider]);
 				if (p.domain?.length > 0) {
 					try {

@@ -34,9 +34,8 @@ export class PrIcon extends LitElement {
 	}
 
 	get classes(): string {
-		if (!this.state || (this.draft && this.state === 'opened')) {
-			return 'pr-icon';
-		}
+		if (this.draft && this.state === 'opened') return 'pr-icon pr-icon--draft';
+		if (!this.state) return 'pr-icon';
 
 		return `pr-icon pr-icon--${this.state}`;
 	}

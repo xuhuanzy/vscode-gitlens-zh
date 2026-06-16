@@ -15,6 +15,7 @@ import { Logger } from '@gitlens/utils/logger.js';
 import type { HomeServices } from '../../home/homeService.js';
 import type { OverviewFilters } from '../../home/protocol.js';
 import { noop } from '../shared/actions/rpc.js';
+import { sortAgentSessions } from '../shared/agentUtils.js';
 import type { LaunchpadService, LaunchpadState } from '../shared/contexts/launchpad.js';
 import type { HomeRootState } from './state.js';
 
@@ -111,6 +112,7 @@ export function populateInitialState(
 	// Secondary data: banners, filters, and content
 	// Note: repositories already set from getInitialContext() above; event-driven updates keep it fresh
 	void home.getWalkthroughProgress().then(w => state.onboarding.walkthroughProgress.set(w), noop);
+	void home.getAgentSessions().then(s => state.home.agentSessions.set(sortAgentSessions(s)), noop);
 	void ai.getState().then(s => state.ai.state.set(s), noop);
 	// Launchpad summary is deferred — fetched when GlLaunchpad mounts (connectedCallback)
 

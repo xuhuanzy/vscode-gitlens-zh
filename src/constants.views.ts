@@ -49,14 +49,7 @@ export const localOnlyGroupedViews: ReadonlySet<GroupableTreeViewTypes> = new Se
 export type WebviewPanelTypes = 'composer' | 'graph' | 'patchDetails' | 'settings' | 'timeline';
 export type WebviewPanelIds = `gitlens.${WebviewPanelTypes}`;
 
-export type WebviewViewTypes =
-	| 'commitDetails'
-	| 'graph'
-	| 'graphDetails'
-	| 'home'
-	| 'patchDetails'
-	| 'timeline'
-	| 'welcome';
+export type WebviewViewTypes = 'commitDetails' | 'graph' | 'home' | 'patchDetails' | 'timeline' | 'welcome';
 export type WebviewViewIds<T extends WebviewViewTypes = WebviewViewTypes> = `gitlens.views.${T}`;
 
 export type WebviewTypes = CustomEditorTypes | WebviewPanelTypes | WebviewViewTypes;
@@ -98,7 +91,6 @@ export type CoreViewContainerIds = `workbench.view.${CoreViewContainerTypes}`;
 // 	'contributors',
 // 	'fileHistory',
 // 	'graph',
-// 	'graphDetails',
 // 	'home',
 // 	'lineHistory',
 // 	'remotes',
@@ -116,7 +108,7 @@ export const viewIdsByDefaultContainerId = new Map<ViewContainerIds | CoreViewCo
 		'workbench.view.scm',
 		['branches', 'commits', 'remotes', 'repositories', 'stashes', 'tags', 'worktrees', 'contributors'],
 	],
-	['workbench.view.extension.gitlensPanel', ['graph', 'graphDetails']],
+	['workbench.view.extension.gitlensPanel', ['graph']],
 	[
 		'workbench.view.extension.gitlensInspect',
 		['commitDetails', 'fileHistory', 'lineHistory', 'timeline', 'searchAndCompare'],

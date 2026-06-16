@@ -131,7 +131,7 @@ function adaptPort(port: import('node:worker_threads').MessagePort): Endpoint {
 			// but for this test the connection lifecycle is managed by close().
 			void listener;
 		},
-	} as unknown as Endpoint;
+	};
 }
 
 /**

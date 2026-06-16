@@ -183,6 +183,10 @@ gl-popover[appearance='menu'] menu-list {
 }
 
 .change-list {
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	min-height: 0;
 	margin-bottom: 1rem;
 }
 
@@ -192,13 +196,13 @@ gl-popover[appearance='menu'] menu-list {
 
 	&__control {
 		flex: 1;
-		border: 1px solid var(--vscode-input-border);
+		border: 1px solid var(--vscode-input-border, transparent);
 		background: var(--vscode-input-background);
 		padding: 0.5rem;
 		font-size: 1.3rem;
 		line-height: 1.4;
 		width: 100%;
-		border-radius: 0.2rem;
+		border-radius: var(--gl-input-border-radius);
 		color: var(--vscode-input-foreground);
 		font-family: inherit;
 

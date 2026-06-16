@@ -143,6 +143,7 @@ export function cancellable<T>(
 				resolver('cancelled');
 				return;
 			}
+
 			const handler = () => resolver('cancelled');
 			cancellation.addEventListener('abort', handler);
 			disposeCancellation = { dispose: () => cancellation.removeEventListener('abort', handler) };
@@ -156,6 +157,7 @@ export function cancellable<T>(
 					resolver('timedout');
 					return;
 				}
+
 				const handler = () => resolver('timedout');
 				timeout.addEventListener('abort', handler);
 				disposeTimeout = { dispose: () => timeout.removeEventListener('abort', handler) };
@@ -587,4 +589,24 @@ export function wait(ms: number): Promise<void> {
 
 export function waitUntilNextTick(): Promise<void> {
 	return new Promise<void>(resolve => queueMicrotask(resolve));
+}
+
+const _schedulerYield = (
+	globalThis as unknown as { scheduler?: { yield?: () => Promise<void> } }
+).scheduler?.yield?.bind((globalThis as any).scheduler);
+const _raf =
+	typeof (globalThis as any).requestAnimationFrame === 'function'
+		? (globalThis as unknown as { requestAnimationFrame?: (callback: (time: number) => void) => number })
+				.requestAnimationFrame
+		: undefined;
+
+export async function yieldToScheduler(): Promise<void> {
+	if (_schedulerYield != null) {
+		await _schedulerYield();
+	} else if (_raf != null) {
+		await new Promise(r => _raf(r));
+	} else {
+		// Node fallback
+		await new Promise(r => setTimeout(r, 0));
+	}
 }

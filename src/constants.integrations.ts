@@ -67,7 +67,7 @@ export const integrationIds = [
 export type SupportedCloudIntegrationIds = (typeof supportedOrderedCloudIntegrationIds)[number];
 
 export function isSupportedCloudIntegrationId(id: IntegrationIds): id is SupportedCloudIntegrationIds {
-	return supportedOrderedCloudIntegrationIds.includes(id as SupportedCloudIntegrationIds);
+	return supportedOrderedCloudIntegrationIds.includes(id);
 }
 
 export function isIntegrationId(id: string): id is IntegrationIds {

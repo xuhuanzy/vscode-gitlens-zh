@@ -67,7 +67,7 @@ function createMockRepo(opts: {
 function createMockContainer(repo: GlRepository | undefined): Container {
 	return {
 		git: {
-			getOrOpenRepository: sinon.stub().resolves(repo),
+			getOrAddRepository: sinon.stub().resolves(repo),
 		},
 	} as unknown as Container;
 }
@@ -87,7 +87,7 @@ function createMockScmResource(
 		resourceUri: opts.uri ?? createMockUri(),
 		type: opts.type,
 		resourceGroupType: opts.resourceGroupType,
-	} as unknown as ScmResource;
+	};
 }
 
 function createMockScmStatesContext(command: string, resources: ScmResource[]): CommandScmStatesContext {

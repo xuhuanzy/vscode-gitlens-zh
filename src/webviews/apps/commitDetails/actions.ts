@@ -21,17 +21,30 @@
  */
 import type { Remote } from '@eamodio/supertalk';
 import type { GitFileChangeShape } from '@gitlens/git/models/fileChange.js';
-import type { PullRequestRefs } from '@gitlens/git/models/pullRequest.js';
+import type { IssueOrPullRequest } from '@gitlens/git/models/issueOrPullRequest.js';
+import type { PullRequestRefs, PullRequestShape } from '@gitlens/git/models/pullRequest.js';
+import type { RemoteResourceType } from '@gitlens/git/models/remoteResource.js';
 import type { GitCommitReachability } from '@gitlens/git/providers/commits.ts';
+import { isUncommitted } from '@gitlens/git/utils/revision.utils.js';
 import { Logger } from '@gitlens/utils/logger.js';
+import { LruMap } from '@gitlens/utils/lruMap.js';
 import { getSettledValue } from '@gitlens/utils/promise.js';
+import type { Autolink } from '../../../autolinks/models/autolinks.js';
 import type { ViewFilesLayout } from '../../../config.js';
 import type { GlExtensionCommands } from '../../../constants.commands.js';
 import type { InspectWebviewTelemetryContext, TelemetryEvents } from '../../../constants.telemetry.js';
 import type { Draft } from '../../../plus/drafts/models/drafts.js';
 import type { CommitDetailsServices, InitialContext } from '../../commitDetails/commitDetailsService.js';
-import type { CommitDetails, FileShowOptions, Mode, Wip, WipChange } from '../../commitDetails/protocol.js';
-import { messageHeadlineSplitterToken } from '../../commitDetails/protocol.js';
+import type {
+	CommitDetails,
+	CommitSignatureShape,
+	FileShowOptions,
+	Mode,
+	Wip,
+	WipChange,
+} from '../../commitDetails/protocol.js';
+import { fetchCommitEnrichment } from '../shared/actions/commitEnrichment.js';
+import type { OpenMultipleChangesArgs } from '../shared/actions/file.js';
 import * as fileActions from '../shared/actions/file.js';
 import * as gitActions from '../shared/actions/git.js';
 import * as prActions from '../shared/actions/pr.js';
@@ -41,9 +54,12 @@ import {
 	fireAndForget,
 	fireRpc,
 	noop,
+	noopUnlessReal,
 	optimisticBatchFireAndForget,
 	optimisticFireAndForget,
 } from '../shared/actions/rpc.js';
+import { NavigationStack } from '../shared/controllers/navigationStack.js';
+import { getRemoteNameFromBranchName } from '../shared/git-utils.js';
 import type { Resource } from '../shared/state/resource.js';
 import type { CreatePatchEventDetail } from './components/gl-inspect-patch.js';
 import type { CommitDetailsState, ExplainState, GenerateState } from './state.js';
@@ -86,13 +102,29 @@ export interface CommitDetailsResources {
 	readonly commit: Resource<CommitDetails | undefined, [string, string]>;
 	readonly wip: Resource<Wip | undefined, [string | undefined]>;
 	readonly reachability: Resource<GitCommitReachability | undefined>;
-	readonly explain: Resource<ExplainState | undefined>;
+	readonly explain: Resource<ExplainState | undefined, [string | undefined]>;
 	readonly generate: Resource<GenerateState | undefined>;
 }
 
 interface FetchCommitOptions {
 	force?: boolean;
 }
+
+/** Per-SHA aggregate of resolved enrichment values. Mirrors the graph-details cache shape:
+ *  `hasPullRequest` / `hasSignature` are sentinels because `undefined` is a valid resolved
+ *  value (commit not signed, no PR), distinguishing "not fetched yet" from "fetched and got nothing". */
+interface CommitEnrichmentCacheEntry {
+	commit?: CommitDetails;
+	autolinks?: Autolink[];
+	formattedMessage?: string;
+	autolinkedIssues?: IssueOrPullRequest[];
+	pullRequest?: PullRequestShape | undefined;
+	signature?: CommitSignatureShape | undefined;
+	hasPullRequest?: boolean;
+	hasSignature?: boolean;
+}
+
+const commitEnrichmentCacheLimit = 32;
 
 // ============================================================
 // CommitDetailsActions Class
@@ -110,11 +142,37 @@ export class CommitDetailsActions {
 	private _wipWatchRepoPath: string | undefined;
 	private _wipWatchUnsubscribe: (() => void) | undefined;
 
+	/** Aborts when a new commit selection arrives — propagates to host-side enrichment RPCs
+	 *  via `signal?.throwIfAborted()` so abandoned work stops at the next checkpoint instead
+	 *  of running to completion + shipping a dead-letter response over the channel. */
+	private _enrichmentController?: AbortController;
+
+	/** SHA-keyed cache of commit shell + chip enrichment. Hydrated synchronously on revisit so
+	 *  chips are visible from t≈0ms instead of flashing through cleared state. Same shape as the
+	 *  graph-details panel's cache. Populated as fetches resolve via the sink in `fetchCommit`. */
+	private readonly _commitEnrichmentCache = new LruMap<string, CommitEnrichmentCacheEntry>(
+		commitEnrichmentCacheLimit,
+	);
+
+	/** Shared back/forward history of visited commits — same controller the graph uses. The
+	 *  onChange callback mirrors derived state into the `navigationStack` signal; recording happens
+	 *  in {@link fetchCommit}. Survives hide/show because the webview is `retainContextWhenHidden`. */
+	private readonly _nav = new NavigationStack<{ sha: string; repoPath: string }>(10, undefined, s =>
+		this.state.navigationStack.set(s),
+	);
+
 	constructor(
 		private readonly state: CommitDetailsState,
 		private readonly services: ResolvedServices,
 		private readonly resources: CommitDetailsResources,
 	) {}
+
+	private resetEnrichment(): AbortSignal {
+		this._enrichmentController?.abort();
+		const controller = new AbortController();
+		this._enrichmentController = controller;
+		return controller.signal;
+	}
 
 	/**
 	 * Cancel all in-flight resource requests.
@@ -160,6 +218,7 @@ export class CommitDetailsActions {
 				unsubscribe();
 				return;
 			}
+
 			this._wipWatchUnsubscribe = unsubscribe;
 		})();
 	}
@@ -190,21 +249,17 @@ export class CommitDetailsActions {
 	// Navigation Actions
 	// ============================================================
 
-	/**
-	 * Navigate back in the commit stack.
-	 * Updates the navigation stack signal from the backend response.
-	 */
+	/** Navigate back to the previously-viewed commit (shared frontend history). */
 	async navigateBack(): Promise<void> {
 		if (this._navigating || !this.state.canNavigateBack.get()) return;
 
+		const target = this._nav.back();
+		if (target == null) return;
+
 		this._navigating = true;
 		try {
-			const result = await this.services.inspect.navigate('back');
-			this.state.navigationStack.set(result.navigationStack);
-			if (result.selectedCommit != null) {
-				this.state.searchContext.set(undefined);
-				await this.fetchCommit(result.selectedCommit.repoPath, result.selectedCommit.sha, { force: true });
-			}
+			this.state.searchContext.set(undefined);
+			await this.fetchCommit(target.repoPath, target.sha, { force: true });
 		} catch (ex) {
 			Logger.error(ex, 'navigate back failed');
 		} finally {
@@ -212,21 +267,17 @@ export class CommitDetailsActions {
 		}
 	}
 
-	/**
-	 * Navigate forward in the commit stack.
-	 * Updates the navigation stack signal from the backend response.
-	 */
+	/** Navigate forward to the next commit in the shared frontend history. */
 	async navigateForward(): Promise<void> {
 		if (this._navigating || !this.state.canNavigateForward.get()) return;
 
+		const target = this._nav.forward();
+		if (target == null) return;
+
 		this._navigating = true;
 		try {
-			const result = await this.services.inspect.navigate('forward');
-			this.state.navigationStack.set(result.navigationStack);
-			if (result.selectedCommit != null) {
-				this.state.searchContext.set(undefined);
-				await this.fetchCommit(result.selectedCommit.repoPath, result.selectedCommit.sha, { force: true });
-			}
+			this.state.searchContext.set(undefined);
+			await this.fetchCommit(target.repoPath, target.sha, { force: true });
 		} catch (ex) {
 			Logger.error(ex, 'navigate forward failed');
 		} finally {
@@ -330,11 +381,50 @@ export class CommitDetailsActions {
 			);
 			return;
 		}
+
 		optimisticFireAndForget(
 			this.state.preferences,
 			{ ...currentPrefs, pullRequestExpanded: expanded },
 			this.services.storage.updateWorkspace('views:commitDetails:pullRequestExpanded', expanded),
 			'update pullRequestExpanded',
+		);
+	}
+
+	updateShowSearchBox(value: boolean): void {
+		const currentPrefs = this.state.preferences.get();
+		if (currentPrefs == null) {
+			fireRpc(
+				this.state.error,
+				this.services.storage.updateWorkspace('views:commitDetails:showSearchBox', value),
+				'update showSearchBox',
+			);
+			return;
+		}
+
+		optimisticFireAndForget(
+			this.state.preferences,
+			{ ...currentPrefs, showSearchBox: value },
+			this.services.storage.updateWorkspace('views:commitDetails:showSearchBox', value),
+			'update showSearchBox',
+		);
+	}
+
+	updateSearchBoxFilter(value: boolean): void {
+		const currentPrefs = this.state.preferences.get();
+		if (currentPrefs == null) {
+			fireRpc(
+				this.state.error,
+				this.services.storage.updateWorkspace('views:commitDetails:searchBoxFilter', value),
+				'update searchBoxFilter',
+			);
+			return;
+		}
+
+		optimisticFireAndForget(
+			this.state.preferences,
+			{ ...currentPrefs, searchBoxFilter: value },
+			this.services.storage.updateWorkspace('views:commitDetails:searchBoxFilter', value),
+			'update searchBoxFilter',
 		);
 	}
 
@@ -391,31 +481,67 @@ export class CommitDetailsActions {
 	fetch(): void {
 		const repoPath = this.getRepoPath();
 		if (!repoPath) return;
+
 		gitActions.fetch(this.services.repository, repoPath);
 	}
 
 	push(): void {
 		const repoPath = this.getRepoPath();
 		if (!repoPath) return;
+
 		gitActions.push(this.services.repository, repoPath);
 	}
 
 	pull(): void {
 		const repoPath = this.getRepoPath();
 		if (!repoPath) return;
-		gitActions.pull(this.services.repository, repoPath);
-	}
 
-	publish(): void {
-		const repoPath = this.getRepoPath();
-		if (!repoPath) return;
-		gitActions.publish(this.services.repository, repoPath);
+		gitActions.pull(this.services.repository, repoPath);
 	}
 
 	switchBranch(): void {
 		const repoPath = this.getRepoPath();
 		if (!repoPath) return;
+
 		gitActions.switchBranch(this.services.repository, repoPath);
+	}
+
+	startWork(): void {
+		void this.services.commands.execute('gitlens.startWork', { source: 'inspect' });
+	}
+
+	createPullRequest(): void {
+		const repoPath = this.getRepoPath();
+		if (!repoPath) return;
+
+		const wip = this.state.wipState.get();
+		const branch = wip?.branch;
+		const upstreamName = branch?.upstream?.name;
+		if (branch?.name == null || upstreamName == null) return;
+
+		void this.services.commands.execute('gitlens.createPullRequestOnRemote', {
+			repoPath: repoPath,
+			compare: branch.name,
+			remote: getRemoteNameFromBranchName(upstreamName),
+		});
+	}
+
+	createBranch(): void {
+		const repoPath = this.getRepoPath();
+		if (!repoPath) return;
+
+		void this.services.repository.createBranch(repoPath);
+	}
+
+	applyStash(): void {
+		const repoPath = this.getRepoPath();
+		if (!repoPath) return;
+
+		void this.services.commands.execute('gitlens.stashesApply', { repoPath: repoPath });
+	}
+
+	createWorktree(): void {
+		void this.services.commands.execute('gitlens.views.createWorktree');
 	}
 
 	stageFile(file: GitFileChangeShape): void {
@@ -426,14 +552,64 @@ export class CommitDetailsActions {
 		gitActions.unstageFile(this.state.error, this.services.repository, file);
 	}
 
+	stageFiles(files: GitFileChangeShape[]): void {
+		gitActions.stageFiles(this.state.error, this.services.repository, files);
+	}
+
+	unstageFiles(files: GitFileChangeShape[]): void {
+		gitActions.unstageFiles(this.state.error, this.services.repository, files);
+	}
+
+	discardFile(file: GitFileChangeShape): void {
+		gitActions.discardFile(this.state.error, this.services.repository, file);
+	}
+
+	discardFiles(files: GitFileChangeShape[]): void {
+		gitActions.discardFiles(this.state.error, this.services.repository, files);
+	}
+
+	stashFile(file: GitFileChangeShape): void {
+		gitActions.stashFile(this.state.error, this.services.repository, file);
+	}
+
+	stashFiles(files: GitFileChangeShape[]): void {
+		gitActions.stashFiles(this.state.error, this.services.repository, files);
+	}
+
+	discardUnstagedFiles(): void {
+		const repoPath = this.getRepoPath();
+		if (!repoPath) return;
+
+		gitActions.discardUnstagedFiles(this.state.error, this.services.repository, repoPath);
+	}
+
+	discardStagedFiles(): void {
+		const repoPath = this.getRepoPath();
+		if (!repoPath) return;
+
+		gitActions.discardStagedFiles(this.state.error, this.services.repository, repoPath);
+	}
+
+	openConflictChanges(file: GitFileChangeShape, side: 'current' | 'incoming'): void {
+		void this.services.repository.openConflictChanges(file, side);
+	}
+
 	// ============================================================
 	// File Actions
 	// ============================================================
 
-	/** Get the current commit SHA for file actions (undefined in WIP mode → uses uncommitted). */
-	private getCurrentRef(): string | undefined {
+	/**
+	 * Get the current commit's ref + whether it's a stash for file actions. WIP mode returns
+	 * undefined so callers fall through the `ref == null` branches (uncommitted path). The
+	 * `stash` flag lets `FilesService` route stash refs through the stash sub-provider (which
+	 * has untracked files in its fileset) instead of `commits.getCommit` (which doesn't).
+	 */
+	private getCurrentRef(): { ref: string; stash?: boolean } | undefined {
 		if (this.state.mode.get() === 'wip') return undefined;
-		return this.state.currentCommit.get()?.sha;
+
+		const commit = this.state.currentCommit.get();
+		if (commit?.sha == null || isUncommitted(commit.sha)) return undefined;
+		return { ref: commit.sha, stash: commit.stashNumber != null };
 	}
 
 	openFile(file: GitFileChangeShape, showOptions?: FileShowOptions): void {
@@ -452,8 +628,16 @@ export class CommitDetailsActions {
 		fileActions.openFileComparePrevious(this.services.files, file, showOptions, this.getCurrentRef());
 	}
 
+	openFileCompareWipChanges(file: GitFileChangeShape, showOptions?: FileShowOptions): void {
+		fileActions.openFileCompareWipChanges(this.services.files, file, showOptions);
+	}
+
 	executeFileAction(file: GitFileChangeShape, showOptions?: FileShowOptions): void {
 		fileActions.executeFileAction(this.services.files, file, showOptions, this.getCurrentRef());
+	}
+
+	openMultipleChanges(args: OpenMultipleChangesArgs): void {
+		fileActions.openMultipleChanges(this.services.files, args);
 	}
 
 	// ============================================================
@@ -466,6 +650,7 @@ export class CommitDetailsActions {
 	executeCommitAction(action: 'graph' | 'more' | 'scm' | 'sha', alt?: boolean): void {
 		const commit = this.state.currentCommit.get();
 		if (!commit) return;
+
 		fireAndForget(
 			this.services.inspect.executeCommitAction(commit.repoPath, commit.sha, action, alt),
 			`commit action: ${action}`,
@@ -477,6 +662,37 @@ export class CommitDetailsActions {
 	 */
 	executeCommand(command: GlExtensionCommands, ...args: unknown[]): void {
 		fireAndForget(this.services.commands.execute(command, ...args), `command: ${command}`);
+	}
+
+	openOnRemote(repoPath: string | undefined, sha: string): void {
+		if (!repoPath || isUncommitted(sha)) return;
+
+		void this.services.commands.execute('gitlens.openOnRemote', {
+			repoPath: repoPath,
+			resource: { type: 'commit' satisfies `${RemoteResourceType.Commit}`, sha: sha },
+		});
+	}
+
+	/** Delegate inspect's Review/Compose mode toggles to the graph: open it, select the target row
+	 *  (the WIP row for the uncommitted commit, else the commit), and enter the mode there — these
+	 *  modes aren't orchestrated standalone in Inspect. */
+	openCommitInGraphMode(mode: 'review' | 'compose' | 'compare', commit: CommitDetails | undefined): void {
+		if (commit?.repoPath == null || commit.sha == null) return;
+		if (mode !== 'review' && mode !== 'compose') return;
+
+		void this.services.commands.execute('gitlens.showGraph', {
+			action: mode === 'review' ? 'enter-review' : 'enter-compose',
+			target: { sha: commit.sha, worktreePath: commit.repoPath },
+		});
+	}
+
+	changeFilesLayout(layout: ViewFilesLayout): void {
+		const prefs = this.state.preferences.get();
+		if (!prefs?.files) return;
+
+		const files = { ...prefs.files, layout: layout };
+		this.state.preferences.set({ ...prefs, files: files });
+		void this.services.config.update('views.commitDetails.files.layout', layout);
 	}
 
 	// ============================================================
@@ -502,24 +718,28 @@ export class CommitDetailsActions {
 	openPullRequestChanges(): void {
 		const ctx = this.getPrContext();
 		if (!ctx) return;
+
 		prActions.openPullRequestChanges(this.services.pullRequests, ctx.repoPath, ctx.refs);
 	}
 
 	openPullRequestComparison(): void {
 		const ctx = this.getPrContext();
 		if (!ctx) return;
+
 		prActions.openPullRequestComparison(this.services.pullRequests, ctx.repoPath, ctx.refs);
 	}
 
 	openPullRequestOnRemote(): void {
 		const ctx = this.getPrContext();
 		if (!ctx) return;
+
 		prActions.openPullRequestOnRemote(this.services.pullRequests, ctx.url);
 	}
 
 	openPullRequestDetails(): void {
 		const ctx = this.getPrContext();
 		if (!ctx) return;
+
 		prActions.openPullRequestDetails(this.services.pullRequests, ctx.repoPath, ctx.id, ctx.provider);
 	}
 
@@ -532,6 +752,24 @@ export class CommitDetailsActions {
 	 */
 	createPatchFromWip(changes: WipChange, checked: boolean | 'staged'): void {
 		fireAndForget(this.services.drafts.createPatchFromWip(changes, checked), 'create patch from WIP');
+	}
+
+	/**
+	 * Copy a WIP patch to the system clipboard.
+	 *
+	 * Scope selects which slice of the working tree to capture:
+	 * - `all`      → HEAD ↔ working tree (matches the existing Copy as Patch command).
+	 * - `staged`   → HEAD ↔ index (staged hunks only; conflicts surface here).
+	 * - `unstaged` → index ↔ working tree (unstaged hunks only).
+	 *
+	 * `uris` (optional, scope-filtered repo-relative paths) constrains the underlying
+	 * `git diff` via pathspec — required for `staged`/`unstaged` to mirror what Open
+	 * Multi-Diff shows for the same scope, especially around merge-conflict files which
+	 * raw `git diff` would otherwise emit regardless of intent. Omit for `all` so git
+	 * sees the entire working tree (including the `intentToAdd`-staged untracked files).
+	 */
+	copyWipPatchToClipboard(repoPath: string, scope: 'all' | 'staged' | 'unstaged', uris?: readonly string[]): void {
+		fireAndForget(this.services.drafts.copyWipPatchToClipboard(repoPath, scope, uris), 'copy WIP patch');
 	}
 
 	/**
@@ -567,11 +805,11 @@ export class CommitDetailsActions {
 	 * Generate an AI explanation of the current commit.
 	 * Resource handles cancel-previous and staleness.
 	 */
-	async explainCommit(): Promise<void> {
+	async explainCommit(prompt?: string): Promise<void> {
 		const commit = this.state.currentCommit.get();
 		if (!commit) return;
 
-		await this.resources.explain.fetch();
+		await this.resources.explain.fetch(prompt);
 	}
 
 	/**
@@ -654,7 +892,6 @@ export class CommitDetailsActions {
 
 			this.state.mode.set(mode);
 			this.state.pinned.set(pinned);
-			this.state.navigationStack.set(context.navigationStack);
 			this.state.inReview.set(context.inReview);
 			this.state.draftState.set({ inReview: context.inReview });
 
@@ -664,9 +901,6 @@ export class CommitDetailsActions {
 			void this.services.config
 				.get('views.commitDetails.autolinks.enabled')
 				.then(a => (this.state.capabilities.autolinksEnabled = a), noop);
-			void this.services.config
-				.get('ai.experimental.composer.enabled')
-				.then(c => (this.state.capabilities.experimentalComposerEnabled = c), noop);
 			// Note: hasAccount and orgSettings use RemoteSignalBridge (connected in commitDetails.ts)
 			void this.services.integrations
 				.getIntegrationStates()
@@ -702,18 +936,47 @@ export class CommitDetailsActions {
 			return;
 		}
 
-		this.state.error.set(undefined);
+		// Record genuinely-new selections into back/forward history. Skips same-commit refetches and
+		// navigation itself (navigateBack/Forward drive fetchCommit with `_navigating` set).
+		if ((current?.sha !== sha || current?.repoPath !== repoPath) && !this._navigating) {
+			this._nav.record({ sha: sha, repoPath: repoPath });
+		}
 
-		// Clear commit-dependent state immediately so the UI never shows
-		// a mix of the new commit's core data with the old commit's extras
-		this.state.autolinks.set(undefined);
-		this.state.formattedMessage.set(undefined);
-		this.state.autolinkedIssues.set(undefined);
-		this.state.pullRequest.set(undefined);
-		this.state.signature.set(undefined);
+		this.state.error.set(undefined);
 		this.resources.reachability.cancel();
 		this.resources.explain.cancel();
 		this.resources.generate.cancel();
+
+		// Abort any prior in-flight enrichment so a slow autolinks / PR / signature lookup from
+		// the previous selection can't overwrite the new selection's state. Host-side methods
+		// honor the signal via `signal?.throwIfAborted()` so abandoned work stops at the next
+		// checkpoint instead of running to completion.
+		const enrichSignal = this.resetEnrichment();
+
+		// Hydrate from cache synchronously when we've previously seen this SHA. Skipping the
+		// flash-out → flash-in cycle on revisit: chips are visible from t≈0ms instead of after
+		// the gating commit.fetch + 30-60ms enrichment fan-out completes. Cache miss falls back
+		// to the existing eager-clear so prior-selection chips don't linger over the new commit's
+		// metadata once it lands.
+		const cacheKey = `${sha}:${repoPath}`;
+		const cached = this._commitEnrichmentCache.get(cacheKey);
+		if (cached != null) {
+			if (cached.commit != null) {
+				this.state.currentCommit.set(cached.commit);
+				this.state.commitRef.set({ sha: cached.commit.sha, repoPath: cached.commit.repoPath });
+			}
+			this.state.autolinks.set(cached.autolinks);
+			this.state.formattedMessage.set(cached.formattedMessage);
+			this.state.autolinkedIssues.set(cached.autolinkedIssues);
+			this.state.pullRequest.set(cached.hasPullRequest ? cached.pullRequest : undefined);
+			this.state.signature.set(cached.hasSignature ? cached.signature : undefined);
+		} else {
+			this.state.autolinks.set(undefined);
+			this.state.formattedMessage.set(undefined);
+			this.state.autolinkedIssues.set(undefined);
+			this.state.pullRequest.set(undefined);
+			this.state.signature.set(undefined);
+		}
 
 		await this.resources.commit.fetch(repoPath, sha);
 
@@ -724,49 +987,62 @@ export class CommitDetailsActions {
 			this.state.commitRef.set(commit ? { sha: commit.sha, repoPath: commit.repoPath } : undefined);
 
 			if (commit != null) {
-				// Fire supplementary data in parallel via shared services — each sets its signal independently.
-				// enrichmentGuard() prevents stale callbacks from writing data for a replaced commit.
-				const guard = <T>(onResult: (value: T) => void) => enrichmentGuard<T>(this.resources.commit, onResult);
+				// Cache the freshly-fetched commit shell so future revisits hydrate instantly.
+				this._commitEnrichmentCache.update(cacheKey, { commit: commit });
 
-				// Basic autolinks + linkified message (gated on autolinks config)
-				if (this.state.capabilities.autolinksEnabled) {
-					void this.services.autolinks.getCommitAutolinks(repoPath, sha, messageHeadlineSplitterToken).then(
-						guard(r => {
-							if (r != null) {
-								this.state.autolinks.set(r.autolinks);
-								this.state.formattedMessage.set(r.formattedMessage);
-							}
-						}),
-						noop,
-					);
-
-					// Enriched autolinks — resolved issues + enriched linkified message
-					void this.services.autolinks.getEnrichedAutolinks(repoPath, sha, messageHeadlineSplitterToken).then(
-						guard(r => {
-							if (r != null) {
-								this.state.autolinkedIssues.set(r.autolinkedIssues);
-								// Enriched formatted message overrides basic (has issue titles in tooltips)
-								this.state.formattedMessage.set(r.formattedMessage);
-							}
-						}),
-						noop,
-					);
-				}
-
-				// Associated PR (via shared pull requests service)
-				void this.services.pullRequests.getPullRequestForCommit(repoPath, sha).then(
-					guard(pr => {
-						this.state.pullRequest.set(pr);
-					}),
-					noop,
+				// Shared chip-enrichment fan-out — same orchestration as the graph details panel
+				// (basic autolinks + enriched autolinks + PR + signature in parallel, generation
+				// guarded, abort-aware, AbortError-silent rejection). Sink writes resolved values
+				// into commitDetails state signals AND the per-SHA cache so revisits show chips
+				// from t≈0ms.
+				fetchCommitEnrichment(
+					this.services,
+					this.resources.commit,
+					enrichSignal,
+					{
+						repoPath: repoPath,
+						sha: sha,
+						isStash: commit.stashNumber != null,
+						autolinksEnabled: this.state.capabilities.autolinksEnabled,
+					},
+					{
+						setBasicAutolinks: (autolinks, formattedMessage) => {
+							this._commitEnrichmentCache.update(cacheKey, {
+								autolinks: autolinks,
+								formattedMessage: formattedMessage,
+							});
+							this.state.autolinks.set(autolinks);
+							this.state.formattedMessage.set(formattedMessage);
+						},
+						setEnrichedAutolinks: (issues, formattedMessage) => {
+							this._commitEnrichmentCache.update(cacheKey, {
+								autolinkedIssues: issues,
+								formattedMessage: formattedMessage,
+							});
+							this.state.autolinkedIssues.set(issues);
+							// Enriched formatted message overrides basic (has issue titles in tooltips)
+							this.state.formattedMessage.set(formattedMessage);
+						},
+						setPullRequest: pr => {
+							this._commitEnrichmentCache.update(cacheKey, { pullRequest: pr, hasPullRequest: true });
+							this.state.pullRequest.set(pr);
+						},
+						setSignature: sig => {
+							this._commitEnrichmentCache.update(cacheKey, { signature: sig, hasSignature: true });
+							this.state.signature.set(sig);
+						},
+					},
 				);
 
-				// Commit signature (via shared repository service)
-				void this.services.repository.getCommitSignature(repoPath, sha).then(
-					guard(sig => {
-						this.state.signature.set(sig);
+				// Check if repo has remotes (for "Open on Remote" action) — not enrichment, but
+				// shares the generation-guard pattern.
+				void this.services.repository.hasRemotes(repoPath).then(
+					enrichmentGuard(this.resources.commit, has => {
+						if (enrichSignal.aborted) return;
+
+						this.state.hasRemotes.set(has);
 					}),
-					noop,
+					noopUnlessReal,
 				);
 			}
 		} else if (this.resources.commit.error.get() != null) {
@@ -827,35 +1103,42 @@ export class CommitDetailsActions {
 	 */
 	async fetchPreferences(): Promise<void> {
 		try {
-			const [pullRequestExpandedResult, configResult, coreConfigResult, aiEnabledResult] =
-				await Promise.allSettled([
-					this.services.storage.getWorkspace('views:commitDetails:pullRequestExpanded'),
-					this.services.config.getMany(
-						'views.commitDetails.avatars',
-						'defaultCurrentUserNameStyle',
-						'defaultDateFormat',
-						'defaultDateStyle',
-						'views.commitDetails.files',
-						'signing.showSignatureBadges',
-						'views.commitDetails.autolinks.enabled',
-						'ai.experimental.composer.enabled',
-					),
-					this.services.config.getManyCore('workbench.tree.renderIndentGuides', 'workbench.tree.indent'),
-					this.services.ai.isEnabled(),
-				]);
+			const [
+				pullRequestExpandedResult,
+				showSearchBoxResult,
+				searchBoxFilterResult,
+				configResult,
+				coreConfigResult,
+				aiEnabledResult,
+			] = await Promise.allSettled([
+				this.services.storage.getWorkspace('views:commitDetails:pullRequestExpanded'),
+				this.services.storage.getWorkspace('views:commitDetails:showSearchBox'),
+				this.services.storage.getWorkspace('views:commitDetails:searchBoxFilter'),
+				this.services.config.getMany(
+					'views.commitDetails.avatars',
+					'defaultCurrentUserNameStyle',
+					'defaultDateFormat',
+					'defaultDateStyle',
+					'views.commitDetails.files',
+					'signing.showSignatureBadges',
+					'views.commitDetails.autolinks.enabled',
+				),
+				this.services.config.getManyCore(
+					'workbench.tree.renderIndentGuides',
+					'workbench.tree.indent',
+					'git.enableSmartCommit',
+					'scm.defaultViewSortKey',
+				),
+				this.services.ai.isEnabled(),
+			]);
 
 			const pullRequestExpanded = getSettledValue(pullRequestExpandedResult);
-			const [
-				avatars,
-				currentUserNameStyle,
-				dateFormat,
-				dateStyle,
-				files,
-				showSignatureBadges,
-				autolinksEnabled,
-				experimentalComposerEnabled,
-			] = getSettledValue(configResult) ?? [];
-			const [indentGuides, indent] = getSettledValue(coreConfigResult) ?? [];
+			const showSearchBox = getSettledValue(showSearchBoxResult);
+			const searchBoxFilter = getSettledValue(searchBoxFilterResult);
+			const [avatars, currentUserNameStyle, dateFormat, dateStyle, files, showSignatureBadges, autolinksEnabled] =
+				getSettledValue(configResult) ?? [];
+			const [indentGuides, indent, enableSmartCommit, workingFilesOrderBy] =
+				getSettledValue(coreConfigResult) ?? [];
 			const aiEnabled = getSettledValue(aiEnabledResult);
 
 			this.state.preferences.set({
@@ -873,14 +1156,15 @@ export class CommitDetailsActions {
 					},
 				indentGuides: indentGuides ?? 'onHover',
 				indent: indent,
+				workingFilesOrderBy: workingFilesOrderBy ?? 'path',
 				aiEnabled: aiEnabled ?? false,
+				enableSmartCommit: enableSmartCommit ?? false,
 				showSignatureBadges: showSignatureBadges ?? false,
+				showSearchBox: showSearchBox ?? true,
+				searchBoxFilter: searchBoxFilter ?? true,
 			});
 			if (autolinksEnabled != null) {
 				this.state.capabilities.autolinksEnabled = autolinksEnabled;
-			}
-			if (experimentalComposerEnabled != null) {
-				this.state.capabilities.experimentalComposerEnabled = experimentalComposerEnabled;
 			}
 		} catch (ex) {
 			Logger.error(ex, 'Failed to fetch preferences');
@@ -918,10 +1202,25 @@ export class CommitDetailsActions {
 				this.fetch();
 				break;
 			case 'publish-branch':
-				this.publish();
+				this.push();
 				break;
 			case 'switch':
 				this.switchBranch();
+				break;
+			case 'create-pr':
+				this.createPullRequest();
+				break;
+			case 'start-work':
+				this.startWork();
+				break;
+			case 'create-branch':
+				this.createBranch();
+				break;
+			case 'apply-stash':
+				this.applyStash();
+				break;
+			case 'new-worktree':
+				this.createWorktree();
 				break;
 			case 'open-pr-changes':
 				this.openPullRequestChanges();

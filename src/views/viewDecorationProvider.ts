@@ -344,7 +344,7 @@ function getWorktreeDecoration(uri: Uri, _token: CancellationToken): FileDecorat
 	if (state?.hasChanges) {
 		return {
 			badge: '●',
-			color: new ThemeColor('gitlens.decorations.worktreeHasUncommittedChangesForegroundColor' as Colors),
+			color: new ThemeColor('gitlens.decorations.worktreeHasUncommittedChangesForegroundColor' satisfies Colors),
 			tooltip: 'Has Uncommitted Changes',
 		};
 	}

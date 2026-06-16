@@ -197,7 +197,7 @@ export function createStateGroup(options?: {
 			const s = litSignal(restore(checkpoint));
 			persistedEntries.push({
 				key: key,
-				signal: s as Signal.State<unknown>,
+				signal: s,
 				serialize: serialize,
 				reset: (latestCheckpoint: Record<string, unknown> | undefined) => {
 					s.set(restore(latestCheckpoint));

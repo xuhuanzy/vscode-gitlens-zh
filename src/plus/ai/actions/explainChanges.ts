@@ -13,6 +13,7 @@ import { AINoRequestDataError } from '../../../errors.js';
 import { configuration } from '../../../system/-webview/configuration.js';
 import type { AIResponse, AIResult, AISourceContext } from '../aiProviderService.js';
 import type { AIService } from '../aiService.js';
+import { mergeUserInstructions } from '../utils/-webview/prompt.utils.js';
 
 export type AIExplainSourceContext = AISourceContext<{ type: TelemetryEvents['ai/explain']['changeType'] }>;
 
@@ -36,9 +37,19 @@ export async function explainChanges(
 					promptContext = await promptContext(cancellation);
 				}
 
-				promptContext.instructions = `${
-					promptContext.instructions ? `${promptContext.instructions}\n` : ''
-				}${configuration.get('ai.explainChanges.customInstructions')}`;
+				const callerInstructions = promptContext.instructions;
+				const settingInstructions = configuration.get('ai.explainChanges.customInstructions');
+
+				promptContext.instructions = mergeUserInstructions(
+					settingInstructions,
+					callerInstructions,
+					'The user provided the following guidance for this explanation — incorporate it into your response:',
+				);
+
+				reporting['customInstructions.used'] = Boolean(callerInstructions);
+				reporting['customInstructions.length'] = callerInstructions?.length ?? 0;
+				reporting['customInstructions.setting.used'] = Boolean(settingInstructions);
+				reporting['customInstructions.setting.length'] = settingInstructions?.length ?? 0;
 
 				if (cancellation.isCancellationRequested) throw new CancellationError();
 
@@ -101,7 +112,7 @@ export async function explainCommit(
 	service: AIService,
 	commitOrRevision: GitRevisionReference | GitCommit,
 	sourceContext: AIExplainSourceContext,
-	options?: { cancellation?: CancellationToken; progress?: ProgressOptions },
+	options?: { cancellation?: CancellationToken; progress?: ProgressOptions; prompt?: string },
 ): Promise<AIResult<AISummarizedResult> | 'cancelled' | undefined> {
 	const svc = service.container.git.getRepositoryService(commitOrRevision.repoPath);
 	return explainChanges(
@@ -121,9 +132,10 @@ export async function explainCommit(
 				await GitCommit.ensureFullDetails(commit);
 				if (cancellation.isCancellationRequested) throw new CancellationError();
 			}
+
 			assertsCommitHasFullDetails(commit);
 
-			return { diff: diff.contents, message: commit.message };
+			return { diff: diff.contents, message: commit.message, instructions: options?.prompt };
 		},
 		sourceContext,
 		options,

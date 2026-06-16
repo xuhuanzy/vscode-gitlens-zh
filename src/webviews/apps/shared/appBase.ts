@@ -34,7 +34,7 @@ import { DOM } from './dom.js';
 import type { Disposable } from './events.js';
 import { createFocusTracker } from './focus.js';
 import type { HostIpcApi } from './ipc.js';
-import { getHostIpcApi, HostIpc } from './ipc.js';
+import { getHostIpcApi, getWebviewClientInfo, HostIpc } from './ipc.js';
 import { telemetryEventName } from './telemetry.js';
 import type { ThemeChangeEvent } from './theme.js';
 import { computeThemeColors, onDidChangeTheme, watchThemeColors } from './theme.js';
@@ -117,10 +117,9 @@ export abstract class GlWebviewApp extends GlElement {
 
 		this._ipc = new HostIpc(this.name);
 
-		const themeEvent = computeThemeColors();
+		this.disposables.push(watchThemeColors());
 		if (this.onThemeUpdated != null) {
-			this.onThemeUpdated(themeEvent);
-			this.disposables.push(watchThemeColors());
+			this.onThemeUpdated(computeThemeColors());
 			this.disposables.push(onDidChangeTheme(this.onThemeUpdated, this));
 		}
 
@@ -200,7 +199,7 @@ export abstract class SignalWatcherWebviewApp extends _SignalWatcherBase {
 		super.connectedCallback?.();
 
 		// Signal readiness to the host — triggers IPC flush and RPC expose()
-		void this._ipc.sendRequest(WebviewReadyRequest, { bootstrap: false });
+		void this._ipc.sendRequest(WebviewReadyRequest, { bootstrap: false, ...getWebviewClientInfo() });
 	}
 }
 
@@ -305,7 +304,7 @@ export abstract class App<
 					);
 				}
 
-				void this.sendRequest(WebviewReadyRequest, { bootstrap: false });
+				void this.sendRequest(WebviewReadyRequest, { bootstrap: false, ...getWebviewClientInfo() });
 
 				this.onInitialized?.();
 			} finally {
@@ -341,9 +340,6 @@ export abstract class App<
 	protected onMessageReceived?(msg: IpcMessage): void;
 	protected onThemeUpdated?(e: ThemeChangeEvent): void;
 
-	private _focused?: boolean;
-	private _inputFocused?: boolean;
-
 	private bindDisposables: Disposable[] | undefined;
 	protected bind(): void {
 		document.querySelectorAll('a').forEach(a => {
@@ -358,25 +354,25 @@ export abstract class App<
 
 		// Reduces event jankiness when only moving focus
 		const sendWebviewFocusChangedCommand = debounce((params: WebviewFocusChangedParams) => {
+			// Re-verify the actual focus state when the debouncer fires.
+			// This prevents false "blurs" when clicking non-focusable internal elements,
+			// where focusout fires but the document retains focus.
+			const actualFocused = document.hasFocus();
+			params.focused = actualFocused;
+			if (!actualFocused) {
+				params.inputFocused = false;
+			}
+
 			this.sendCommand(WebviewFocusChangedCommand, params);
 		}, 150);
 
 		this.bindDisposables.push(
 			DOM.on(document, 'focusin', e => {
 				const inputFocused = e.composedPath().some(el => (el as HTMLElement).tagName === 'INPUT');
-
-				if (this._focused !== true || this._inputFocused !== inputFocused) {
-					this._focused = true;
-					this._inputFocused = inputFocused;
-					sendWebviewFocusChangedCommand({ focused: true, inputFocused: inputFocused });
-				}
+				sendWebviewFocusChangedCommand({ focused: true, inputFocused: inputFocused });
 			}),
 			DOM.on(document, 'focusout', () => {
-				if (this._focused !== false || this._inputFocused !== false) {
-					this._focused = false;
-					this._inputFocused = false;
-					sendWebviewFocusChangedCommand({ focused: false, inputFocused: false });
-				}
+				sendWebviewFocusChangedCommand({ focused: false, inputFocused: false });
 			}),
 		);
 	}

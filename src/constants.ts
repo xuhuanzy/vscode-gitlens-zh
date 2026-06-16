@@ -98,6 +98,7 @@ export const enum Schemes {
 	GitHub = 'github',
 	GitLens = 'gitlens',
 	GitLensAIMarkdown = 'gitlens-ai-markdown',
+	GitLensVirtual = 'gitlens-virtual',
 	PRs = 'pr',
 	Remote = 'vscode-remote',
 	Vsls = 'vsls',
@@ -141,6 +142,7 @@ export const urls = Object.freeze({
 	helpCenterHome: `https://help.gitkraken.com/gitlens/home-view/?${utm}`,
 	helpCenterMCP: `https://help.gitkraken.com/mcp/mcp-getting-started/?${utm}`,
 	releaseNotes: `https://help.gitkraken.com/gitlens/gitlens-release-notes-current/?${utm}`,
+	helpCenterAiHooks: `https://help.gitkraken.com/cli/cli-home/?${utm}#how-to-uninstall-gitkraken-cli-ai-hooks`,
 
 	acceleratePrReviews: `https://help.gitkraken.com/gitlens/gitlens-start-here/?${utm}#accelerate-pr-reviews`,
 	communityVsPro: `https://help.gitkraken.com/gitlens/gitlens-community-vs-gitlens-pro/?${utm}`,

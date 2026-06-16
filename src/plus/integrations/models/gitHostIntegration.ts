@@ -658,7 +658,7 @@ export abstract class GitHostIntegration<
 
 		await this.refreshSessionIfExpired(scope);
 
-		const start = Date.now();
+		const start = performance.now();
 		try {
 			const pullRequests = await this.searchProviderMyPullRequests(
 				this._session!,
@@ -667,7 +667,7 @@ export abstract class GitHostIntegration<
 				silent,
 			);
 			this.resetRequestExceptionCount('searchMyPullRequests');
-			return { value: pullRequests, duration: Date.now() - start };
+			return { value: pullRequests, duration: performance.now() - start };
 		} catch (ex) {
 			this.handleProviderException('searchMyPullRequests', ex, {
 				scope: scope,
@@ -675,7 +675,7 @@ export abstract class GitHostIntegration<
 			});
 			return {
 				error: ex,
-				duration: Date.now() - start,
+				duration: performance.now() - start,
 			};
 		}
 	}

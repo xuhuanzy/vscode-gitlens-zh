@@ -1,5 +1,5 @@
 import { cursor, env, lm, version } from 'vscode';
-import { isOffline, isWeb } from '@env/platform.js';
+import { getIsOffline, isWeb } from '@env/platform.js';
 import { satisfies } from '@gitlens/utils/version.js';
 import type { Container } from '../../../../container.js';
 import { configuration } from '../../../../system/-webview/configuration.js';
@@ -11,6 +11,13 @@ export function isMcpBannerEnabled(container: Container, showAutoRegistration = 
 	}
 
 	return !container.onboarding.isDismissed('mcp:banner');
+}
+
+export function isHooksBannerEnabled(container: Container): boolean {
+	if (isWeb) return false;
+	// MCP takes precedence — only surface the hooks prompt when the MCP one isn't competing for attention.
+	if (isMcpBannerEnabled(container)) return false;
+	return !container.onboarding.isDismissed('hooks:banner');
 }
 
 const supportedApps = ['Visual Studio Code', 'Visual Studio Code - Insiders', 'Visual Studio Code - Exploration'];
@@ -29,7 +36,7 @@ export function supportsCursorMcpRegistration(): boolean {
 }
 
 export function mcpRegistrationEnabled(container: Container): boolean {
-	if (isWeb || isOffline) {
+	if (isWeb || getIsOffline()) {
 		return false;
 	}
 

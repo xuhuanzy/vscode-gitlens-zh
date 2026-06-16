@@ -185,10 +185,7 @@ export abstract class Formatter<Item = any, Options extends FormatOptions = Form
 		template: string,
 		...tokens: (keyof NonNullable<TOptions['tokenOptions']>)[]
 	): boolean {
-		const token =
-			tokens.length === 1
-				? (tokens[0] as string)
-				: (`(${tokens.join('|')})` as keyof NonNullable<TOptions['tokenOptions']> as string);
+		const token = tokens.length === 1 ? (tokens[0] as string) : `(${tokens.join('|')})`;
 
 		let regex = hasTokenRegexMap.get(token);
 		if (regex == null) {

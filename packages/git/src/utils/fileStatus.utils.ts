@@ -1,4 +1,4 @@
-import type { GitFileStatus } from '../models/fileStatus.js';
+import type { GitFileConflictStatus, GitFileStatus } from '../models/fileStatus.js';
 
 const statusIconsMap = {
 	'.': undefined,
@@ -46,4 +46,10 @@ const statusTextMap = {
 
 export function getGitFileStatusText(status: GitFileStatus | keyof typeof statusTextMap): string {
 	return statusTextMap[status] ?? 'Unknown';
+}
+
+const conflictStatuses = new Set<string>(['U', 'AA', 'AU', 'UA', 'DD', 'DU', 'UD', 'UU']);
+
+export function isConflictStatus(status: string | undefined): status is 'U' | GitFileConflictStatus {
+	return status != null && conflictStatuses.has(status);
 }

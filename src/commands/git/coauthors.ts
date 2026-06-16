@@ -1,4 +1,5 @@
 import type { GitContributor } from '@gitlens/git/models/contributor.js';
+import { appendCoauthorsToMessage } from '@gitlens/git/utils/contributor.utils.js';
 import { ensureArray } from '@gitlens/utils/array.js';
 import { normalizePath } from '@gitlens/utils/path.js';
 import type { Container } from '../../container.js';
@@ -9,7 +10,7 @@ import type { PartialStepState, StepGenerator, StepsContext, StepState } from '.
 import { StepResultBreak } from '../quick-wizard/models/steps.js';
 import { QuickCommand } from '../quick-wizard/quickCommand.js';
 import { pickContributorsStep } from '../quick-wizard/steps/contributors.js';
-import { pickRepositoryStep } from '../quick-wizard/steps/repositories.js';
+import { canSkipRepositoryPick, pickRepositoryStep } from '../quick-wizard/steps/repositories.js';
 import { StepsController } from '../quick-wizard/stepsController.js';
 import { assertStepState } from '../quick-wizard/utils/steps.utils.js';
 
@@ -50,30 +51,13 @@ export class CoAuthorsGitCommand extends QuickCommand<State> {
 	}
 
 	private async execute(state: StepState<State<GlRepository, GitContributor[]>>) {
-		const scmRepo = await state.repo.git.getOrOpenScmRepository();
+		const scmRepo = await state.repo.git.getOrOpenScmRepository({ source: 'quick-wizard', detail: 'coauthors' });
 		if (scmRepo == null) return;
 
-		let message = scmRepo.inputBox.value;
-
-		const index = message.indexOf('Co-authored-by: ');
-		if (index !== -1) {
-			message = message.substring(0, index - 1).trimEnd();
-		}
-
-		for (const c of ensureArray(state.contributors)) {
-			let newlines;
-			if (message.includes('Co-authored-by: ')) {
-				newlines = '\n';
-			} else if (message.length !== 0 && message.endsWith('\n')) {
-				newlines = '\n\n';
-			} else {
-				newlines = '\n\n\n';
-			}
-
-			message += `${newlines}Co-authored-by: ${c.coauthor}`;
-		}
-
-		scmRepo.inputBox.value = message;
+		scmRepo.inputBox.value = appendCoauthorsToMessage(
+			scmRepo.inputBox.value,
+			ensureArray(state.contributors).map(c => c.coauthor),
+		);
 		void (await executeCoreCommand('workbench.view.scm'));
 	}
 
@@ -100,7 +84,7 @@ export class CoAuthorsGitCommand extends QuickCommand<State> {
 			);
 
 			// Ensure that the active repo is known to the built-in git
-			context.activeRepo = await this.container.git.getOrOpenRepositoryForEditor();
+			context.activeRepo = await this.container.git.getOrAddRepositoryForEditor();
 			if (
 				context.activeRepo != null &&
 				!scmRepositories.some(r => r.rootUri.fsPath === context.activeRepo!.path)
@@ -113,8 +97,8 @@ export class CoAuthorsGitCommand extends QuickCommand<State> {
 			context.title = this.title;
 
 			if (steps.isAtStep(Steps.PickRepo) || state.repo == null || typeof state.repo === 'string') {
-				// Only show the picker if there are multiple repositories
-				if (context.repos.length === 1) {
+				// Skip the picker only when the sole available repo is the one requested
+				if (canSkipRepositoryPick(context.repos, state.repo)) {
 					[state.repo] = context.repos;
 				} else {
 					using step = steps.enterStep(Steps.PickRepo);

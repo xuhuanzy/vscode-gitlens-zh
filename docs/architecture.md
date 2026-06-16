@@ -146,7 +146,7 @@ The extension supports both Node.js (desktop) and browser (web) environments:
 
 **Node.js Environment** (`src/env/node/`)
 
-- Uses `child_process` to execute Git commands via `Git.execute()`
+- Uses `child_process` to execute Git commands via `Git.run()`
 - Direct file system access
 - Full Git command support
 - Commands parsed by specialized parsers in `src/git/parsers/`
@@ -204,6 +204,7 @@ Pro features integrate with GitKraken accounts and require authentication via Su
 - Webview UI code in `src/webviews/apps/{webviewName}/`
 - Use IPC protocol for communication: `postMessage()` → `onIpc()`
 - Refresh webview without restarting extension during development
+- **Custom Elements Manifest** (`custom-elements.json`) - Powers Lit/Web Component language servers and MCP tools. Auto-regenerated during dev/watch webview builds.
 
 For accessibility requirements when creating or modifying webviews, see `docs/accessibility.md`.
 
@@ -234,7 +235,7 @@ For accessibility requirements when creating or modifying webviews, see `docs/ac
 
 ### Git Command Execution
 
-- All Git commands go through `Git.execute()` in `src/env/node/git/git.ts`
+- All Git commands go through `Git.run()` in `src/env/node/git/git.ts`
 - Commands are parsed and formatted consistently
 - Output is parsed by specialized parsers in `src/git/parsers/`
 - Results cached in GitCache for performance

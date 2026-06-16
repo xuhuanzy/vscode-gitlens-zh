@@ -1,7 +1,5 @@
-import { mkdir, unlink, writeFile } from 'fs/promises';
-import { tmpdir } from 'os';
-import { join } from 'path';
-import { arch, ppid } from 'process';
+import { dirname } from 'path';
+import { arch } from 'process';
 import type { ConfigurationChangeEvent } from 'vscode';
 import { version as codeVersion, Disposable, env, ProgressLocation, Uri, window, workspace } from 'vscode';
 import { debug, trace } from '@gitlens/utils/decorators/log.js';
@@ -14,22 +12,25 @@ import type { Source, Sources } from '../../../../constants.telemetry.js';
 import type { Container } from '../../../../container.js';
 import type { SubscriptionChangeEvent } from '../../../../plus/gk/subscriptionService.js';
 import { mcpRegistrationAllowed } from '../../../../plus/gk/utils/-webview/mcp.utils.js';
-import { registerCommand } from '../../../../system/-webview/command.js';
+import { executeCoreCommand, registerCommand } from '../../../../system/-webview/command.js';
 import { configuration } from '../../../../system/-webview/configuration.js';
 import { setContext } from '../../../../system/-webview/context.js';
 import { openUrl } from '../../../../system/-webview/vscode/uris.js';
 import { getHostAppName, isHostVSCode } from '../../../../system/-webview/vscode.js';
 import { gate } from '../../../../system/decorators/gate.js';
-import { getPlatform, isOffline, isWeb } from '../../platform.js';
+import { getCliPublishInfo } from '../../ipc/ipcService.js';
+import { getIsOffline, getPlatform, isWeb } from '../../platform.js';
+import type { GkAgent } from './agents.js';
 import { CliCommandHandlers } from './commands.js';
-import type { IpcServer } from './ipcServer.js';
-import { createIpcServer } from './ipcServer.js';
 import { showMcpAgentPicker } from './mcpAgentPicker.js';
-import type { McpAgent } from './mcpAgents.js';
 import {
+	clearResolvedCLIExecutableCache,
 	extractZipFile,
 	getCLIExecutable,
 	getCLIVersions,
+	getDevCLILocalPath,
+	isInsidersCLIEnabled,
+	isLockedBinaryError,
 	resolveCLIExecutable,
 	runCLICommand,
 	showManualMcpSetupPrompt,
@@ -42,6 +43,7 @@ const enum CLIInstallErrorReason {
 	ProxyUrlFormat,
 	ProxyDownload,
 	ProxyExtract,
+	ProxyExtractLocked,
 	ProxyFetch,
 	GlobalStorageDirectory,
 	CoreInstall,
@@ -53,6 +55,7 @@ const enum McpSetupErrorReason {
 	VSCodeVersionUnsupported,
 	CLIUnsupportedPlatform,
 	CLILocalInstallFailed,
+	CLIBinaryLocked,
 	CLIUnknownError,
 	InstallationFailed,
 	UnsupportedHost,
@@ -66,7 +69,6 @@ export interface CliCommandRequest {
 	args?: string[];
 }
 export type CliCommandResponse = { stdout?: string; stderr?: string } | void;
-export type CliIpcServer = IpcServer<CliCommandRequest, CliCommandResponse>;
 
 const CLIProxyMCPInstallOutputs = {
 	checkingForUpdates: /checking for updates.../i,
@@ -79,7 +81,6 @@ const maxAutoInstallAttempts = 5;
 export class GkCliIntegrationProvider implements Disposable {
 	private readonly _disposable: Disposable;
 	private _runningDisposable: Disposable | undefined;
-	private _discoveryFilePath: string | undefined;
 	private _cliCoreVersion: string | undefined;
 
 	constructor(private readonly container: Container) {
@@ -113,7 +114,15 @@ export class GkCliIntegrationProvider implements Disposable {
 	}
 
 	private onConfigurationChanged(e?: ConfigurationChangeEvent): void {
-		if (e == null || configuration.changed(e, 'gitkraken.cli.integration.enabled')) {
+		if (
+			e != null &&
+			(configuration.changed(e, 'gitkraken.cli.localPath') ||
+				configuration.changed(e, 'gitkraken.cli.insiders.enabled'))
+		) {
+			clearResolvedCLIExecutableCache();
+		}
+
+		if (e == null || configuration.changed(e, 'ai.enabled')) {
 			if (!this.supportsCliIntegration()) {
 				this.stop();
 			} else {
@@ -121,96 +130,74 @@ export class GkCliIntegrationProvider implements Disposable {
 			}
 		}
 
-		// Reinstall CLI when insiders setting changes
-		if (e != null && configuration.changed(e, 'gitkraken.cli.insiders.enabled')) {
+		// Reinstall CLI when insiders setting changes (skip when using local CLI)
+		if (e != null && configuration.changed(e, 'gitkraken.cli.insiders.enabled') && getDevCLILocalPath() == null) {
 			const cliInstall = this.container.storage.getScoped('gk:cli:install');
 			if (cliInstall?.status === 'completed') {
 				// Force reinstall to switch between production and insiders
 				Logger.info(
-					`${formatLoggableScopeBlock('CLI')} Forcing CLI reinstall on settings change (insiders = ${configuration.get('gitkraken.cli.insiders.enabled')})`,
+					`${formatLoggableScopeBlock('CLI')} Forcing CLI reinstall on settings change (insiders = ${isInsidersCLIEnabled()})`,
 				);
-				void this.setupMCPCore('settings', true, true).catch(() => {});
+				if (mcpRegistrationAllowed(this.container)) {
+					void this.setupMCPCore('settings', true, true).catch(() => {});
+				} else if (this.container.ai.enabled) {
+					void this.installCLI(true, 'settings', true).catch(() => {});
+				}
 			}
 		}
 	}
 
 	private supportsCliIntegration(): boolean {
-		return (
-			this.container.ai.enabled &&
-			(configuration.get('gitkraken.mcp.autoEnabled') || configuration.get('gitkraken.cli.integration.enabled'))
-		);
+		return this.container.ai.enabled;
 	}
 
+	@gate()
 	private async start() {
 		this.stop();
 
-		let server: CliIpcServer;
+		// Register CLI handlers on the shared IPC server.
+		const handlers = new CliCommandHandlers(this.container);
 
+		// Publish the CLI discovery file (writes the file at the cli dir).
 		try {
-			server = await createIpcServer<CliCommandRequest, CliCommandResponse>();
+			await this.container.ipc.publishCli(await getCliPublishInfo());
 		} catch (ex) {
-			Logger.error(ex, 'Failed to start CLI integration IPC server');
+			Logger.warn(`${formatLoggableScopeBlock('IPC')} Failed to publish CLI discovery: ${ex}`);
 			if (this.container.telemetry.enabled) {
-				this.container.telemetry.sendEvent('cli/ipc/failed', {
+				this.container.telemetry.sendEvent('cli/discoveryFile/failed', {
 					'error.message': ex instanceof Error ? ex.message : 'Unknown error',
 				});
 			}
-			return;
 		}
 
-		server.registerHandler('ping', () =>
-			Promise.resolve({ stdout: JSON.stringify({ version: this.container.version }) }),
-		);
-
-		const { environmentVariableCollection: envVars } = this.container.context;
-
-		envVars.clear();
-		envVars.persistent = false;
-		envVars.replace('GK_GL_ADDR', server.ipcAddress);
-		envVars.description = 'Enables GK CLI integration';
-
-		// Create discovery file for external terminal support
-		try {
-			const workspaceFolders = workspace.workspaceFolders;
-			if (workspaceFolders != null && workspaceFolders.length > 0) {
-				const workspacePaths = workspaceFolders.map(folder => folder.uri.fsPath);
-				this._discoveryFilePath = await createDiscoveryFile(server, workspacePaths);
-
-				envVars.replace('GK_GL_PATH', this._discoveryFilePath);
-			}
-		} catch (error) {
-			// Discovery file creation failure should not prevent IPC server startup
-			Logger.warn(`${formatLoggableScopeBlock('IPC')} Failed to create discovery file: ${error}`);
-			if (this.container.telemetry.enabled) {
-				this.container.telemetry.sendEvent('cli/discoveryFile/failed', {
-					'error.message': error instanceof Error ? error.message : 'Unknown error',
-				});
-			}
+		// Fire `gk:cli:ipc:started` whenever the IPC server is up — even if the discovery
+		// file write failed — so MCP providers don't sit idle for the 30s ipcWaitTime.
+		if (this.container.ipc.address != null) {
+			this.container.events.fire('gk:cli:ipc:started', {
+				discoveryFilePath: this.container.ipc.cliDiscoveryFilePath,
+			});
 		}
 
-		this._runningDisposable = Disposable.from(new CliCommandHandlers(this.container, server), server);
-
-		// Notify that the IPC server is ready so MCP providers can refresh
-		this.container.events.fire('gk:cli:ipc:started', undefined);
-		Logger.info(`${formatLoggableScopeBlock('IPC')} Server started on ${server.ipcAddress}`);
+		this._runningDisposable = Disposable.from(handlers, {
+			dispose: () => void this.container.ipc.unpublishCli(),
+		});
 	}
 
 	private stop() {
-		// Cleanup discovery file
-		if (this._discoveryFilePath) {
-			void cleanupDiscoveryFile(this._discoveryFilePath);
-			this._discoveryFilePath = undefined;
-		}
-
-		this.container.context.environmentVariableCollection.clear();
 		if (this._runningDisposable != null) {
 			this._runningDisposable.dispose();
 			this._runningDisposable = undefined;
-			Logger.info(`${formatLoggableScopeBlock('IPC')} Server stopped`);
+			Logger.info(`${formatLoggableScopeBlock('IPC')} CLI handlers stopped`);
 		}
 	}
 
 	private async ensureUpdateOrInstall() {
+		if (getDevCLILocalPath() != null) {
+			Logger.info(`${formatLoggableScopeBlock('CLI')} Using local CLI binary — skipping auto-install/update`);
+			void setContext('gitlens:gk:cli:installed', true);
+			return;
+		}
+
 		let forceInstall = false;
 		const versionDidChange = this.container.version !== this.container.previousVersion;
 
@@ -246,15 +233,23 @@ export class GkCliIntegrationProvider implements Disposable {
 			}
 		}
 
-		const didReachMaxAttempts = reachedMaxAttempts(cliInstall);
+		let didReachMaxAttempts = reachedMaxAttempts(cliInstall);
 
 		// Reset the attempts count if GitLens extension version has changed
 		if (forceInstall || (didReachMaxAttempts && versionDidChange)) {
 			void this.container.storage.storeScoped('gk:cli:install', undefined);
+			didReachMaxAttempts = false;
 		}
 
-		const shouldAutoInstall = mcpRegistrationAllowed(this.container) && !didReachMaxAttempts;
-		if (!forceInstall && !shouldAutoInstall) {
+		const shouldAutoInstall = mcpRegistrationAllowed(this.container);
+		if (!forceInstall && didReachMaxAttempts) {
+			return;
+		}
+		if (!shouldAutoInstall) {
+			// CLI still powers hooks and agent dispatch even when MCP can't auto-register.
+			if (this.container.ai.enabled) {
+				void this.installCLI(true, 'gk-cli-integration', forceInstall).catch(() => {});
+			}
 			return;
 		}
 
@@ -499,6 +494,20 @@ export class GkCliIntegrationProvider implements Disposable {
 		force = false,
 	): Promise<{ cliVersion?: string; cliPath?: string; status: 'completed' | 'unsupported' | 'attempted' }> {
 		const scope = getScopedLogger();
+		clearResolvedCLIExecutableCache();
+
+		const devLocalPath = getDevCLILocalPath();
+		if (devLocalPath != null) {
+			const resolved = await resolveCLIExecutable();
+			if (resolved != null) {
+				scope?.info(`Using local CLI binary: ${resolved.fsPath}`);
+				const versions = await getCLIVersions();
+				return { cliVersion: versions?.core, cliPath: dirname(resolved.fsPath), status: 'completed' };
+			}
+
+			scope?.warn(`Local CLI binary not found at: ${devLocalPath}`);
+			return { cliVersion: undefined, cliPath: undefined, status: 'attempted' };
+		}
 
 		const cliInstall = this.container.storage.getScoped('gk:cli:install');
 		let cliInstallAttempts = force ? 0 : (cliInstall?.attempts ?? 0);
@@ -513,6 +522,7 @@ export class GkCliIntegrationProvider implements Disposable {
 				if (await resolveCLIExecutable(cliPath)) {
 					return { cliVersion: cliVersion, cliPath: cliPath, status: 'completed' };
 				}
+
 				scope?.warn(`CLI binary not found at expected path: ${getCLIExecutable(cliPath).fsPath}`);
 
 				cliInstallStatus = 'attempted';
@@ -525,7 +535,7 @@ export class GkCliIntegrationProvider implements Disposable {
 			}
 		}
 
-		const insidersEnabled = configuration.get('gitkraken.cli.insiders.enabled');
+		const insidersEnabled = isInsidersCLIEnabled();
 
 		try {
 			if (isWeb) {
@@ -539,9 +549,10 @@ export class GkCliIntegrationProvider implements Disposable {
 				throw new CLIInstallError(CLIInstallErrorReason.UnsupportedPlatform, undefined, 'web');
 			}
 
-			if (isOffline) {
+			if (getIsOffline()) {
 				throw new CLIInstallError(CLIInstallErrorReason.Offline);
 			}
+
 			cliInstallAttempts += 1;
 			scope?.info(`Starting CLI installation (attempt ${cliInstallAttempts}/${maxAutoInstallAttempts})`);
 			if (this.container.telemetry.enabled) {
@@ -674,6 +685,7 @@ export class GkCliIntegrationProvider implements Disposable {
 						'Downloaded proxy archive data is empty',
 					);
 				}
+
 				// installer file name is the last part of the download URL
 				const cliProxyZipFileName = downloadUrl.substring(downloadUrl.lastIndexOf('/') + 1);
 				cliProxyZipFilePath = Uri.joinPath(globalStorageUri, cliProxyZipFileName);
@@ -713,8 +725,11 @@ export class GkCliIntegrationProvider implements Disposable {
 					// This will throw if the file doesn't exist
 					await workspace.fs.stat(cliExtractedProxyFilePath);
 				} catch (ex) {
+					const reason = isLockedBinaryError(ex)
+						? CLIInstallErrorReason.ProxyExtractLocked
+						: CLIInstallErrorReason.ProxyExtract;
 					throw new CLIInstallError(
-						CLIInstallErrorReason.ProxyExtract,
+						reason,
 						ex instanceof Error ? ex : undefined,
 						ex instanceof Error ? ex.message : '',
 					);
@@ -898,7 +913,7 @@ export class GkCliIntegrationProvider implements Disposable {
 
 	@debug()
 	private async installMCPForAgents(
-		agents: McpAgent[],
+		agents: GkAgent[],
 		cliPath: string,
 	): Promise<{
 		succeeded: string[];
@@ -1028,6 +1043,12 @@ export class GkCliIntegrationProvider implements Disposable {
 					message = 'GitKraken MCP setup is not supported on this platform.';
 					telemetryReason = 'unsupported platform';
 					break;
+				case CLIInstallErrorReason.ProxyExtractLocked:
+					reason = McpSetupErrorReason.CLIBinaryLocked;
+					message =
+						"The GitKraken MCP server is currently running and can't be replaced while in use. Reload the VS Code window to stop it, then try Reinstall again. Reloading will close any unsaved editors.";
+					telemetryReason = 'cli binary locked';
+					break;
 				case CLIInstallErrorReason.ProxyUrlFetch:
 				case CLIInstallErrorReason.ProxyUrlFormat:
 				case CLIInstallErrorReason.ProxyFetch:
@@ -1082,6 +1103,16 @@ export class GkCliIntegrationProvider implements Disposable {
 			case McpSetupErrorReason.Offline:
 				void window.showWarningMessage(ex.message);
 				break;
+			case McpSetupErrorReason.CLIBinaryLocked: {
+				const reload = { title: 'Reload Window' };
+				const cancel = { title: 'Cancel', isCloseAffordance: true };
+				void window.showErrorMessage(ex.message, reload, cancel).then(r => {
+					if (r === reload) {
+						void executeCoreCommand('workbench.action.reloadWindow');
+					}
+				});
+				break;
+			}
 			case McpSetupErrorReason.InstallationFailed:
 			case McpSetupErrorReason.CLIUnsupportedPlatform:
 			case McpSetupErrorReason.CLILocalInstallFailed:
@@ -1248,6 +1279,9 @@ class CLIInstallError extends Error {
 			case CLIInstallErrorReason.ProxyExtract:
 				message = 'Failed to extract proxy';
 				break;
+			case CLIInstallErrorReason.ProxyExtractLocked:
+				message = 'Failed to extract proxy: binary is locked by a running process';
+				break;
 			case CLIInstallErrorReason.ProxyFetch:
 				message = 'Failed to fetch proxy';
 				break;
@@ -1295,62 +1329,5 @@ class McpSetupError extends Error {
 		this.cliVersion = cliVersion;
 		this.telemetryMessage = telemetryMessage;
 		Error.captureStackTrace?.(this, new.target);
-	}
-}
-
-// Discovery file helper functions
-
-/**
- * Gets the discovery file path for a given workspace
- */
-function getDiscoveryFilePath(processId: number, port: number, discoveryDir?: string): string {
-	discoveryDir ??= join(tmpdir(), 'gitkraken', 'gitlens');
-	return join(discoveryDir, `gitlens-ipc-server-${processId}-${port}.json`);
-}
-
-/**
- * Creates a discovery file for the GitLens IPC server
- */
-async function createDiscoveryFile(
-	server: { ipcToken: string; ipcAddress: string; ipcPort: number },
-	workspacePaths: string[],
-): Promise<string> {
-	const discoveryDir = join(tmpdir(), 'gitkraken', 'gitlens');
-	const filePath = getDiscoveryFilePath(ppid, server.ipcPort, discoveryDir);
-
-	// Create directory if it doesn't exist
-	await mkdir(discoveryDir, { recursive: true });
-
-	// Get host app information
-	const ideName = await getHostAppName();
-	const ideDisplayName = env.appName;
-
-	// Prepare discovery file content
-	const discoveryData = {
-		token: server.ipcToken,
-		address: server.ipcAddress,
-		port: server.ipcPort,
-		workspacePaths: workspacePaths,
-		ideName: ideName,
-		ideDisplayName: ideDisplayName,
-		scheme: env.uriScheme,
-		pid: ppid,
-		createdAt: new Date().toISOString(),
-	};
-
-	// Write file with restricted permissions (owner read/write only)
-	await writeFile(filePath, JSON.stringify(discoveryData, null, 2), { mode: 0o600 });
-
-	return filePath;
-}
-
-/**
- * Cleans up the discovery file
- */
-async function cleanupDiscoveryFile(filePath: string): Promise<void> {
-	try {
-		await unlink(filePath);
-	} catch (ex) {
-		Logger.warn(`${formatLoggableScopeBlock('IPC')} Failed to delete discovery file: ${ex}`);
 	}
 }

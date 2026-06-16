@@ -248,6 +248,10 @@ export function decodeEntityIdentifiersFromGitConfig(str: string): GitConfigEnti
 export async function getIssueFromGitConfigEntityIdentifier(
 	container: Container,
 	identifier: GitConfigEntityIdentifier,
+	options?: {
+		/** Only return a value already in the local cache. No remote fetch — returns undefined on cache miss. */
+		cached?: boolean;
+	},
 ): Promise<Issue | undefined> {
 	if (identifier.entityType !== EntityType.Issue) {
 		return undefined;
@@ -275,19 +279,22 @@ export async function getIssueFromGitConfigEntityIdentifier(
 	}
 
 	const integration = await container.integrations.get(integrationId);
+	const resource = {
+		id: identifier.metadata.owner.id,
+		key: identifier.metadata.owner.key,
+		owner: identifier.metadata.owner.owner,
+		name: identifier.metadata.owner.name,
+	};
+
+	if (options?.cached) {
+		return container.cache.peekIssue(identifier.metadata.id, resource, integration);
+	}
+
 	if (integration == null) {
 		return undefined;
 	}
 
-	return integration.getIssue(
-		{
-			id: identifier.metadata.owner.id,
-			key: identifier.metadata.owner.key,
-			owner: identifier.metadata.owner.owner,
-			name: identifier.metadata.owner.name,
-		},
-		identifier.metadata.id,
-	);
+	return integration.getIssue(resource, identifier.metadata.id);
 }
 
 export function getIssueOwner(

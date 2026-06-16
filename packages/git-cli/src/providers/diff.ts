@@ -76,7 +76,7 @@ export class DiffGitSubProvider implements GitDiffSubProvider {
 		}
 
 		try {
-			const result = await this.git.exec(
+			const result = await this.git.run(
 				{ cwd: repoPath, configs: gitConfigsDiff },
 				'diff',
 				'--shortstat',
@@ -105,7 +105,7 @@ export class DiffGitSubProvider implements GitDiffSubProvider {
 			return stat;
 		} catch (ex) {
 			const msg: string = ex?.toString() ?? '';
-			if (GitErrors.noMergeBase.test(msg)) {
+			if (GitErrors.noMergeBase.test(msg) || GitErrors.badRevision.test(msg)) {
 				return undefined;
 			}
 
@@ -149,7 +149,7 @@ export class DiffGitSubProvider implements GitDiffSubProvider {
 
 		let result;
 		try {
-			result = await this.git.exec(
+			result = await this.git.run(
 				{ cwd: repoPath, configs: gitConfigsDiff, errors: 'throw', env: options?.index?.env },
 				'diff',
 				...args,
@@ -188,7 +188,7 @@ export class DiffGitSubProvider implements GitDiffSubProvider {
 		contents: string,
 		_cancellation?: AbortSignal,
 	): Promise<GitDiffFiles | undefined> {
-		const result = await this.git.exec(
+		const result = await this.git.run(
 			{ cwd: repoPath, configs: gitConfigsLog, stdin: contents },
 			'apply',
 			'--numstat',
@@ -218,12 +218,13 @@ export class DiffGitSubProvider implements GitDiffSubProvider {
 		},
 	): Promise<GitFile[] | undefined> {
 		try {
-			const similarityThreshold = options?.similarityThreshold;
+			const similarityThreshold =
+				options?.similarityThreshold ?? this.context.config?.commits.similarityThreshold;
 			const configs =
 				options?.renameLimit != null
 					? [...gitConfigsDiff, '-c', `diff.renameLimit=${options.renameLimit}`]
 					: gitConfigsDiff;
-			const result = await this.git.exec(
+			const result = await this.git.run(
 				{ cwd: repoPath, configs: configs },
 				'diff',
 				'--numstat',
@@ -258,6 +259,7 @@ export class DiffGitSubProvider implements GitDiffSubProvider {
 					for (const file of untracked) {
 						if (seen.has(file.path)) continue;
 						if (options.path && options.path !== file.path) continue;
+
 						files.push(file);
 					}
 				}
@@ -328,7 +330,12 @@ export class DiffGitSubProvider implements GitDiffSubProvider {
 			// Follow file history and specify the file path
 			args.push('--follow', '--', relativePath);
 
-			const result = await this.git.exec({ cwd: repoPath, configs: gitConfigsLog }, ...args);
+			// Unbounded --follow walk over file history can be slow on long histories — queue as background
+			// so it doesn't compete with interactive work.
+			const result = await this.git.run(
+				{ cwd: repoPath, configs: gitConfigsLog, priority: 'background' },
+				...args,
+			);
 
 			let currentSha;
 			let currentPath;
@@ -556,7 +563,7 @@ export class DiffGitSubProvider implements GitDiffSubProvider {
 
 			args.push('--follow', rev!, '--', relativePath);
 
-			const result = await this.git.exec(
+			const result = await this.git.run(
 				{
 					cwd: repoPath,
 					configs: gitConfigsLog,
@@ -681,7 +688,7 @@ export class DiffGitSubProvider implements GitDiffSubProvider {
 
 			let result: GitResult;
 			try {
-				result = await this.git.exec({ cwd: repoPath, configs: gitConfigsLog }, ...args);
+				result = await this.git.run({ cwd: repoPath, configs: gitConfigsLog }, ...args);
 			} catch (ex) {
 				if (rev && !isUncommittedStaged(rev)) throw ex;
 
@@ -704,7 +711,7 @@ export class DiffGitSubProvider implements GitDiffSubProvider {
 				};
 
 				args.splice(index, 1, `-L${range.startLine},${range.endLine}:${relativePath}`);
-				result = await this.git.exec({ cwd: repoPath, configs: gitConfigsLog }, ...args);
+				result = await this.git.run({ cwd: repoPath, configs: gitConfigsLog }, ...args);
 			}
 
 			let currentRange;
@@ -806,7 +813,7 @@ export class DiffGitSubProvider implements GitDiffSubProvider {
 		}
 
 		try {
-			return await this.git.exec(
+			return await this.git.run(
 				{ cwd: repoPath, configs: gitConfigsDiff, encoding: options?.encoding },
 				...params,
 				'--',
@@ -850,7 +857,7 @@ export class DiffGitSubProvider implements GitDiffSubProvider {
 		params.push('--no-index');
 
 		try {
-			const result = await this.git.exec(
+			const result = await this.git.run(
 				{
 					cwd: repoPath,
 					configs: gitConfigsDiff,
@@ -984,7 +991,7 @@ export class DiffGitSubProvider implements GitDiffSubProvider {
 				scope?.debug(`Using tool=${tool}`);
 			}
 
-			await this.git.exec(
+			await this.git.run(
 				{ cwd: root },
 				'difftool',
 				'--no-prompt',
@@ -1023,7 +1030,7 @@ export class DiffGitSubProvider implements GitDiffSubProvider {
 				scope?.debug(`Using tool=${tool}`);
 			}
 
-			await this.git.exec({ cwd: repoPath }, 'difftool', '--dir-diff', `--tool=${tool}`, ref1, ref2);
+			await this.git.run({ cwd: repoPath }, 'difftool', '--dir-diff', `--tool=${tool}`, ref1, ref2);
 		} catch (ex) {
 			const msg: string = ex?.toString() ?? '';
 			if (msg === 'No diff tool found' || /Unknown .+? tool/.test(msg)) {
@@ -1144,7 +1151,7 @@ export async function findPathStatusChanged(
 
 	const ordering = options?.ordering;
 
-	const result = await git.exec(
+	const result = await git.run(
 		{ cwd: repoPath, configs: gitConfigsLog },
 		'log',
 		...parser.arguments,

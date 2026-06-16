@@ -67,7 +67,7 @@ export class CacheProvider implements Disposable {
 	private peek<T extends Cache>(cache: T, key: CacheKey<T>): CacheValue<T> | undefined {
 		const item = this._cache.get(`${cache}:${key}`);
 		if (item == null || isPromise(item.value)) return undefined;
-		return item.value as CacheValue<T> | undefined;
+		return item.value;
 	}
 
 	get<T extends Cache>(
@@ -248,6 +248,32 @@ export class CacheProvider implements Disposable {
 	): CacheResult<DefaultBranch> {
 		const { key, etag } = this.getResourceKeyAndEtag(repo, integration);
 		return this.get('defaultBranch', `repo:${key}`, etag, cacheable, options);
+	}
+
+	peekPullRequestForBranch(
+		branch: string,
+		repo: ResourceDescriptor,
+		integration: GitHostIntegration | undefined,
+	): PullRequest | undefined {
+		const { key } = this.getResourceKeyAndEtag(repo, integration);
+		return this.peek('prByBranch', `branch:${branch}:${key}`);
+	}
+
+	peekPullRequestForSha(
+		sha: string,
+		repo: ResourceDescriptor,
+		integration: GitHostIntegration | undefined,
+	): PullRequest | undefined {
+		const { key } = this.getResourceKeyAndEtag(repo, integration);
+		return this.peek('prsBySha', `sha:${sha}:${key}`);
+	}
+
+	peekIssue(id: string, resource: ResourceDescriptor, integration: IntegrationBase | undefined): Issue | undefined {
+		const { key } = this.getResourceKeyAndEtag(resource, integration);
+		return this.peek(
+			'issuesByIdAndResource',
+			`id:${id}:${key}:${'issue' satisfies IssueOrPullRequestType}:${JSON.stringify(resource)}}`,
+		);
 	}
 
 	getRepositoryMetadata(

@@ -565,13 +565,13 @@ suite('Decorator Test Suite', () => {
 			const instance2 = new TestClass();
 
 			// Concurrent calls on different instances should not deduplicate
-			const start = Date.now();
+			const start = performance.now();
 			const p1 = instance1.method('test');
 			const p2 = instance2.method('test');
 			const p3 = instance1.method('test'); // Should dedupe with p1
 
 			const results = await Promise.all([p1, p2, p3]);
-			const totalTime = Date.now() - start;
+			const totalTime = performance.now() - start;
 
 			// Should execute 2 times (instance1: 1, instance2: 1)
 			assert.strictEqual(executionCount, 2);

@@ -111,7 +111,7 @@
 		all: unset;
 		display: inline-block;
 		box-sizing: border-box;
-		padding: var(--sl-tooltip-padding);
+		padding: var(--wa-tooltip-padding);
 		text-decoration: none;
 		text-shadow: 1px 1px 0 #fff;
 		background-color: #fff;
@@ -245,11 +245,11 @@
 	.driver-popover {
 		all: unset;
 		box-sizing: border-box;
-		color: var(--sl-tooltip-color);
+		color: var(--wa-tooltip-color);
 		margin: 0;
 		padding: 2.4rem;
 		border: 1px solid var(--gl-tooltip-border-color);
-		border-radius: var(--sl-tooltip-border-radius);
+		border-radius: var(--wa-tooltip-border-radius);
 		min-width: var(--gl-onboarding-width-min, 250px);
 		max-width: var(--gl-onboarding-width-max, 300px);
 		box-shadow: 0 2px 8px var(--gl-tooltip-shadow);
@@ -257,10 +257,10 @@
 		position: fixed;
 		top: 0;
 		right: 0;
-		background-color: var(--sl-tooltip-background-color);
+		background-color: var(--wa-tooltip-background-color);
 	}
 	.driver-popover * {
-		font-family: var(--sl-tooltip-font-family);
+		font-family: var(--wa-tooltip-font-family);
 	}
 	.driver-popover-title {
 		font: 19px / normal sans-serif;
@@ -281,7 +281,7 @@
 		cursor: pointer;
 		font-size: 1.6rem;
 		font-weight: 500;
-		color: var(--sl-tooltip-color);
+		color: var(--wa-tooltip-color);
 		z-index: 1;
 		text-align: center;
 		transition: opacity;
@@ -323,7 +323,7 @@
 		// text-shadow: 1px 1px 0 #fff;
 		background-color: var(--vscode-button-secondaryBackground);
 		color: var(--vscode-button-secondaryForeground);
-		font: 12px / normal var(--sl-tooltip-font-family);
+		font: 12px / normal var(--wa-tooltip-font-family);
 		cursor: pointer;
 		outline: 0;
 		zoom: 1;
@@ -355,10 +355,10 @@
 	.driver-popover-arrow {
 		content: '';
 		position: absolute;
-		background-color: var(--sl-tooltip-background-color);
+		background-color: var(--wa-tooltip-background-color);
 		border: 1px solid var(--gl-tooltip-border-color);
-		width: var(--sl-tooltip-arrow-size);
-		height: var(--sl-tooltip-arrow-size);
+		width: var(--wa-tooltip-arrow-size);
+		height: var(--wa-tooltip-arrow-size);
 	}
 	.driver-popover-arrow-side-over {
 		display: none;

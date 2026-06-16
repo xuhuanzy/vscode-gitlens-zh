@@ -33,7 +33,7 @@ export class GlAvatar extends LitElement {
 				line-height: 1;
 				text-transform: uppercase;
 				cursor: default;
-				color: var(--vscode-descriptionForeground);
+				color: var(--gl-avatar-text-color, var(--vscode-descriptionForeground));
 			}
 
 			.thumb--media {

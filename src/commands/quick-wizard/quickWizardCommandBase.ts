@@ -144,7 +144,7 @@ export abstract class QuickWizardCommandBase extends GlCommandBase {
 		let step: QuickPickStep | QuickInputStep | CustomStep | undefined;
 		try {
 			return await new Promise<QuickPickStep | QuickInputStep | CustomStep | undefined>(
-				// eslint-disable-next-line no-async-promise-executor
+				// oxlint-disable-next-line no-async-promise-executor
 				async resolve => {
 					disposables.push(quickpick.onDidHide(() => resolve(step)));
 
@@ -289,7 +289,7 @@ export abstract class QuickWizardCommandBase extends GlCommandBase {
 		const disposables: Disposable[] = [];
 
 		try {
-			// eslint-disable-next-line no-async-promise-executor
+			// oxlint-disable-next-line no-async-promise-executor
 			return await new Promise<QuickPickStep | QuickInputStep | CustomStep | undefined>(async resolve => {
 				const goBack = async () => {
 					if (step.canGoBack === false) return;
@@ -424,7 +424,7 @@ export abstract class QuickWizardCommandBase extends GlCommandBase {
 		const disposables: Disposable[] = [];
 
 		try {
-			// eslint-disable-next-line no-async-promise-executor
+			// oxlint-disable-next-line no-async-promise-executor
 			return await new Promise<QuickPickStep | QuickInputStep | CustomStep | undefined>(async resolve => {
 				async function goBack() {
 					if (step.canGoBack === false) return;
@@ -793,7 +793,7 @@ export abstract class QuickWizardCommandBase extends GlCommandBase {
 							}
 						}
 
-						resolve(await this.nextStep(rootStep.command!, items as QuickPickItem[], quickpick));
+						resolve(await this.nextStep(rootStep.command!, items, quickpick));
 					}),
 				);
 

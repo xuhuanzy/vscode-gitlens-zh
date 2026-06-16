@@ -106,6 +106,8 @@ export async function activate(context: ExtensionContext): Promise<GitLensApi | 
 				return undefined;
 			},
 			hash: microhash,
+			// Redact env var maps (e.g. `GitOperationRunOptions.env` carrying SSH_ASKPASS tokens) from debug logs.
+			sanitizeKeys: new Set(['env']),
 		},
 		context.extensionMode === ExtensionMode.Development,
 	);
@@ -145,6 +147,12 @@ export async function activate(context: ExtensionContext): Promise<GitLensApi | 
 	if (!workspace.isTrusted) {
 		void setContext('gitlens:untrusted', true);
 	}
+
+	// Clear any leftover terminal env-var state from older versions (see #4977). The
+	// current code no longer contributes terminal env vars, but VS Code may still have
+	// persisted entries cached against the extension id, which keeps surfacing the
+	// "terminal needs to be relaunched" warning.
+	context.environmentVariableCollection.clear();
 
 	setKeysForSync(context);
 

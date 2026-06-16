@@ -33,7 +33,7 @@ ${'+line\n'.repeat(100)}`;
 				context as any,
 				diff.length,
 				300, // Small budget that should only fit the main.ts diff
-				getCharacters as any,
+				getCharacters,
 			);
 
 			assert.ok(result != null, 'Should return a truncated result');
@@ -54,7 +54,7 @@ ${'+line\n'.repeat(1000)}`;
 				context as any,
 				diff.length,
 				10, // Impossibly small budget
-				getCharacters as any,
+				getCharacters,
 			);
 
 			assert.strictEqual(result, undefined, 'Should return undefined when nothing fits');
@@ -74,7 +74,7 @@ ${'+line\n'.repeat(1000)}`;
 				context as any,
 				diff.length,
 				10000, // Large budget
-				getCharacters as any,
+				getCharacters,
 			);
 
 			assert.ok(result != null, 'Should return a result');
@@ -84,7 +84,7 @@ ${'+line\n'.repeat(1000)}`;
 		test('handles empty diff', async () => {
 			const context: TestContext = { diff: '' };
 
-			const result = await truncatePromptWithDiff(context as any, 0, 1000, getCharacters as any);
+			const result = await truncatePromptWithDiff(context as any, 0, 1000, getCharacters);
 
 			assert.strictEqual(result, undefined, 'Should return undefined for empty diff');
 		});
@@ -92,7 +92,7 @@ ${'+line\n'.repeat(1000)}`;
 		test('handles undefined diff', async () => {
 			const context: TestContext = { diff: undefined };
 
-			const result = await truncatePromptWithDiff(context as any, 0, 1000, getCharacters as any);
+			const result = await truncatePromptWithDiff(context as any, 0, 1000, getCharacters);
 
 			assert.strictEqual(result, undefined, 'Should return undefined for undefined diff');
 		});
@@ -116,7 +116,7 @@ diff --git a/src/app.ts b/src/app.ts
 			const context: TestContext = { diff: diff };
 
 			// Budget that fits only one file
-			const result = await truncatePromptWithDiff(context as any, diff.length, 200, getCharacters as any);
+			const result = await truncatePromptWithDiff(context as any, diff.length, 200, getCharacters);
 
 			assert.ok(result != null, 'Should return a result');
 			assert.ok(result.diff?.includes('src/app.ts'), 'Should keep the TypeScript file');
@@ -142,7 +142,7 @@ diff --git a/src/utils.ts b/src/utils.ts
 			const context: TestContext = { diff: diff };
 
 			// Budget that fits only one file
-			const result = await truncatePromptWithDiff(context as any, diff.length, 200, getCharacters as any);
+			const result = await truncatePromptWithDiff(context as any, diff.length, 200, getCharacters);
 
 			assert.ok(result != null, 'Should return a result');
 			assert.ok(result.diff?.includes('src/utils.ts'), 'Should keep the source file');
@@ -173,7 +173,7 @@ ${'+line\n'.repeat(f.lines)}`,
 			// Set a limit that can fit some but not all files
 			const targetLimit = 400;
 
-			const result = await truncatePromptWithDiff(context as any, diff.length, targetLimit, getCharacters as any);
+			const result = await truncatePromptWithDiff(context as any, diff.length, targetLimit, getCharacters);
 
 			assert.ok(result != null, 'Should return a truncated result');
 			assert.ok(
@@ -208,7 +208,7 @@ ${'+// large file line\n'.repeat(100)}`;
 			// Budget that can fit the small file but not both
 			const targetLimit = 300;
 
-			const result = await truncatePromptWithDiff(context as any, diff.length, targetLimit, getCharacters as any);
+			const result = await truncatePromptWithDiff(context as any, diff.length, targetLimit, getCharacters);
 
 			assert.ok(result != null, 'Should return a result');
 			assert.ok(result.diff?.includes('small.ts'), 'Should include the small file');
@@ -248,7 +248,7 @@ diff --git a/src/utils.ts b/src/utils.ts
 			// Budget that fits two files
 			const targetLimit = 350;
 
-			const result = await truncatePromptWithDiff(context as any, diff.length, targetLimit, getCharacters as any);
+			const result = await truncatePromptWithDiff(context as any, diff.length, targetLimit, getCharacters);
 
 			assert.ok(result != null, 'Should return a result');
 			// Should keep the .ts files (higher score) over .d.ts (lower score)

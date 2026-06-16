@@ -3,6 +3,8 @@ import type { GitStatus } from '@gitlens/git/models/status.js';
 import type { GitWorktree } from '@gitlens/git/models/worktree.js';
 import { filterMap } from '@gitlens/utils/iterable.js';
 import { PageableResult } from '@gitlens/utils/paging.js';
+import { normalizePath } from '@gitlens/utils/path.js';
+import { getSettledValue } from '@gitlens/utils/promise.js';
 import type { Container } from '../../../container.js';
 import type { GlRepository } from '../../models/repository.js';
 
@@ -72,6 +74,33 @@ export async function getWorktreeForBranch(
 	return undefined;
 }
 
+/**
+ * Returns the worktrees — other than the one at `repoPath` — whose HEAD reaches `sha`, i.e. the
+ * worktrees that hold a working copy of the commit's files on a branch that contains the commit.
+ * Used to surface "Open Worktree File" for commits whose branch lives in a sibling worktree.
+ */
+export async function getReachableWorktrees(
+	container: Container,
+	repoPath: string,
+	sha: string,
+	cancellation?: AbortSignal,
+): Promise<GitWorktree[]> {
+	const worktrees = await container.git.getRepository(repoPath)?.git.worktrees?.getWorktrees(cancellation);
+	if (worktrees == null || worktrees.length <= 1) return [];
+
+	const normalizedRepoPath = normalizePath(repoPath);
+	const candidates = worktrees.filter(
+		wt => wt.type !== 'bare' && wt.sha != null && normalizePath(wt.path) !== normalizedRepoPath,
+	);
+	if (!candidates.length) return [];
+
+	const svc = container.git.getRepositoryService(repoPath);
+	const results = await Promise.allSettled(
+		candidates.map(wt => svc.commits.isAncestorOf(sha, wt.sha!, cancellation)),
+	);
+	return candidates.filter((_wt, i) => getSettledValue(results[i]) === true);
+}
+
 export async function getWorktreesByBranch(
 	repos: GlRepository | GlRepository[] | undefined,
 	options?: { includeDefault?: boolean },
@@ -126,4 +155,15 @@ export async function getWorktreeHasWorkingChanges(
 ): Promise<boolean | undefined> {
 	if (worktree.type === 'bare') return undefined;
 	return container.git.getRepositoryService(worktree.uri.fsPath).status?.hasWorkingChanges(options);
+}
+
+/** Whether the worktree's checked-out tip has commits not on any remote (unpushed). Cheap early-exit
+ *  probe — for LOCAL-ONLY branches; tracked branches get their ahead count for free from the upstream
+ *  state. Returns `undefined` for detached/bare worktrees or when the provider can't determine it. */
+export async function getWorktreeHasUnpublishedCommits(
+	container: Container,
+	worktree: GitWorktree,
+): Promise<boolean | undefined> {
+	if (worktree.type !== 'branch' || worktree.sha == null) return undefined;
+	return container.git.getRepositoryService(worktree.uri.fsPath).commits.hasUnpublishedCommits?.(worktree.sha);
 }

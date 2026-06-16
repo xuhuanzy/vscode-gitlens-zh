@@ -1,6 +1,8 @@
 import { html, nothing } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { when } from 'lit/directives/when.js';
+import { getAltKeySymbol } from '@env/platform.js';
+import { ModifierKeysController } from '../../controllers/modifier-keys.js';
 import { GlElement } from '../element.js';
 import type { TreeItemCheckedDetail, TreeItemSelectionDetail } from './base.js';
 import { treeItemStyles } from './tree.css.js';
@@ -46,14 +48,25 @@ export class GlTreeItem extends GlElement {
 	@property()
 	checked: boolean | 'indeterminate' = false;
 
-	@property({ type: Boolean })
+	@property({ type: Boolean, reflect: true, attribute: 'disable-check' })
 	disableCheck = false;
 
 	@property({ attribute: 'checkable-tooltip' })
 	checkableTooltip?: string;
 
+	@property({ attribute: 'checkable-alt-tooltip' })
+	checkableAltTooltip?: string;
+
+	private readonly _modifiers = new ModifierKeysController(this);
+
 	@property({ type: Boolean })
 	showIcon = true;
+
+	// Opts the host out of the single-line tree-row layout (fixed height, inline text, nowrap).
+	// Use when the default slot hosts a multi-line / card component; consumer drives row height
+	// via --gl-tree-item-min-height / --gl-tree-item-padding-y.
+	@property({ type: Boolean, reflect: true })
+	rich = false;
 
 	@property({ type: Boolean, reflect: true })
 	matched = false;
@@ -61,7 +74,9 @@ export class GlTreeItem extends GlElement {
 	@property({ type: Number })
 	override tabIndex = -1;
 
-	@property({ type: String, attribute: 'vscode-context' })
+	// Reflected as `data-vscode-context` so the shared ContextMenuProxyController on an ancestor can
+	// find it via `composedPath()` and bridge it to light DOM — no bespoke per-tree handler needed.
+	@property({ type: String, attribute: 'data-vscode-context', reflect: true })
 	vscodeContext?: string;
 
 	// state
@@ -163,7 +178,11 @@ export class GlTreeItem extends GlElement {
 		if (!this.checkable) {
 			return nothing;
 		}
-		const checkbox = html`<span class="checkbox"
+
+		const checkbox = html`<span
+			class="checkbox"
+			@mouseenter=${this.onCheckboxMouseEnter}
+			@mouseleave=${this.onCheckboxMouseLeave}
 			><input
 				class="checkbox__input"
 				id="checkbox"
@@ -175,11 +194,23 @@ export class GlTreeItem extends GlElement {
 				@click=${this.onCheckboxClick} /><code-icon icon="check" size="14" class="checkbox__check"></code-icon
 			><code-icon icon="dash" size="14" class="checkbox__dash"></code-icon
 		></span>`;
-		return this.checkableTooltip
-			? html`<gl-tooltip hoist placement="right"
-					>${checkbox}<span slot="content">${this.checkableTooltip}</span></gl-tooltip
-				>`
+		const tooltipContent = this.getEffectiveCheckboxTooltip();
+		// `content` attribute (rather than the `content` slot) so multi-line tooltips with `\n`
+		// get converted to `<br>` by gl-tooltip's `handleUnsafeOverlayContent` — slot content
+		// flows through CSS `white-space: normal` and collapses newlines to spaces.
+		return tooltipContent
+			? html`<gl-tooltip placement="right" content=${tooltipContent}>${checkbox}</gl-tooltip>`
 			: checkbox;
+	}
+
+	private getEffectiveCheckboxTooltip(): string | undefined {
+		const base = this.checkableTooltip;
+		const alt = this.checkableAltTooltip;
+		if (!alt) return base;
+		if (!base) return alt;
+		// Alt held: show the alt label alone (mirrors the alt action's actual effect).
+		// Otherwise: stack the base label and the alt-key hint so the modifier is discoverable.
+		return this._modifiers.altKey ? alt : `${base}\n[${getAltKeySymbol()}] ${alt}`;
 	}
 
 	private renderActions() {
@@ -218,7 +249,7 @@ export class GlTreeItem extends GlElement {
 	}
 
 	private selectCore(
-		modifiers?: { dblClick: boolean; altKey?: boolean; ctrlKey?: boolean; metaKey?: boolean },
+		modifiers?: { dblClick: boolean; altKey?: boolean; ctrlKey?: boolean; metaKey?: boolean; shiftKey?: boolean },
 		quiet = false,
 	) {
 		this.emit('gl-tree-item-select');
@@ -232,6 +263,7 @@ export class GlTreeItem extends GlElement {
 					altKey: modifiers?.altKey ?? false,
 					ctrlKey: modifiers?.ctrlKey ?? false,
 					metaKey: modifiers?.metaKey ?? false,
+					shiftKey: modifiers?.shiftKey ?? false,
 				});
 			});
 		}
@@ -254,6 +286,9 @@ export class GlTreeItem extends GlElement {
 		this.selectCore({
 			dblClick: false,
 			altKey: e.altKey,
+			ctrlKey: e.ctrlKey,
+			metaKey: e.metaKey,
+			shiftKey: e.shiftKey,
 		});
 	}
 
@@ -290,17 +325,42 @@ export class GlTreeItem extends GlElement {
 		this.dispatchEvent(evt);
 	}
 
-	private onCheckboxClick(e: Event) {
+	private _checkboxClickAlt = false;
+
+	private onCheckboxClick(e: MouseEvent) {
 		e.stopPropagation();
+		this._checkboxClickAlt = e.altKey;
 	}
 
 	private onCheckboxChange(e: Event) {
 		e.preventDefault();
 		e.stopPropagation();
-		const newChecked = (e.target as HTMLInputElement).checked;
+		let newChecked = (e.target as HTMLInputElement).checked;
+		// Alt+click on a mixed (indeterminate) checkbox flips the natural transition from
+		// checked-true (stage remaining) to checked-false (unstage everything) so users can
+		// drop staged content in one click instead of two. Read alt from BOTH the captured
+		// click event AND the live modifier tracker — keyboard activation (Space) skips the
+		// click handler, and some platforms may not fire the click handler before change.
+		const altHeld = this._checkboxClickAlt || this._modifiers.altKey;
+		if (this.checked === 'indeterminate' && altHeld) {
+			newChecked = false;
+			// Sync the input — the browser already set checked=true for the indeterminate
+			// click; without this, the input visually flips on for one frame before Lit's
+			// next render reconciles against `this.checked = false`.
+			(e.target as HTMLInputElement).checked = false;
+		}
+		this._checkboxClickAlt = false;
 		this.checked = newChecked;
 
 		this.emit('gl-tree-item-checked', { node: this, checked: newChecked });
+	}
+
+	private onCheckboxMouseEnter() {
+		this.emit('gl-tree-item-suspend-tooltip');
+	}
+
+	private onCheckboxMouseLeave() {
+		this.emit('gl-tree-item-resume-tooltip');
 	}
 }
 
@@ -313,5 +373,7 @@ declare global {
 		'gl-tree-item-select': CustomEvent<undefined>;
 		'gl-tree-item-selected': CustomEvent<TreeItemSelectionDetail>;
 		'gl-tree-item-checked': CustomEvent<TreeItemCheckedDetail>;
+		'gl-tree-item-suspend-tooltip': CustomEvent<undefined>;
+		'gl-tree-item-resume-tooltip': CustomEvent<undefined>;
 	}
 }

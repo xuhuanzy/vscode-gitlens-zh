@@ -4,6 +4,8 @@ export function getActionName(action: AIActionType): string {
 	switch (action) {
 		case 'explain-changes':
 			return 'Explain Changes';
+		case 'review-changes':
+			return 'Review Changes';
 		case 'generate-commitMessage':
 			return 'Generate Commit Message';
 		case 'generate-stashMessage':
@@ -18,6 +20,8 @@ export function getActionName(action: AIActionType): string {
 			return 'Create Pull Request Details (Preview)';
 		case 'generate-commits':
 			return 'Generate Commits (Preview)';
+		case 'conflict-resolution':
+			return 'Resolve Conflicts with AI (Preview)';
 		case 'generate-searchQuery':
 			return 'Generate Search Query (Preview)';
 	}

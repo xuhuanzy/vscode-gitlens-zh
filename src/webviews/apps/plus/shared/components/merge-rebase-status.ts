@@ -95,6 +95,12 @@ export class GlMergeConflictWarning extends LitElement {
 	@property({ type: Boolean, reflect: true })
 	conflicts = false;
 
+	/** Opt-in for the "Resolve Conflicts with AI" action (fires `ai-resolve-conflicts`). Only hosts
+	 *  that can route the event into a resolve flow (the graph WIP details) should enable it —
+	 *  otherwise the action would render as a dead button. */
+	@property({ type: Boolean, attribute: 'ai-resolve' })
+	aiResolve = false;
+
 	@property({ type: Object })
 	pausedOpStatus?: GitPausedOperationStatus;
 
@@ -161,7 +167,7 @@ export class GlMergeConflictWarning extends LitElement {
 	private renderConflictsLink(label: string) {
 		if (!this.conflicts) return label;
 
-		return html`<gl-tooltip hoist content="Show Conflicts">
+		return html`<gl-tooltip content="Show Conflicts">
 			<a href="${this.onShowConflictsUrl}" class="link">${label}</a>
 		</gl-tooltip>`;
 	}
@@ -180,7 +186,7 @@ export class GlMergeConflictWarning extends LitElement {
 				: 'Open Commit in Commit Graph';
 		const jumpUrl = this.createJumpUrl(ref);
 
-		return html`<gl-tooltip hoist content=${tooltip}>
+		return html`<gl-tooltip content=${tooltip}>
 			<a href=${jumpUrl} class="ref-link">
 				${isBranch
 					? html`<gl-branch-name .name=${ref.name} .size=${12}></gl-branch-name>`
@@ -196,12 +202,26 @@ export class GlMergeConflictWarning extends LitElement {
 		});
 	}
 
+	private onResolveWithAI = (e: Event): void => {
+		e.preventDefault();
+		this.dispatchEvent(new CustomEvent('ai-resolve-conflicts', { bubbles: true, composed: true }));
+	};
+
 	private renderActions() {
 		if (this.pausedOpStatus == null) return nothing;
 
 		const status = this.pausedOpStatus.type;
 
 		return html`<action-nav class="actions">
+			${when(
+				this.conflicts && this.aiResolve,
+				() =>
+					html`<action-item
+						label="Resolve Conflicts with AI"
+						icon="sparkle"
+						@click=${this.onResolveWithAI}
+					></action-item>`,
+			)}
 			${when(
 				status === 'rebase',
 				() =>

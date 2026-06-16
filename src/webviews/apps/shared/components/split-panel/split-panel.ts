@@ -15,6 +15,7 @@ declare global {
 		'gl-split-panel-change': CustomEvent<{ position: number }>;
 		'gl-split-panel-drag-end': CustomEvent<{ position: number }>;
 		'gl-split-panel-dblclick': CustomEvent<void>;
+		'gl-split-panel-closed-change': CustomEvent<{ closed: boolean; position: number }>;
 	}
 }
 
@@ -68,6 +69,14 @@ export class GlSplitPanel extends LitElement {
 		const old = this._position;
 		this._position = clampPosition(value);
 		this.updateCachedPrimaryPx();
+		// Emit closed-change on programmatic prop updates too (not just user interactions);
+		// otherwise a consumer-initiated open (`.position=22`) leaves the internal
+		// `_closedState` stale and the next user drag-to-close misses its transition. Skip
+		// until `connectedCallback` has seeded the baseline — `_closedState === undefined`
+		// marks "not yet seeded". Consumer handlers are idempotent so an echo is safe.
+		if (this._closedState !== undefined) {
+			this.emitClosedIfChanged();
+		}
 		this.requestUpdate('position', old);
 	}
 
@@ -100,9 +109,28 @@ export class GlSplitPanel extends LitElement {
 	@property({ reflect: true })
 	primary: 'start' | 'end' | undefined;
 
+	/**
+	 * Layout mode. `split` (default) lays the panels out side-by-side via CSS grid; resizing
+	 * one redistributes space. `overlay` keeps the same drag/snap/percentage math but stacks
+	 * the start panel on top of the end panel via absolute positioning, so the end panel always
+	 * occupies the full container — useful when the start panel should float over the end
+	 * (e.g. an auto-collapsing drawer).
+	 */
+	@property({ reflect: true })
+	mode: 'split' | 'overlay' = 'split';
+
 	/** Whether resizing is disabled. */
 	@property({ type: Boolean, reflect: true })
 	disabled = false;
+
+	/**
+	 * Tracks the last-emitted closed state. `undefined` doubles as the "not yet seeded"
+	 * sentinel — `emitClosedIfChanged` short-circuits until `connectedCallback` seeds the
+	 * baseline, which prevents spurious mount-time events for the value the consumer just
+	 * rendered (e.g. on first mount with `detailsVisible=false`, the initial `.position=100`
+	 * binding would otherwise emit `closed:true` to a consumer that already knows).
+	 */
+	private _closedState: boolean | undefined;
 
 	@query('.divider')
 	private dividerEl!: HTMLElement;
@@ -114,6 +142,7 @@ export class GlSplitPanel extends LitElement {
 	/** Update the cached pixel width of the primary panel from the current position and size. */
 	private updateCachedPrimaryPx(): void {
 		if (this._size <= 0) return;
+
 		if (this.primary === 'end') {
 			this._cachedPrimaryPx = ((100 - this._position) / 100) * this._size;
 		} else {
@@ -126,20 +155,32 @@ export class GlSplitPanel extends LitElement {
 		this._resizeObserver = new ResizeObserver(entries => {
 			const rect = entries[0].contentRect;
 			const size = Math.round(this.isHorizontal ? rect.width : rect.height);
+			// Ignore zero-size measurements (e.g. when the host is `display: none`). Recomputing
+			// `_position` against a 0 size collapses it to 0 or 100 via division-by-zero clamp,
+			// emits a spurious change event that persists corrupted state, and causes a one-frame
+			// flash of the collapsed position when the element is re-shown.
+			if (size === 0) return;
+
 			if (size !== this._size) {
 				const oldPos = this._position;
 				this._size = size;
 
 				// When a primary panel is set, maintain its pixel width
 				if (this.primary && this._cachedPrimaryPx > 0) {
-					if (this.primary === 'end') {
-						this._position = clampPosition(100 - (this._cachedPrimaryPx / size) * 100);
-					} else {
-						this._position = clampPosition((this._cachedPrimaryPx / size) * 100);
-					}
+					const raw =
+						this.primary === 'end'
+							? clampPosition(100 - (this._cachedPrimaryPx / size) * 100)
+							: clampPosition((this._cachedPrimaryPx / size) * 100);
 					// Apply snap for visual constraints but DON'T update the cache —
-					// this preserves the intended pixel width for when the container grows back
-					this._position = this.applySnap(this._position);
+					// this preserves the intended pixel width for when the container grows back.
+					const snapped = this.applySnap(raw);
+					// A resize is not a user gesture — the container changed shape, the user
+					// didn't ask to close the panel. If snap would transition open → closed,
+					// refuse and keep the unsnapped raw position (still clamped 0–100, still
+					// honors the cached pixel width). User-driven paths (pointer/keyboard/
+					// setter) still honor close-snap because they don't go through this branch.
+					const wasClosed = this._closedState === true;
+					this._position = !wasClosed && this.computeClosed(snapped) ? raw : snapped;
 				}
 				// No primary: position stays the same percentage → proportional scaling
 
@@ -153,6 +194,12 @@ export class GlSplitPanel extends LitElement {
 			this._resizeObserver!.observe(this);
 			const rect = this.getBoundingClientRect();
 			this._size = Math.round(this.isHorizontal ? rect.width : rect.height);
+			// Seed initial closed state so transition-detection has a baseline. Setting it to
+			// a non-undefined value also flips the position setter's "not seeded" gate, so
+			// subsequent programmatic updates emit transitions. Without a `primary` there is
+			// no closed edge; seed as `false` to unlock the gate while keeping the setter's
+			// `computeClosed` always returning `false` (no transitions will ever fire).
+			this._closedState = this.primary != null ? this.computeClosed(this._position) : false;
 			// Re-apply snap now that container size is known so pixel-aware snap
 			// functions can clamp initial position (from restored/default percentage).
 			const snapped = this.applySnap(this._position);
@@ -214,10 +261,46 @@ export class GlSplitPanel extends LitElement {
 				detail: { position: this._position },
 			}),
 		);
+		this.emitClosedIfChanged();
+	}
+
+	/**
+	 * Closed state is exact-edge: `primary='end'` → closed at 100, `primary='start'` → closed
+	 * at 0. Snap functions are expected to land on the edge when the user drags a pane to hide
+	 * it (e.g. `if (pos < min/2) return 0`). Without a `primary`, there's no dedicated panel
+	 * to close, so no event is emitted.
+	 */
+	private computeClosed(pos: number): boolean {
+		if (this.primary == null) return false;
+		return this.primary === 'end' ? pos >= 100 : pos <= 0;
+	}
+
+	/**
+	 * Emits `gl-split-panel-closed-change` only when the closed state transitions. The initial
+	 * closed state is seeded (without emitting) in `connectedCallback` so consumers receive an
+	 * event only for genuine user-driven transitions, not the value they just rendered.
+	 */
+	private emitClosedIfChanged(): void {
+		if (this.primary == null) return;
+
+		const closed = this.computeClosed(this._position);
+		if (this._closedState === closed) return;
+
+		this._closedState = closed;
+		// Do NOT bubble — split-panels are legitimately nested (details > sidebar > minimap),
+		// so bubbling would fire outer handlers for an inner split's transition, corrupting
+		// unrelated visibility/position state. Listeners bind directly via `@event=` so they
+		// fire regardless.
+		this.dispatchEvent(
+			new CustomEvent('gl-split-panel-closed-change', {
+				detail: { closed: closed, position: this._position },
+			}),
+		);
 	}
 
 	private handlePointerDown(e: PointerEvent): void {
 		if (this.disabled || e.button !== 0) return;
+
 		e.preventDefault();
 
 		// Detect double-click from pointer events (dblclick is suppressed by preventDefault above)
@@ -227,6 +310,7 @@ export class GlSplitPanel extends LitElement {
 			this.dispatchEvent(new CustomEvent('gl-split-panel-dblclick', { bubbles: true, composed: true }));
 			return;
 		}
+
 		this._lastPointerDownTime = now;
 
 		const horiz = this.isHorizontal;
@@ -261,6 +345,7 @@ export class GlSplitPanel extends LitElement {
 
 		const onMove = (ev: PointerEvent) => {
 			if (this._size <= 0) return;
+
 			const rect = this.getBoundingClientRect();
 			const posPx = (horiz ? ev.clientX - rect.left : ev.clientY - rect.top) - offsetPx;
 			const posPct = (posPx / this._size) * 100;

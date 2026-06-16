@@ -107,8 +107,12 @@ export class GlActiveWork extends SignalWatcher(LitElement) {
 				--gl-tooltip-text-transform: none;
 			}
 
-			.heading-branch-breadcrumb {
-				text-transform: none;
+			/* Style hr inside any slotted tooltip — the default browser hr renders too
+			   bright and without proper spacing inside the dark tooltip body. */
+			[slot='tooltip'] hr {
+				border: none;
+				border-top: 1px solid var(--color-foreground--25);
+				margin: 0.4rem 0;
 			}
 		`,
 	];
@@ -190,17 +194,18 @@ export class GlActiveWork extends SignalWatcher(LitElement) {
 		const repo = overview?.repository;
 		const activeBranches = overview?.active;
 		if (!repo || !activeBranches?.length) return html`<span>None</span>`;
+
 		const hasMultipleRepositories = this._homeCtx.repositories.get().openCount > 1;
 		const primaryBranch = activeBranches[0];
 
 		return html`
 			<gl-section ?loading=${isFetching}>
-				<gl-breadcrumbs slot="heading">
-					<gl-breadcrumb-item collapsibleState="none" class="heading-repo-breadcrumb"
+				<gl-breadcrumbs slot="heading" label="Active Work scope">
+					<gl-breadcrumb-item label="${repo.name}" .shrink=${0}
 						><gl-repo-button-group
 							.repository=${repo}
 							?disabled=${!hasMultipleRepositories}
-							?hasMultipleRepositories=${hasMultipleRepositories}
+							.hasMultipleRepositories=${hasMultipleRepositories}
 							.source=${{ source: 'graph' } as const}
 							?expandable=${true}
 							@gl-click=${this.onRepositorySelectorClicked}
@@ -211,7 +216,7 @@ export class GlActiveWork extends SignalWatcher(LitElement) {
 							</span></gl-repo-button-group
 						></gl-breadcrumb-item
 					>
-					<gl-breadcrumb-item collapsibleState="none" icon="git-branch" class="heading-branch-breadcrumb"
+					<gl-breadcrumb-item icon="git-branch" label="${primaryBranch.reference?.name ?? 'Branch'}"
 						><gl-ref-button .ref=${primaryBranch.reference} @click=${this.onBranchSelectorClicked}
 							><span slot="tooltip">Switch to Another Branch... </span></gl-ref-button
 						></gl-breadcrumb-item

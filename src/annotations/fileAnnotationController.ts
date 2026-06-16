@@ -37,6 +37,7 @@ import { registerCommand } from '../system/-webview/command.js';
 import { configuration } from '../system/-webview/configuration.js';
 import { setContext } from '../system/-webview/context.js';
 import type { KeyboardScope } from '../system/-webview/keyboard.js';
+import { loadChunk } from '../system/-webview/loadChunk.js';
 import { UriSet } from '../system/-webview/uriMap.js';
 import { isTrackableTextEditor } from '../system/-webview/vscode/editors.js';
 import type {
@@ -478,6 +479,7 @@ export class FileAnnotationController implements Disposable {
 		}
 
 		if (editor == null) return false; // || editor.viewColumn == null) return false;
+
 		this._editor = editor;
 
 		const trackedDocument = await this.container.documentTracker.getOrAdd(editor.document);
@@ -654,8 +656,8 @@ export class FileAnnotationController implements Disposable {
 		let provider: AnnotationProviderBase | undefined = undefined;
 		switch (type) {
 			case 'blame': {
-				const { GutterBlameAnnotationProvider } = await import(
-					/* webpackChunkName: "annotations" */ './gutterBlameAnnotationProvider.js'
+				const { GutterBlameAnnotationProvider } = await loadChunk(
+					() => import(/* webpackChunkName: "annotations" */ './gutterBlameAnnotationProvider.js'),
 				);
 				provider = new GutterBlameAnnotationProvider(
 					this.container,
@@ -666,8 +668,8 @@ export class FileAnnotationController implements Disposable {
 				break;
 			}
 			case 'changes': {
-				const { GutterChangesAnnotationProvider } = await import(
-					/* webpackChunkName: "annotations" */ './gutterChangesAnnotationProvider.js'
+				const { GutterChangesAnnotationProvider } = await loadChunk(
+					() => import(/* webpackChunkName: "annotations" */ './gutterChangesAnnotationProvider.js'),
 				);
 				provider = new GutterChangesAnnotationProvider(
 					this.container,
@@ -678,8 +680,8 @@ export class FileAnnotationController implements Disposable {
 				break;
 			}
 			case 'heatmap': {
-				const { GutterHeatmapBlameAnnotationProvider } = await import(
-					/* webpackChunkName: "annotations" */ './gutterHeatmapBlameAnnotationProvider.js'
+				const { GutterHeatmapBlameAnnotationProvider } = await loadChunk(
+					() => import(/* webpackChunkName: "annotations" */ './gutterHeatmapBlameAnnotationProvider.js'),
 				);
 				provider = new GutterHeatmapBlameAnnotationProvider(
 					this.container,

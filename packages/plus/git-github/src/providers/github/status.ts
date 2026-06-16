@@ -2,6 +2,7 @@ import type { GitFile } from '@gitlens/git/models/file.js';
 import type { GitConflictFile } from '@gitlens/git/models/staging.js';
 import { GitStatus } from '@gitlens/git/models/status.js';
 import type { GitStatusSubProvider, GitWorkingChangesState } from '@gitlens/git/providers/status.js';
+import type { GitCommandPriority } from '@gitlens/git/run.types.js';
 import { gate } from '@gitlens/utils/decorators/gate.js';
 import { debug } from '@gitlens/utils/decorators/log.js';
 import { HeadType } from '../../context.js';
@@ -12,7 +13,11 @@ export class StatusGitSubProvider implements GitStatusSubProvider {
 
 	@gate()
 	@debug()
-	async getStatus(repoPath: string | undefined, _cancellation?: AbortSignal): Promise<GitStatus | undefined> {
+	async getStatus(
+		repoPath: string | undefined,
+		_options?: { priority?: GitCommandPriority },
+		_cancellation?: AbortSignal,
+	): Promise<GitStatus | undefined> {
 		if (repoPath == null) return undefined;
 
 		const context = await this.provider.ensureRepositoryContext(repoPath);

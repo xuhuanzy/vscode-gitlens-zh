@@ -4,11 +4,17 @@ import { html } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
 import { Color } from '@gitlens/utils/color.js';
 import type { GraphServices } from '../../../plus/graph/graphService.js';
-import type { State } from '../../../plus/graph/protocol.js';
+import type {
+	DidRequestOpenCompareModeParams,
+	DidRequestOpenTimelineScopeParams,
+	DidRequestSearchParams,
+	State,
+} from '../../../plus/graph/protocol.js';
 import { GlAppHost } from '../../shared/appHost.js';
 import type { HostIpc } from '../../shared/ipc.js';
 import { RpcController } from '../../shared/rpc/rpcController.js';
 import type { ThemeChangeEvent } from '../../shared/theme.js';
+import { graphServicesContext } from './context.js';
 import type { GraphApp } from './graph-app.js';
 import { sidebarActionsContext } from './sidebar/sidebarContext.js';
 import { createSidebarActions } from './sidebar/sidebarState.js';
@@ -32,11 +38,18 @@ export class GraphAppHost extends GlAppHost<State, GraphStateProvider> {
 		initialValue: this._sidebarActions,
 	});
 
+	private _servicesProvider = new ContextProvider(this, {
+		context: graphServicesContext,
+		initialValue: undefined,
+	});
+
 	private _rpc = new RpcController<GraphServices>(this, {
 		onReady: services => this._onRpcReady(services),
 	});
 
 	private async _onRpcReady(services: import('@eamodio/supertalk').Remote<GraphServices>): Promise<void> {
+		this._servicesProvider.setValue(services);
+
 		const sidebar = await services.sidebar;
 		this._sidebarActions.initialize(sidebar);
 	}
@@ -56,10 +69,47 @@ export class GraphAppHost extends GlAppHost<State, GraphStateProvider> {
 		return Object.values(this.state.excludeTypes).includes(true);
 	}
 
+	override connectedCallback(): void {
+		super.connectedCallback?.();
+		// StateProvider dispatches webview-directed notifications on this element (the apphost).
+		// We listen here — descendants can't catch parent-dispatched events — and route to the
+		// graph-app, which holds the @query reference to the details panel.
+		this.addEventListener(
+			'gl-graph-request-open-compare-mode',
+			this._handleRequestOpenCompareMode as EventListener,
+		);
+		this.addEventListener(
+			'gl-graph-request-open-timeline-scope',
+			this._handleRequestOpenTimelineScope as EventListener,
+		);
+		this.addEventListener('gl-graph-request-search', this._handleRequestSearch as EventListener);
+	}
+
 	override disconnectedCallback(): void {
 		super.disconnectedCallback?.();
+		this.removeEventListener(
+			'gl-graph-request-open-compare-mode',
+			this._handleRequestOpenCompareMode as EventListener,
+		);
+		this.removeEventListener(
+			'gl-graph-request-open-timeline-scope',
+			this._handleRequestOpenTimelineScope as EventListener,
+		);
+		this.removeEventListener('gl-graph-request-search', this._handleRequestSearch as EventListener);
 		this._sidebarActions.dispose();
 	}
+
+	private _handleRequestOpenCompareMode = (e: CustomEvent<DidRequestOpenCompareModeParams>): void => {
+		this.appElement?.openCompareMode(e.detail);
+	};
+
+	private _handleRequestOpenTimelineScope = (e: CustomEvent<DidRequestOpenTimelineScopeParams>): void => {
+		this.appElement?.openTimelineScope(e.detail);
+	};
+
+	private _handleRequestSearch = (e: CustomEvent<DidRequestSearchParams>): void => {
+		this.appElement?.applyExternalSearchRequest(e.detail);
+	};
 
 	override render() {
 		return html`<gl-graph-app></gl-graph-app>`;
@@ -104,14 +154,8 @@ export class GraphAppHost extends GlAppHost<State, GraphStateProvider> {
 			return percent * (max - min) + min;
 		};
 
-		// minimap and scroll markers
-
-		let c = Color.fromCssVariable('--vscode-scrollbarSlider-background', e.computedStyle);
-		rootStyle.setProperty(
-			'--color-graph-minimap-visibleAreaBackground',
-			c.luminance(themeLuminance(e.isLightTheme ? 0.6 : 0.1)).toString(),
-		);
-
+		// minimap tip colors (dark themes only)
+		let c: Color;
 		if (!e.isLightTheme) {
 			c = Color.fromCssVariable('--color-graph-scroll-marker-local-branches', e.computedStyle);
 			rootStyle.setProperty(

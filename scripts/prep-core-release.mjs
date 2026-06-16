@@ -41,28 +41,27 @@ rl.question(
 		// Update CHANGELOG.md: insert new section under [Unreleased], refresh unreleased link, add compare link.
 		await updateChangelog(version);
 
-		// Stage CHANGELOG — the pnpm version command below commits package.json automatically;
-		// we amend the staged CHANGELOG into that same commit via -m / -f flags.
+		// pnpm version (delegating to npm version) only commits and tags when run at the workspace root,
+		// because npm's git-repo check looks for .git/ in the package directory and doesn't walk up.
+		// In packages/core/ it just rewrites package.json, so we stage, commit, and tag manually below.
 		try {
-			await execFileAsync('git', ['add', coreChangelogPath], { cwd: repoRoot });
-		} catch (err) {
-			console.error(`Unable to stage CHANGELOG.md: ${err}`);
-			process.exitCode = 1;
-			return;
-		}
-
-		// pnpm version runs in packages/core/ so packages/core/.npmrc's tag-version-prefix=releases/core/v
-		// is picked up automatically. -m = commit message template, -f = force even with staged changes.
-		try {
-			const { stdout, stderr } = await execFileAsync(
-				'pnpm',
-				['--filter', '@gitkraken/core-gitlens', 'version', version, '-m', 'Bumps core to v%s', '-f'],
-				{ cwd: repoRoot },
-			);
+			const { stdout, stderr } = await execFileAsync('pnpm', ['version', version], { cwd: coreRoot });
 			if (stdout) process.stdout.write(stdout);
 			if (stderr) process.stderr.write(stderr);
 		} catch (err) {
 			console.error(`'pnpm version' failed: ${err}`);
+			process.exitCode = 1;
+			return;
+		}
+
+		const tag = `releases/core/v${version}`;
+		const message = `Bumps core to v${version}`;
+		try {
+			await execFileAsync('git', ['add', coreChangelogPath, corePackageJsonPath], { cwd: repoRoot });
+			await execFileAsync('git', ['commit', '-m', message], { cwd: repoRoot });
+			await execFileAsync('git', ['tag', '-m', message, tag], { cwd: repoRoot });
+		} catch (err) {
+			console.error(`Unable to commit/tag release: ${err}`);
 			process.exitCode = 1;
 			return;
 		}

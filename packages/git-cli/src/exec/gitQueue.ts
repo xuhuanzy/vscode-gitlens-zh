@@ -1,11 +1,13 @@
 import type { GitCommandPriority } from './exec.types.js';
 
 interface QueuedCommand {
-	execute: () => Promise<unknown>;
+	run: () => Promise<unknown>;
 	resolve: (value: unknown) => void;
 	reject: (reason: unknown) => void;
 	queuedAt: number;
 	priority: GitCommandPriority;
+	signal?: AbortSignal;
+	abortHandler?: () => void;
 }
 
 /** Priority levels in descending order (highest first) */
@@ -13,6 +15,10 @@ const priorities: GitCommandPriority[] = ['interactive', 'normal', 'background']
 
 /** How many extra slots interactive commands can use when at capacity */
 const interactiveBurstCapacity = 2;
+
+function abortReason(signal: AbortSignal): Error {
+	return signal.reason instanceof Error ? signal.reason : new Error('Aborted');
+}
 
 export interface GitQueueConfig {
 	/** Maximum number of concurrent git processes. Defaults to 7. */
@@ -67,6 +73,9 @@ export class GitQueue {
 		this._disposed = true;
 		for (const queue of this._queues.values()) {
 			for (const cmd of queue) {
+				if (cmd.signal != null && cmd.abortHandler != null) {
+					cmd.signal.removeEventListener('abort', cmd.abortHandler);
+				}
 				cmd.reject(new Error('GitQueue disposed'));
 			}
 			queue.length = 0;
@@ -89,7 +98,7 @@ export class GitQueue {
 	}
 
 	/** Check if a command at the given priority can execute immediately */
-	private canExecuteNow(priority: GitCommandPriority): boolean {
+	private canRunNow(priority: GitCommandPriority): boolean {
 		// Must yield to higher priority waiting
 		if (this.hasHigherPriorityWaiting(priority)) return false;
 
@@ -115,20 +124,32 @@ export class GitQueue {
 		return false;
 	}
 
-	/** Execute a git command with the specified priority */
-	execute<T>(priority: GitCommandPriority, fn: () => Promise<T>): Promise<T> {
+	/**
+	 * Execute a git command with the specified priority.
+	 *
+	 * When `signal` is provided:
+	 * - If already aborted, rejects immediately without running.
+	 * - If aborted while queued, the command is removed from the queue and rejected before it ever runs.
+	 * - If aborted while running, the in-flight spawn must honor the same signal separately
+	 *   (callers pass it via `runOpts.cancellation`); the queue does not interrupt running work.
+	 */
+	run<T>(priority: GitCommandPriority, fn: () => Promise<T>, signal?: AbortSignal): Promise<T> {
 		if (this._disposed) {
 			return Promise.reject(new Error('GitQueue disposed'));
 		}
 
-		if (!this.canExecuteNow(priority)) {
-			return this.enqueue(fn, priority);
+		if (signal?.aborted) {
+			return Promise.reject(abortReason(signal));
 		}
 
-		return this.run(fn);
+		if (!this.canRunNow(priority)) {
+			return this.enqueue(fn, priority, signal);
+		}
+
+		return this.runcore(fn);
 	}
 
-	private async run<T>(fn: () => Promise<T>): Promise<T> {
+	private async runcore<T>(fn: () => Promise<T>): Promise<T> {
 		this._activeCount++;
 		try {
 			return await fn();
@@ -138,7 +159,7 @@ export class GitQueue {
 		}
 	}
 
-	private enqueue<T>(fn: () => Promise<T>, priority: GitCommandPriority): Promise<T> {
+	private enqueue<T>(fn: () => Promise<T>, priority: GitCommandPriority, signal?: AbortSignal): Promise<T> {
 		const queue = this._queues.get(priority)!;
 		const maxDepth = this._config.maxQueueDepth ?? 500;
 		if (maxDepth > 0 && queue.length >= maxDepth) {
@@ -146,13 +167,29 @@ export class GitQueue {
 		}
 
 		return new Promise<T>((resolve, reject) => {
-			queue.push({
-				execute: fn as () => Promise<unknown>,
+			const cmd: QueuedCommand = {
+				run: fn,
 				resolve: resolve as (value: unknown) => void,
 				reject: reject,
 				queuedAt: Date.now(),
 				priority: priority,
-			});
+				signal: signal,
+			};
+
+			if (signal != null) {
+				cmd.abortHandler = () => {
+					const idx = queue.indexOf(cmd);
+					// If still queued, remove and reject so it never runs.
+					// If already dequeued, the running command should honor the signal at its own layer.
+					if (idx !== -1) {
+						queue.splice(idx, 1);
+						cmd.reject(abortReason(signal));
+					}
+				};
+				signal.addEventListener('abort', cmd.abortHandler, { once: true });
+			}
+
+			queue.push(cmd);
 		});
 	}
 
@@ -172,6 +209,13 @@ export class GitQueue {
 	}
 
 	private runQueued(cmd: QueuedCommand): void {
+		// Detach the abort listener now that the command has left the queue — any subsequent
+		// abort must be handled by the running spawn itself (via runOpts.cancellation).
+		if (cmd.signal != null && cmd.abortHandler != null) {
+			cmd.signal.removeEventListener('abort', cmd.abortHandler);
+			cmd.abortHandler = undefined;
+		}
+
 		const waitTime = Date.now() - cmd.queuedAt;
 		if (waitTime > 1000) {
 			this._hooks.onSlowQueue?.({
@@ -189,7 +233,7 @@ export class GitQueue {
 
 		this._activeCount++;
 		try {
-			cmd.execute()
+			cmd.run()
 				.then(cmd.resolve, cmd.reject)
 				.finally(() => {
 					this._activeCount--;
@@ -217,33 +261,62 @@ export class GitQueue {
 }
 
 /**
- * Infers priority from git command type.
- * Only downgrades to 'background' for expensive commands; never upgrades to 'interactive'.
+ * Git global options that consume the next positional arg as their value
+ * (e.g. `--work-tree <path>`). Long-form `--name=value` is already skipped by
+ * the leading-dash check, so only the separated form needs explicit handling.
+ */
+const optionsTakingValue = new Set([
+	'-c',
+	'-C',
+	'--git-dir',
+	'--work-tree',
+	'--namespace',
+	'--exec-path',
+	'--super-prefix',
+	'--config-env',
+	'--attr-source',
+	'--list-cmds',
+]);
+
+/**
+ * Infers a queue priority from the git command being invoked.
+ *
+ * Intentionally narrow: only returns 'background' for commands that are
+ * *always* read-only AND *always* potentially expensive. Polymorphic commands
+ * like `log` and `rev-list` (which can be quick bounded lookups or full-history
+ * walks) are deliberately omitted — call sites that perform heavy walks must
+ * pass `priority: 'background'` explicitly. Never upgrades to 'interactive'.
+ *
+ * No subcommand awareness (e.g. `stash list`, `branch -l`): the risk of
+ * misclassifying a write subcommand as background outweighs the gain.
  */
 export function inferGitCommandPriority(args: readonly (string | undefined)[]): GitCommandPriority {
-	let skip = false;
 	let command: string | undefined;
-	for (const a of args) {
+	for (let i = 0; i < args.length; i++) {
+		const a = args[i];
 		if (a == null) continue;
-		if (skip) {
-			skip = false;
-			continue;
-		}
-		if (a === '-c' || a === '-C') {
-			skip = true;
+		if (optionsTakingValue.has(a)) {
+			const next = args[i + 1];
+			if (next != null && !next.startsWith('-')) {
+				i++;
+			}
 			continue;
 		}
 		if (a.startsWith('-')) continue;
+
 		command = a;
 		break;
 	}
 
 	switch (command) {
-		case 'log':
-		case 'rev-list':
 		case 'for-each-ref':
 		case 'shortlog':
 		case 'reflog':
+		case 'name-rev':
+		case 'describe':
+		case 'cherry':
+		case 'count-objects':
+		case 'fsck':
 			return 'background';
 		default:
 			return 'normal';

@@ -9,6 +9,7 @@ import type { OnboardingItemState, OnboardingKeys } from '../constants.onboardin
 import { onboardingDefinitions } from '../constants.onboarding.js';
 import type { DeprecatedGlobalStorage } from '../constants.storage.js';
 import { registerCommand } from '../system/-webview/command.js';
+import { configuration } from '../system/-webview/configuration.js';
 import type { Storage, StorageChangeEvent, StorageType } from '../system/-webview/storage.js';
 import type { OnboardingItem, OnboardingStorage } from './models/onboarding.js';
 import { onboardingMigrations } from './onboardingMigrations.js';
@@ -106,6 +107,12 @@ export class OnboardingService implements Disposable {
 	 * Respects `reshowAfter` - if the user dismissed before that version, returns false
 	 */
 	isDismissed(key: OnboardingKeys, skipLegacyFallback: boolean = false): boolean {
+		// `advanced.skipOnboarding` opts out of onboarding entirely — treat every dismissible surface as
+		// already dismissed so this is the single, service-wide switch (no per-call-site checks). Gated to
+		// post-init (`!_ready.pending`) so the one-time legacy→new migration still reads real dismiss state
+		// and doesn't drop it when the setting is on.
+		if (!this._ready.pending && configuration.get('advanced.skipOnboarding')) return true;
+
 		const item = this.getItem(key);
 		if (!item?.dismissedAt) {
 			// During migration, check legacy storage keys as a fallback so callers
@@ -177,7 +184,7 @@ export class OnboardingService implements Disposable {
 
 		// No schema defined or already current - no migration needed
 		if (!currentSchema || (storedSchema && compare(storedSchema, currentSchema) >= 0)) {
-			return item.state as OnboardingItemState<T>;
+			return item.state;
 		}
 
 		// Run migrations in version order for versions between stored and current
@@ -225,7 +232,7 @@ export class OnboardingService implements Disposable {
 		const onboarding = this.getOnboarding(scope);
 		const dismissed = onboarding.items[key]?.dismissedAt != null;
 
-		updateRecordValue(onboarding.items, key, undefined);
+		onboarding.items = updateRecordValue(onboarding.items, key, undefined);
 
 		await this.saveOnboarding(scope, onboarding);
 		if (dismissed) {

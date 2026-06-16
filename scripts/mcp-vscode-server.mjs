@@ -14,8 +14,8 @@
  *   { "mcpServers": { "vscode-inspector": { "command": "node", "args": ["scripts/mcp-vscode-server.mjs"] } } }
  */
 import { execFileSync, execSync, spawn } from 'node:child_process';
-import { existsSync, readFileSync } from 'node:fs';
-import { mkdir, mkdtemp, readdir, readFile, realpath, rm, writeFile } from 'node:fs/promises';
+import { createReadStream, existsSync, readFileSync } from 'node:fs';
+import { mkdir, mkdtemp, readdir, realpath, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -39,6 +39,7 @@ let launchTime = null;
 let sessionConfig = {};
 let xvfbProcess = null;
 let consoleBuffer = [];
+let originalWindowSize = null;
 const MAX_CONSOLE_ENTRIES = 500;
 
 // =============================================================================
@@ -143,21 +144,27 @@ async function findLogs(dir, pattern, depth = 0) {
 	const results = [];
 	try {
 		const entries = await readdir(dir, { withFileTypes: true });
+		const { createInterface } = await import('node:readline');
 		for (const entry of entries) {
 			const full = path.join(dir, entry.name);
-			if (entry.isDirectory()) results.push(...(await findLogs(full, pattern, depth + 1)));
-			else if (entry.name.endsWith('.log') || entry.name.includes('output')) {
-				try {
-					const c = await readFile(full, 'utf8');
-					results.push(
-						...c
-							.split('\n')
-							.filter(l => l.includes(pattern))
-							.map(l => l.trim()),
-					);
-				} catch {
-					/* ignore unreadable log files */
+			if (entry.isDirectory()) {
+				results.push(...(await findLogs(full, pattern, depth + 1)));
+				continue;
+			}
+			if (!entry.name.endsWith('.log') && !entry.name.includes('output')) continue;
+			// Stream lines so log size doesn't bound per-call memory — VS Code logs
+			// grow throughout a session, and read_logs is called frequently.
+			const stream = createReadStream(full, { encoding: 'utf8' });
+			const rl = createInterface({ input: stream, crlfDelay: Infinity });
+			try {
+				for await (const line of rl) {
+					if (line.includes(pattern)) results.push(line.trim());
 				}
+			} catch {
+				/* ignore unreadable log files */
+			} finally {
+				rl.close();
+				stream.destroy();
 			}
 		}
 	} catch {
@@ -193,6 +200,40 @@ function getWebviewFrameLocators(currentPage) {
 		locators.push({ frameLocator: activeFrame, outerFrame: frame, url });
 	}
 	return locators;
+}
+
+/**
+ * Detect a webview's GitLens root app element (e.g. `gl-commit-details-app`, `gl-graph-app`).
+ *
+ * Webview outer frames are only identified by an opaque `index.html?id=<uuid>` URL with no view
+ * name, and `page.frames()` order is unstable — so neither `webview_index` nor `webview_url` can
+ * reliably target a specific view. The rendered root element is the stable, content-based identity.
+ * Returns the lowercased tag (e.g. "gl-commit-details-app") or undefined.
+ */
+async function detectWebviewRoot(frameLocator) {
+	try {
+		const tag = await frameLocator
+			.locator('body')
+			.evaluate(
+				body => {
+					const isRoot = t => /^GL-[A-Z0-9-]*-(?:APP|PAGE)$/.test(t);
+					const queue = [...body.children];
+					let guard = 0;
+					while (queue.length > 0 && guard++ < 5000) {
+						const el = queue.shift();
+						if (isRoot(el.tagName)) return el.tagName.toLowerCase();
+						for (const child of el.children) queue.push(child);
+					}
+					return null;
+				},
+				undefined,
+				{ timeout: 1000 },
+			)
+			.catch(() => null);
+		return tag ?? undefined;
+	} catch {
+		return undefined;
+	}
 }
 
 async function queryAllFrames(currentPage, selector, action = 'text') {
@@ -362,6 +403,38 @@ const defaultSettings = {
 };
 
 // =============================================================================
+// Console listener helper — attaches console+pageerror capture to a page.
+// Used by `launch` and the screenshot fallback path that re-acquires `page`.
+// In-place trim via shift() avoids the per-message slice allocation churn
+// that would otherwise fire on every console event past MAX_CONSOLE_ENTRIES.
+// =============================================================================
+function attachConsoleListeners(currentPage) {
+	// Idempotent: callers (launch, screenshot fallback) may invoke this on the
+	// same Page instance multiple times; clear our prior listeners so they don't
+	// stack into N-times-amplified pushes per console event.
+	currentPage.removeAllListeners('console');
+	currentPage.removeAllListeners('pageerror');
+	currentPage.on('console', msg => {
+		consoleBuffer.push({
+			type: msg.type(),
+			text: msg.text(),
+			url: msg.location()?.url ?? '',
+			timestamp: Date.now(),
+		});
+		while (consoleBuffer.length > MAX_CONSOLE_ENTRIES) consoleBuffer.shift();
+	});
+	currentPage.on('pageerror', error => {
+		consoleBuffer.push({
+			type: 'error',
+			text: `${error.name}: ${error.message}`,
+			url: '',
+			timestamp: Date.now(),
+		});
+		while (consoleBuffer.length > MAX_CONSOLE_ENTRIES) consoleBuffer.shift();
+	});
+}
+
+// =============================================================================
 // Cleanup helper
 // =============================================================================
 let cleaningUp = false;
@@ -369,6 +442,17 @@ async function cleanup() {
 	if (cleaningUp) return;
 	cleaningUp = true;
 	try {
+		if (electronApp && page && originalWindowSize) {
+			try {
+				const win = await electronApp.browserWindow(page);
+				await win.evaluate(
+					(w, [width, height]) => w.setContentSize(width, height),
+					[originalWindowSize.width, originalWindowSize.height],
+				);
+			} catch {
+				// Window may already be closing — safe to ignore
+			}
+		}
 		await electronApp?.close().catch(() => {});
 	} finally {
 		electronApp = null;
@@ -379,6 +463,11 @@ async function cleanup() {
 		userDataDir = null;
 		launchTime = null;
 		consoleBuffer = [];
+		originalWindowSize = null;
+		sessionConfig = {};
+		// Drop the ChildProcess reference. Xvfb itself stays running on :99 so the
+		// next launch reuses it via the xdpyinfo check in ensureDisplay().
+		xvfbProcess = null;
 		state = 'idle';
 		cleaningUp = false;
 	}
@@ -440,41 +529,68 @@ function errorResult(message) {
 }
 
 // =============================================================================
-// Find webview frameLocator by title (returns the live #active-frame locator)
+// Find webview frameLocator by index/url/title (returns the live #active-frame locator)
+// Precedence: index → url → title → first-with-content
 // =============================================================================
-async function findWebviewFrameLocator(webviewTitle, extensionId) {
+async function findWebviewFrameLocator({ title, url: urlMatch, index, root, extensionId } = {}) {
 	requireReady();
 	const webviews = getWebviewFrameLocators(page);
 
-	for (const { frameLocator, outerFrame, url } of webviews) {
-		// Filter by extension ID if provided
-		if (
-			extensionId &&
-			!url.includes(`extensionId=${extensionId}`) &&
-			!url.includes(encodeURIComponent(extensionId))
-		) {
-			continue;
+	const filtered = extensionId
+		? webviews.filter(
+				w => w.url.includes(`extensionId=${extensionId}`) || w.url.includes(encodeURIComponent(extensionId)),
+			)
+		: webviews;
+
+	// Match by GitLens root app element (e.g. "commitDetails" → gl-commit-details-app). Content-based,
+	// so it's stable regardless of frame order/dimensions/uuid. Non-alphanumerics are stripped from
+	// both sides, so "commitDetails", "commit-details", and "gl-commit-details-app" all match.
+	const matchRoot = async needleRaw => {
+		const needle = needleRaw.toLowerCase().replace(/[^a-z0-9]/g, '');
+		if (!needle) return null;
+		for (const entry of filtered) {
+			const r = (await detectWebviewRoot(entry.frameLocator))?.replace(/[^a-z0-9]/g, '') ?? '';
+			if (r && r.includes(needle)) return { frameLocator: entry.frameLocator, outerFrame: entry.outerFrame };
 		}
-		// Check if the outer frame's title matches
-		if (webviewTitle) {
-			try {
-				const title = await outerFrame.title().catch(() => '');
-				if (title && title.toLowerCase().includes(webviewTitle.toLowerCase())) {
-					return { frameLocator, outerFrame };
-				}
-			} catch {}
+		return null;
+	};
+
+	if (index != null) {
+		const entry = filtered[index];
+		return entry ? { frameLocator: entry.frameLocator, outerFrame: entry.outerFrame } : null;
+	}
+
+	if (root) {
+		const match = await matchRoot(root);
+		if (match) return match;
+	}
+
+	if (urlMatch) {
+		const needle = urlMatch.toLowerCase();
+		const entry = filtered.find(w => w.url.toLowerCase().includes(needle));
+		if (entry) return { frameLocator: entry.frameLocator, outerFrame: entry.outerFrame };
+		// Fall back to root-app match so `webview_url: "commitDetails"` targets gl-commit-details-app
+		// (outer-frame URLs carry only an opaque uuid, never the view name).
+		const match = await matchRoot(urlMatch);
+		if (match) return match;
+	}
+
+	if (title) {
+		for (const entry of filtered) {
+			const t = await entry.outerFrame.title().catch(() => '');
+			if (t && t.toLowerCase().includes(title.toLowerCase())) {
+				return { frameLocator: entry.frameLocator, outerFrame: entry.outerFrame };
+			}
 		}
 	}
-	// Fallback: return first webview with non-empty content (only when no title specified)
-	if (!webviewTitle) {
-		for (const entry of webviews) {
-			try {
-				const bodyText = await entry.frameLocator
-					.locator('body')
-					.textContent({ timeout: 500 })
-					.catch(() => '');
-				if (bodyText) return entry;
-			} catch {}
+
+	if (!title && !urlMatch && index == null && !root) {
+		for (const entry of filtered) {
+			const bodyText = await entry.frameLocator
+				.locator('body')
+				.textContent({ timeout: 500 })
+				.catch(() => '');
+			if (bodyText) return { frameLocator: entry.frameLocator, outerFrame: entry.outerFrame };
 		}
 	}
 	return null;
@@ -517,6 +633,18 @@ server.tool(
 			.optional()
 			.describe(
 				'Disable site isolation and web security (OOPIF workaround). Only use if webview frame access fails. Disables CORS/CSP — webviews may behave differently than production.',
+			),
+		log_level: z
+			.enum(['trace', 'debug', 'info', 'warn', 'error', 'off'])
+			.optional()
+			.describe(
+				"Log level for the loaded extension's output channels (default: 'debug'). Channels default to 'info', which filters out `@debug`/`@trace` logging; raising this makes that runtime logging capturable via `read_logs`. Scoped to the extension so VS Code core logs stay quiet.",
+			),
+		commands: z
+			.array(z.string())
+			.optional()
+			.describe(
+				'VS Code command IDs to run once, in order, after activation (e.g. ["gitlens.showGraph"]). Saves a separate execute_command round-trip + manual wait on every launch.',
 			),
 	},
 	async args => {
@@ -584,6 +712,13 @@ server.tool(
 				launchArgs.push('--disable-site-isolation-trials', '--disable-web-security');
 			}
 
+			// Default the loaded extension's output-channel log level to `debug` so its `@debug`/`@trace`
+			// logging is written and capturable via `read_logs` (channels default to `info`, which filters
+			// it out). Scoped to the extension (`<id>=<level>`) so VS Code core logs stay quiet; falls back
+			// to a global level if no extension id is known. Pass `log_level: 'info'` to opt out.
+			const logLevel = args.log_level ?? 'debug';
+			launchArgs.push('--log', sessionConfig.extensionId ? `${sessionConfig.extensionId}=${logLevel}` : logLevel);
+
 			if (withEvaluator) {
 				const runnerPath = path.join(extensionPath, 'tests', 'e2e', 'runner', 'dist');
 				const runnerIndex = path.join(runnerPath, 'index.js');
@@ -620,35 +755,25 @@ server.tool(
 					electronApp = null;
 					page = null;
 					evaluateFn = null;
+					originalWindowSize = null;
+					consoleBuffer = [];
 				}
 			});
 
 			page = await electronApp.firstWindow();
 
+			// Snapshot the launch window content size so cleanup() can restore it after any resize_window calls
+			try {
+				const win = await electronApp.browserWindow(page);
+				const [width, height] = await win.evaluate(w => w.getContentSize());
+				originalWindowSize = { width, height };
+			} catch {
+				originalWindowSize = null;
+			}
+
 			// Capture console messages and errors from all frames (including webviews)
 			consoleBuffer = [];
-			page.on('console', msg => {
-				consoleBuffer.push({
-					type: msg.type(),
-					text: msg.text(),
-					url: msg.location()?.url ?? '',
-					timestamp: Date.now(),
-				});
-				if (consoleBuffer.length > MAX_CONSOLE_ENTRIES) {
-					consoleBuffer = consoleBuffer.slice(-MAX_CONSOLE_ENTRIES);
-				}
-			});
-			page.on('pageerror', error => {
-				consoleBuffer.push({
-					type: 'error',
-					text: `${error.name}: ${error.message}`,
-					url: '',
-					timestamp: Date.now(),
-				});
-				if (consoleBuffer.length > MAX_CONSOLE_ENTRIES) {
-					consoleBuffer = consoleBuffer.slice(-MAX_CONSOLE_ENTRIES);
-				}
-			});
+			attachConsoleListeners(page);
 
 			// Connect evaluator
 			if (sessionConfig.withEvaluator) {
@@ -674,6 +799,31 @@ server.tool(
 			if (evaluateFn) parts.push('Evaluator bridge: connected');
 			else
 				parts.push('Evaluator bridge: not available (use with_evaluator: true and ensure E2E runner is built)');
+
+			// Run any post-activation commands (e.g. open a view) so callers don't need a separate
+			// execute_command round-trip + manual wait on every launch. Best-effort: a failing command
+			// doesn't fail the launch.
+			// Always close the Chat / secondary side bar first — it auto-opens, is never the inspected
+			// extension, and eats the right third of the window. (The activity bar is left alone — it's a
+			// thin strip; the primary side bar + panel are task-dependent, so callers hide those via `commands`.)
+			const launchCommands = ['workbench.action.closeAuxiliaryBar', ...(args.commands ?? [])];
+			if (launchCommands.length) {
+				if (evaluateFn) {
+					const ran = [];
+					for (const cmd of launchCommands) {
+						try {
+							await evaluateFn((vscode, c) => vscode.commands.executeCommand(c), cmd);
+							ran.push(cmd);
+							await page.waitForTimeout(500);
+						} catch (e) {
+							parts.push(`Command "${cmd}" failed: ${e.message}`);
+						}
+					}
+					if (ran.length) parts.push(`Ran commands: ${ran.join(', ')}`);
+				} else {
+					parts.push('Commands skipped: evaluator bridge not available');
+				}
+			}
 
 			return textResult(parts.join('\n'));
 		} catch (e) {
@@ -715,6 +865,19 @@ server.tool(
 	{
 		target: z.enum(['full', 'webview']).optional().describe('What to capture (default: full)'),
 		webview_title: z.string().optional().describe('Title of the webview to capture (for target: webview)'),
+		webview_url: z
+			.string()
+			.optional()
+			.describe(
+				'Substring match against webview URL (e.g. "commitDetails", "graph"). Use when titles are empty or ambiguous. Matches against the id/purpose/extensionId query params in vscode-webview:// URLs.',
+			),
+		webview_index: z
+			.number()
+			.int()
+			.optional()
+			.describe(
+				'0-based index into list_webviews output. Deterministic fallback when title and url matching are insufficient.',
+			),
 		scale: z
 			.enum(['css', 'device'])
 			.optional()
@@ -725,9 +888,14 @@ server.tool(
 		const screenshotOpts = { fullPage: true };
 		if (args.scale) screenshotOpts.scale = args.scale;
 		try {
-			if (args.target === 'webview' && args.webview_title) {
+			if (args.target === 'webview' && (args.webview_title || args.webview_url || args.webview_index != null)) {
 				// Try to find and screenshot just the webview
-				const result = await findWebviewFrameLocator(args.webview_title, sessionConfig.extensionId);
+				const result = await findWebviewFrameLocator({
+					title: args.webview_title,
+					url: args.webview_url,
+					index: args.webview_index,
+					extensionId: sessionConfig.extensionId,
+				});
 				if (result) {
 					// Screenshot the outer frame's element (contains the full webview)
 					try {
@@ -745,12 +913,16 @@ server.tool(
 				const buffer = await page.screenshot(screenshotOpts);
 				return await imageResult(buffer);
 			} catch (screenshotErr) {
-				// Page may be stale after a reload — try re-acquiring
+				// Page may be stale after a reload — try re-acquiring.
+				// The stale `page` still has our console/pageerror listeners attached
+				// (and Playwright may keep it alive internally); re-attach to the new
+				// page so console capture keeps working after recovery.
 				if (electronApp) {
 					try {
 						const windows = electronApp.windows();
 						if (windows.length > 0) {
 							page = windows[0];
+							attachConsoleListeners(page);
 							const buffer = await page.screenshot({ fullPage: true });
 							return await imageResult(buffer);
 						}
@@ -758,6 +930,7 @@ server.tool(
 					// Try firstWindow as last resort
 					try {
 						page = await electronApp.firstWindow();
+						attachConsoleListeners(page);
 						const buffer = await page.screenshot({ fullPage: true });
 						return await imageResult(buffer);
 					} catch {}
@@ -819,18 +992,38 @@ server.tool(
 		in_webview: z
 			.boolean()
 			.optional()
-			.describe('Search within webview iframes (default: false). Implied by webview_title.'),
+			.describe('Search within webview iframes (default: false). Implied by webview_title/url/index.'),
 		webview_title: z.string().optional().describe('Specific webview to search in (implies in_webview)'),
+		webview_url: z
+			.string()
+			.optional()
+			.describe(
+				'Substring match against webview URL (e.g. "commitDetails", "graph"). Use when titles are empty or ambiguous. Matches against the id/purpose/extensionId query params in vscode-webview:// URLs.',
+			),
+		webview_index: z
+			.number()
+			.int()
+			.optional()
+			.describe(
+				'0-based index into list_webviews output. Deterministic fallback when title and url matching are insufficient.',
+			),
 	},
 	async args => {
 		requireReady();
+		const targetingWebview = args.webview_title || args.webview_url || args.webview_index != null;
 		try {
-			if (args.in_webview || args.webview_title) {
-				if (args.webview_title) {
-					const result = await findWebviewFrameLocator(args.webview_title, sessionConfig.extensionId);
+			if (args.in_webview || targetingWebview) {
+				if (targetingWebview) {
+					const result = await findWebviewFrameLocator({
+						title: args.webview_title,
+						url: args.webview_url,
+						index: args.webview_index,
+						extensionId: sessionConfig.extensionId,
+					});
 					if (result) {
 						await result.frameLocator.locator(args.selector).first().click({ timeout: 3000 });
-						return textResult(`Clicked "${args.selector}" in webview "${args.webview_title}".`);
+						const label = args.webview_title ?? args.webview_url ?? `index=${args.webview_index}`;
+						return textResult(`Clicked "${args.selector}" in webview "${label}".`);
 					}
 				}
 				// Search all frames
@@ -906,6 +1099,19 @@ server.tool(
 		selector: z.string().describe('CSS selector to query'),
 		in_webview: z.boolean().optional().describe('Search within webview iframes (default: false)'),
 		webview_title: z.string().optional().describe('Specific webview to search in'),
+		webview_url: z
+			.string()
+			.optional()
+			.describe(
+				'Substring match against webview URL (e.g. "commitDetails", "graph"). Use when titles are empty or ambiguous. Matches against the id/purpose/extensionId query params in vscode-webview:// URLs.',
+			),
+		webview_index: z
+			.number()
+			.int()
+			.optional()
+			.describe(
+				'0-based index into list_webviews output. Deterministic fallback when title and url matching are insufficient.',
+			),
 		property: z
 			.enum(['textContent', 'innerHTML', 'outerHTML', 'attributes', 'shadowDOM'])
 			.optional()
@@ -918,12 +1124,19 @@ server.tool(
 		requireReady();
 		const prop = args.property ?? 'textContent';
 		const maxResults = args.max_results ?? 10;
+		const targetingWebview = args.webview_title || args.webview_url || args.webview_index != null;
 
 		try {
-			if (args.in_webview || args.webview_title) {
+			if (args.in_webview || targetingWebview) {
 				// Search in webview frames
-				if (args.webview_title) {
-					const result = await findWebviewFrameLocator(args.webview_title, sessionConfig.extensionId);
+				if (targetingWebview) {
+					const result = await findWebviewFrameLocator({
+						title: args.webview_title,
+						url: args.webview_url,
+						index: args.webview_index,
+						extensionId: sessionConfig.extensionId,
+					});
+					const label = args.webview_title ?? args.webview_url ?? `index=${args.webview_index}`;
 					if (result) {
 						const results = await extractFromLocator(
 							result.frameLocator.locator(args.selector),
@@ -933,10 +1146,10 @@ server.tool(
 						return textResult(
 							results.length > 0
 								? results.map((r, i) => `[${i}] ${r}`).join('\n')
-								: `No elements matching "${args.selector}" in webview "${args.webview_title}".`,
+								: `No elements matching "${args.selector}" in webview "${label}".`,
 						);
 					}
-					return errorResult(`Webview "${args.webview_title}" not found.`);
+					return errorResult(`Webview "${label}" not found.`);
 				}
 				// Search all frames
 				const webviews = getWebviewFrameLocators(page);
@@ -1062,14 +1275,34 @@ server.tool(
 		selector: z.string().optional().describe('CSS selector for subtree (default: body)'),
 		in_webview: z.boolean().optional().describe('Capture snapshot inside webview iframes (default: false)'),
 		webview_title: z.string().optional().describe('Specific webview to capture snapshot from'),
+		webview_url: z
+			.string()
+			.optional()
+			.describe(
+				'Substring match against webview URL (e.g. "commitDetails", "graph"). Use when titles are empty or ambiguous. Matches against the id/purpose/extensionId query params in vscode-webview:// URLs.',
+			),
+		webview_index: z
+			.number()
+			.int()
+			.optional()
+			.describe(
+				'0-based index into list_webviews output. Deterministic fallback when title and url matching are insufficient.',
+			),
 	},
 	async args => {
 		requireReady();
 		const sel = args.selector ?? 'body';
+		const targetingWebview = args.webview_title || args.webview_url || args.webview_index != null;
 		try {
-			if (args.webview_title) {
-				const result = await findWebviewFrameLocator(args.webview_title, sessionConfig.extensionId);
-				if (!result) return errorResult(`Webview "${args.webview_title}" not found.`);
+			if (targetingWebview) {
+				const result = await findWebviewFrameLocator({
+					title: args.webview_title,
+					url: args.webview_url,
+					index: args.webview_index,
+					extensionId: sessionConfig.extensionId,
+				});
+				const label = args.webview_title ?? args.webview_url ?? `index=${args.webview_index}`;
+				if (!result) return errorResult(`Webview "${label}" not found.`);
 				const snapshot = await result.frameLocator.locator(sel).first().ariaSnapshot({ timeout: 5000 });
 				return textResult(snapshot);
 			}
@@ -1099,7 +1332,7 @@ server.tool(
 // --- list_webviews -----------------------------------------------------------
 server.tool(
 	'list_webviews',
-	'List all open webviews with their titles, URLs, dimensions, and content status. Useful for discovering webview titles before using other webview-targeting tools.',
+	'List all open webviews with their index, id, title, URL, dimensions, content status, and `root` (the GitLens app element, e.g. gl-commit-details-app). To target a specific view, pass a substring of its `root` as `webview_url` (e.g. "commitDetails") — frame index/uuid are unstable, but the root app element is the stable identity.',
 	{},
 	async () => {
 		requireReady();
@@ -1109,16 +1342,18 @@ server.tool(
 
 			const results = [];
 			for (const { frameLocator, outerFrame, url } of webviews) {
-				const entry = { url: url.substring(0, 120) };
+				const entry = { index: results.length, url: url.substring(0, 120) };
 				try {
 					entry.title = await outerFrame.title().catch(() => '(unknown)');
 				} catch {
 					entry.title = '(unknown)';
 				}
-				// Parse extensionId from URL query params
+				// Parse identifying query params from URL
 				try {
 					const u = new URL(url);
+					entry.id = u.searchParams.get('id') ?? undefined;
 					entry.extensionId = u.searchParams.get('extensionId') ?? undefined;
+					entry.purpose = u.searchParams.get('purpose') ?? undefined;
 				} catch {}
 				// Get dimensions
 				try {
@@ -1142,6 +1377,9 @@ server.tool(
 				} catch {
 					entry.hasContent = false;
 				}
+				// GitLens root app element (e.g. gl-commit-details-app) — the stable way to identify a
+				// view. Target it with `webview_url` (substring of the root tag) on any webview tool.
+				entry.root = await detectWebviewRoot(frameLocator);
 				results.push(entry);
 			}
 			return textResult(JSON.stringify(results, null, 2));
@@ -1178,7 +1416,7 @@ server.tool(
 // --- evaluate_in_webview -----------------------------------------------------
 server.tool(
 	'evaluate_in_webview',
-	'Run JavaScript in the webview renderer context (browser/DOM). Access document, shadow DOM, Lit component state, computed styles, scroll positions. Does NOT have vscode API — use "evaluate" for that.',
+	'Run JavaScript in the webview renderer context (browser/DOM). Access document, shadow DOM, Lit component state, computed styles, scroll positions. Does NOT have vscode API — use "evaluate" for that. With multiple webviews open, target a specific one with `webview_url` (e.g. "commitDetails") or `webview_index` from list_webviews.',
 	{
 		expression: z
 			.string()
@@ -1186,15 +1424,38 @@ server.tool(
 				'JS expression to evaluate in the webview (e.g. "document.title", "document.querySelector(\'gl-home-app\').shadowRoot.innerHTML")',
 			),
 		webview_title: z.string().optional().describe('Webview to evaluate in (default: first found)'),
+		webview_url: z
+			.string()
+			.optional()
+			.describe(
+				'Substring match against webview URL (e.g. "commitDetails", "graph"). Use when titles are empty or ambiguous. Matches against the id/purpose/extensionId query params in vscode-webview:// URLs.',
+			),
+		webview_index: z
+			.number()
+			.int()
+			.optional()
+			.describe(
+				'0-based index into list_webviews output. Deterministic fallback when title and url matching are insufficient.',
+			),
 	},
 	async args => {
 		requireReady();
+		const targetingWebview = args.webview_title || args.webview_url || args.webview_index != null;
 		try {
-			const result = await findWebviewFrameLocator(args.webview_title, sessionConfig.extensionId);
+			const result = await findWebviewFrameLocator({
+				title: args.webview_title,
+				url: args.webview_url,
+				index: args.webview_index,
+				extensionId: sessionConfig.extensionId,
+			});
 			if (!result) {
+				const label =
+					args.webview_title ??
+					args.webview_url ??
+					(args.webview_index != null ? `index=${args.webview_index}` : null);
 				return errorResult(
-					args.webview_title
-						? `Webview "${args.webview_title}" not found. Use "list_webviews" to see available webviews.`
+					targetingWebview
+						? `Webview "${label}" not found. Use "list_webviews" to see available webviews.`
 						: 'No webviews found. Open a webview first.',
 				);
 			}
@@ -1216,9 +1477,22 @@ server.tool(
 // --- wait_for_webview --------------------------------------------------------
 server.tool(
 	'wait_for_webview',
-	'Wait for a webview to be loaded and rendered. Checks for the removal of the "preload" CSS class (Lit hydration signal) or non-empty body content as fallback.',
+	'Wait for a webview to be loaded and rendered. Checks for the removal of the "preload" CSS class (Lit hydration signal) or non-empty body content as fallback. With multiple webviews open, target a specific one with `webview_url` (e.g. "commitDetails") or `webview_index` from list_webviews.',
 	{
 		webview_title: z.string().optional().describe('Title of the webview to wait for (default: any webview)'),
+		webview_url: z
+			.string()
+			.optional()
+			.describe(
+				'Substring match against webview URL (e.g. "commitDetails", "graph"). Use when titles are empty or ambiguous. Matches against the id/purpose/extensionId query params in vscode-webview:// URLs.',
+			),
+		webview_index: z
+			.number()
+			.int()
+			.optional()
+			.describe(
+				'0-based index into list_webviews output. Deterministic fallback when title and url matching are insufficient.',
+			),
 		selector: z.string().optional().describe('CSS selector to wait for inside the webview'),
 		timeout_ms: z.number().optional().describe('Maximum wait time in ms (default: 10000)'),
 	},
@@ -1228,7 +1502,12 @@ server.tool(
 		const startTime = Date.now();
 
 		while (Date.now() - startTime < timeout) {
-			const result = await findWebviewFrameLocator(args.webview_title, sessionConfig.extensionId);
+			const result = await findWebviewFrameLocator({
+				title: args.webview_title,
+				url: args.webview_url,
+				index: args.webview_index,
+				extensionId: sessionConfig.extensionId,
+			});
 			if (result) {
 				try {
 					if (args.selector) {
@@ -1263,8 +1542,15 @@ server.tool(
 			await page.waitForTimeout(500);
 		}
 
+		const target = args.webview_title
+			? ` Title: "${args.webview_title}".`
+			: args.webview_url
+				? ` URL match: "${args.webview_url}".`
+				: args.webview_index != null
+					? ` Index: ${args.webview_index}.`
+					: '';
 		return errorResult(
-			`Webview not ready after ${timeout}ms.${args.webview_title ? ` Title: "${args.webview_title}".` : ''} Use "list_webviews" to check available webviews.`,
+			`Webview not ready after ${timeout}ms.${target} Use "list_webviews" to check available webviews.`,
 		);
 	},
 );
@@ -1339,19 +1625,35 @@ server.tool(
 	},
 );
 
-// --- resize_viewport ---------------------------------------------------------
+// --- resize_window -----------------------------------------------------------
 server.tool(
-	'resize_viewport',
-	'Resize the VS Code window viewport. Useful for testing responsive layouts or getting larger screenshots.',
+	'resize_window',
+	'Resize the VS Code window content area to the given pixel dimensions. Resizes the actual Electron BrowserWindow via setContentSize — clamped by the host display, no viewport emulation. Use only for explicit responsive-breakpoint testing; for a larger headless render surface, configure launch({ screen_resolution }) instead. The launch window size is auto-restored on teardown.',
 	{
-		width: z.number().describe('Viewport width in pixels'),
-		height: z.number().describe('Viewport height in pixels'),
+		width: z.number().describe('Content area width in pixels'),
+		height: z.number().describe('Content area height in pixels'),
 	},
 	async args => {
 		requireReady();
 		try {
-			await page.setViewportSize({ width: args.width, height: args.height });
-			return textResult(`Viewport resized to ${args.width}x${args.height}.`);
+			const win = await electronApp.browserWindow(page);
+			if (originalWindowSize == null) {
+				try {
+					const [w, h] = await win.evaluate(b => b.getContentSize());
+					originalWindowSize = { width: w, height: h };
+				} catch {
+					// Leave null; restore on teardown becomes a no-op
+				}
+			}
+			await win.evaluate((b, [width, height]) => b.setContentSize(width, height), [args.width, args.height]);
+			const [actualW, actualH] = await win.evaluate(b => b.getContentSize());
+			const lines = [`Window content size set to ${actualW}x${actualH}.`];
+			if (actualW !== args.width || actualH !== args.height) {
+				lines.unshift(
+					`Note: requested ${args.width}x${args.height} was clamped to ${actualW}x${actualH} by the host display. For a larger render surface in headless runs, relaunch with launch({ screen_resolution: 'WxHx24' }).`,
+				);
+			}
+			return textResult(lines.join('\n'));
 		} catch (e) {
 			return errorResult(`Resize failed: ${e.message}`);
 		}
@@ -1382,6 +1684,9 @@ server.tool(
 					cwd: extensionPath,
 					encoding: 'utf8',
 					stdio: ['pipe', 'pipe', 'pipe'],
+					// pnpm run build output routinely exceeds the 1 MB default — bump to
+					// 50 MB so the call surfaces real build failures instead of ENOBUFS.
+					maxBuffer: 50 * 1024 * 1024,
 					timeout: 120000, // 2 minute timeout
 				});
 			} catch (e) {

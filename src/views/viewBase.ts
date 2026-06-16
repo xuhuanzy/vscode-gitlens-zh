@@ -161,8 +161,6 @@ export type WebviewViewByType = {
 		? CommitsView
 		: T extends 'graph'
 		? CommitsView
-		: T extends 'graphDetails'
-		? CommitsView
 		: T extends 'home'
 		? CommitsView
 		: T extends 'patchDetails'
@@ -229,7 +227,7 @@ export abstract class ViewBase<
 	}
 
 	isAny<T extends (keyof TreeViewByType)[]>(...types: T): this is TreeViewByType[T[number]] {
-		return types.includes(this.type as unknown as T[number]);
+		return types.includes(this.type);
 	}
 
 	private _cancellation: CancellationToken | undefined;
@@ -719,7 +717,7 @@ export abstract class ViewBase<
 			return;
 		}
 
-		const elapsed = Date.now() - this._lastTreeDataChangeAt;
+		const elapsed = performance.now() - this._lastTreeDataChangeAt;
 		if (elapsed < cooldownMs) {
 			await new Promise<void>(resolve => setTimeout(resolve, cooldownMs - elapsed));
 		}
@@ -1221,7 +1219,7 @@ export abstract class ViewBase<
 
 				this._onDidChangeTreeData.fire(target);
 				// Record when we fired so reveals can wait for VS Code's debounce
-				this._lastTreeDataChangeAt = Date.now();
+				this._lastTreeDataChangeAt = performance.now();
 			}
 		} finally {
 			this._processingNodeChanges = false;

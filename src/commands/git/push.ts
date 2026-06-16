@@ -1,5 +1,4 @@
 import type { GitBranchReference, GitReference } from '@gitlens/git/models/reference.js';
-import { getRemoteNameFromBranchName } from '@gitlens/git/utils/branch.utils.js';
 import { getReferenceLabel, isBranchReference } from '@gitlens/git/utils/reference.utils.js';
 import { isStringArray } from '@gitlens/utils/array.js';
 import { fromNow } from '@gitlens/utils/date.js';
@@ -24,7 +23,11 @@ import { StepResultBreak } from '../quick-wizard/models/steps.js';
 import type { QuickPickStep } from '../quick-wizard/models/steps.quickpick.js';
 import { FetchQuickInputButton } from '../quick-wizard/quickButtons.js';
 import { QuickCommand } from '../quick-wizard/quickCommand.js';
-import { pickRepositoriesStep, pickRepositoryStep } from '../quick-wizard/steps/repositories.js';
+import {
+	canSkipRepositoriesPick,
+	pickRepositoriesStep,
+	pickRepositoryStep,
+} from '../quick-wizard/steps/repositories.js';
 import { StepsController } from '../quick-wizard/stepsController.js';
 import { appendReposToTitle, assertStepState, canPickStepContinue } from '../quick-wizard/utils/steps.utils.js';
 
@@ -104,8 +107,8 @@ export class PushGitCommand extends QuickCommand<State> {
 			context.title = this.title;
 
 			if (steps.isAtStep(Steps.PickRepos) || !state.repos?.length || isStringArray(state.repos)) {
-				// Only show the picker if there are multiple repositories
-				if (context.repos.length === 1) {
+				// Skip the picker only when the sole available repo is the one requested
+				if (canSkipRepositoriesPick(context.repos, state.repos)) {
 					state.repos = context.repos;
 				} else if (state.reference != null) {
 					// If a reference is specified, only allow picking the repository that contains it
@@ -373,12 +376,10 @@ export class PushGitCommand extends QuickCommand<State> {
 							[],
 							createDirectiveQuickPickItem(Directive.Cancel, true, {
 								label: 'OK',
-								detail: `No commits ahead of ${getRemoteNameFromBranchName(status.upstream?.name)}`,
+								detail: `No commits ahead of ${status.upstream?.name}`,
 							}),
 							{
-								placeholder: `Nothing to push; No commits ahead of ${getRemoteNameFromBranchName(
-									status.upstream?.name,
-								)}`,
+								placeholder: `Nothing to push; No commits ahead of ${status.upstream?.name}`,
 							},
 						);
 					}
@@ -398,11 +399,11 @@ export class PushGitCommand extends QuickCommand<State> {
 										label: false,
 									})}`
 								: ''
-						}${status?.upstream ? ` to ${getRemoteNameFromBranchName(status.upstream?.name)}` : ''}`;
+						}${status?.upstream ? ` to ${status.upstream.name}` : ''}`;
 					} else {
 						pushDetails = `${
 							status?.upstream?.state.ahead ? ` ${pluralize('commit', status.upstream.state.ahead)}` : ''
-						}${status?.upstream ? ` to ${getRemoteNameFromBranchName(status.upstream?.name)}` : ''}`;
+						}${status?.upstream ? ` to ${status.upstream.name}` : ''}`;
 					}
 
 					step = this.createConfirmStep(
@@ -438,9 +439,7 @@ export class PushGitCommand extends QuickCommand<State> {
 								} ${pushDetails}${
 									status?.upstream?.state.behind
 										? `, overwriting ${pluralize('commit', status.upstream.state.behind)}${
-												status?.upstream
-													? ` on ${getRemoteNameFromBranchName(status.upstream?.name)}`
-													: ''
+												status?.upstream ? ` on ${status.upstream.name}` : ''
 											}`
 										: ''
 								}`,
@@ -450,7 +449,7 @@ export class PushGitCommand extends QuickCommand<State> {
 							? createDirectiveQuickPickItem(Directive.Cancel, true, {
 									label: `Cancel ${this.title}`,
 									detail: `Cannot push; ${getReferenceLabel(branch)} is behind${
-										status?.upstream ? ` ${getRemoteNameFromBranchName(status.upstream?.name)}` : ''
+										status?.upstream ? ` ${status.upstream.name}` : ''
 									} by ${pluralize('commit', status.upstream.state.behind)}`,
 								})
 							: undefined,

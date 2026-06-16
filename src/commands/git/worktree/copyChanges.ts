@@ -23,7 +23,7 @@ import { StepResultBreak } from '../../quick-wizard/models/steps.js';
 import type { QuickPickStep } from '../../quick-wizard/models/steps.quickpick.js';
 import { QuickCommand } from '../../quick-wizard/quickCommand.js';
 import { ensureAccessStep } from '../../quick-wizard/steps/access.js';
-import { pickRepositoryStep } from '../../quick-wizard/steps/repositories.js';
+import { canSkipRepositoryPick, pickRepositoryStep } from '../../quick-wizard/steps/repositories.js';
 import { pickWorktreeStep } from '../../quick-wizard/steps/worktrees.js';
 import { StepsController } from '../../quick-wizard/stepsController.js';
 import { getSteps } from '../../quick-wizard/utils/quickWizard.utils.js';
@@ -98,8 +98,8 @@ export class WorktreeCopyChangesGitCommand extends QuickCommand<State> {
 			context.title = state.overrides?.title ?? this.title;
 
 			if (steps.isAtStep(Steps.PickRepo) || state.repo == null || typeof state.repo === 'string') {
-				// Only show the picker if there are multiple repositories
-				if (context.repos.length === 1) {
+				// Skip the picker only when the sole available repo is the one requested
+				if (canSkipRepositoryPick(context.repos, state.repo)) {
 					[state.repo] = context.repos;
 				} else {
 					using step = steps.enterStep(Steps.PickRepo);
@@ -153,8 +153,13 @@ export class WorktreeCopyChangesGitCommand extends QuickCommand<State> {
 						break;
 				}
 
+				// Exclude the source worktree as a target -- copying changes into the worktree they came
+				// from is a no-op. The source is `state.source` when provided (e.g. from the Worktrees view),
+				// otherwise the repo we're operating on (e.g. the WIP row's worktree in the graph) -- which
+				// matches the source the changes are read from below.
+				const sourcePath = (state.source ?? state.repo).path;
 				const result = yield* pickWorktreeStep(state, context, {
-					excludeOpened: true,
+					filter: wt => wt.path !== sourcePath,
 					includeStatus: true,
 					picked: state.target?.uri?.toString(),
 					placeholder: placeholder,

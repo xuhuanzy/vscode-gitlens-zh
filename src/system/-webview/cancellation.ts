@@ -40,6 +40,52 @@ export function toAbortSignal(token: CancellationToken | AbortSignal | undefined
 	return controller.signal;
 }
 
+/**
+ * Converts an AbortSignal (or CancellationToken) to a VS Code CancellationToken.
+ * If a CancellationToken is passed, it is returned as-is with a no-op `dispose`. Use at call sites
+ * that have an AbortSignal but need to pass to APIs that accept CancellationToken.
+ *
+ * Always call `dispose()` once the operation completes to release the underlying source.
+ *
+ * Pass `registry` to track the created source (added on creation, removed on `dispose()`) so a teardown
+ * path can cancel anything still in flight — which `dispose()` alone does not do.
+ */
+export function fromAbortSignal(
+	signal: AbortSignal | CancellationToken | undefined,
+	registry?: Set<CancellationTokenSource>,
+): {
+	token: CancellationToken | undefined;
+	dispose: () => void;
+} {
+	if (signal == null) return { token: undefined, dispose: () => {} };
+	if (isCancellationToken(signal)) return { token: signal, dispose: () => {} };
+
+	const source = new CancellationTokenSource();
+	const onAbort = () => source.cancel();
+	if (signal.aborted) {
+		source.cancel();
+	} else {
+		signal.addEventListener('abort', onAbort, { once: true });
+	}
+	registry?.add(source);
+	return {
+		token: source.token,
+		dispose: () => {
+			signal.removeEventListener('abort', onAbort);
+			registry?.delete(source);
+			source.dispose();
+		},
+	};
+}
+
+/** Cancel + dispose every source (both are idempotent). */
+export function cancelAndDispose(sources: Iterable<CancellationTokenSource>): void {
+	for (const source of sources) {
+		source.cancel();
+		source.dispose();
+	}
+}
+
 export function isCancellationToken(arg: unknown): arg is CancellationToken {
 	return (
 		typeof arg === 'object' && arg != null && 'isCancellationRequested' in arg && 'onCancellationRequested' in arg

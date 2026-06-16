@@ -1,6 +1,7 @@
 import type { Cache } from '@gitlens/git/cache.js';
 import { GitBranch } from '@gitlens/git/models/branch.js';
 import type { BranchContributionsOverview, GitBranchesSubProvider } from '@gitlens/git/providers/branches.js';
+import type { GitCommandPriority } from '@gitlens/git/run.types.js';
 import { createRevisionRange, stripOrigin } from '@gitlens/git/utils/revision.utils.js';
 import type { BranchSortOptions } from '@gitlens/git/utils/sorting.js';
 import { sortBranches, sortContributors } from '@gitlens/git/utils/sorting.js';
@@ -8,6 +9,7 @@ import { debug } from '@gitlens/utils/decorators/log.js';
 import { getScopedLogger } from '@gitlens/utils/logger.scoped.js';
 import type { PagedResult, PagingOptions } from '@gitlens/utils/paging.js';
 import { emptyPagedResult } from '@gitlens/utils/paging.js';
+import { getSettledValue } from '@gitlens/utils/promise.js';
 import type { CacheController } from '@gitlens/utils/promiseCache.js';
 import { toTokenInfo } from '../../api/tokenUtils.js';
 import { HeadType } from '../../context.js';
@@ -85,6 +87,7 @@ export class BranchesGitSubProvider implements GitBranchesSubProvider {
 		cancellation?: AbortSignal,
 	): Promise<PagedResult<GitBranch>> {
 		if (repoPath == null) return emptyPagedResult;
+
 		const path = repoPath;
 
 		const scope = getScopedLogger();
@@ -175,12 +178,14 @@ export class BranchesGitSubProvider implements GitBranchesSubProvider {
 			}
 		};
 
-		// Bypass cache entirely for paged follow-ups — they're driven by an opaque cursor and
-		// don't represent "all branches".
-		const branchesPromise =
-			options?.paging?.cursor != null
-				? load()
-				: this.cache.branches.getOrCreate(path, cacheable => load(cacheable), cancellation);
+		// Compose cache key with cursor so re-loads of the same page hit the cache;
+		// `repoPath` (no suffix) is reserved for the full "all branches" entry.
+		// TODO: `cache.branches` is `PromiseMap<RepoPath, ...>` keyed exactly by repoPath, so
+		// `clearCaches('branches')` / `unregisterRepoPath` will not invalidate composite-key entries.
+		// Acceptable today because branches don't change during a virtual-repo session, but the entries
+		// leak in memory until provider GC. Long-term: switch to RepoPromiseCacheMap or add prefix-invalidate.
+		const cacheKey = options?.paging?.cursor != null ? `${path}#${options.paging.cursor}` : path;
+		const branchesPromise = this.cache.branches.getOrCreate(cacheKey, cacheable => load(cacheable), cancellation);
 
 		let result = await branchesPromise;
 		if (options?.filter != null) {
@@ -201,33 +206,34 @@ export class BranchesGitSubProvider implements GitBranchesSubProvider {
 	async getBranchContributionsOverview(
 		repoPath: string,
 		ref: string,
-		options?: { associatedPullRequest?: Promise<{ refs?: { base?: { branch: string } } } | undefined> },
+		// `priority` is unused — the GitHub provider doesn't go through the local git command
+		// queue, so the priority signal has no effect here. Accepted for interface compatibility.
+		options?: {
+			associatedPullRequest?: Promise<{ refs?: { base?: { branch: string } } } | undefined>;
+			priority?: GitCommandPriority;
+		},
 		_cancellation?: AbortSignal,
 	): Promise<BranchContributionsOverview | undefined> {
 		const scope = getScopedLogger();
 
-		try {
-			let mergeTarget: string | undefined;
-
-			// PR-based lookup (GitHub provider has no stored targets or base branch detection)
-			if (options?.associatedPullRequest != null) {
-				const pr = await options.associatedPullRequest;
-				if (pr?.refs?.base != null) {
-					mergeTarget = pr.refs.base.branch;
-				}
-			}
-
-			mergeTarget ??= await this.getDefaultBranchName(repoPath);
-			if (mergeTarget == null) return undefined;
-
+		// Expensive body — runs only on cache miss. Closes over `mergeTarget` so the cache key
+		// (`${ref}|${mergeTarget}`) fully captures every input that affects the result.
+		const fetchBody = async (mergeTarget: string): Promise<BranchContributionsOverview | undefined> => {
 			const mergeBase = await this.provider.refs.getMergeBase(repoPath, ref, mergeTarget);
 			if (mergeBase == null) return undefined;
 
-			const result = await this.provider.contributors.getContributors(
-				repoPath,
-				createRevisionRange(mergeBase, ref, '..'),
-				{ stats: true },
-			);
+			// Fetch the merge-base commit's committer date in parallel with contributors so consumers
+			// that just need the date for the scope window don't pay a separate round-trip.
+			// `allSettled` so a transient failure in one side doesn't drop the overview entirely.
+			const [contributorsSettled, mergeBaseCommitSettled] = await Promise.allSettled([
+				this.provider.contributors.getContributors(repoPath, createRevisionRange(mergeBase, ref, '..'), {
+					stats: true,
+				}),
+				this.provider.commits.getCommit(repoPath, mergeBase),
+			]);
+
+			const result = getSettledValue(contributorsSettled) ?? { contributors: [] };
+			const mergeBaseCommit = getSettledValue(mergeBaseCommitSettled);
 
 			sortContributors(result.contributors, { orderBy: 'score:desc' });
 
@@ -265,6 +271,7 @@ export class BranchesGitSubProvider implements GitBranchesSubProvider {
 				branch: ref,
 				mergeTarget: mergeTarget,
 				mergeBase: mergeBase,
+				mergeBaseDate: mergeBaseCommit?.committer?.date ?? mergeBaseCommit?.author?.date,
 
 				commits: totalCommits,
 				files: totalFiles,
@@ -276,6 +283,31 @@ export class BranchesGitSubProvider implements GitBranchesSubProvider {
 
 				contributors: result.contributors,
 			};
+		};
+
+		try {
+			// Resolve `mergeTarget` (PR base or default branch). Only the expensive body below is
+			// cached — keyed on `${ref}|${mergeTarget}` so callers that resolve to the same target
+			// share the result, while differing targets get independent slots.
+			let mergeTarget: string | undefined;
+
+			if (options?.associatedPullRequest != null) {
+				const pr = await options.associatedPullRequest;
+				if (pr?.refs?.base != null) {
+					mergeTarget = pr.refs.base.branch;
+				}
+			}
+
+			mergeTarget ??= await this.getDefaultBranchName(repoPath);
+			if (mergeTarget == null) return undefined;
+
+			// Safe to cache despite PR retargeting: the cache key includes the resolved `mergeTarget`,
+			// so a retargeted PR resolves to a fresh slot and the old entry is stale-but-unused (and
+			// TTL-evicts). The prior "no outer cache here" rationale assumed a `ref`-only key.
+			const resolvedTarget = mergeTarget;
+			return await this.cache.getBranchOverview(repoPath, `${ref}|${resolvedTarget}`, () =>
+				fetchBody(resolvedTarget),
+			);
 		} catch (ex) {
 			scope?.error(ex);
 			return undefined;
@@ -333,20 +365,30 @@ export class BranchesGitSubProvider implements GitBranchesSubProvider {
 	@debug()
 	async getDefaultBranchName(
 		repoPath: string | undefined,
-		_remote?: string,
+		remote?: string,
+		// `priority` is unused — the GitHub provider doesn't go through the local git command
+		// queue, so the priority signal has no effect here. Accepted for interface compatibility.
+		_options?: { priority?: GitCommandPriority },
 		_cancellation?: AbortSignal,
 	): Promise<string | undefined> {
 		if (repoPath == null) return undefined;
 
+		remote ??= 'origin';
+
 		const scope = getScopedLogger();
 
+		// Throw inside the factory so RepoPromiseCacheMap's default `expireOnError` evicts the
+		// entry — a transient API failure shouldn't poison the cache for the rest of the session.
+		// The outer try/catch preserves the existing `undefined`-on-error contract for callers.
 		try {
-			const { metadata, github, session } = await this.provider.ensureRepositoryContext(repoPath);
-			return await github.getDefaultBranchName(
-				toTokenInfo(this.provider.authenticationProviderId, session),
-				metadata.repo.owner,
-				metadata.repo.name,
-			);
+			return await this.cache.getDefaultBranchName(repoPath, remote, async () => {
+				const { metadata, github, session } = await this.provider.ensureRepositoryContext(repoPath);
+				return github.getDefaultBranchName(
+					toTokenInfo(this.provider.authenticationProviderId, session),
+					metadata.repo.owner,
+					metadata.repo.name,
+				);
+			});
 		} catch (ex) {
 			scope?.error(ex);
 			debugger;

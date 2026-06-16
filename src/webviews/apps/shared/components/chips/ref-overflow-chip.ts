@@ -159,7 +159,7 @@ export class GlRefOverflowChip extends LitElement {
 
 		// Single ref - just show chip with tooltip
 		if (count === 1) {
-			return html`<gl-tooltip hoist .content=${first.name}>
+			return html`<gl-tooltip .content=${first.name}>
 				<span class="chip" tabindex="0">
 					<code-icon icon=${first.icon ?? icon}></code-icon>
 					<span class="chip__name">${first.name}</span>
@@ -170,7 +170,7 @@ export class GlRefOverflowChip extends LitElement {
 		// Multiple refs - show tooltip with list
 		const last = refs.at(-1)!;
 
-		return html`<gl-tooltip hoist>
+		return html`<gl-tooltip>
 			<span class="chip chip--range" tabindex="0">
 				<span class="chip__label">
 					<code-icon icon=${first.icon ?? icon}></code-icon>${first.name}

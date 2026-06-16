@@ -413,6 +413,7 @@ export function parseGitDiffNumStatFiles(data: string, repoPath: string): GitFil
 			i++;
 			continue;
 		}
+
 		const tabIndex2 = field.indexOf('\t', tabIndex1 + 1);
 		if (tabIndex2 === -1) {
 			i++;
@@ -427,6 +428,7 @@ export function parseGitDiffNumStatFiles(data: string, repoPath: string): GitFil
 		if (path === '') {
 			// Rename or copy: next two fields are oldPath and newPath (summary pass distinguishes R vs C)
 			if (i + 2 >= fields.length) break;
+
 			originalPath = fields[++i];
 			path = fields[++i];
 		}
@@ -440,7 +442,7 @@ export function parseGitDiffNumStatFiles(data: string, repoPath: string): GitFil
 			repoPath: repoPath,
 			path: path,
 			originalPath: originalPath,
-			status: (originalPath ? 'R' : 'M') as GitFileStatus,
+			status: originalPath ? 'R' : 'M',
 			stats: { additions: additions, deletions: deletions, changes: additions + deletions },
 		});
 
@@ -477,14 +479,14 @@ export function parseGitDiffNumStatFiles(data: string, repoPath: string): GitFil
 			if (createOrDelete != null) {
 				const file = files.get(normalizePath(createOrDeletePath));
 				if (file != null) {
-					file.status = (createOrDelete === 'create' ? 'A' : 'D') as GitFileStatus;
+					file.status = createOrDelete === 'create' ? 'A' : 'D';
 				}
 			} else if (renameOrCopy === 'copy') {
 				// Numstat defaulted to R; promote to C. Reconstruct the full new-side path by
 				// concatenating prefix + new-leaf + suffix, covering all compact and non-compact forms.
 				const file = files.get(normalizePath(renameRoot + renameNewLeaf + renameSuffix));
 				if (file != null) {
-					file.status = 'C' as GitFileStatus;
+					file.status = 'C';
 				}
 			} else if (modeChangePath != null) {
 				// File-type boundary: 100xxx = regular file, 120000 = symlink, 160000 = gitlink.
@@ -492,7 +494,7 @@ export function parseGitDiffNumStatFiles(data: string, repoPath: string): GitFil
 				if (oldMode.substring(0, 2) !== newMode.substring(0, 2)) {
 					const file = files.get(normalizePath(modeChangePath));
 					if (file != null) {
-						file.status = 'T' as GitFileStatus;
+						file.status = 'T';
 					}
 				}
 			}
@@ -527,7 +529,7 @@ export function parseGitApplyFiles(data: string, repoPath: string): GitFileChang
 		const [insertions, deletions, path] = line.split('\t');
 		files.set(
 			normalizePath(path),
-			new GitFileChange(repoPath, path, 'M' as GitFileStatus, getUri(path), undefined, undefined, undefined, {
+			new GitFileChange(repoPath, path, 'M', getUri(path), undefined, undefined, undefined, {
 				changes: 0,
 				additions: parseInt(insertions, 10),
 				deletions: parseInt(deletions, 10),
@@ -566,7 +568,7 @@ export function parseGitApplyFiles(data: string, repoPath: string): GitFileChang
 				new GitFileChange(
 					repoPath,
 					newPath,
-					(renameOrCopy === 'copy' ? 'C' : 'R') as GitFileStatus,
+					renameOrCopy === 'copy' ? 'C' : 'R',
 					getUri(newPath),
 					originalPath,
 					getUri(originalPath),
@@ -581,7 +583,7 @@ export function parseGitApplyFiles(data: string, repoPath: string): GitFileChang
 				new GitFileChange(
 					repoPath,
 					file.path,
-					(createOrDelete === 'create' ? 'A' : 'D') as GitFileStatus,
+					createOrDelete === 'create' ? 'A' : 'D',
 					getUri(file.path),
 					undefined,
 					undefined,

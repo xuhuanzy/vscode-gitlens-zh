@@ -20,7 +20,7 @@
 import type { Remote } from '@eamodio/supertalk';
 import { createContext } from '@lit/context';
 import type { HomeServices } from '../../home/homeService.js';
-import type { OverviewFilters } from '../../home/protocol.js';
+import type { AgentSessionState, OverviewFilters } from '../../home/protocol.js';
 import type { RepositoriesState } from '../../rpc/services/types.js';
 import type { AIContextState } from '../shared/contexts/ai.js';
 import type { CommandsState } from '../shared/contexts/commands.js';
@@ -31,6 +31,7 @@ import type { HostStorage } from '../shared/host/storage.js';
 import { createStateGroup } from '../shared/state/signals.js';
 
 type ResolvedHome = Awaited<Remote<HomeServices>['home']>;
+type ResolvedBranches = Awaited<Remote<HomeServices>['branches']>;
 
 const defaultOverviewFilter: OverviewFilters = {
 	recent: { threshold: 'OneWeek' },
@@ -78,9 +79,15 @@ export function createHomeState(storage?: HostStorage) {
 		newInstall: signal(false),
 		/** Host application name. */
 		hostAppName: signal(''),
+		/** Active agent sessions. */
+		agentSessions: signal<AgentSessionState[]>([]),
 
 		/** Resolved `home` sub-service from RPC. Available after RPC connection. Set once, not reactive. */
 		homeService: undefined as ResolvedHome | undefined,
+
+		/** Resolved `branches` sub-service from RPC. Used by `gl-branch-card` to lazy-fetch
+		 * merge-target-status on first expand. Available after RPC connection. Set once, not reactive. */
+		branchesService: undefined as ResolvedBranches | undefined,
 
 		/** Reset all Home state to initial values. */
 		resetAll: resetAll,

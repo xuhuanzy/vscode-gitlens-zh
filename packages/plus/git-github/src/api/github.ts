@@ -1,3 +1,7 @@
+import { graphql, GraphqlResponseError } from '@octokit/graphql';
+import { request } from '@octokit/request';
+import { RequestError } from '@octokit/request-error';
+import type { Endpoints, RequestParameters } from '@octokit/types';
 import {
 	AuthenticationError,
 	AuthenticationErrorReason,
@@ -37,10 +41,6 @@ import { maybeStopWatch } from '@gitlens/utils/stopwatch.js';
 import { parseUri } from '@gitlens/utils/uri.js';
 import type { Version } from '@gitlens/utils/version.js';
 import { fromString, satisfies } from '@gitlens/utils/version.js';
-import { graphql, GraphqlResponseError } from '@octokit/graphql';
-import { request } from '@octokit/request';
-import { RequestError } from '@octokit/request-error';
-import type { Endpoints, RequestParameters } from '@octokit/types';
 import type {
 	GitHubBlame,
 	GitHubBlameRange,
@@ -73,6 +73,46 @@ interface CancellationToken {
 
 const emptyPagedResult: PagedResult<any> = Object.freeze({ values: [] });
 const emptyBlameResult: GitHubBlame = Object.freeze({ ranges: [] });
+
+// Transient gateway/network failures (e.g. an upstream `502 Bad Gateway`) are worth a few quick
+// retries before surfacing to the caller. octokit provides no built-in retry for the standalone
+// `request`/`graphql` functions we use (its retry/throttle plugins only attach to the `Octokit`
+// class), so we retry here — but only for idempotent reads (REST GET/HEAD, GraphQL queries),
+// never for mutations.
+const maxRequestRetries = 2;
+const requestRetryBaseDelay = 300; // ms
+const requestRetryMaxDelay = 2000; // ms
+
+function isRetryableTransientError(ex: unknown): ex is RequestError {
+	// An aborted request is rethrown as the original `AbortError` (not a `RequestError`), so it is
+	// excluded here. octokit maps a fetch/network failure to a `RequestError` with status 500 and
+	// no response — those, along with real gateway statuses, are transient and safe to retry.
+	if (!(ex instanceof RequestError)) return false;
+
+	switch (ex.status) {
+		case 502: // Bad Gateway
+		case 503: // Service Unavailable
+		case 504: // Gateway Timeout
+			return true;
+		case 500: // Internal Server Error — only the network-failure variant (no response)
+			return ex.response == null;
+		default:
+			return false;
+	}
+}
+
+function getRequestRetryDelay(attempt: number): number {
+	// Exponential backoff with equal jitter, capped — spreads retries so a brief upstream blip
+	// isn't hammered by every in-flight request landing on the same schedule.
+	const backoff = Math.min(requestRetryMaxDelay, requestRetryBaseDelay * 2 ** (attempt - 1));
+	return Math.round(backoff / 2 + Math.random() * (backoff / 2));
+}
+
+// Matches a GraphQL document whose operation is definitely a read query — the `query` keyword as
+// the first significant token, after any leading whitespace or `#` comment lines. We retry only
+// when this matches; a mutation (even one prefixed by a comment), a subscription, or anything we
+// can't classify is left non-retryable so a transient failure can never re-run a mutation.
+const graphqlReadQueryRegex = /^(?:\s|#[^\n]*\n?)*query\b/;
 
 const gqlIssueOrPullRequestFragment = `
 closed
@@ -120,7 +160,7 @@ repository {
 const gqlPullRequestFragment = `
 ${gqlPullRequestLiteFragment}
 additions
-assignees(first: 10) {
+assignees(first: 25) {
 	nodes {
 		login
 		avatarUrl(size: $avatarSize)
@@ -134,7 +174,7 @@ mergedBy {
 	login
 }
 reviewDecision
-latestReviews(first: 10) {
+latestReviews(first: 25) {
 	nodes {
 		author {
 			login
@@ -144,7 +184,7 @@ latestReviews(first: 10) {
 		state
 	}
 }
-reviewRequests(first: 10) {
+reviewRequests(first: 25) {
 	nodes {
 		asCodeOwner
 		id
@@ -187,7 +227,7 @@ author {
 comments {
 	totalCount
 }
-labels(first: 20) {
+labels(first: 50) {
 	nodes {
 		color
 		name
@@ -1138,7 +1178,7 @@ export class GitHubApi {
 						endingLine
 						commit {
 							oid
-							parents(first: 3) { nodes { oid } }
+							parents(first: 8) { nodes { oid } }
 							message
 							additions
 							changedFiles
@@ -1406,7 +1446,7 @@ export class GitHubApi {
 	$until: GitTimestamp!
 ) {
 	repository(owner: $owner, name: $repo) {
-		refs(first: 20, refPrefix: "refs/heads/") {
+		refs(first: 100, refPrefix: "refs/heads/") {
 			nodes {
 				name
 				target {
@@ -1691,7 +1731,7 @@ export class GitHubApi {
 						... on Commit {
 							oid
 							message
-							parents(first: 3) { nodes { oid } }
+							parents(first: 8) { nodes { oid } }
 							additions
 							changedFiles
 							deletions
@@ -1767,6 +1807,115 @@ export class GitHubApi {
 		}
 	}
 
+	@trace({
+		args: (token, owner, repo, ref) => ({
+			token: `<token:${token.microHash}>`,
+			owner: owner,
+			repo: repo,
+			ref: ref,
+		}),
+	})
+	async getCommitShas(
+		token: GitHubTokenInfo,
+		owner: string,
+		repo: string,
+		ref: string,
+		options?: {
+			after?: string;
+			before?: string;
+			limit?: number;
+			path?: string;
+			since?: string | Date;
+			until?: string | Date;
+		},
+	): Promise<PagedResult<string>> {
+		const scope = getScopedLogger();
+
+		interface QueryResult {
+			repository:
+				| {
+						object:
+							| {
+									history: {
+										pageInfo: GitHubPageInfo;
+										nodes: { oid: string }[];
+									};
+							  }
+							| null
+							| undefined;
+				  }
+				| null
+				| undefined;
+		}
+
+		try {
+			const query = `query getCommitShas(
+	$owner: String!
+	$repo: String!
+	$ref: String!
+	$path: String
+	$after: String
+	$before: String
+	$limit: Int = 100
+	$since: GitTimestamp
+	$until: GitTimestamp
+) {
+	repository(name: $repo, owner: $owner) {
+		object(expression: $ref) {
+			... on Commit {
+				history(first: $limit, path: $path, after: $after, before: $before, since: $since, until: $until) {
+					pageInfo {
+						startCursor
+						endCursor
+						hasNextPage
+						hasPreviousPage
+					}
+					nodes {
+						... on Commit { oid }
+					}
+				}
+			}
+		}
+	}
+}`;
+
+			const rsp = await this.graphql<QueryResult>(
+				undefined,
+				token,
+				query,
+				{
+					owner: owner,
+					repo: repo,
+					ref: ref,
+					after: options?.after,
+					before: options?.before,
+					path: options?.path,
+					limit: Math.min(100, options?.limit ?? 100),
+					since: typeof options?.since === 'string' ? options?.since : options?.since?.toISOString(),
+					until: typeof options?.until === 'string' ? options?.until : options?.until?.toISOString(),
+				},
+				scope,
+			);
+			const history = rsp?.repository?.object?.history;
+			if (history == null) return emptyPagedResult;
+
+			return {
+				paging:
+					history.pageInfo.endCursor != null
+						? {
+								cursor: history.pageInfo.endCursor ?? undefined,
+								more: history.pageInfo.hasNextPage,
+							}
+						: undefined,
+				values: history.nodes.map(n => n.oid),
+			};
+		} catch (ex) {
+			if (ex instanceof RequestNotFoundError) return emptyPagedResult;
+
+			throw this.handleException(ex, undefined, scope);
+		}
+	}
+
 	private async getCommitsCoreRange(
 		token: GitHubTokenInfo,
 		owner: string,
@@ -1830,7 +1979,7 @@ export class GitHubApi {
 		object(expression: $ref) {
 			...on Commit {
 				oid
-				parents(first: 3) { nodes { oid } }
+				parents(first: 8) { nodes { oid } }
 				message
 				additions
 				changedFiles
@@ -2016,12 +2165,12 @@ export class GitHubApi {
 	$until: GitTimestamp!
 ) {
 	repository(owner: $owner, name: $repo) {
-		refs(first: 20, refPrefix: "refs/tags/") {
+		refs(first: 100, refPrefix: "refs/tags/") {
 			nodes {
 				name
 				target {
 					... on Commit {
-						history(first: 3, since: $since until: $until) {
+						history(first: 10, since: $since until: $until) {
 							nodes { oid }
 						}
 					}
@@ -2757,6 +2906,59 @@ export class GitHubApi {
 		return version ?? undefined;
 	}
 
+	// Runs `execute`, retrying transient gateway/network failures with backoff. `retryable` gates
+	// retries to idempotent reads; `signal` lets an in-flight cancellation abort the backoff wait.
+	private async requestWithRetries<T>(
+		execute: () => Promise<T>,
+		retryable: boolean,
+		signal: AbortSignal | undefined,
+		scope: ScopedLogger | undefined,
+	): Promise<T> {
+		let attempt = 0;
+		while (true) {
+			try {
+				return await execute();
+			} catch (ex) {
+				if (!retryable || attempt >= maxRequestRetries || signal?.aborted || !isRetryableTransientError(ex)) {
+					throw ex;
+				}
+
+				attempt++;
+				const delay = getRequestRetryDelay(attempt);
+				scope?.warn(
+					`Transient request failure (status ${ex.status}); retrying ${attempt}/${maxRequestRetries} in ${delay}ms`,
+				);
+				await this.delayWithAbort(delay, signal);
+				// Bail rather than retry if we were cancelled while waiting
+				if (signal?.aborted) throw new CancellationError();
+			}
+		}
+	}
+
+	private delayWithAbort(ms: number, signal: AbortSignal | undefined): Promise<void> {
+		return new Promise<void>(resolve => {
+			if (signal?.aborted) {
+				resolve();
+				return;
+			}
+
+			let timer: ReturnType<typeof setTimeout>;
+			const onAbort = () => {
+				clearTimeout(timer);
+				resolve();
+			};
+			timer = setTimeout(() => {
+				signal?.removeEventListener('abort', onAbort);
+				resolve();
+			}, ms);
+			signal?.addEventListener('abort', onAbort, { once: true });
+		});
+	}
+
+	// Inflight dedupe: identical concurrent GraphQL requests share a single promise
+	// to cut redundant traffic during graph/details enrichment bursts.
+	private readonly _pendingGraphQL = new Map<string, Promise<unknown>>();
+
 	private async graphql<T>(
 		provider: Provider | undefined,
 		token: GitHubTokenInfo,
@@ -2766,56 +2968,101 @@ export class GitHubApi {
 		cancellation?: CancellationToken | undefined,
 	): Promise<T | undefined> {
 		const { accessToken, ...tokenInfo } = token;
-		try {
-			let aborter: AbortController | undefined;
-			if (cancellation != null) {
-				if (cancellation.isCancellationRequested) throw new CancellationError();
 
-				aborter = new AbortController();
-				cancellation.onCancellationRequested(() => aborter!.abort());
-
-				variables = {
-					...variables,
-					request: { ...variables?.request, signal: aborter.signal },
-				};
+		// Only dedupe when no cancellation/request option is in play — sharing a promise that
+		// carries one caller's AbortSignal would let one cancellation cancel for everyone.
+		const dedupable = cancellation == null && variables?.request == null;
+		let dedupeKey: string | undefined;
+		if (dedupable) {
+			try {
+				dedupeKey = `${token.microHash}|${provider?.id ?? ''}|${query}|${JSON.stringify(variables ?? null)}`;
+			} catch {
+				// Non-serializable variable (BigInt, function, circular ref) — fall through to direct exec.
+				dedupeKey = undefined;
 			}
-
-			return await this.config.wrapForForcedInsecureSSL(provider?.getIgnoreSSLErrors() ?? false, () =>
-				this.getDefaults(accessToken, graphql)(query, variables),
-			);
-		} catch (ex) {
-			if (ex instanceof GraphqlResponseError) {
-				switch (ex.errors?.[0]?.type) {
-					case 'NOT_FOUND':
-						throw new RequestNotFoundError(ex);
-					case 'FORBIDDEN':
-						throw new AuthenticationError(tokenInfo, AuthenticationErrorReason.Forbidden, ex);
-					case 'RATE_LIMITED': {
-						let resetAt: number | undefined;
-
-						const reset = ex.headers?.['x-ratelimit-reset'];
-						if (reset != null) {
-							resetAt = parseInt(reset, 10);
-							if (Number.isNaN(resetAt)) {
-								resetAt = undefined;
-							}
-						}
-
-						throw new RequestRateLimitError(ex, accessToken, resetAt);
-					}
-				}
-
-				if (Logger.isDebugging) {
-					this.config.onDebugError?.(`GitHub request failed: ${ex.errors?.[0]?.message ?? ex.message}`);
-				}
-			} else if (ex instanceof RequestError || ex.name === 'AbortError') {
-				this.handleRequestError(provider, token, ex, scope);
-			} else if (Logger.isDebugging) {
-				this.config.onDebugError?.(`GitHub request failed: ${ex.message}`);
+			if (dedupeKey != null) {
+				const inflight = this._pendingGraphQL.get(dedupeKey);
+				if (inflight != null) return inflight as Promise<T | undefined>;
 			}
-
-			throw ex;
 		}
+
+		const run = async (): Promise<T | undefined> => {
+			try {
+				let aborter: AbortController | undefined;
+				if (cancellation != null) {
+					if (cancellation.isCancellationRequested) throw new CancellationError();
+
+					aborter = new AbortController();
+					cancellation.onCancellationRequested(() => aborter!.abort());
+
+					variables = {
+						...variables,
+						request: { ...variables?.request, signal: aborter.signal },
+					};
+				}
+
+				// Retry transient gateway/network failures, but only confirmed read queries — never
+				// mutations (re-running one isn't idempotent)
+				const retryable = graphqlReadQueryRegex.test(query);
+				return await this.requestWithRetries(
+					() =>
+						this.config.wrapForForcedInsecureSSL(provider?.getIgnoreSSLErrors() ?? false, () =>
+							this.getDefaults(accessToken, graphql)(query, variables),
+						),
+					retryable,
+					aborter?.signal,
+					scope,
+				);
+			} catch (ex) {
+				if (ex instanceof GraphqlResponseError) {
+					switch (ex.errors?.[0]?.type) {
+						case 'NOT_FOUND':
+							throw new RequestNotFoundError(ex);
+						case 'FORBIDDEN':
+							throw new AuthenticationError(tokenInfo, AuthenticationErrorReason.Forbidden, ex);
+						case 'RATE_LIMITED': {
+							let resetAt: number | undefined;
+
+							const reset = ex.headers?.['x-ratelimit-reset'];
+							if (reset != null) {
+								resetAt = parseInt(reset, 10);
+								if (Number.isNaN(resetAt)) {
+									resetAt = undefined;
+								}
+							}
+
+							throw new RequestRateLimitError(ex, accessToken, resetAt);
+						}
+					}
+
+					if (Logger.isDebugging) {
+						this.config.onDebugError?.(`GitHub request failed: ${ex.errors?.[0]?.message ?? ex.message}`);
+					}
+				} else if (ex instanceof RequestError || ex.name === 'AbortError') {
+					this.handleRequestError(provider, token, ex, scope);
+				} else if (Logger.isDebugging) {
+					this.config.onDebugError?.(`GitHub request failed: ${ex.message}`);
+				}
+
+				throw ex;
+			}
+		};
+
+		if (dedupeKey == null) return run();
+
+		const promise = run();
+		this._pendingGraphQL.set(dedupeKey, promise);
+		// Clear from the inflight map once the promise settles — successes and failures both
+		// clear, so failed requests don't poison subsequent retries. Use `then(cleanup, cleanup)`
+		// rather than `finally` so a rejected request doesn't spawn an orphaned (unhandled) promise;
+		// the real caller still receives the rejection via the returned `promise`.
+		const cleanup = () => {
+			if (this._pendingGraphQL.get(dedupeKey) === promise) {
+				this._pendingGraphQL.delete(dedupeKey);
+			}
+		};
+		promise.then(cleanup, cleanup);
+		return promise;
 	}
 
 	private async request<R extends keyof Endpoints>(
@@ -2828,16 +3075,27 @@ export class GitHubApi {
 	): Promise<Endpoints[R]['response']> {
 		const { accessToken } = token;
 		try {
+			let signal: AbortSignal | undefined;
 			if (cancellation != null) {
 				if (cancellation.isCancellationRequested) throw new CancellationError();
 
 				const aborter = new AbortController();
 				cancellation.onCancellationRequested(() => aborter.abort());
-				options = { ...options, request: { ...options?.request, signal: aborter.signal } };
+				signal = aborter.signal;
+				options = { ...options, request: { ...options?.request, signal: signal } };
 			}
 
-			return (await this.config.wrapForForcedInsecureSSL(provider?.getIgnoreSSLErrors() ?? false, () =>
-				this.getDefaults(accessToken, request)(route as string, options),
+			// Retry transient gateway/network failures on idempotent reads only
+			const method = route.split(' ', 1)[0].toUpperCase();
+			const retryable = method === 'GET' || method === 'HEAD';
+			return (await this.requestWithRetries(
+				() =>
+					this.config.wrapForForcedInsecureSSL(provider?.getIgnoreSSLErrors() ?? false, () =>
+						this.getDefaults(accessToken, request)(route as string, options),
+					),
+				retryable,
+				signal,
+				scope,
 			)) as Endpoints[R]['response'];
 		} catch (ex) {
 			if (ex instanceof RequestError || ex.name === 'AbortError') {
