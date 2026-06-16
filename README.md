@@ -2,7 +2,7 @@
 
 这是 GitLens 的中文本地化分支，目标是在尽量少改动上游源码的前提下，为 GitLens 提供中文界面与相关文案。本分支基于上游 [gitkraken/vscode-gitlens](https://github.com/gitkraken/vscode-gitlens) 持续同步，中文本地化维护源与工作流主要位于 `i18n/`；运行时与 VS Code 需要消费的本地化资源由编译/打包流程生成。
 
-使用编译期生成方案，在`git`上对上游`./src`与`package.json`的更改为0，这允许我们能够持续合并上游更改。
+使用编译期生成方案，在`git`上对上游`./src`与`package.json`的更改近乎为0，这允许我们能够持续合并上游更改。
 
 > [!WARNING]
 > 不对翻译精确性负责, 目前 99% 翻译由 `gpt-5.5 xhigh` 根据上下文翻译与自校对, 一些小众危险操作前最好看下英文原意.

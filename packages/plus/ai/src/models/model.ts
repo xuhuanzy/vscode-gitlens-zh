@@ -49,6 +49,18 @@ export interface AIProviderDescriptorWithConfiguration<
 
 export const openAIModels = <T extends OpenAIProviders>(provider: AIProviderDescriptor<T>): AIModel<T>[] => [
 	{
+		id: 'gpt-5.5',
+		name: 'GPT-5.5',
+		maxTokens: { input: 272000, output: 128000 },
+		provider: provider,
+	},
+	{
+		id: 'gpt-5.4',
+		name: 'GPT-5.4',
+		maxTokens: { input: 272000, output: 128000 },
+		provider: provider,
+	},
+	{
 		id: 'gpt-5.2',
 		name: 'GPT-5.2',
 		maxTokens: { input: 400000, output: 128000 },
