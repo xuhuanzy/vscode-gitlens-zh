@@ -1,7 +1,6 @@
-import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import test from "node:test";
+import { expect, test } from "vitest";
 
 import { withTempRoot } from "../../../testing/tempRoot.mts";
 import { generateManifestLocalizedOutputs, syncManifestI18n } from "../workflow.mts";
@@ -30,17 +29,16 @@ test("manifest workflow reads upstream while persisting and generating outside i
 		fs.writeFileSync(manifestFile, sourceManifest, "utf8");
 
 		const syncResult = syncManifestI18n(options);
-		assert.equal(syncResult.context.manifestFile, manifestFile);
-		assert.equal(syncResult.context.catalogFile, path.join(controlRoot, "i18n", "catalog", "package.catalog.json"));
-		assert.equal(fs.existsSync(syncResult.context.catalogFile), true);
-		assert.equal(fs.existsSync(path.join(upstreamRoot, "i18n")), false);
+		expect(syncResult.context.manifestFile).toBe(manifestFile);
+		expect(syncResult.context.catalogFile).toBe(path.join(controlRoot, "i18n", "catalog", "package.catalog.json"));
+		expect(fs.existsSync(syncResult.context.catalogFile)).toBe(true);
+		expect(fs.existsSync(path.join(upstreamRoot, "i18n"))).toBe(false);
 
 		const generateResult = generateManifestLocalizedOutputs(options);
-		assert.equal(
-			generateResult.context.generatedManifestFile,
+		expect(generateResult.context.generatedManifestFile).toBe(
 			path.join(workRoot, "i18n", "package-root", "zh-cn", "package.json"),
 		);
-		assert.equal(fs.existsSync(generateResult.context.generatedManifestFile), true);
-		assert.equal(fs.readFileSync(manifestFile, "utf8"), sourceManifest);
+		expect(fs.existsSync(generateResult.context.generatedManifestFile)).toBe(true);
+		expect(fs.readFileSync(manifestFile, "utf8")).toBe(sourceManifest);
 	});
 });

@@ -1,6 +1,5 @@
-import assert from "node:assert/strict";
 import path from "node:path";
-import test from "node:test";
+import { expect, test } from "vitest";
 
 import { createI18nLayerContext } from "../context.mts";
 
@@ -11,13 +10,13 @@ test("i18n context keeps persistent data in the control root and generated data 
 	const workRoot = path.join(fixtureRoot, "scratch");
 	const context = createI18nLayerContext({ controlRoot, upstreamRoot, workRoot, locale: "zh-cn" });
 
-	assert.equal(context.controlRoot, controlRoot);
-	assert.equal(context.upstreamRoot, upstreamRoot);
-	assert.equal(context.authorityMessagesFile, path.join(controlRoot, "i18n", "authority", "zh-cn", "messages.json"));
-	assert.equal(context.catalogDir, path.join(controlRoot, "i18n", "catalog"));
-	assert.equal(context.worksetDir, path.join(controlRoot, "i18n", "worksets"));
-	assert.equal(context.generatedRootDir, path.join(workRoot, "i18n", "generated", "zh-cn"));
-	assert.equal(context.upstreamRoot.startsWith(context.controlRoot), false);
+	expect(context.controlRoot).toBe(controlRoot);
+	expect(context.upstreamRoot).toBe(upstreamRoot);
+	expect(context.authorityMessagesFile).toBe(path.join(controlRoot, "i18n", "authority", "zh-cn", "messages.json"));
+	expect(context.catalogDir).toBe(path.join(controlRoot, "i18n", "catalog"));
+	expect(context.worksetDir).toBe(path.join(controlRoot, "i18n", "worksets"));
+	expect(context.generatedRootDir).toBe(path.join(workRoot, "i18n", "generated", "zh-cn"));
+	expect(context.upstreamRoot.startsWith(context.controlRoot)).toBe(false);
 });
 
 test("relative upstream and work roots resolve from the control root", () => {
@@ -28,7 +27,7 @@ test("relative upstream and work roots resolve from the control root", () => {
 		workRoot: ".fixtures/work",
 	});
 
-	assert.equal(context.upstreamRoot, path.join(controlRoot, ".fixtures", "upstream"));
-	assert.equal(context.workRoot, path.join(controlRoot, ".fixtures", "work"));
-	assert.equal(context.i18nDir, path.join(controlRoot, "i18n"));
+	expect(context.upstreamRoot).toBe(path.join(controlRoot, ".fixtures", "upstream"));
+	expect(context.workRoot).toBe(path.join(controlRoot, ".fixtures", "work"));
+	expect(context.i18nDir).toBe(path.join(controlRoot, "i18n"));
 });

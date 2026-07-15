@@ -1,34 +1,26 @@
-import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
+import { expect, test } from "vitest";
 
 import { createTestLayerOptions } from "../../testing/tempRoot.mts";
 import { createDomainContext, createI18nLayerContext } from "../context.mts";
 import type { TranslationWorksetFile } from "../model.mts";
 import { readJsonFile, readJsonFileIfMissing, saveWorkset } from "../store.mts";
 
-run();
-
-function run(): void {
-	testReadJsonFileThrowsOnInvalidJson();
-	testReadJsonFileIfMissingOnlyUsesInitialValueForMissingFiles();
-	testSaveWorksetSkipsGeneratedAtOnlyChanges();
-}
-
-function testReadJsonFileThrowsOnInvalidJson(): void {
+test("throws when reading invalid JSON", () => {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "gitlens-i18n-store-"));
 	try {
 		const filePath = path.join(rootDir, "broken.json");
 		fs.writeFileSync(filePath, "{", "utf8");
 
-		assert.throws(() => readJsonFile(filePath), SyntaxError);
+		expect(() => readJsonFile(filePath)).toThrow(SyntaxError);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}
-}
+});
 
-function testSaveWorksetSkipsGeneratedAtOnlyChanges(): void {
+test("skips writes when only generatedAt changes", () => {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "gitlens-i18n-store-"));
 	try {
 		const context = createDomainContext(createI18nLayerContext(createTestLayerOptions(rootDir)), {
@@ -61,7 +53,7 @@ function testSaveWorksetSkipsGeneratedAtOnlyChanges(): void {
 			...initial,
 			generatedAt: "2026-01-02T00:00:00.000Z",
 		});
-		assert.equal(fs.readFileSync(context.worksetFile, "utf8"), firstContents);
+		expect(fs.readFileSync(context.worksetFile, "utf8")).toBe(firstContents);
 
 		saveWorkset(context, {
 			...initial,
@@ -74,21 +66,21 @@ function testSaveWorksetSkipsGeneratedAtOnlyChanges(): void {
 				},
 			],
 		});
-		assert.notEqual(fs.readFileSync(context.worksetFile, "utf8"), firstContents);
+		expect(fs.readFileSync(context.worksetFile, "utf8")).not.toBe(firstContents);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}
-}
+});
 
-function testReadJsonFileIfMissingOnlyUsesInitialValueForMissingFiles(): void {
+test("uses the initial value only for missing files", () => {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "gitlens-i18n-store-"));
 	try {
-		assert.deepEqual(readJsonFileIfMissing(path.join(rootDir, "missing.json"), { entries: [] }), { entries: [] });
+		expect(readJsonFileIfMissing(path.join(rootDir, "missing.json"), { entries: [] })).toEqual({ entries: [] });
 
 		const filePath = path.join(rootDir, "broken.json");
 		fs.writeFileSync(filePath, "{", "utf8");
-		assert.throws(() => readJsonFileIfMissing(filePath, { entries: [] }), SyntaxError);
+		expect(() => readJsonFileIfMissing(filePath, { entries: [] })).toThrow(SyntaxError);
 	} finally {
 		fs.rmSync(rootDir, { recursive: true, force: true });
 	}
-}
+});

@@ -1,7 +1,6 @@
-import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import test from "node:test";
+import { expect, test } from "vitest";
 
 import ts from "typescript";
 
@@ -10,7 +9,7 @@ const controlRoot = path.resolve(import.meta.dirname, "..", "..");
 test("VS Code launch configurations always debug the prepared upstream tree", () => {
 	const launchFile = path.join(controlRoot, ".vscode", "launch.json");
 	const parsed = ts.parseConfigFileTextToJson(launchFile, fs.readFileSync(launchFile, "utf8"));
-	assert.equal(parsed.error, undefined);
+	expect(parsed.error).toBeUndefined();
 	const launch = parsed.config as {
 		configurations: Array<{
 			args: string[];
@@ -21,19 +20,19 @@ test("VS Code launch configurations always debug the prepared upstream tree", ()
 		}>;
 	};
 
-	assert.equal(launch.configurations.length, 2);
-	assert.deepEqual(
-		launch.configurations.map((configuration) => configuration.preLaunchTask),
-		["glzh: prepare", "glzh: watch"],
-	);
+	expect(launch.configurations.length).toBe(2);
+	expect(launch.configurations.map((configuration) => configuration.preLaunchTask)).toEqual([
+		"glzh: prepare",
+		"glzh: watch",
+	]);
 	for (const configuration of launch.configurations) {
-		assert.equal(configuration.args.includes("--extensionDevelopmentPath=${workspaceFolder}/.upstream"), true);
-		assert.equal(configuration.debugWebviews, true);
-		assert.deepEqual(configuration.outFiles, ["${workspaceFolder}/.upstream/dist/**/*.js"]);
-		assert.deepEqual(configuration.rendererDebugOptions.outFiles, [
+		expect(configuration.args).toContain("--extensionDevelopmentPath=${workspaceFolder}/.upstream");
+		expect(configuration.debugWebviews).toBe(true);
+		expect(configuration.outFiles).toEqual(["${workspaceFolder}/.upstream/dist/**/*.js"]);
+		expect(configuration.rendererDebugOptions.outFiles).toEqual([
 			"${workspaceFolder}/.upstream/dist/webviews/**/*.js",
 		]);
-		assert.equal(configuration.rendererDebugOptions.webRoot, "${workspaceFolder}/.upstream/src/webviews/apps");
+		expect(configuration.rendererDebugOptions.webRoot).toBe("${workspaceFolder}/.upstream/src/webviews/apps");
 	}
 });
 
@@ -49,10 +48,10 @@ test("VS Code tasks delegate both development modes to the project controller", 
 
 	const prepare = tasks.tasks.find((task) => task.label === "glzh: prepare");
 	const watch = tasks.tasks.find((task) => task.label === "glzh: watch");
-	assert.notEqual(prepare, undefined);
-	assert.deepEqual(prepare?.args, ["glzh", "dev", "prepare"]);
-	assert.notEqual(watch, undefined);
-	assert.deepEqual(watch?.args, ["glzh", "dev", "watch"]);
-	assert.equal(watch?.isBackground, true);
-	assert.equal(typeof watch?.problemMatcher, "object");
+	expect(prepare).toBeDefined();
+	expect(prepare?.args).toEqual(["glzh", "dev", "prepare"]);
+	expect(watch).toBeDefined();
+	expect(watch?.args).toEqual(["glzh", "dev", "watch"]);
+	expect(watch?.isBackground).toBe(true);
+	expect(typeof watch?.problemMatcher).toBe("object");
 });

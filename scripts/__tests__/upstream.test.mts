@@ -1,16 +1,15 @@
-import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
-import test from "node:test";
+import { afterAll, expect, test } from "vitest";
 
-import { loadLayerConfig, PipelineError } from "../config.mts";
+import { loadLayerConfig } from "../config.mts";
 import { getUpstreamStatus, installUpstreamDependencies, markFullBuild, prepareUpstream } from "../upstream.mts";
 
 const fixtureRoot = path.resolve(".work", "tests", `upstream-${process.pid}`);
 
-test.after(() => fs.rmSync(fixtureRoot, { recursive: true, force: true }));
+afterAll(() => fs.rmSync(fixtureRoot, { recursive: true, force: true }));
 
 test("prepare creates a managed depth-one checkout from a local tagged repository", () => {
 	const controlRoot = path.join(fixtureRoot, "managed-checkout");
@@ -21,32 +20,32 @@ test("prepare creates a managed depth-one checkout from a local tagged repositor
 	const prepared = prepareUpstream(config);
 	const status = getUpstreamStatus(config);
 
-	assert.deepEqual(prepared, status);
-	assert.equal(status.exists, true);
-	assert.equal(status.managed, true);
-	assert.equal(status.repository, repository.url);
-	assert.equal(status.commit, repository.commit);
-	assert.equal(status.shallow, true);
-	assert.equal(status.dirty, false);
+	expect(prepared).toEqual(status);
+	expect(status.exists).toBe(true);
+	expect(status.managed).toBe(true);
+	expect(status.repository).toBe(repository.url);
+	expect(status.commit).toBe(repository.commit);
+	expect(status.shallow).toBe(true);
+	expect(status.dirty).toBe(false);
 	const managedFile = path.join(config.upstreamRoot, ".git", "gl-managed.json");
-	assert.deepEqual(JSON.parse(fs.readFileSync(managedFile, "utf8")), {
+	expect(JSON.parse(fs.readFileSync(managedFile, "utf8"))).toEqual({
 		repository: repository.url,
 		tag: "18.2.0",
 		commit: repository.commit,
 		fullBuild: false,
 	});
-	assert.equal(status.fullBuild, false);
+	expect(status.fullBuild).toBe(false);
 	fs.rmSync(managedFile);
 	const restored = prepareUpstream(config);
-	assert.equal(restored.managed, true);
-	assert.equal(fs.existsSync(managedFile), true);
+	expect(restored.managed).toBe(true);
+	expect(fs.existsSync(managedFile)).toBe(true);
 	markFullBuild(config);
 	const built = getUpstreamStatus(config);
-	assert.equal(built.fullBuild, true);
-	assert.equal(built.builtTag, "18.2.0");
-	assert.equal(built.builtCommit, repository.commit);
+	expect(built.fullBuild).toBe(true);
+	expect(built.builtTag).toBe("18.2.0");
+	expect(built.builtCommit).toBe(repository.commit);
 	const cleaned = prepareUpstream(config, { clean: true });
-	assert.equal(cleaned.fullBuild, false);
+	expect(cleaned.fullBuild).toBe(false);
 });
 
 test("prepare refuses an unknown existing upstream directory without deleting it", () => {
@@ -58,11 +57,8 @@ test("prepare refuses an unknown existing upstream directory without deleting it
 	const sentinel = path.join(config.upstreamRoot, "owned-by-user.txt");
 	fs.writeFileSync(sentinel, "keep", "utf8");
 
-	assert.throws(
-		() => prepareUpstream(config),
-		(error: unknown) => error instanceof PipelineError && error.code === "UPSTREAM_IDENTITY_MISMATCH",
-	);
-	assert.equal(fs.readFileSync(sentinel, "utf8"), "keep");
+	expect(() => prepareUpstream(config)).toThrow(expect.objectContaining({ code: "UPSTREAM_IDENTITY_MISMATCH" }));
+	expect(fs.readFileSync(sentinel, "utf8")).toBe("keep");
 });
 
 test("dependency install keeps the pnpm store under work root and replaces stale upstream links", () => {
@@ -84,9 +80,9 @@ test("dependency install keeps the pnpm store under work root and replaces stale
 	});
 
 	const storeRoot = path.join(config.workRoot, "pnpm-store");
-	assert.deepEqual(calls, [[`--config.store-dir=${storeRoot}`, "install", "--frozen-lockfile"]]);
-	assert.equal(fs.existsSync(staleFile), false);
-	assert.equal(fs.existsSync(path.join(controlRoot, ".pnpm-store")), false);
+	expect(calls).toEqual([[`--config.store-dir=${storeRoot}`, "install", "--frozen-lockfile"]]);
+	expect(fs.existsSync(staleFile)).toBe(false);
+	expect(fs.existsSync(path.join(controlRoot, ".pnpm-store"))).toBe(false);
 });
 
 function createBareTaggedRepository(root: string): { readonly url: string; readonly commit: string } {
@@ -119,6 +115,6 @@ function writeLayerConfig(controlRoot: string, repository: string, commit: strin
 
 function runGit(cwd: string, args: readonly string[]): string {
 	const result = spawnSync("git", [...args], { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] });
-	assert.equal(result.status, 0, `${result.stdout ?? ""}${result.stderr ?? ""}`);
+	expect(result.status, `${result.stdout ?? ""}${result.stderr ?? ""}`).toBe(0);
 	return result.stdout ?? "";
 }

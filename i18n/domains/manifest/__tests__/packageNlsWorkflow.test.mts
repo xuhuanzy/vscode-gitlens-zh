@@ -1,6 +1,6 @@
-import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { expect, test } from "vitest";
 
 import { createLiteralPattern, shortHash } from "../../../core/model.mts";
 import { createTestLayerOptions, withTempRoot } from "../../../testing/tempRoot.mts";
@@ -21,16 +21,7 @@ import {
 	syncManifestI18n,
 } from "../workflow.mts";
 
-run();
-
-function run(): void {
-	testPromotionWorkflow();
-	testRootTokenizedManifestIsRejected();
-	testDuplicateViewsWelcomeKeys();
-	testOverridesDoNotRemainPending();
-}
-
-function testPromotionWorkflow(): void {
+test("promotes localized manifest entries", () => {
 	withTempRoot("gitlens-package-nls-", (rootDir) => {
 		fs.writeFileSync(
 			path.join(rootDir, "package.json"),
@@ -83,15 +74,15 @@ function testPromotionWorkflow(): void {
 
 		const rootManifestBeforeGeneration = fs.readFileSync(path.join(rootDir, "package.json"), "utf8");
 		const syncResult = syncManifestI18n(createTestLayerOptions(rootDir));
-		assert.equal(syncResult.occurrenceCount > 0, true);
+		expect(syncResult.occurrenceCount).toBeGreaterThan(0);
 
 		const context = createManifestDomainContext(createTestLayerOptions(rootDir));
 		const catalog = loadManifestCatalog(context);
 		const workset = loadManifestWorkset(context);
-		assert.equal(workset.entries.length > 0, true);
-		assert.deepEqual("firstSeenAt" in workset.entries[0], false);
-		assert.deepEqual("occurrences" in workset.entries[0], false);
-		assert.deepEqual(Array.isArray(workset.entries[0].occurrenceIds), true);
+		expect(workset.entries.length).toBeGreaterThan(0);
+		expect("firstSeenAt" in workset.entries[0]).toEqual(false);
+		expect("occurrences" in workset.entries[0]).toEqual(false);
+		expect(Array.isArray(workset.entries[0].occurrenceIds)).toEqual(true);
 
 		const commandTitleOccurrence = catalog.occurrences.find(
 			(occurrence) =>
@@ -103,17 +94,17 @@ function testPromotionWorkflow(): void {
 				occurrence.output?.kind === "manifest-key" &&
 				occurrence.output.key === "contributes.commands.fixture.open.category",
 		);
-		assert.notEqual(commandTitleOccurrence, undefined);
-		assert.notEqual(commandCategoryOccurrence, undefined);
-		assert.equal(commandTitleOccurrence!.anchor, commandCategoryOccurrence!.anchor);
-		assert.notEqual(commandTitleOccurrence!.id, commandCategoryOccurrence!.id);
-		assert.equal(commandTitleOccurrence!.slot, "title");
-		assert.equal(commandCategoryOccurrence!.slot, "category");
-		assert.equal(commandTitleOccurrence!.reference.kind, "json");
-		assert.equal("extractedFrom" in commandTitleOccurrence!.reference, false);
+		expect(commandTitleOccurrence).toBeDefined();
+		expect(commandCategoryOccurrence).toBeDefined();
+		expect(commandTitleOccurrence!.anchor).toBe(commandCategoryOccurrence!.anchor);
+		expect(commandTitleOccurrence!.id).not.toBe(commandCategoryOccurrence!.id);
+		expect(commandTitleOccurrence!.slot).toBe("title");
+		expect(commandCategoryOccurrence!.slot).toBe("category");
+		expect(commandTitleOccurrence!.reference.kind).toBe("json");
+		expect("extractedFrom" in commandTitleOccurrence!.reference).toBe(false);
 
 		const targetEntry = workset.entries.find((entry) => entry.source === "GitLens");
-		assert.notEqual(targetEntry, undefined);
+		expect(targetEntry).toBeDefined();
 
 		saveManifestWorkset(context, {
 			...workset,
@@ -129,36 +120,33 @@ function testPromotionWorkflow(): void {
 		});
 
 		const promoteResult = promoteManifestAuthority(createTestLayerOptions(rootDir));
-		assert.deepEqual(promoteResult.promoted, [targetEntry!.id]);
+		expect(promoteResult.promoted).toEqual([targetEntry!.id]);
 
 		const generateResult = generateManifestLocalizedOutputs(createTestLayerOptions(rootDir));
-		assert.equal(generateResult.englishKeys > 0, true);
-		assert.equal(generateResult.localizedKeys > 0, true);
-		assert.equal(fs.readFileSync(path.join(rootDir, "package.json"), "utf8"), rootManifestBeforeGeneration);
+		expect(generateResult.englishKeys).toBeGreaterThan(0);
+		expect(generateResult.localizedKeys).toBeGreaterThan(0);
+		expect(fs.readFileSync(path.join(rootDir, "package.json"), "utf8")).toBe(rootManifestBeforeGeneration);
 
 		const manifest = readJsonFile<Record<string, unknown>>(context.manifestFile);
-		assert.equal(manifest.displayName, "Fixture Git UI");
+		expect(manifest.displayName).toBe("Fixture Git UI");
 
 		const generatedManifest = readJsonFile<Record<string, unknown>>(context.generatedManifestFile);
-		assert.equal(generatedManifest.displayName, "%extension.displayName%");
-		assert.equal(fs.existsSync(path.join(context.outputRootDir, "package.nls.json")), true);
-		assert.equal(fs.existsSync(path.join(context.outputRootDir, "package.nls.zh-cn.json")), true);
+		expect(generatedManifest.displayName).toBe("%extension.displayName%");
+		expect(fs.existsSync(path.join(context.outputRootDir, "package.nls.json"))).toBe(true);
+		expect(fs.existsSync(path.join(context.outputRootDir, "package.nls.zh-cn.json"))).toBe(true);
 
 		const englishPackageNls = readJsonFile<Record<string, string>>(context.englishPackageNlsFile);
-		assert.equal(englishPackageNls["extension.displayName"], "Fixture Git UI");
+		expect(englishPackageNls["extension.displayName"]).toBe("Fixture Git UI");
 
 		const authority = loadAuthorityBundle(context);
-		assert.equal(
-			authority.messages.entries.some((entry) => entry.translation === "GitLens 中文"),
-			true,
-		);
+		expect(authority.messages.entries.some((entry) => entry.translation === "GitLens 中文")).toBe(true);
 
 		const resyncResult = syncManifestI18n(createTestLayerOptions(rootDir));
-		assert.equal(resyncResult.occurrenceCount, syncResult.occurrenceCount);
+		expect(resyncResult.occurrenceCount).toBe(syncResult.occurrenceCount);
 	});
-}
+});
 
-function testRootTokenizedManifestIsRejected(): void {
+test("rejects root tokenized manifests", () => {
 	withTempRoot("gitlens-package-nls-", (rootDir) => {
 		fs.writeFileSync(
 			path.join(rootDir, "package.json"),
@@ -174,14 +162,13 @@ function testRootTokenizedManifestIsRejected(): void {
 			"utf8",
 		);
 
-		assert.throws(
-			() => generateManifestLocalizedOutputs(createTestLayerOptions(rootDir)),
+		expect(() => generateManifestLocalizedOutputs(createTestLayerOptions(rootDir))).toThrow(
 			/Root package\.json contains generated/u,
 		);
 	});
-}
+});
 
-function testDuplicateViewsWelcomeKeys(): void {
+test("detects duplicate views and welcome keys", () => {
 	withTempRoot("gitlens-package-nls-", (rootDir) => {
 		fs.writeFileSync(
 			path.join(rootDir, "package.json"),
@@ -214,32 +201,31 @@ function testDuplicateViewsWelcomeKeys(): void {
 		syncManifestI18n(createTestLayerOptions(rootDir));
 		const context = createManifestDomainContext(createTestLayerOptions(rootDir));
 		const reconciliation = loadManifestReconciliationReport(context);
-		assert.equal(reconciliation.summary.ambiguous, 0);
+		expect(reconciliation.summary.ambiguous).toBe(0);
 
 		generateManifestLocalizedOutputs(createTestLayerOptions(rootDir));
 
 		const manifest = readJsonFile<Record<string, unknown>>(context.manifestFile);
-		assert.equal(manifest.displayName, "Fixture Git UI");
+		expect(manifest.displayName).toBe("Fixture Git UI");
 
 		const generatedManifest = readJsonFile<Record<string, unknown>>(context.generatedManifestFile);
 		const welcomes = (((generatedManifest.contributes as Record<string, unknown>).viewsWelcome as unknown[]) ??
 			[]) as Array<Record<string, unknown>>;
 		const selector = `when-${shortHash("view == fixture")}`;
-		assert.equal(welcomes[0].contents, `%contributes.viewsWelcome.fixture.view.${selector}.slot-1.contents%`);
-		assert.equal(welcomes[1].contents, `%contributes.viewsWelcome.fixture.view.${selector}.slot-2.contents%`);
+		expect(welcomes[0].contents).toBe(`%contributes.viewsWelcome.fixture.view.${selector}.slot-1.contents%`);
+		expect(welcomes[1].contents).toBe(`%contributes.viewsWelcome.fixture.view.${selector}.slot-2.contents%`);
 
 		const englishPackageNls = readJsonFile<Record<string, string>>(context.englishPackageNlsFile);
-		assert.equal(
-			englishPackageNls[`contributes.viewsWelcome.fixture.view.${selector}.slot-1.contents`],
+		expect(englishPackageNls[`contributes.viewsWelcome.fixture.view.${selector}.slot-1.contents`]).toBe(
 			"Open the fixture history",
 		);
-		assert.equal(
-			englishPackageNls[`contributes.viewsWelcome.fixture.view.${selector}.slot-2.contents`],
+		expect(englishPackageNls[`contributes.viewsWelcome.fixture.view.${selector}.slot-2.contents`]).toBe(
 			"Compare the fixture refs",
 		);
 	});
-}
-function testOverridesDoNotRemainPending(): void {
+});
+
+test("does not leave overrides pending", () => {
 	withTempRoot("gitlens-package-nls-", (rootDir) => {
 		fs.writeFileSync(
 			path.join(rootDir, "package.json"),
@@ -261,9 +247,9 @@ function testOverridesDoNotRemainPending(): void {
 		syncManifestI18n(createTestLayerOptions(rootDir));
 		const context = createManifestDomainContext(createTestLayerOptions(rootDir));
 		const initialWorkset = loadManifestWorkset(context);
-		assert.equal(initialWorkset.entries.length, 4);
+		expect(initialWorkset.entries.length).toBe(4);
 		const titleEntry = initialWorkset.entries.find((entry) => entry.source === "Open Graph");
-		assert.notEqual(titleEntry, undefined);
+		expect(titleEntry).toBeDefined();
 
 		const bundle = loadAuthorityBundle(context);
 		saveAuthorityBundle(context, {
@@ -288,34 +274,21 @@ function testOverridesDoNotRemainPending(): void {
 		});
 
 		const report = createPendingReport(createTestLayerOptions(rootDir));
-		assert.equal(
+		expect(
 			report.items.some((item) => item.occurrenceIds.some((id) => titleEntry!.occurrenceIds.includes(id))),
-			false,
-		);
-		assert.equal(
-			report.items.every((item) => "sourceText" in item),
-			false,
-		);
-		assert.equal(
-			report.items.every((item) => "scope" in item),
-			false,
-		);
-		assert.equal(
-			report.items.every((item) => "occurrences" in item),
-			false,
-		);
-		assert.equal(fs.existsSync(context.pendingReportFile), true);
+		).toBe(false);
+		expect(report.items.every((item) => "sourceText" in item)).toBe(false);
+		expect(report.items.every((item) => "scope" in item)).toBe(false);
+		expect(report.items.every((item) => "occurrences" in item)).toBe(false);
+		expect(fs.existsSync(context.pendingReportFile)).toBe(true);
 
 		const reportedWorkset = loadManifestWorkset(context);
-		assert.equal(
-			reportedWorkset.entries.some((entry) => entry.id === titleEntry!.id),
-			false,
-		);
+		expect(reportedWorkset.entries.some((entry) => entry.id === titleEntry!.id)).toBe(false);
 
 		const generateResult = generateManifestLocalizedOutputs(createTestLayerOptions(rootDir));
-		assert.equal(generateResult.localizedKeys, 1);
+		expect(generateResult.localizedKeys).toBe(1);
 
 		const localizedPackageNls = readJsonFile<Record<string, string>>(context.localizedPackageNlsFile);
-		assert.equal(localizedPackageNls["contributes.commands.fixture.open.title"], "打开图表");
+		expect(localizedPackageNls["contributes.commands.fixture.open.title"]).toBe("打开图表");
 	});
-}
+});

@@ -1,7 +1,7 @@
-import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { expect, test } from "vitest";
 
 interface AuthorityMessagesFile {
 	readonly entries: AuthorityMessageEntry[];
@@ -62,25 +62,17 @@ const weakTemplateWords = new Set([
 	"with",
 ]);
 
-run();
-
-function run(): void {
-	testMessagesDoNotContainEmptyTranslations();
-	testMessagesDoNotContainWeakStructuralTemplates();
-	testWorkingTreeTermUsesGitTerminology();
-}
-
-function testMessagesDoNotContainEmptyTranslations(): void {
+test("messages do not contain empty translations", () => {
 	const messages = readJson<AuthorityMessagesFile>("i18n/authority/zh-cn/messages.json");
 	const emptyTranslations = messages.entries
 		.filter((entry) => entry.translation.length === 0)
 		.map((entry) => entry.source)
 		.sort((left, right) => left.localeCompare(right));
 
-	assert.deepEqual(emptyTranslations, []);
-}
+	expect(emptyTranslations).toEqual([]);
+});
 
-function testMessagesDoNotContainWeakStructuralTemplates(): void {
+test("messages do not contain weak structural templates", () => {
 	const messages = readJson<AuthorityMessagesFile>("i18n/authority/zh-cn/messages.json");
 	const weakTemplates = messages.entries
 		.filter(
@@ -89,8 +81,15 @@ function testMessagesDoNotContainWeakStructuralTemplates(): void {
 		.map((entry) => entry.source)
 		.sort((left, right) => left.localeCompare(right));
 
-	assert.deepEqual(weakTemplates, []);
-}
+	expect(weakTemplates).toEqual([]);
+});
+
+test("working tree terms use Git terminology", () => {
+	const terms = readJson<AuthorityTermsFile>("i18n/authority/zh-cn/terms.json");
+	const workingTree = terms.entries.find((entry) => entry.source === "Working Tree");
+
+	expect(workingTree?.translation).toBe("工作树");
+});
 
 function isWeakStructuralTemplate(source: string): boolean {
 	if (!/\$\{slot\d+\}/u.test(source)) return false;
@@ -105,13 +104,6 @@ function isWeakStructuralTemplate(source: string): boolean {
 
 	const withoutWords = withoutSlots.replace(/\p{L}+/gu, "");
 	return /^[\s\p{P}\p{S}]*$/u.test(withoutWords);
-}
-
-function testWorkingTreeTermUsesGitTerminology(): void {
-	const terms = readJson<AuthorityTermsFile>("i18n/authority/zh-cn/terms.json");
-	const workingTree = terms.entries.find((entry) => entry.source === "Working Tree");
-
-	assert.equal(workingTree?.translation, "工作树");
 }
 
 function readJson<T>(relativePath: string): T {

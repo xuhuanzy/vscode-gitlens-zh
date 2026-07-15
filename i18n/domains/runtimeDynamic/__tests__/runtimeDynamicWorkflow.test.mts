@@ -1,6 +1,6 @@
-import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { expect, test } from "vitest";
 
 import { createTestLayerOptions, withTempRoot } from "../../../testing/tempRoot.mts";
 import {
@@ -18,29 +18,7 @@ import {
 	syncRuntimeDynamicI18n,
 } from "../workflow.mts";
 
-run();
-
-function run(): void {
-	testWebviewHostRegistrationTitlesAreLocalized();
-	testWebviewHostEntriesAreStoredWithWebviewsFiles();
-	testQuickPickLowLevelStringsAreExtracted();
-	testQuickPickNullishAssignmentStringsAreLocalized();
-	testQuickPickTemplateLabelsAreLocalizedWithPlaceholders();
-	testQuickPickPluralizedTemplateSlotsAreDeferred();
-	testQuickWizardConstructorLabelsAreLocalizedWithPlaceholders();
-	testQuickPickSeparatorLabelsAreExtracted();
-	testQuickWizardFallbackAndHintStringsAreLocalized();
-	testQuickCommandConfirmTitlesAreLocalizedWithPlaceholders();
-	testFormatterMarkdownTitlesAreLocalizedWithoutChangingCommandSyntax();
-	testFormatterMarkdownLabelsAreLocalizedWithoutChangingCommandSyntax();
-	testFormatterDynamicMarkdownTitlesAreLocalizedWithPlaceholders();
-	testFormatterDynamicMarkdownLabelsAndMultilineTitlesAreLocalizedWithPlaceholders();
-	testFormatterHtmlTitlesAreLocalizedWithoutChangingElementSyntax();
-	testFormatterHtmlWrapperTemplatesAreNotExtracted();
-	testDynamicMarkdownTitlesAreDeferred();
-}
-
-function testWebviewHostRegistrationTitlesAreLocalized(): void {
+test("localizes webview host registration titles", () => {
 	withTempRoot("gitlens-runtime-webview-host-", (rootDir) => {
 		writeFile(
 			rootDir,
@@ -61,16 +39,13 @@ function testWebviewHostRegistrationTitlesAreLocalized(): void {
 		);
 
 		const result = syncRuntimeDynamicI18n({ ...createTestLayerOptions(rootDir), domain: "webviewHost" });
-		assert.equal(result.occurrenceCount, 1);
+		expect(result.occurrenceCount).toBe(1);
 
 		const context = createRuntimeDynamicDomainContext("webviewHost", createTestLayerOptions(rootDir));
 		const catalog = loadRuntimeDynamicCatalog(context);
 		const workset = loadRuntimeDynamicWorkset(context);
-		assert.equal(catalog.domain, "webviews");
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Home"),
-			true,
-		);
+		expect(catalog.domain).toBe("webviews");
+		expect(workset.entries.some((entry) => entry.source === "Home")).toBe(true);
 
 		saveRuntimeDynamicWorkset(context, {
 			...workset,
@@ -79,27 +54,24 @@ function testWebviewHostRegistrationTitlesAreLocalized(): void {
 			),
 		});
 		const promoted = promoteRuntimeDynamicAuthority({ ...createTestLayerOptions(rootDir), domain: "webviewHost" });
-		assert.equal(promoted.promoted.length, 1);
+		expect(promoted.promoted.length).toBe(1);
 
 		const generated = generateRuntimeDynamicLocalizedOutputs({
 			...createTestLayerOptions(rootDir),
 			domain: "webviewHost",
 		});
-		assert.equal(generated.translatedCount, 1);
+		expect(generated.translatedCount).toBe(1);
 
 		const localized = loadLocalizedRuntimeDynamicSource(context, "src/webviews/home/registration.ts");
-		assert.notEqual(localized, undefined);
-		assert.equal(localized!.includes("title: '主页'"), true);
-		assert.equal(
-			fs
-				.readFileSync(path.join(rootDir, "src", "webviews", "home", "registration.ts"), "utf8")
-				.includes("title: 'Home'"),
-			true,
+		expect(localized).toBeDefined();
+		expect(localized!).toContain("title: '主页'");
+		expect(fs.readFileSync(path.join(rootDir, "src", "webviews", "home", "registration.ts"), "utf8")).toContain(
+			"title: 'Home'",
 		);
 	});
-}
+});
 
-function testWebviewHostEntriesAreStoredWithWebviewsFiles(): void {
+test("stores webview host entries with webviews files", () => {
 	withTempRoot("gitlens-runtime-webview-host-shared-webviews-files-", (rootDir) => {
 		writeFile(
 			rootDir,
@@ -120,8 +92,8 @@ function testWebviewHostEntriesAreStoredWithWebviewsFiles(): void {
 		);
 
 		const context = createRuntimeDynamicDomainContext("webviewHost", createTestLayerOptions(rootDir));
-		assert.equal(path.basename(context.catalogFile), "webviews.catalog.json");
-		assert.equal(path.basename(context.worksetFile), "webviews.zh-cn.json");
+		expect(path.basename(context.catalogFile)).toBe("webviews.catalog.json");
+		expect(path.basename(context.worksetFile)).toBe("webviews.zh-cn.json");
 
 		fs.mkdirSync(path.dirname(context.catalogFile), { recursive: true });
 		fs.writeFileSync(
@@ -193,35 +165,23 @@ function testWebviewHostEntriesAreStoredWithWebviewsFiles(): void {
 		);
 
 		const result = syncRuntimeDynamicI18n({ ...createTestLayerOptions(rootDir), domain: "webviewHost" });
-		assert.equal(result.worksetCount, 1);
+		expect(result.worksetCount).toBe(1);
 
 		const catalog = loadRuntimeDynamicCatalog(context);
-		assert.equal(catalog.domain, "webviews");
-		assert.equal(
-			catalog.occurrences.some((occurrence) => occurrence.pattern.text === "Webview Only"),
-			true,
-		);
-		assert.equal(
-			catalog.occurrences.some((occurrence) => occurrence.pattern.text === "Home"),
-			true,
-		);
-		assert.equal(fs.existsSync(path.join(rootDir, "i18n", "catalog", "webviewHost.catalog.json")), false);
+		expect(catalog.domain).toBe("webviews");
+		expect(catalog.occurrences.some((occurrence) => occurrence.pattern.text === "Webview Only")).toBe(true);
+		expect(catalog.occurrences.some((occurrence) => occurrence.pattern.text === "Home")).toBe(true);
+		expect(fs.existsSync(path.join(rootDir, "i18n", "catalog", "webviewHost.catalog.json"))).toBe(false);
 
 		const workset = loadRuntimeDynamicWorkset(context);
-		assert.equal(workset.domain, "webviews");
-		assert.equal(
-			workset.entries.some((entry) => entry.id === "message.webviews-only"),
-			true,
-		);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Home"),
-			true,
-		);
-		assert.equal(fs.existsSync(path.join(rootDir, "i18n", "worksets", "webviewHost.zh-cn.json")), false);
+		expect(workset.domain).toBe("webviews");
+		expect(workset.entries.some((entry) => entry.id === "message.webviews-only")).toBe(true);
+		expect(workset.entries.some((entry) => entry.source === "Home")).toBe(true);
+		expect(fs.existsSync(path.join(rootDir, "i18n", "worksets", "webviewHost.zh-cn.json"))).toBe(false);
 	});
-}
+});
 
-function testQuickPickLowLevelStringsAreExtracted(): void {
+test("extracts low-level QuickPick strings", () => {
 	withTempRoot("gitlens-runtime-quickpicks-", (rootDir) => {
 		writeFile(
 			rootDir,
@@ -244,31 +204,22 @@ function testQuickPickLowLevelStringsAreExtracted(): void {
 		);
 
 		const result = syncRuntimeDynamicI18n({ ...createTestLayerOptions(rootDir), domain: "quickpicks" });
-		assert.equal(result.occurrenceCount, 3);
+		expect(result.occurrenceCount).toBe(3);
 
 		const context = createRuntimeDynamicDomainContext("quickpicks", createTestLayerOptions(rootDir));
 		const catalog = loadRuntimeDynamicCatalog(context);
 		const workset = loadRuntimeDynamicWorkset(context);
-		assert.equal(catalog.domain, "quickpicks");
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Try GitLens Pro"),
-			true,
-		);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Get 7 days of GitLens Pro for free"),
-			true,
-		);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Back"),
-			true,
-		);
+		expect(catalog.domain).toBe("quickpicks");
+		expect(workset.entries.some((entry) => entry.source === "Try GitLens Pro")).toBe(true);
+		expect(workset.entries.some((entry) => entry.source === "Get 7 days of GitLens Pro for free")).toBe(true);
+		expect(workset.entries.some((entry) => entry.source === "Back")).toBe(true);
 
 		const report = createPendingReport({ ...createTestLayerOptions(rootDir), domain: "quickpicks" });
-		assert.equal(report.domain, "quickpicks");
+		expect(report.domain).toBe("quickpicks");
 	});
-}
+});
 
-function testQuickPickTemplateLabelsAreLocalizedWithPlaceholders(): void {
+test("localizes QuickPick template labels with placeholders", () => {
 	withTempRoot("gitlens-runtime-quickpicks-template-", (rootDir) => {
 		writeFile(
 			rootDir,
@@ -283,14 +234,11 @@ function testQuickPickTemplateLabelsAreLocalizedWithPlaceholders(): void {
 		);
 
 		const result = syncRuntimeDynamicI18n({ ...createTestLayerOptions(rootDir), domain: "quickpicks" });
-		assert.equal(result.occurrenceCount, 1);
+		expect(result.occurrenceCount).toBe(1);
 
 		const context = createRuntimeDynamicDomainContext("quickpicks", createTestLayerOptions(rootDir));
 		const workset = loadRuntimeDynamicWorkset(context);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Copy Link to ${slot1} for ${slot2}"),
-			true,
-		);
+		expect(workset.entries.some((entry) => entry.source === "Copy Link to ${slot1} for ${slot2}")).toBe(true);
 
 		saveRuntimeDynamicWorkset(context, {
 			...workset,
@@ -301,21 +249,21 @@ function testQuickPickTemplateLabelsAreLocalizedWithPlaceholders(): void {
 			),
 		});
 		const promoted = promoteRuntimeDynamicAuthority({ ...createTestLayerOptions(rootDir), domain: "quickpicks" });
-		assert.equal(promoted.promoted.length, 1);
+		expect(promoted.promoted.length).toBe(1);
 
 		const generated = generateRuntimeDynamicLocalizedOutputs({
 			...createTestLayerOptions(rootDir),
 			domain: "quickpicks",
 		});
-		assert.equal(generated.translatedCount, 1);
+		expect(generated.translatedCount).toBe(1);
 
 		const localized = loadLocalizedRuntimeDynamicSource(context, "src/quickpicks/remoteProviderPicker.ts");
-		assert.notEqual(localized, undefined);
-		assert.equal(localized!.includes("const label = `复制 ${providerName} 的${resourceName}链接`;"), true);
+		expect(localized).toBeDefined();
+		expect(localized!).toContain("const label = `复制 ${providerName} 的${resourceName}链接`;");
 	});
-}
+});
 
-function testQuickPickNullishAssignmentStringsAreLocalized(): void {
+test("localizes QuickPick nullish assignments", () => {
 	withTempRoot("gitlens-runtime-quickpicks-nullish-", (rootDir) => {
 		writeFile(
 			rootDir,
@@ -331,12 +279,11 @@ function testQuickPickNullishAssignmentStringsAreLocalized(): void {
 		);
 
 		const result = syncRuntimeDynamicI18n({ ...createTestLayerOptions(rootDir), domain: "quickpicks" });
-		assert.equal(result.occurrenceCount, 1);
+		expect(result.occurrenceCount).toBe(1);
 
 		const context = createRuntimeDynamicDomainContext("quickpicks", createTestLayerOptions(rootDir));
 		const workset = loadRuntimeDynamicWorkset(context);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "GitLens Pro is required to use this feature"),
+		expect(workset.entries.some((entry) => entry.source === "GitLens Pro is required to use this feature")).toBe(
 			true,
 		);
 
@@ -349,21 +296,21 @@ function testQuickPickNullishAssignmentStringsAreLocalized(): void {
 			),
 		});
 		const promoted = promoteRuntimeDynamicAuthority({ ...createTestLayerOptions(rootDir), domain: "quickpicks" });
-		assert.equal(promoted.promoted.length, 1);
+		expect(promoted.promoted.length).toBe(1);
 
 		const generated = generateRuntimeDynamicLocalizedOutputs({
 			...createTestLayerOptions(rootDir),
 			domain: "quickpicks",
 		});
-		assert.equal(generated.translatedCount, 1);
+		expect(generated.translatedCount).toBe(1);
 
 		const localized = loadLocalizedRuntimeDynamicSource(context, "src/quickpicks/items/directive.ts");
-		assert.notEqual(localized, undefined);
-		assert.equal(localized!.includes("description ??= '需要 GitLens Pro 才能使用此功能';"), true);
+		expect(localized).toBeDefined();
+		expect(localized!).toContain("description ??= '需要 GitLens Pro 才能使用此功能';");
 	});
-}
+});
 
-function testQuickPickPluralizedTemplateSlotsAreDeferred(): void {
+test("defers pluralized QuickPick template slots", () => {
 	const source = [
 		"import { pluralize } from '@gitlens/utils/string';",
 		"export function createDirectiveQuickPickItem(proTrialLengthInDays: number) {",
@@ -380,9 +327,9 @@ function testQuickPickPluralizedTemplateSlotsAreDeferred(): void {
 		source: source,
 		syntax: "ts",
 	});
-	assert.equal(extraction.matches.length, 0);
-	assert.equal(extraction.issues.length, 1);
-	assert.equal(extraction.issues[0].reason.includes("requires pluralization modeling"), true);
+	expect(extraction.matches.length).toBe(0);
+	expect(extraction.issues.length).toBe(1);
+	expect(extraction.issues[0].reason).toContain("requires pluralization modeling");
 
 	withTempRoot("gitlens-runtime-quickpicks-pluralized-", (rootDir) => {
 		writeFile(rootDir, "src/quickpicks/items/directive.ts", source);
@@ -390,18 +337,17 @@ function testQuickPickPluralizedTemplateSlotsAreDeferred(): void {
 
 		const context = createRuntimeDynamicDomainContext("quickpicks", createTestLayerOptions(rootDir));
 		const workset = loadRuntimeDynamicWorkset(context);
-		assert.equal(workset.entries.length, 0);
+		expect(workset.entries.length).toBe(0);
 
 		const reconciliation = loadRuntimeDynamicReconciliationReport(context);
-		assert.equal(reconciliation.summary.ambiguous, 1);
-		assert.equal(
-			reconciliation.entries.some((entry) => entry.reason?.includes("requires pluralization modeling")),
+		expect(reconciliation.summary.ambiguous).toBe(1);
+		expect(reconciliation.entries.some((entry) => entry.reason?.includes("requires pluralization modeling"))).toBe(
 			true,
 		);
 	});
-}
+});
 
-function testQuickPickSeparatorLabelsAreExtracted(): void {
+test("extracts QuickPick separator labels", () => {
 	withTempRoot("gitlens-runtime-quickpick-separator-", (rootDir) => {
 		writeFile(
 			rootDir,
@@ -418,18 +364,15 @@ function testQuickPickSeparatorLabelsAreExtracted(): void {
 		);
 
 		const result = syncRuntimeDynamicI18n({ ...createTestLayerOptions(rootDir), domain: "quickpicks" });
-		assert.equal(result.occurrenceCount, 1);
+		expect(result.occurrenceCount).toBe(1);
 
 		const context = createRuntimeDynamicDomainContext("quickpicks", createTestLayerOptions(rootDir));
 		const workset = loadRuntimeDynamicWorkset(context);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Actions"),
-			true,
-		);
+		expect(workset.entries.some((entry) => entry.source === "Actions")).toBe(true);
 	});
-}
+});
 
-function testQuickWizardConstructorLabelsAreLocalizedWithPlaceholders(): void {
+test("localizes QuickWizard constructor labels with placeholders", () => {
 	withTempRoot("gitlens-runtime-quickwizard-", (rootDir) => {
 		writeFile(
 			rootDir,
@@ -446,14 +389,11 @@ function testQuickWizardConstructorLabelsAreLocalizedWithPlaceholders(): void {
 		);
 
 		const result = syncRuntimeDynamicI18n({ ...createTestLayerOptions(rootDir), domain: "quickpicks" });
-		assert.equal(result.occurrenceCount, 1);
+		expect(result.occurrenceCount).toBe(1);
 
 		const context = createRuntimeDynamicDomainContext("quickpicks", createTestLayerOptions(rootDir));
 		const workset = loadRuntimeDynamicWorkset(context);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Reset ${slot1} to Commit..."),
-			true,
-		);
+		expect(workset.entries.some((entry) => entry.source === "Reset ${slot1} to Commit...")).toBe(true);
 
 		saveRuntimeDynamicWorkset(context, {
 			...workset,
@@ -464,24 +404,23 @@ function testQuickWizardConstructorLabelsAreLocalizedWithPlaceholders(): void {
 			),
 		});
 		const promoted = promoteRuntimeDynamicAuthority({ ...createTestLayerOptions(rootDir), domain: "quickpicks" });
-		assert.equal(promoted.promoted.length, 1);
+		expect(promoted.promoted.length).toBe(1);
 
 		const generated = generateRuntimeDynamicLocalizedOutputs({
 			...createTestLayerOptions(rootDir),
 			domain: "quickpicks",
 		});
-		assert.equal(generated.translatedCount, 1);
+		expect(generated.translatedCount).toBe(1);
 
 		const localized = loadLocalizedRuntimeDynamicSource(context, "src/commands/quick-wizard/steps/commits.ts");
-		assert.notEqual(localized, undefined);
-		assert.equal(
-			localized!.includes("new GitWizardQuickPickItem(`将 ${branchName ?? 'Current Branch'} 重置到提交...`,"),
-			true,
+		expect(localized).toBeDefined();
+		expect(localized!).toContain(
+			"new GitWizardQuickPickItem(`将 ${branchName ?? 'Current Branch'} 重置到提交...`,",
 		);
 	});
-}
+});
 
-function testQuickWizardFallbackAndHintStringsAreLocalized(): void {
+test("localizes QuickWizard fallback and hint strings", () => {
 	withTempRoot("gitlens-runtime-quickwizard-fallbacks-", (rootDir) => {
 		writeFile(
 			rootDir,
@@ -570,7 +509,7 @@ function testQuickWizardFallbackAndHintStringsAreLocalized(): void {
 			}),
 		});
 		const promoted = promoteRuntimeDynamicAuthority({ ...createTestLayerOptions(rootDir), domain: "quickpicks" });
-		assert.equal(promoted.promoted.length, 5);
+		expect(promoted.promoted.length).toBe(5);
 
 		generateRuntimeDynamicLocalizedOutputs({ ...createTestLayerOptions(rootDir), domain: "quickpicks" });
 		const localizedWizard = loadLocalizedRuntimeDynamicSource(
@@ -578,22 +517,19 @@ function testQuickWizardFallbackAndHintStringsAreLocalized(): void {
 			"src/commands/quick-wizard/steps/commits.ts",
 		);
 		const localizedCommitItems = loadLocalizedRuntimeDynamicSource(context, "src/quickpicks/items/commits.ts");
-		assert.notEqual(localizedWizard, undefined);
-		assert.notEqual(localizedCommitItems, undefined);
-		assert.equal(localizedWizard!.includes("`点击查看 ${isStash ? '贮藏' : '提交'} 操作`"), true);
-		assert.equal(localizedWizard!.includes("{ hint: '点击查看所有更改的文件' }"), true);
-		assert.equal(localizedWizard!.includes("createQuickPickSeparator(providerName ?? '远程')"), true);
-		assert.equal(localizedWizard!.includes("`将 ${branchName ?? '当前分支'} 重置到提交...`"), true);
-		assert.equal(
-			localizedCommitItems!.includes(
-				"`浏览此处${executeOptions?.before ? '之前' : ''}的仓库${executeOptions?.openInNewWindow ? '（在新窗口中）' : ''}`",
-			),
-			true,
+		expect(localizedWizard).toBeDefined();
+		expect(localizedCommitItems).toBeDefined();
+		expect(localizedWizard!).toContain("`点击查看 ${isStash ? '贮藏' : '提交'} 操作`");
+		expect(localizedWizard!).toContain("{ hint: '点击查看所有更改的文件' }");
+		expect(localizedWizard!).toContain("createQuickPickSeparator(providerName ?? '远程')");
+		expect(localizedWizard!).toContain("`将 ${branchName ?? '当前分支'} 重置到提交...`");
+		expect(localizedCommitItems!).toContain(
+			"`浏览此处${executeOptions?.before ? '之前' : ''}的仓库${executeOptions?.openInNewWindow ? '（在新窗口中）' : ''}`",
 		);
 	});
-}
+});
 
-function testQuickCommandConfirmTitlesAreLocalizedWithPlaceholders(): void {
+test("localizes QuickCommand confirmation titles", () => {
 	withTempRoot("gitlens-runtime-quick-command-confirm-", (rootDir) => {
 		writeFile(
 			rootDir,
@@ -619,18 +555,12 @@ function testQuickCommandConfirmTitlesAreLocalizedWithPlaceholders(): void {
 		);
 
 		const result = syncRuntimeDynamicI18n({ ...createTestLayerOptions(rootDir), domain: "quickpicks" });
-		assert.equal(result.occurrenceCount, 2);
+		expect(result.occurrenceCount).toBe(2);
 
 		const context = createRuntimeDynamicDomainContext("quickpicks", createTestLayerOptions(rootDir));
 		const workset = loadRuntimeDynamicWorkset(context);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Reset"),
-			true,
-		);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Confirm ${slot1}"),
-			true,
-		);
+		expect(workset.entries.some((entry) => entry.source === "Reset")).toBe(true);
+		expect(workset.entries.some((entry) => entry.source === "Confirm ${slot1}")).toBe(true);
 
 		saveRuntimeDynamicWorkset(context, {
 			...workset,
@@ -646,22 +576,22 @@ function testQuickCommandConfirmTitlesAreLocalizedWithPlaceholders(): void {
 			}),
 		});
 		const promoted = promoteRuntimeDynamicAuthority({ ...createTestLayerOptions(rootDir), domain: "quickpicks" });
-		assert.equal(promoted.promoted.length, 2);
+		expect(promoted.promoted.length).toBe(2);
 
 		const generated = generateRuntimeDynamicLocalizedOutputs({
 			...createTestLayerOptions(rootDir),
 			domain: "quickpicks",
 		});
-		assert.equal(generated.translatedCount, 2);
+		expect(generated.translatedCount).toBe(2);
 
 		const localized = loadLocalizedRuntimeDynamicSource(context, "src/commands/git/reset.ts");
-		assert.notEqual(localized, undefined);
-		assert.equal(localized!.includes("super(container, 'reset', 'reset', '重置');"), true);
-		assert.equal(localized!.includes("return appendReposToTitle(`确认${context.title}`, state, context);"), true);
+		expect(localized).toBeDefined();
+		expect(localized!).toContain("super(container, 'reset', 'reset', '重置');");
+		expect(localized!).toContain("return appendReposToTitle(`确认${context.title}`, state, context);");
 	});
-}
+});
 
-function testFormatterMarkdownTitlesAreLocalizedWithoutChangingCommandSyntax(): void {
+test("localizes formatter Markdown titles without changing command syntax", () => {
 	withTempRoot("gitlens-runtime-formatter-", (rootDir) => {
 		const fixture = [
 			"export function commands(link: string) {",
@@ -675,10 +605,7 @@ function testFormatterMarkdownTitlesAreLocalizedWithoutChangingCommandSyntax(): 
 
 		const context = createRuntimeDynamicDomainContext("formatter", createTestLayerOptions(rootDir));
 		const workset = loadRuntimeDynamicWorkset(context);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Inspect Commit Details"),
-			true,
-		);
+		expect(workset.entries.some((entry) => entry.source === "Inspect Commit Details")).toBe(true);
 
 		saveRuntimeDynamicWorkset(context, {
 			...workset,
@@ -689,22 +616,22 @@ function testFormatterMarkdownTitlesAreLocalizedWithoutChangingCommandSyntax(): 
 			),
 		});
 		const promoted = promoteRuntimeDynamicAuthority({ ...createTestLayerOptions(rootDir), domain: "formatter" });
-		assert.equal(promoted.promoted.length, 1);
+		expect(promoted.promoted.length).toBe(1);
 
 		const generated = generateRuntimeDynamicLocalizedOutputs({
 			...createTestLayerOptions(rootDir),
 			domain: "formatter",
 		});
-		assert.equal(generated.translatedCount, 1);
+		expect(generated.translatedCount).toBe(1);
 
 		const localized = loadLocalizedRuntimeDynamicSource(context, "src/git/formatters/commitFormatter.ts");
-		assert.notEqual(localized, undefined);
-		assert.equal(localized!.includes('[$(eye)](${link} "检查提交详情")'), true);
-		assert.equal(localized!.includes("[$(eye)](${link}"), true);
+		expect(localized).toBeDefined();
+		expect(localized!).toContain('[$(eye)](${link} "检查提交详情")');
+		expect(localized!).toContain("[$(eye)](${link}");
 	});
-}
+});
 
-function testFormatterDynamicMarkdownTitlesAreLocalizedWithPlaceholders(): void {
+test("localizes dynamic formatter Markdown titles", () => {
 	withTempRoot("gitlens-runtime-formatter-dynamic-", (rootDir) => {
 		const fixture = [
 			"export function commands(link: string, provider: string) {",
@@ -718,10 +645,7 @@ function testFormatterDynamicMarkdownTitlesAreLocalizedWithPlaceholders(): void 
 
 		const context = createRuntimeDynamicDomainContext("formatter", createTestLayerOptions(rootDir));
 		const workset = loadRuntimeDynamicWorkset(context);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Open Commit on ${slot1}"),
-			true,
-		);
+		expect(workset.entries.some((entry) => entry.source === "Open Commit on ${slot1}")).toBe(true);
 
 		saveRuntimeDynamicWorkset(context, {
 			...workset,
@@ -732,22 +656,22 @@ function testFormatterDynamicMarkdownTitlesAreLocalizedWithPlaceholders(): void 
 			),
 		});
 		const promoted = promoteRuntimeDynamicAuthority({ ...createTestLayerOptions(rootDir), domain: "formatter" });
-		assert.equal(promoted.promoted.length, 1);
+		expect(promoted.promoted.length).toBe(1);
 
 		const generated = generateRuntimeDynamicLocalizedOutputs({
 			...createTestLayerOptions(rootDir),
 			domain: "formatter",
 		});
-		assert.equal(generated.translatedCount, 1);
+		expect(generated.translatedCount).toBe(1);
 
 		const localized = loadLocalizedRuntimeDynamicSource(context, "src/git/formatters/commitFormatter.ts");
-		assert.notEqual(localized, undefined);
-		assert.equal(localized!.includes('[$(globe)](${link} "在 ${provider} 上打开提交")'), true);
-		assert.equal(localized!.includes("${link}"), true);
+		expect(localized).toBeDefined();
+		expect(localized!).toContain('[$(globe)](${link} "在 ${provider} 上打开提交")');
+		expect(localized!).toContain("${link}");
 	});
-}
+});
 
-function testFormatterMarkdownLabelsAreLocalizedWithoutChangingCommandSyntax(): void {
+test("localizes formatter Markdown labels without changing command syntax", () => {
 	withTempRoot("gitlens-runtime-formatter-label-", (rootDir) => {
 		const fixture = [
 			"export function commands(link: string) {",
@@ -761,10 +685,7 @@ function testFormatterMarkdownLabelsAreLocalizedWithoutChangingCommandSyntax(): 
 
 		const context = createRuntimeDynamicDomainContext("formatter", createTestLayerOptions(rootDir));
 		const workset = loadRuntimeDynamicWorkset(context);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Explain"),
-			true,
-		);
+		expect(workset.entries.some((entry) => entry.source === "Explain")).toBe(true);
 
 		saveRuntimeDynamicWorkset(context, {
 			...workset,
@@ -773,22 +694,22 @@ function testFormatterMarkdownLabelsAreLocalizedWithoutChangingCommandSyntax(): 
 			),
 		});
 		const promoted = promoteRuntimeDynamicAuthority({ ...createTestLayerOptions(rootDir), domain: "formatter" });
-		assert.equal(promoted.promoted.length, 1);
+		expect(promoted.promoted.length).toBe(1);
 
 		const generated = generateRuntimeDynamicLocalizedOutputs({
 			...createTestLayerOptions(rootDir),
 			domain: "formatter",
 		});
-		assert.equal(generated.translatedCount, 1);
+		expect(generated.translatedCount).toBe(1);
 
 		const localized = loadLocalizedRuntimeDynamicSource(context, "src/git/formatters/commitFormatter.ts");
-		assert.notEqual(localized, undefined);
-		assert.equal(localized!.includes('[$(sparkle) 解释](${link} "Explain Changes")'), true);
-		assert.equal(localized!.includes("${link}"), true);
+		expect(localized).toBeDefined();
+		expect(localized!).toContain('[$(sparkle) 解释](${link} "Explain Changes")');
+		expect(localized!).toContain("${link}");
 	});
-}
+});
 
-function testFormatterDynamicMarkdownLabelsAndMultilineTitlesAreLocalizedWithPlaceholders(): void {
+test("localizes dynamic formatter Markdown labels and multiline titles", () => {
 	withTempRoot("gitlens-runtime-formatter-dynamic-label-", (rootDir) => {
 		const fixture = [
 			"export function commands(link: string, remote: { provider: { name: string } }) {",
@@ -806,18 +727,14 @@ function testFormatterDynamicMarkdownLabelsAndMultilineTitlesAreLocalizedWithPla
 
 		const context = createRuntimeDynamicDomainContext("formatter", createTestLayerOptions(rootDir));
 		const workset = loadRuntimeDynamicWorkset(context);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Connect to ${slot1}${slot2}"),
-			true,
-		);
-		assert.equal(
+		expect(workset.entries.some((entry) => entry.source === "Connect to ${slot1}${slot2}")).toBe(true);
+		expect(
 			workset.entries.some(
 				(entry) =>
 					entry.source ===
 					"Connect to ${slot1} to enable the display of the Pull Request (if any) that introduced this commit",
 			),
-			true,
-		);
+		).toBe(true);
 
 		saveRuntimeDynamicWorkset(context, {
 			...workset,
@@ -837,29 +754,23 @@ function testFormatterDynamicMarkdownLabelsAndMultilineTitlesAreLocalizedWithPla
 			}),
 		});
 		const promoted = promoteRuntimeDynamicAuthority({ ...createTestLayerOptions(rootDir), domain: "formatter" });
-		assert.equal(promoted.promoted.length, 2);
+		expect(promoted.promoted.length).toBe(2);
 
 		const generated = generateRuntimeDynamicLocalizedOutputs({
 			...createTestLayerOptions(rootDir),
 			domain: "formatter",
 		});
-		assert.equal(generated.translatedCount, 2);
+		expect(generated.translatedCount).toBe(2);
 
 		const localized = loadLocalizedRuntimeDynamicSource(context, "src/git/formatters/commitFormatter.ts");
-		assert.notEqual(localized, undefined);
-		assert.equal(
-			localized!.includes("[$(plug) 连接到 ${remote?.provider.name}${\n\t\tGlyphChars.Ellipsis\n\t}]"),
-			true,
-		);
-		assert.equal(
-			localized!.includes('"连接到 ${\n\t\tremote.provider.name\n\t} 以显示引入此提交的拉取请求（如果有）"'),
-			true,
-		);
-		assert.equal(localized!.includes("${link}"), true);
+		expect(localized).toBeDefined();
+		expect(localized!).toContain("[$(plug) 连接到 ${remote?.provider.name}${\n\t\tGlyphChars.Ellipsis\n\t}]");
+		expect(localized!).toContain('"连接到 ${\n\t\tremote.provider.name\n\t} 以显示引入此提交的拉取请求（如果有）"');
+		expect(localized!).toContain("${link}");
 	});
-}
+});
 
-function testFormatterHtmlTitlesAreLocalizedWithoutChangingElementSyntax(): void {
+test("localizes formatter HTML titles without changing element syntax", () => {
 	withTempRoot("gitlens-runtime-formatter-html-", (rootDir) => {
 		const fixture = [
 			"export function commands(link: string, label: string) {",
@@ -873,10 +784,7 @@ function testFormatterHtmlTitlesAreLocalizedWithoutChangingElementSyntax(): void
 
 		const context = createRuntimeDynamicDomainContext("formatter", createTestLayerOptions(rootDir));
 		const workset = loadRuntimeDynamicWorkset(context);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Inspect Commit Details"),
-			true,
-		);
+		expect(workset.entries.some((entry) => entry.source === "Inspect Commit Details")).toBe(true);
 
 		saveRuntimeDynamicWorkset(context, {
 			...workset,
@@ -887,22 +795,22 @@ function testFormatterHtmlTitlesAreLocalizedWithoutChangingElementSyntax(): void
 			),
 		});
 		const promoted = promoteRuntimeDynamicAuthority({ ...createTestLayerOptions(rootDir), domain: "formatter" });
-		assert.equal(promoted.promoted.length, 1);
+		expect(promoted.promoted.length).toBe(1);
 
 		const generated = generateRuntimeDynamicLocalizedOutputs({
 			...createTestLayerOptions(rootDir),
 			domain: "formatter",
 		});
-		assert.equal(generated.translatedCount, 1);
+		expect(generated.translatedCount).toBe(1);
 
 		const localized = loadLocalizedRuntimeDynamicSource(context, "src/git/formatters/commitFormatter.ts");
-		assert.notEqual(localized, undefined);
-		assert.equal(localized!.includes('href="${link}" title="检查提交详情" class="command"'), true);
-		assert.equal(localized!.includes("${label}</a>"), true);
+		expect(localized).toBeDefined();
+		expect(localized!).toContain('href="${link}" title="检查提交详情" class="command"');
+		expect(localized!).toContain("${label}</a>");
 	});
-}
+});
 
-function testFormatterHtmlWrapperTemplatesAreNotExtracted(): void {
+test("does not extract formatter HTML wrapper templates", () => {
 	const source = [
 		"export function formatMessage(message: string, classes?: string) {",
 		"\tmessage = `<span ${classes}>${message}</span>`;",
@@ -918,11 +826,11 @@ function testFormatterHtmlWrapperTemplatesAreNotExtracted(): void {
 		source: source,
 		syntax: "ts",
 	});
-	assert.equal(extraction.matches.length, 0);
-	assert.equal(extraction.issues.length, 0);
-}
+	expect(extraction.matches.length).toBe(0);
+	expect(extraction.issues.length).toBe(0);
+});
 
-function testDynamicMarkdownTitlesAreDeferred(): void {
+test("defers dynamic Markdown titles", () => {
 	const source = [
 		"export function commands(link: string, provider: string, title: string) {",
 		'\treturn `[$(git-pull-request)](${link} "Open Pull Request #${provider}\\n--\\n${title}")`;',
@@ -937,9 +845,9 @@ function testDynamicMarkdownTitlesAreDeferred(): void {
 		source: source,
 		syntax: "ts",
 	});
-	assert.equal(extraction.matches.length, 0);
-	assert.equal(extraction.issues.length, 1);
-	assert.equal(extraction.issues[0].reason.includes("dynamic markdown title"), true);
+	expect(extraction.matches.length).toBe(0);
+	expect(extraction.issues.length).toBe(1);
+	expect(extraction.issues[0].reason).toContain("dynamic markdown title");
 
 	withTempRoot("gitlens-runtime-formatter-deferred-", (rootDir) => {
 		writeFile(rootDir, "src/git/formatters/commitFormatter.ts", source);
@@ -947,13 +855,10 @@ function testDynamicMarkdownTitlesAreDeferred(): void {
 
 		const context = createRuntimeDynamicDomainContext("formatter", createTestLayerOptions(rootDir));
 		const reconciliation = loadRuntimeDynamicReconciliationReport(context);
-		assert.equal(reconciliation.summary.ambiguous, 1);
-		assert.equal(
-			reconciliation.entries.some((entry) => entry.reason?.includes("dynamic markdown title")),
-			true,
-		);
+		expect(reconciliation.summary.ambiguous).toBe(1);
+		expect(reconciliation.entries.some((entry) => entry.reason?.includes("dynamic markdown title"))).toBe(true);
 	});
-}
+});
 
 function writeFile(rootDir: string, relativePath: string, contents: string): void {
 	const filePath = path.join(rootDir, ...relativePath.split("/"));

@@ -1,7 +1,7 @@
-import assert from "node:assert/strict";
 import path from "node:path";
 import fs from "node:fs";
 import { fileURLToPath } from "node:url";
+import { expect, test } from "vitest";
 
 import { execute } from "../messagesReview.mts";
 
@@ -59,41 +59,26 @@ interface FixtureMessagesFile {
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..", "..");
 
-run();
-
-function run(): void {
-	testNextReturnsOnlyUnreviewedEntries();
-	testApprovePersistsFingerprintBasedReviewState();
-	testChangedMessageBecomesUnreviewedAgain();
-	testUnapproveRemovesRequestedAndStaleEntries();
-}
-
-function testNextReturnsOnlyUnreviewedEntries(): void {
+test("returns only unreviewed entries", () => {
 	const fixture = createFixture();
 	try {
 		const first = runScript<ReviewBatchResponse>(fixture, ["next", "--limit", "2"]);
-		assert.equal(first.pagination.returned, 2);
-		assert.equal(first.pagination.totalUnreviewed, 3);
-		assert.equal(first.pagination.hasMore, true);
-		assert.equal(first.pagination.nextOffset, 2);
-		assert.deepEqual(
-			first.items.map((item: { id: string }) => item.id),
-			["message.a", "message.b"],
-		);
+		expect(first.pagination.returned).toBe(2);
+		expect(first.pagination.totalUnreviewed).toBe(3);
+		expect(first.pagination.hasMore).toBe(true);
+		expect(first.pagination.nextOffset).toBe(2);
+		expect(first.items.map((item: { id: string }) => item.id)).toEqual(["message.a", "message.b"]);
 
 		const second = runScript<ReviewBatchResponse>(fixture, ["next", "--limit", "2", "--offset", "2"]);
-		assert.equal(second.pagination.returned, 1);
-		assert.equal(second.pagination.hasMore, false);
-		assert.deepEqual(
-			second.items.map((item: { id: string }) => item.id),
-			["message.c"],
-		);
+		expect(second.pagination.returned).toBe(1);
+		expect(second.pagination.hasMore).toBe(false);
+		expect(second.items.map((item: { id: string }) => item.id)).toEqual(["message.c"]);
 	} finally {
 		cleanupFixture(fixture.rootDir);
 	}
-}
+});
 
-function testApprovePersistsFingerprintBasedReviewState(): void {
+test("persists fingerprint-based review state", () => {
 	const fixture = createFixture();
 	try {
 		const approved = runScript<ReviewMutationResponse>(fixture, [
@@ -103,25 +88,22 @@ function testApprovePersistsFingerprintBasedReviewState(): void {
 			"--note",
 			"checked",
 		]);
-		assert.deepEqual(approved.approved, ["message.a", "message.b"]);
-		assert.equal(approved.counts.reviewedCurrent, 2);
-		assert.equal(approved.counts.unreviewed, 1);
+		expect(approved.approved).toEqual(["message.a", "message.b"]);
+		expect(approved.counts.reviewedCurrent).toBe(2);
+		expect(approved.counts.unreviewed).toBe(1);
 
 		const next = runScript<ReviewBatchResponse>(fixture, ["next", "--limit", "10"]);
-		assert.deepEqual(
-			next.items.map((item: { id: string }) => item.id),
-			["message.c"],
-		);
+		expect(next.items.map((item: { id: string }) => item.id)).toEqual(["message.c"]);
 
 		const state = readJson<ReviewStateFile>(path.join(fixture.localeDir, "messages.review-state.json"));
-		assert.equal(state.entries.length, 2);
-		assert.equal(state.entries[0].note, "checked");
+		expect(state.entries.length).toBe(2);
+		expect(state.entries[0].note).toBe("checked");
 	} finally {
 		cleanupFixture(fixture.rootDir);
 	}
-}
+});
 
-function testChangedMessageBecomesUnreviewedAgain(): void {
+test("marks changed messages unreviewed again", () => {
 	const fixture = createFixture();
 	try {
 		runScript<ReviewMutationResponse>(fixture, ["approve", "--ids", "message.a"]);
@@ -134,21 +116,18 @@ function testChangedMessageBecomesUnreviewedAgain(): void {
 		fs.writeFileSync(messagesFile, `${JSON.stringify(messages, undefined, "\t")}\n`, "utf8");
 
 		const stats = runScript<ReviewStatsResponse>(fixture, ["stats"]);
-		assert.equal(stats.counts.reviewedCurrent, 0);
-		assert.equal(stats.counts.staleReviewed, 1);
-		assert.equal(stats.counts.unreviewed, 3);
+		expect(stats.counts.reviewedCurrent).toBe(0);
+		expect(stats.counts.staleReviewed).toBe(1);
+		expect(stats.counts.unreviewed).toBe(3);
 
 		const next = runScript<ReviewBatchResponse>(fixture, ["next", "--limit", "10"]);
-		assert.deepEqual(
-			next.items.map((item: { id: string }) => item.id),
-			["message.a", "message.b", "message.c"],
-		);
+		expect(next.items.map((item: { id: string }) => item.id)).toEqual(["message.a", "message.b", "message.c"]);
 	} finally {
 		cleanupFixture(fixture.rootDir);
 	}
-}
+});
 
-function testUnapproveRemovesRequestedAndStaleEntries(): void {
+test("removes requested and stale entries when unapproved", () => {
 	const fixture = createFixture();
 	try {
 		runScript<ReviewMutationResponse>(fixture, ["approve", "--ids", "message.a,message.b"]);
@@ -161,15 +140,15 @@ function testUnapproveRemovesRequestedAndStaleEntries(): void {
 		fs.writeFileSync(messagesFile, `${JSON.stringify(messages, undefined, "\t")}\n`, "utf8");
 
 		const removed = runScript<ReviewMutationResponse>(fixture, ["unapprove", "--ids", "message.a", "--all-stale"]);
-		assert.deepEqual(removed.removed, ["message.a", "message.b"]);
-		assert.equal(removed.counts.reviewedCurrent, 0);
+		expect(removed.removed).toEqual(["message.a", "message.b"]);
+		expect(removed.counts.reviewedCurrent).toBe(0);
 
 		const state = readJson<ReviewStateFile>(path.join(fixture.localeDir, "messages.review-state.json"));
-		assert.equal(state.entries.length, 0);
+		expect(state.entries.length).toBe(0);
 	} finally {
 		cleanupFixture(fixture.rootDir);
 	}
-}
+});
 
 function createFixture(): { rootDir: string; authorityDir: string; localeDir: string } {
 	const tempRoot = path.join(repoRoot, ".work", "i18n", "authority-review-tests");

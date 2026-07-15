@@ -1,6 +1,6 @@
-import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { expect, test } from "vitest";
 
 import {
 	loadCatalog as loadWebviewsCatalog,
@@ -20,37 +20,8 @@ import {
 	promoteWebviewsAuthority,
 	syncWebviewsI18n,
 } from "../workflow.mts";
-run();
 
-function run(): void {
-	testSettingsWorkflow();
-	testSettingsSourceGenerationDoesNotReadLocalizedDist();
-	testWebviewsSyncPreservesSharedWebviewHostEntries();
-	testWelcomeLocalizedSourceWorkflow();
-	testDynamicSourceGenerationDoesNotRequireSettingsSource();
-	testGenerateOnlyDoesNotCreateReports();
-	testOverlayPreservesTemplateExpressionDiscriminants();
-	testWriteTextFileSkipsUnchangedWrites();
-	testSupportedDynamicBundlesGenerateLocalizedSources();
-	testComposerLocalizedSourceWorkflow();
-	testRebaseShortcutFooterIsNotExtracted();
-	testStructuralSlotOnlyTemplatesAreNotExtracted();
-	testLaunchpadGrammarHelpersAreNotExtracted();
-	testGraphBundleGeneratesLocalizedSource();
-	testWelcomeWorkflowSkipsObviousNonUiImperativeStrings();
-	testCommitDetailsWorkflowLocalizesDisplayOnlyImperativeStrings();
-	testSearchInputPlaceholderGetterIsLocalized();
-	testReturnedDisplayTemplateSlotsLocalizeVariableInitializers();
-	testGraphBranchVisibilityOptionsAreLocalized();
-	testDeferredRuntimeBoundariesAreReported();
-	testGeneratorPreservesStructuralNodes();
-	testLocalizedSourcePreservesNamedSlotSubtrees();
-	testLocalizedSourcePreservesWalkthroughAnchorStructure();
-	testGraphLocalizedSourcePreservesPopoverMenuStructure();
-	testLocalizedSettingsSourcePreservesRuntimeAnchors();
-}
-
-function testSettingsWorkflow(): void {
+test("runs the settings workflow", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeTextFile(
 			rootDir,
@@ -69,17 +40,14 @@ function testSettingsWorkflow(): void {
 		);
 
 		const syncResult = syncWebviewsI18n(createTestLayerOptions(rootDir));
-		assert.equal(syncResult.occurrenceCount >= 3, true);
+		expect(syncResult.occurrenceCount).toBeGreaterThanOrEqual(3);
 
 		const context = createWebviewsDomainContext(createTestLayerOptions(rootDir));
 		const catalog = loadWebviewsCatalog(context);
 		const workset = loadWebviewsWorkset(context);
-		assert.equal(catalog.domain, "webviews");
-		assert.equal(workset.domain, "webviews");
-		assert.equal(
-			workset.entries.some((entry) => entry.source.includes("${author}")),
-			false,
-		);
+		expect(catalog.domain).toBe("webviews");
+		expect(workset.domain).toBe("webviews");
+		expect(workset.entries.some((entry) => entry.source.includes("${author}"))).toBe(false);
 
 		saveWebviewsWorkset(context, {
 			...workset,
@@ -101,31 +69,28 @@ function testSettingsWorkflow(): void {
 		});
 
 		const promoteResult = promoteWebviewsAuthority(createTestLayerOptions(rootDir));
-		assert.equal(promoteResult.promoted.length >= 3, true);
+		expect(promoteResult.promoted.length).toBeGreaterThanOrEqual(3);
 
 		const generateResult = generateWebviewsLocalizedOutputs(createTestLayerOptions(rootDir));
-		assert.equal(generateResult.translatedCount >= 3, true);
+		expect(generateResult.translatedCount).toBeGreaterThanOrEqual(3);
 
 		const localizedHtml = loadGeneratedSource(context, "src/webviews/apps/settings/settings.html");
-		assert.notEqual(localizedHtml, undefined);
-		assert.equal(localizedHtml!.includes("设置"), true);
-		assert.equal(localizedHtml!.includes('title="打开设置"'), true);
-		assert.equal(
-			localizedHtml!.includes(
-				'<p>添加<a title="在侧边栏中显示视图" href="command:gitlens.showLineHistoryView">行历史视图</a>（默认隐藏）</p>',
-			),
-			true,
+		expect(localizedHtml).toBeDefined();
+		expect(localizedHtml!).toContain("设置");
+		expect(localizedHtml!).toContain('title="打开设置"');
+		expect(localizedHtml!).toContain(
+			'<p>添加<a title="在侧边栏中显示视图" href="command:gitlens.showLineHistoryView">行历史视图</a>（默认隐藏）</p>',
 		);
-		assert.equal(localizedHtml!.includes("示例："), true);
-		assert.equal(localizedHtml!.includes("${author}"), true);
-		assert.equal(localizedHtml!.includes('<html lang="zh-CN">'), true);
+		expect(localizedHtml!).toContain("示例：");
+		expect(localizedHtml!).toContain("${author}");
+		expect(localizedHtml!).toContain('<html lang="zh-CN">');
 
 		const report = createPendingReport(createTestLayerOptions(rootDir));
-		assert.equal(report.domain, "webviews");
+		expect(report.domain).toBe("webviews");
 	});
-}
+});
 
-function testSettingsSourceGenerationDoesNotReadLocalizedDist(): void {
+test("does not read localized dist when generating settings", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeTextFile(
 			rootDir,
@@ -152,38 +117,31 @@ function testSettingsSourceGenerationDoesNotReadLocalizedDist(): void {
 		generateWebviewsLocalizedSettingsSources(createTestLayerOptions(rootDir));
 
 		const localizedHtml = loadGeneratedSource(context, "src/webviews/apps/settings/settings.html");
-		assert.match(localizedHtml ?? "", /<html lang="zh-CN">/u);
-		assert.match(localizedHtml ?? "", /切换该提交的文件更改/u);
-		assert.match(
+		expect(localizedHtml ?? "").toMatch(/<html lang="zh-CN">/u);
+		expect(localizedHtml ?? "").toMatch(/切换该提交的文件更改/u);
+		expect(
 			fs.readFileSync(path.join(rootDir, "src", "webviews", "apps", "settings", "settings.html"), "utf8"),
-			/<html lang="en">/u,
-		);
-		assert.match(
+		).toMatch(/<html lang="en">/u);
+		expect(
 			fs.readFileSync(path.join(rootDir, "src", "webviews", "apps", "settings", "settings.html"), "utf8"),
-			/Toggles file changes from the commit/u,
-		);
+		).toMatch(/Toggles file changes from the commit/u);
 
 		syncWebviewsI18n(createTestLayerOptions(rootDir));
 		const catalog = loadWebviewsCatalog(context);
 		const workset = loadWebviewsWorkset(context);
-		assert.equal(
+		expect(
 			catalog.occurrences.some(
 				(occurrence) => occurrence.pattern.text === "Toggles file changes from the commit",
 			),
-			true,
-		);
-		assert.equal(
-			catalog.occurrences.some((occurrence) => occurrence.pattern.text === "切换该提交的文件更改"),
+		).toBe(true);
+		expect(catalog.occurrences.some((occurrence) => occurrence.pattern.text === "切换该提交的文件更改")).toBe(
 			false,
 		);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "切换该提交的文件更改"),
-			false,
-		);
+		expect(workset.entries.some((entry) => entry.source === "切换该提交的文件更改")).toBe(false);
 	});
-}
+});
 
-function testWebviewsSyncPreservesSharedWebviewHostEntries(): void {
+test("preserves shared webview host entries during sync", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeTextFile(
 			rootDir,
@@ -247,31 +205,19 @@ function testWebviewsSyncPreservesSharedWebviewHostEntries(): void {
 		});
 
 		const result = syncWebviewsI18n(createTestLayerOptions(rootDir));
-		assert.equal(result.worksetCount, 1);
+		expect(result.worksetCount).toBe(1);
 
 		const workset = loadWebviewsWorkset(context);
-		assert.equal(
-			workset.entries.some((entry) => entry.id === "message.webview-host-only"),
-			true,
-		);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Settings"),
-			true,
-		);
+		expect(workset.entries.some((entry) => entry.id === "message.webview-host-only")).toBe(true);
+		expect(workset.entries.some((entry) => entry.source === "Settings")).toBe(true);
 		const catalog = loadWebviewsCatalog(context);
-		assert.equal(catalog.domain, "webviews");
-		assert.equal(
-			catalog.occurrences.some((occurrence) => occurrence.id.startsWith("webviewHost:")),
-			true,
-		);
-		assert.equal(
-			catalog.occurrences.some((occurrence) => occurrence.pattern.text === "Settings"),
-			true,
-		);
+		expect(catalog.domain).toBe("webviews");
+		expect(catalog.occurrences.some((occurrence) => occurrence.id.startsWith("webviewHost:"))).toBe(true);
+		expect(catalog.occurrences.some((occurrence) => occurrence.pattern.text === "Settings")).toBe(true);
 	});
-}
+});
 
-function testWelcomeLocalizedSourceWorkflow(): void {
+test("runs the welcome localized source workflow", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeWelcomeFixture(rootDir, {
@@ -314,27 +260,27 @@ function testWelcomeLocalizedSourceWorkflow(): void {
 
 		promoteWebviewsAuthority(createTestLayerOptions(rootDir));
 		const generateResult = generateWebviewsLocalizedOutputs(createTestLayerOptions(rootDir));
-		assert.equal(generateResult.translatedCount >= 4, true);
+		expect(generateResult.translatedCount).toBeGreaterThanOrEqual(4);
 
 		const localizedWelcomePage = loadGeneratedSource(
 			context,
 			"src/webviews/apps/welcome/components/welcome-page.ts",
 		);
-		assert.notEqual(localizedWelcomePage, undefined);
-		assert.equal(localizedWelcomePage!.includes("欢迎使用 GitLens"), true);
-		assert.equal(localizedWelcomePage!.includes("${doneCount}/${allCount} 个步骤已完成"), true);
-		assert.equal(localizedWelcomePage!.includes("查看文件的上一版修订"), true);
+		expect(localizedWelcomePage).toBeDefined();
+		expect(localizedWelcomePage!).toContain("欢迎使用 GitLens");
+		expect(localizedWelcomePage!).toContain("${doneCount}/${allCount} 个步骤已完成");
+		expect(localizedWelcomePage!).toContain("查看文件的上一版修订");
 
 		const localizedWelcomeParts = loadGeneratedSource(
 			context,
 			"src/webviews/apps/welcome/components/welcome-parts.ts",
 		);
-		assert.notEqual(localizedWelcomeParts, undefined);
-		assert.equal(localizedWelcomeParts!.includes("${doneCount}/${allCount} 个步骤已完成"), true);
+		expect(localizedWelcomeParts).toBeDefined();
+		expect(localizedWelcomeParts!).toContain("${doneCount}/${allCount} 个步骤已完成");
 	});
-}
+});
 
-function testOverlayPreservesTemplateExpressionDiscriminants(): void {
+test("preserves template expression discriminants during overlay", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
@@ -362,19 +308,19 @@ function testOverlayPreservesTemplateExpressionDiscriminants(): void {
 		generateWebviewsLocalizedDynamicSources(createTestLayerOptions(rootDir));
 
 		const localizedHome = loadGeneratedSource(context, "src/webviews/apps/home/home.ts");
-		assert.notEqual(localizedHome, undefined);
-		assert.match(localizedHome!, /_activeTab === 'recent'/u);
-		assert.match(localizedHome!, /switchTab\('recent'\)/u);
-		assert.match(localizedHome!, /activeView === 'files'/u);
-		assert.match(localizedHome!, />最近活动<\/button>/u);
-		assert.match(localizedHome!, />已更改文件<\/h1>/u);
-		assert.doesNotMatch(localizedHome!, /_activeTab === '最近'/u);
-		assert.doesNotMatch(localizedHome!, /switchTab\('最近'\)/u);
-		assert.doesNotMatch(localizedHome!, /activeView === '文件'/u);
+		expect(localizedHome).toBeDefined();
+		expect(localizedHome!).toMatch(/_activeTab === 'recent'/u);
+		expect(localizedHome!).toMatch(/switchTab\('recent'\)/u);
+		expect(localizedHome!).toMatch(/activeView === 'files'/u);
+		expect(localizedHome!).toMatch(/>最近活动<\/button>/u);
+		expect(localizedHome!).toMatch(/>已更改文件<\/h1>/u);
+		expect(localizedHome!).not.toMatch(/_activeTab === '最近'/u);
+		expect(localizedHome!).not.toMatch(/switchTab\('最近'\)/u);
+		expect(localizedHome!).not.toMatch(/activeView === '文件'/u);
 	});
-}
+});
 
-function testWriteTextFileSkipsUnchangedWrites(): void {
+test("skips unchanged text writes", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		const filePath = path.join(rootDir, "sample.txt");
 		writeStoreTextFile(filePath, "same content\n");
@@ -384,11 +330,11 @@ function testWriteTextFileSkipsUnchangedWrites(): void {
 		writeStoreTextFile(filePath, "same content\n");
 		const after = fs.statSync(filePath, { bigint: true }).mtimeNs;
 
-		assert.equal(after, before);
+		expect(after).toBe(before);
 	});
-}
+});
 
-function testDynamicSourceGenerationDoesNotRequireSettingsSource(): void {
+test("generates dynamic sources without a settings source", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeWelcomeFixture(rootDir, {
@@ -418,26 +364,23 @@ function testDynamicSourceGenerationDoesNotRequireSettingsSource(): void {
 		promoteWebviewsAuthority(createTestLayerOptions(rootDir));
 
 		const generateResult = generateWebviewsLocalizedDynamicSources(createTestLayerOptions(rootDir));
-		assert.equal(generateResult.translatedCount >= 1, true);
-		assert.equal(
-			loadGeneratedSource(context, "src/webviews/apps/welcome/components/welcome-page.ts")?.includes(
-				"欢迎使用 GitLens",
-			),
-			true,
+		expect(generateResult.translatedCount).toBeGreaterThanOrEqual(1);
+		expect(loadGeneratedSource(context, "src/webviews/apps/welcome/components/welcome-page.ts")).toContain(
+			"欢迎使用 GitLens",
 		);
 	});
-}
+});
 
-function testGenerateOnlyDoesNotCreateReports(): void {
+test("does not create reports in generate-only mode", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		const result = generateWebviewsLocalizedDynamicSources(createTestLayerOptions(rootDir));
 
-		assert.equal(fs.existsSync(result.context.pendingReportFile), false);
-		assert.equal(fs.existsSync(result.context.reconciliationReportFile), false);
+		expect(fs.existsSync(result.context.pendingReportFile)).toBe(false);
+		expect(fs.existsSync(result.context.reconciliationReportFile)).toBe(false);
 	});
-}
+});
 
-function testSupportedDynamicBundlesGenerateLocalizedSources(): void {
+test("generates supported dynamic bundles", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
@@ -496,28 +439,16 @@ function testSupportedDynamicBundlesGenerateLocalizedSources(): void {
 		promoteWebviewsAuthority(createTestLayerOptions(rootDir));
 		generateWebviewsLocalizedOutputs(createTestLayerOptions(rootDir));
 
-		assert.equal(
-			loadGeneratedSource(context, "src/webviews/apps/rebase/rebase.ts")?.includes("没有可变基的提交"),
-			true,
-		);
-		assert.equal(
-			loadGeneratedSource(context, "src/webviews/apps/home/home.ts")?.includes("你已全部处理完成！"),
-			true,
-		);
-		assert.equal(
-			loadGeneratedSource(context, "src/webviews/apps/commitDetails/commitDetails.ts")?.includes("检查提交"),
-			true,
-		);
-		assert.equal(
-			loadGeneratedSource(context, "src/webviews/apps/plus/timeline/timeline.ts")?.includes(
-				"在指定时间段内未找到提交",
-			),
-			true,
+		expect(loadGeneratedSource(context, "src/webviews/apps/rebase/rebase.ts")).toContain("没有可变基的提交");
+		expect(loadGeneratedSource(context, "src/webviews/apps/home/home.ts")).toContain("你已全部处理完成！");
+		expect(loadGeneratedSource(context, "src/webviews/apps/commitDetails/commitDetails.ts")).toContain("检查提交");
+		expect(loadGeneratedSource(context, "src/webviews/apps/plus/timeline/timeline.ts")).toContain(
+			"在指定时间段内未找到提交",
 		);
 	});
-}
+});
 
-function testComposerLocalizedSourceWorkflow(): void {
+test("runs the composer localized source workflow", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
@@ -679,63 +610,51 @@ function testComposerLocalizedSourceWorkflow(): void {
 			context,
 			"src/webviews/apps/plus/composer/components/commits-panel.ts",
 		);
-		assert.notEqual(localizedCommitsPanel, undefined);
-		assert.equal(localizedCommitsPanel!.includes("选择 AI 模型"), true);
-		assert.equal(localizedCommitsPanel!.includes("未知模型"), true);
-		assert.equal(localizedCommitsPanel!.includes("this.committing ? 'Committing...' : 'Create Commits'"), true);
-		assert.equal(localizedCommitsPanel!.includes("正在提交..."), false);
-		assert.equal(
-			localizedCommitsPanel!.includes('${this.fileCount} ${this.fileCount === 1 ? "个文件" : "个文件"}'),
-			false,
-		);
-		assert.equal(
-			localizedCommitsPanel!.includes("${this.fileCount} ${this.fileCount === 1 ? 'file' : 'files'}"),
-			true,
-		);
-		assert.equal(localizedCommitsPanel!.includes("提供额外指令有助于引导本次 AI 编排。"), true);
-		assert.equal(localizedCommitsPanel!.includes('<ul class="instructions-list">'), true);
-		assert.equal(localizedCommitsPanel!.includes("<li>Conventional Commits 格式</li>"), true);
-		assert.equal(localizedCommitsPanel!.includes("<li>提交大小</li>"), true);
-		assert.equal(localizedCommitsPanel!.includes("<li>聚焦特定更改</li>"), true);
-		assert.equal(localizedCommitsPanel!.includes("<hr />"), true);
-		assert.equal(localizedCommitsPanel!.includes("gitlens.ai.generateCommits.customInstructions"), true);
-		assert.equal(localizedCommitsPanel!.includes("Conventional Commits 格式、提交大小、聚焦特定更改"), false);
+		expect(localizedCommitsPanel).toBeDefined();
+		expect(localizedCommitsPanel!).toContain("选择 AI 模型");
+		expect(localizedCommitsPanel!).toContain("未知模型");
+		expect(localizedCommitsPanel!).toContain("this.committing ? 'Committing...' : 'Create Commits'");
+		expect(localizedCommitsPanel!).not.toContain("正在提交...");
+		expect(localizedCommitsPanel!).not.toContain('${this.fileCount} ${this.fileCount === 1 ? "个文件" : "个文件"}');
+		expect(localizedCommitsPanel!).toContain("${this.fileCount} ${this.fileCount === 1 ? 'file' : 'files'}");
+		expect(localizedCommitsPanel!).toContain("提供额外指令有助于引导本次 AI 编排。");
+		expect(localizedCommitsPanel!).toContain('<ul class="instructions-list">');
+		expect(localizedCommitsPanel!).toContain("<li>Conventional Commits 格式</li>");
+		expect(localizedCommitsPanel!).toContain("<li>提交大小</li>");
+		expect(localizedCommitsPanel!).toContain("<li>聚焦特定更改</li>");
+		expect(localizedCommitsPanel!).toContain("<hr />");
+		expect(localizedCommitsPanel!).toContain("gitlens.ai.generateCommits.customInstructions");
+		expect(localizedCommitsPanel!).not.toContain("Conventional Commits 格式、提交大小、聚焦特定更改");
 
 		const localizedCommitItem = loadGeneratedSource(
 			context,
 			"src/webviews/apps/plus/composer/components/commit-item.ts",
 		);
-		assert.notEqual(localizedCommitItem, undefined);
-		assert.equal(localizedCommitItem!.includes("isPlaceholder ? 'Draft commit (add a commit message)'"), true);
-		assert.equal(localizedCommitItem!.includes("草稿提交（添加提交消息）"), false);
-		assert.equal(
-			localizedCommitItem!.includes('${this.fileCount} ${this.fileCount === 1 ? "个文件" : "个文件"}'),
-			false,
-		);
-		assert.equal(
-			localizedCommitItem!.includes("${this.fileCount} ${this.fileCount === 1 ? 'file' : 'files'}"),
-			true,
-		);
+		expect(localizedCommitItem).toBeDefined();
+		expect(localizedCommitItem!).toContain("isPlaceholder ? 'Draft commit (add a commit message)'");
+		expect(localizedCommitItem!).not.toContain("草稿提交（添加提交消息）");
+		expect(localizedCommitItem!).not.toContain('${this.fileCount} ${this.fileCount === 1 ? "个文件" : "个文件"}');
+		expect(localizedCommitItem!).toContain("${this.fileCount} ${this.fileCount === 1 ? 'file' : 'files'}");
 
 		const localizedCommitMessage = loadGeneratedSource(
 			context,
 			"src/webviews/apps/plus/composer/components/commit-message.ts",
 		);
-		assert.notEqual(localizedCommitMessage, undefined);
-		assert.equal(localizedCommitMessage!.includes("自动编排摘要："), true);
-		assert.equal(localizedCommitMessage!.includes("输入提交消息..."), true);
-		assert.equal(localizedCommitMessage!.includes("正在生成..."), false);
-		assert.equal(localizedCommitMessage!.includes("使用 AI 生成提交消息"), false);
-		assert.equal(localizedCommitMessage!.includes("重新生成提交消息"), false);
-		assert.equal(localizedCommitMessage!.includes("生成提交消息"), false);
-		assert.equal(localizedCommitMessage!.includes("AI 功能已禁用"), false);
-		assert.equal(localizedCommitMessage!.includes("Generate Message"), true);
-		assert.equal(localizedCommitMessage!.includes("Regenerate Message"), true);
-		assert.equal(localizedCommitMessage!.includes("Generate commit message with AI"), true);
+		expect(localizedCommitMessage).toBeDefined();
+		expect(localizedCommitMessage!).toContain("自动编排摘要：");
+		expect(localizedCommitMessage!).toContain("输入提交消息...");
+		expect(localizedCommitMessage!).not.toContain("正在生成...");
+		expect(localizedCommitMessage!).not.toContain("使用 AI 生成提交消息");
+		expect(localizedCommitMessage!).not.toContain("重新生成提交消息");
+		expect(localizedCommitMessage!).not.toContain("生成提交消息");
+		expect(localizedCommitMessage!).not.toContain("AI 功能已禁用");
+		expect(localizedCommitMessage!).toContain("Generate Message");
+		expect(localizedCommitMessage!).toContain("Regenerate Message");
+		expect(localizedCommitMessage!).toContain("Generate commit message with AI");
 	});
-}
+});
 
-function testRebaseShortcutFooterIsNotExtracted(): void {
+test("does not extract the rebase shortcut footer", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
@@ -769,22 +688,13 @@ function testRebaseShortcutFooterIsNotExtracted(): void {
 		const workset = loadWebviewsWorkset(context);
 		const blockedSources = new Set(["ick", "eword", "dit", "quash", "ixup", "rop", "move", "search"]);
 
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Ready to rebase"),
-			true,
-		);
-		assert.equal(
-			workset.entries.some((entry) => blockedSources.has(entry.source)),
-			false,
-		);
-		assert.equal(
-			catalog.occurrences.some((occurrence) => blockedSources.has(occurrence.pattern.text)),
-			false,
-		);
+		expect(workset.entries.some((entry) => entry.source === "Ready to rebase")).toBe(true);
+		expect(workset.entries.some((entry) => blockedSources.has(entry.source))).toBe(false);
+		expect(catalog.occurrences.some((occurrence) => blockedSources.has(occurrence.pattern.text))).toBe(false);
 	});
-}
+});
 
-function testStructuralSlotOnlyTemplatesAreNotExtracted(): void {
+test("does not extract structural slot-only templates", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
@@ -846,22 +756,13 @@ function testStructuralSlotOnlyTemplatesAreNotExtracted(): void {
 			"on ${slot1}",
 		]);
 
-		assert.equal(
-			workset.entries.some((entry) => blockedSources.has(entry.source)),
-			false,
-		);
-		assert.equal(
-			catalog.occurrences.some((occurrence) => blockedSources.has(occurrence.pattern.text)),
-			false,
-		);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Ready to rebase"),
-			true,
-		);
+		expect(workset.entries.some((entry) => blockedSources.has(entry.source))).toBe(false);
+		expect(catalog.occurrences.some((occurrence) => blockedSources.has(occurrence.pattern.text))).toBe(false);
+		expect(workset.entries.some((entry) => entry.source === "Ready to rebase")).toBe(true);
 	});
-}
+});
 
-function testLaunchpadGrammarHelpersAreNotExtracted(): void {
+test("does not extract Launchpad grammar helpers", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
@@ -903,28 +804,17 @@ function testLaunchpadGrammarHelpersAreNotExtracted(): void {
 		]);
 		const blockedStructuralSources = new Set(["${slot1} ${slot2}"]);
 
-		assert.equal(
-			workset.entries.some((entry) => grammarHelperSources.has(entry.source)),
-			false,
-		);
-		assert.equal(
-			catalog.occurrences.some((occurrence) => grammarHelperSources.has(occurrence.pattern.text)),
-			false,
-		);
-		assert.equal(
-			workset.entries.some((entry) => blockedStructuralSources.has(entry.source)),
-			false,
-		);
-		assert.equal(
-			catalog.occurrences.some((occurrence) => blockedStructuralSources.has(occurrence.pattern.text)),
+		expect(workset.entries.some((entry) => grammarHelperSources.has(entry.source))).toBe(false);
+		expect(catalog.occurrences.some((occurrence) => grammarHelperSources.has(occurrence.pattern.text))).toBe(false);
+		expect(workset.entries.some((entry) => blockedStructuralSources.has(entry.source))).toBe(false);
+		expect(catalog.occurrences.some((occurrence) => blockedStructuralSources.has(occurrence.pattern.text))).toBe(
 			false,
 		);
 		for (const source of expectedSources) {
-			assert.equal(
+			expect(
 				catalog.occurrences.some((occurrence) => occurrence.pattern.text === source),
-				true,
 				`expected Launchpad source to be extracted: ${source}`,
-			);
+			).toBe(true);
 		}
 
 		approveTranslations(context, {
@@ -939,24 +829,21 @@ function testLaunchpadGrammarHelpersAreNotExtracted(): void {
 		generateWebviewsLocalizedDynamicSources(createTestLayerOptions(rootDir));
 
 		const localizedLaunchpad = loadGeneratedSource(context, "src/webviews/apps/plus/home/components/launchpad.ts");
-		assert.notEqual(localizedLaunchpad, undefined);
-		assert.equal(localizedLaunchpad!.includes('summary.count > 1 ? "" : ""'), false);
-		assert.equal(localizedLaunchpad!.includes('total > 1 ? "" : ""'), false);
-		assert.equal(localizedLaunchpad!.includes("message: `需要审查者`"), true);
-		assert.equal(localizedLaunchpad!.includes("message: `CI 检查未通过`"), true);
-		assert.equal(localizedLaunchpad!.includes("message: `存在冲突`"), true);
-		assert.equal(localizedLaunchpad!.includes("${pluralize('pull request', total)} 需要后续跟进"), true);
-		assert.equal(localizedLaunchpad!.includes("${pluralize('pull request', total)} 需要你审查"), true);
-		assert.equal(
-			localizedLaunchpad!.includes(
-				"${pluralize('pull request', total)} 已阻塞（${messages.map(m => `${m.count} ${m.message}`).join(', ')}）",
-			),
-			true,
+		expect(localizedLaunchpad).toBeDefined();
+		expect(localizedLaunchpad!).not.toContain('summary.count > 1 ? "" : ""');
+		expect(localizedLaunchpad!).not.toContain('total > 1 ? "" : ""');
+		expect(localizedLaunchpad!).toContain("message: `需要审查者`");
+		expect(localizedLaunchpad!).toContain("message: `CI 检查未通过`");
+		expect(localizedLaunchpad!).toContain("message: `存在冲突`");
+		expect(localizedLaunchpad!).toContain("${pluralize('pull request', total)} 需要后续跟进");
+		expect(localizedLaunchpad!).toContain("${pluralize('pull request', total)} 需要你审查");
+		expect(localizedLaunchpad!).toContain(
+			"${pluralize('pull request', total)} 已阻塞（${messages.map(m => `${m.count} ${m.message}`).join(', ')}）",
 		);
 	});
-}
+});
 
-function testGraphBundleGeneratesLocalizedSource(): void {
+test("generates the graph bundle", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
@@ -1003,25 +890,25 @@ function testGraphBundleGeneratesLocalizedSource(): void {
 		generateWebviewsLocalizedOutputs(createTestLayerOptions(rootDir));
 
 		const localizedGraph = loadGeneratedSource(context, "src/webviews/apps/plus/graph/graph.ts");
-		assert.notEqual(localizedGraph, undefined);
+		expect(localizedGraph).toBeDefined();
 
 		const localizedReactGraph = loadGeneratedSource(
 			context,
 			"src/webviews/apps/plus/graph/graph-wrapper/gl-graph.react.tsx",
 		);
-		assert.notEqual(localizedReactGraph, undefined);
-		assert.equal(localizedReactGraph!.includes("未找到结果"), true);
-		assert.equal(localizedReactGraph!.includes("加载更多结果..."), true);
-		assert.equal(localizedReactGraph!.includes("加载更多提交..."), true);
-		assert.equal(localizedReactGraph!.includes('tooltip="编排提交..."'), true);
-		assert.equal(localizedReactGraph!.includes('aria-label="编排提交..."'), true);
-		assert.equal(localizedReactGraph!.includes(">编排提交...</gl-button>"), true);
-		assert.equal(localizedReactGraph!.includes('tooltip="生成提交消息"'), true);
-		assert.equal(localizedReactGraph!.includes('aria-label="生成提交消息"'), true);
+		expect(localizedReactGraph).toBeDefined();
+		expect(localizedReactGraph!).toContain("未找到结果");
+		expect(localizedReactGraph!).toContain("加载更多结果...");
+		expect(localizedReactGraph!).toContain("加载更多提交...");
+		expect(localizedReactGraph!).toContain('tooltip="编排提交..."');
+		expect(localizedReactGraph!).toContain('aria-label="编排提交..."');
+		expect(localizedReactGraph!).toContain(">编排提交...</gl-button>");
+		expect(localizedReactGraph!).toContain('tooltip="生成提交消息"');
+		expect(localizedReactGraph!).toContain('aria-label="生成提交消息"');
 	});
-}
+});
 
-function testWelcomeWorkflowSkipsObviousNonUiImperativeStrings(): void {
+test("skips obvious non-UI imperative strings", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeWelcomeFixture(rootDir, {
@@ -1050,22 +937,15 @@ function testWelcomeWorkflowSkipsObviousNonUiImperativeStrings(): void {
 		syncWebviewsI18n(createTestLayerOptions(rootDir));
 		const context = createWebviewsDomainContext(createTestLayerOptions(rootDir));
 		const workset = loadWebviewsWorkset(context);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "Review required"),
-			true,
-		);
-		assert.equal(
-			workset.entries.some((entry) => entry.source === "indicator--pulse"),
-			false,
-		);
-		assert.equal(
+		expect(workset.entries.some((entry) => entry.source === "Review required")).toBe(true);
+		expect(workset.entries.some((entry) => entry.source === "indicator--pulse")).toBe(false);
+		expect(
 			workset.entries.some((entry) => entry.source === "var(--gl-git-status-conflict-modified, #c4a000)"),
-			false,
-		);
+		).toBe(false);
 	});
-}
+});
 
-function testCommitDetailsWorkflowLocalizesDisplayOnlyImperativeStrings(): void {
+test("localizes display-only imperative strings in commit details", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
@@ -1131,41 +1011,37 @@ function testCommitDetailsWorkflowLocalizesDisplayOnlyImperativeStrings(): void 
 			context,
 			"src/webviews/apps/commitDetails/components/gl-inspect-nav.ts",
 		);
-		assert.notEqual(localizedInspectNav, undefined);
-		assert.match(localizedInspectNav!, /复制 \$\{stashNumber != null \? "Stash Name" : "SHA"\}<br \/>/u);
-		assert.match(localizedInspectNav!, /\[\$\{getAltKeySymbol\(\)\}\] 复制消息/u);
+		expect(localizedInspectNav).toBeDefined();
+		expect(localizedInspectNav!).toMatch(/复制 \$\{stashNumber != null \? "Stash Name" : "SHA"\}<br \/>/u);
+		expect(localizedInspectNav!).toMatch(/\[\$\{getAltKeySymbol\(\)\}\] 复制消息/u);
 
 		const localizedCommitDetails = loadGeneratedSource(
 			context,
 			"src/webviews/apps/commitDetails/components/gl-commit-details.ts",
 		);
-		assert.notEqual(localizedCommitDetails, undefined);
-		assert.equal(localizedCommitDetails!.includes("导航时会显示提交和贮藏的详细信息："), true);
-		assert.equal(localizedCommitDetails!.includes("或者显示你的进行中工作，或搜索、选择某个提交"), true);
+		expect(localizedCommitDetails).toBeDefined();
+		expect(localizedCommitDetails!).toContain("导航时会显示提交和贮藏的详细信息：");
+		expect(localizedCommitDetails!).toContain("或者显示你的进行中工作，或搜索、选择某个提交");
 
 		const localizedWipDetails = loadGeneratedSource(
 			context,
 			"src/webviews/apps/commitDetails/components/gl-wip-details.ts",
 		);
-		assert.notEqual(localizedWipDetails, undefined);
-		assert.equal(
-			localizedWipDetails!.includes("const fetchLabel = behind > 0 ? 'Pull' : ahead > 0 ? 'Push' : 'Fetch';"),
-			true,
+		expect(localizedWipDetails).toBeDefined();
+		expect(localizedWipDetails!).toContain(
+			"const fetchLabel = behind > 0 ? 'Pull' : ahead > 0 ? 'Push' : 'Fetch';",
 		);
-		assert.equal(
-			localizedWipDetails!.includes(
-				'const fetchTooltip = behind > 0 ? "从以下位置拉取" : ahead > 0 ? "推送到" : "从以下位置获取";',
-			),
-			true,
+		expect(localizedWipDetails!).toContain(
+			'const fetchTooltip = behind > 0 ? "从以下位置拉取" : ahead > 0 ? "推送到" : "从以下位置获取";',
 		);
-		assert.equal(localizedWipDetails!.includes('let label = "共享为云补丁";'), true);
-		assert.equal(localizedWipDetails!.includes('data-action="${fetchLabel.toLowerCase()}"'), true);
-		assert.equal(localizedWipDetails!.includes('>${fetchLabel}<span slot="tooltip">${fetchTooltip}'), true);
-		assert.equal(localizedWipDetails!.includes('<gl-button tooltip="${label}">${label}</gl-button>'), true);
+		expect(localizedWipDetails!).toContain('let label = "共享为云补丁";');
+		expect(localizedWipDetails!).toContain('data-action="${fetchLabel.toLowerCase()}"');
+		expect(localizedWipDetails!).toContain('>${fetchLabel}<span slot="tooltip">${fetchTooltip}');
+		expect(localizedWipDetails!).toContain('<gl-button tooltip="${label}">${label}</gl-button>');
 	});
-}
+});
 
-function testSearchInputPlaceholderGetterIsLocalized(): void {
+test("localizes search input placeholder getters", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
@@ -1213,11 +1089,10 @@ function testSearchInputPlaceholderGetterIsLocalized(): void {
 			"${slot1} commits using natural language (↑↓ for history), e.g. my commits from last week",
 			"${slot1} commits (press Enter to search, ↑↓ for history), e.g. @me after:1.week.ago file:*.ts",
 		]) {
-			assert.equal(
+			expect(
 				catalog.occurrences.some((occurrence) => occurrence.pattern.text === source),
-				true,
 				`expected search placeholder source to be extracted: ${source}`,
-			);
+			).toBe(true);
 		}
 
 		approveTranslations(context, {
@@ -1235,24 +1110,18 @@ function testSearchInputPlaceholderGetterIsLocalized(): void {
 			context,
 			"src/webviews/apps/shared/components/search/search-input.ts",
 		);
-		assert.notEqual(localizedSearchInput, undefined);
-		assert.equal(localizedSearchInput!.includes('return this.filter ? "筛选" : "搜索";'), true);
-		assert.equal(
-			localizedSearchInput!.includes(
-				"`${this.label}使用自然语言搜索提交（↑↓ 查看历史），例如 my commits from last week`",
-			),
-			true,
+		expect(localizedSearchInput).toBeDefined();
+		expect(localizedSearchInput!).toContain('return this.filter ? "筛选" : "搜索";');
+		expect(localizedSearchInput!).toContain(
+			"`${this.label}使用自然语言搜索提交（↑↓ 查看历史），例如 my commits from last week`",
 		);
-		assert.equal(
-			localizedSearchInput!.includes(
-				"`${this.label}提交（按 Enter 搜索，↑↓ 查看历史），例如 @me after:1.week.ago file:*.ts`",
-			),
-			true,
+		expect(localizedSearchInput!).toContain(
+			"`${this.label}提交（按 Enter 搜索，↑↓ 查看历史），例如 @me after:1.week.ago file:*.ts`",
 		);
 	});
-}
+});
 
-function testReturnedDisplayTemplateSlotsLocalizeVariableInitializers(): void {
+test("localizes variable initializers in returned display templates", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
@@ -1281,16 +1150,14 @@ function testReturnedDisplayTemplateSlotsLocalizeVariableInitializers(): void {
 		const context = createWebviewsDomainContext(createTestLayerOptions(rootDir));
 		const catalog = loadWebviewsCatalog(context);
 		for (const source of ["Draft pull request", "Pull request"]) {
-			assert.equal(
+			expect(
 				catalog.occurrences.some((occurrence) => occurrence.pattern.text === source),
-				true,
 				`expected returned label source to be extracted: ${source}`,
-			);
+			).toBe(true);
 		}
-		assert.equal(
+		expect(
 			catalog.occurrences.some((occurrence) => occurrence.pattern.text === "${slot1} ${slot2} is ${slot3}"),
-			false,
-		);
+		).toBe(false);
 
 		approveTranslations(context, {
 			"Draft pull request": "草稿拉取请求",
@@ -1300,16 +1167,13 @@ function testReturnedDisplayTemplateSlotsLocalizeVariableInitializers(): void {
 		generateWebviewsLocalizedDynamicSources(createTestLayerOptions(rootDir));
 
 		const localizedPrIcon = loadGeneratedSource(context, "src/webviews/apps/shared/components/rich/pr-icon.ts");
-		assert.notEqual(localizedPrIcon, undefined);
-		assert.equal(localizedPrIcon!.includes('const type = this.draft ? "草稿拉取请求" : "拉取请求";'), true);
-		assert.equal(
-			localizedPrIcon!.includes("return `${type} ${this.prId ? `#${this.prId}` : ''} is ${this.state}`;"),
-			true,
-		);
+		expect(localizedPrIcon).toBeDefined();
+		expect(localizedPrIcon!).toContain('const type = this.draft ? "草稿拉取请求" : "拉取请求";');
+		expect(localizedPrIcon!).toContain("return `${type} ${this.prId ? `#${this.prId}` : ''} is ${this.state}`;");
 	});
-}
+});
 
-function testGraphBranchVisibilityOptionsAreLocalized(): void {
+test("localizes graph branch visibility options", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
@@ -1369,11 +1233,10 @@ function testGraphBranchVisibilityOptionsAreLocalized(): void {
 			"Shows only branches that have been starred as favorites ${slot1}",
 			"Also includes the current branch",
 		]) {
-			assert.equal(
+			expect(
 				catalog.occurrences.some((occurrence) => occurrence.pattern.text === source),
-				true,
 				`expected graph branch visibility source to be extracted: ${source}`,
-			);
+			).toBe(true);
 		}
 
 		approveTranslations(context, {
@@ -1392,27 +1255,24 @@ function testGraphBranchVisibilityOptionsAreLocalized(): void {
 		generateWebviewsLocalizedDynamicSources(createTestLayerOptions(rootDir));
 
 		const localizedGraphHeader = loadGeneratedSource(context, "src/webviews/apps/plus/graph/graph-header.ts");
-		assert.notEqual(localizedGraphHeader, undefined);
-		assert.match(localizedGraphHeader!, /<gl-tooltip placement="top" content="分支可见性">/u);
-		assert.match(
-			localizedGraphHeader!,
+		expect(localizedGraphHeader).toBeDefined();
+		expect(localizedGraphHeader!).toMatch(/<gl-tooltip placement="top" content="分支可见性">/u);
+		expect(localizedGraphHeader!).toMatch(
 			/<sl-option value="all" \?disabled=\$\{repo\?\.virtual\}>\s*所有分支\s*<\/sl-option>/u,
 		);
-		assert.match(localizedGraphHeader!, /<sl-option value="current">当前分支<\/sl-option>/u);
-		assert.match(localizedGraphHeader!, /智能分支\s*\$\{[\s\S]*?<gl-tooltip placement="right" slot="suffix">/u);
-		assert.match(localizedGraphHeader!, /收藏的分支\s*<gl-tooltip placement="right" slot="suffix">/u);
-		assert.match(
-			localizedGraphHeader!,
+		expect(localizedGraphHeader!).toMatch(/<sl-option value="current">当前分支<\/sl-option>/u);
+		expect(localizedGraphHeader!).toMatch(/智能分支\s*\$\{[\s\S]*?<gl-tooltip placement="right" slot="suffix">/u);
+		expect(localizedGraphHeader!).toMatch(/收藏的分支\s*<gl-tooltip placement="right" slot="suffix">/u);
+		expect(localizedGraphHeader!).toMatch(
 			/<span slot="content">仅显示相关分支 <br \/><br \/><i>包括当前分支、其上游以及其基础分支或目标分支<\/i><\/span>/u,
 		);
-		assert.match(
-			localizedGraphHeader!,
+		expect(localizedGraphHeader!).toMatch(
 			/<span slot="content">仅显示已加星标为收藏的分支 <br \/><br \/><i>也包括当前分支<\/i><\/span>/u,
 		);
 	});
-}
+});
 
-function testDeferredRuntimeBoundariesAreReported(): void {
+test("reports deferred runtime boundaries", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
@@ -1446,24 +1306,19 @@ function testDeferredRuntimeBoundariesAreReported(): void {
 		const reasons = reconciliation.entries
 			.map((entry) => entry.reason)
 			.filter((reason): reason is string => reason != null);
-		assert.equal(
+		expect(
 			reasons.some((reason) =>
 				reason.includes("deferred patchDetails: follow-up page family deferred from current rollout"),
 			),
-			true,
-		);
-		assert.equal(
-			catalog.occurrences.some((occurrence) => occurrence.scope.startsWith("webviews.graph.")),
-			true,
-		);
-		assert.equal(
-			catalog.occurrences.some((occurrence) => occurrence.scope.startsWith("webviews.patchDetails.")),
+		).toBe(true);
+		expect(catalog.occurrences.some((occurrence) => occurrence.scope.startsWith("webviews.graph."))).toBe(true);
+		expect(catalog.occurrences.some((occurrence) => occurrence.scope.startsWith("webviews.patchDetails."))).toBe(
 			false,
 		);
 	});
-}
+});
 
-function testLocalizedSettingsSourcePreservesRuntimeAnchors(): void {
+test("preserves runtime anchors in localized settings", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeTextFile(
 			rootDir,
@@ -1492,7 +1347,7 @@ function testLocalizedSettingsSourcePreservesRuntimeAnchors(): void {
 		generateWebviewsLocalizedSettingsSources(createTestLayerOptions(rootDir));
 
 		const localizedHtml = loadGeneratedSource(context, "src/webviews/apps/settings/settings.html");
-		assert.notEqual(localizedHtml, undefined);
+		expect(localizedHtml).toBeDefined();
 		for (const marker of [
 			'id="version"',
 			'id="scopes"',
@@ -1500,16 +1355,15 @@ function testLocalizedSettingsSourcePreservesRuntimeAnchors(): void {
 			'data-component="autolink-integration"',
 			'data-component="autolinks"',
 		]) {
-			assert.equal(
+			expect(
 				localizedHtml!.includes(marker),
-				true,
 				`localized settings source must preserve runtime marker ${marker}`,
-			);
+			).toBe(true);
 		}
 	});
-}
+});
 
-function testGeneratorPreservesStructuralNodes(): void {
+test("preserves structural nodes in generated sources", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeTextFile(
 			rootDir,
@@ -1553,17 +1407,17 @@ function testGeneratorPreservesStructuralNodes(): void {
 		generateWebviewsLocalizedOutputs(createTestLayerOptions(rootDir));
 
 		const localizedHtml = loadGeneratedSource(context, "src/webviews/apps/settings/settings.html");
-		assert.notEqual(localizedHtml, undefined);
-		assert.equal(localizedHtml!.includes("<gitlens-logo></gitlens-logo>"), true);
-		assert.equal(localizedHtml!.includes('id="version"'), true);
-		assert.equal(localizedHtml!.includes('title="打开 CHANGELOG"'), true);
-		assert.equal(localizedHtml!.includes('aria-label="打开 CHANGELOG"'), true);
-		assert.equal(localizedHtml!.includes("发布说明"), true);
-		assert.equal(localizedHtml!.includes("版本"), true);
+		expect(localizedHtml).toBeDefined();
+		expect(localizedHtml!).toContain("<gitlens-logo></gitlens-logo>");
+		expect(localizedHtml!).toContain('id="version"');
+		expect(localizedHtml!).toContain('title="打开 CHANGELOG"');
+		expect(localizedHtml!).toContain('aria-label="打开 CHANGELOG"');
+		expect(localizedHtml!).toContain("发布说明");
+		expect(localizedHtml!).toContain("版本");
 	});
-}
+});
 
-function testLocalizedSourcePreservesNamedSlotSubtrees(): void {
+test("preserves named slot subtrees", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
@@ -1601,21 +1455,19 @@ function testLocalizedSourcePreservesNamedSlotSubtrees(): void {
 		generateWebviewsLocalizedOutputs(createTestLayerOptions(rootDir));
 
 		const localizedHome = loadGeneratedSource(context, "src/webviews/apps/home/home.ts");
-		assert.notEqual(localizedHome, undefined);
-		assert.match(
-			localizedHome!,
+		expect(localizedHome).toBeDefined();
+		expect(localizedHome!).toMatch(
 			/<span slot="tooltip">\s*切换到另一个仓库\.\.\.\s*<hr \/>\s*\$\{repoName\}\s*<\/span>/u,
 		);
-		assert.match(localizedHome!, /编排提交\.\.\.\s*<span slot="tooltip">/u);
-		assert.match(
-			localizedHome!,
+		expect(localizedHome!).toMatch(/编排提交\.\.\.\s*<span slot="tooltip">/u);
+		expect(localizedHome!).toMatch(
 			/<span slot="tooltip">\s*<strong>编排提交<\/strong>（预览）<br \/>\s*<i>自动或以交互方式将更改整理为有意义的提交<\/i>\s*<\/span>/u,
 		);
-		assert.equal(localizedHome!.includes(">编排提交...<strong>编排提交</strong>"), false);
+		expect(localizedHome!).not.toContain(">编排提交...<strong>编排提交</strong>");
 	});
-}
+});
 
-function testLocalizedSourcePreservesWalkthroughAnchorStructure(): void {
+test("preserves walkthrough anchor structure", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
@@ -1654,21 +1506,17 @@ function testLocalizedSourcePreservesWalkthroughAnchorStructure(): void {
 		generateWebviewsLocalizedOutputs(createTestLayerOptions(rootDir));
 
 		const localizedHome = loadGeneratedSource(context, "src/webviews/apps/home/home.ts");
-		assert.notEqual(localizedHome, undefined);
-		assert.match(
-			localizedHome!,
+		expect(localizedHome).toBeDefined();
+		expect(localizedHome!).toMatch(
 			/<a class="walkthrough-progress" href="command:gitlens\.showWelcomeView">\s*<header class="walkthrough-progress__title">\s*<span>GitLens 演练 \(\$\{progress\.doneCount\}\/\$\{progress\.allCount\}\)<\/span>\s*<\/header>\s*<progress class="walkthrough-progress__bar" value=\$\{progress\.progress\}><\/progress>\s*<\/a>/u,
 		);
-		assert.equal(
-			localizedHome!.includes(
-				'<a class="walkthrough-progress" href="command:gitlens.showWelcomeView">GitLens 演练 (${progress.doneCount}/${progress.allCount})</a>',
-			),
-			false,
+		expect(localizedHome!).not.toContain(
+			'<a class="walkthrough-progress" href="command:gitlens.showWelcomeView">GitLens 演练 (${progress.doneCount}/${progress.allCount})</a>',
 		);
 	});
-}
+});
 
-function testGraphLocalizedSourcePreservesPopoverMenuStructure(): void {
+test("preserves graph popover menu structure", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
 		writeTextFile(
@@ -1734,33 +1582,28 @@ function testGraphLocalizedSourcePreservesPopoverMenuStructure(): void {
 		generateWebviewsLocalizedOutputs(createTestLayerOptions(rootDir));
 
 		const localizedGraphHeader = loadGeneratedSource(context, "src/webviews/apps/plus/graph/graph-header.ts");
-		assert.notEqual(localizedGraphHeader, undefined);
-		assert.match(localizedGraphHeader!, /<menu-label>迷你地图<\/menu-label>/u);
-		assert.match(
-			localizedGraphHeader!,
+		expect(localizedGraphHeader).toBeDefined();
+		expect(localizedGraphHeader!).toMatch(/<menu-label>迷你地图<\/menu-label>/u);
+		expect(localizedGraphHeader!).toMatch(
 			/<gl-radio name="minimap-datatype" value="commits">\s*提交数\s*<\/gl-radio>/u,
 		);
-		assert.match(
-			localizedGraphHeader!,
+		expect(localizedGraphHeader!).toMatch(
 			/<gl-radio name="minimap-datatype" value="lines">\s*更改行数\s*<\/gl-radio>/u,
 		);
-		assert.match(localizedGraphHeader!, /<menu-label>标记<\/menu-label>/u);
-		assert.match(
-			localizedGraphHeader!,
+		expect(localizedGraphHeader!).toMatch(/<menu-label>标记<\/menu-label>/u);
+		expect(localizedGraphHeader!).toMatch(
 			/<gl-checkbox value="localBranches" \?checked=\$\{true\}>\s*<span class="minimap-marker-swatch" data-marker="localBranches"><\/span>\s*本地分支\s*<\/gl-checkbox>/u,
 		);
-		assert.match(
-			localizedGraphHeader!,
+		expect(localizedGraphHeader!).toMatch(
 			/<gl-checkbox value="remoteBranches" \?checked=\$\{true\}>\s*<span class="minimap-marker-swatch" data-marker="remoteBranches"><\/span>\s*远程分支\s*<\/gl-checkbox>/u,
 		);
-		assert.match(localizedGraphHeader!, /<menu-label>隐藏的分支 \/ 标签<\/menu-label>/u);
-		assert.match(localizedGraphHeader!, /<menu-item>全部显示<\/menu-item>/u);
-		assert.equal(
-			localizedGraphHeader!.includes('<div slot="content">迷你地图 提交数 更改行数 标记 本地分支 远程分支</div>'),
-			false,
+		expect(localizedGraphHeader!).toMatch(/<menu-label>隐藏的分支 \/ 标签<\/menu-label>/u);
+		expect(localizedGraphHeader!).toMatch(/<menu-item>全部显示<\/menu-item>/u);
+		expect(localizedGraphHeader!).not.toContain(
+			'<div slot="content">迷你地图 提交数 更改行数 标记 本地分支 远程分支</div>',
 		);
 	});
-}
+});
 
 function writeDefaultSettingsSource(rootDir: string): void {
 	writeTextFile(

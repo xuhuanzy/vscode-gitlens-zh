@@ -1,15 +1,8 @@
-import assert from "node:assert/strict";
+import { expect, test } from "vitest";
 
 import { hasTranslation, type WorksetMessageRecord } from "../model.mts";
 
-run();
-
-function run(): void {
-	testEmptyTranslationIsNotAccepted();
-	testTemplateWithAllSlotsIsAccepted();
-}
-
-function testEmptyTranslationIsNotAccepted(): void {
+test("rejects empty translations", () => {
 	const record: WorksetMessageRecord = {
 		id: "message.empty",
 		kind: "literal",
@@ -17,10 +10,10 @@ function testEmptyTranslationIsNotAccepted(): void {
 		translation: "",
 	};
 
-	assert.equal(hasTranslation(record), false);
-}
+	expect(hasTranslation(record)).toBe(false);
+});
 
-function testTemplateWithAllSlotsIsAccepted(): void {
+test("accepts templates containing all slots", () => {
 	const record: WorksetMessageRecord = {
 		id: "message.valid-template",
 		kind: "template",
@@ -29,5 +22,5 @@ function testTemplateWithAllSlotsIsAccepted(): void {
 		slots: ["slot1", "slot2"],
 	};
 
-	assert.equal(hasTranslation(record), true);
-}
+	expect(hasTranslation(record)).toBe(true);
+});

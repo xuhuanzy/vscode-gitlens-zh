@@ -37,6 +37,7 @@ pnpm glzh dev prepare
 pnpm glzh dev watch
 pnpm glzh package
 pnpm glzh verify
+pnpm test
 pnpm format
 pnpm format:check
 ```
