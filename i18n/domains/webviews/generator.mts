@@ -14,9 +14,9 @@ import {
 } from "./html.mts";
 import { extractHtmlMatches } from "./extractor.mts";
 import { buildSyntheticHtmlTemplateFragment, buildSyntheticTextTemplateFragment } from "./template.mts";
-import { createDisplayContextAnalyzer } from "./displayContext.mts";
+import { createDisplayContextAnalyzer, isLiteralUnionCallArgument } from "./displayContext.mts";
 
-export interface GeneratedWebviewHtmlSourceOutputs {
+interface GeneratedLocalizedHtmlFragment {
 	readonly localizedHtml: string;
 	readonly translatedCount: number;
 	readonly unresolvedCount: number;
@@ -58,41 +58,6 @@ const { hasHtmlTemplateAncestor, hasRenderedJsxExpressionAncestor, hasImperative
 		getJsxElementTagName: getJsxElementTagName,
 		isTranslatableAttribute: isTranslatableAttribute,
 	});
-
-/** 将已解析 occurrence 应用到 HTML 源码, 并保留未覆盖的结构和原文. */
-export function generateLocalizedHtmlSourceFile(
-	englishHtml: string,
-	sourceFilePath: string,
-	occurrences: readonly SourceOccurrence[],
-	bundle: AuthorityBundle,
-	options?: { readonly htmlLang?: string },
-): GeneratedWebviewHtmlSourceOutputs {
-	const resolvedOccurrences: ResolvedHtmlOccurrence[] = [];
-	let unresolvedCount = 0;
-
-	for (const occurrence of occurrences) {
-		if (occurrence.reference.kind !== "source" || occurrence.reference.file !== sourceFilePath) continue;
-		if (occurrence.output?.kind !== "runtime-key") continue;
-
-		const resolved = resolveOccurrenceTranslation(occurrence, bundle);
-		if (resolved == null) {
-			unresolvedCount++;
-			continue;
-		}
-
-		resolvedOccurrences.push({
-			start: lineColumnToOffset(englishHtml, occurrence.reference.start.line, occurrence.reference.start.column),
-			end: lineColumnToOffset(englishHtml, occurrence.reference.end.line, occurrence.reference.end.column),
-			attribute: occurrence.reference.attribute,
-			resolved: resolved,
-		});
-	}
-
-	return localizeHtmlFragment(englishHtml, resolvedOccurrences, {
-		htmlLang: options?.htmlLang,
-		unresolvedCount: unresolvedCount,
-	});
-}
 
 /** 将已解析 occurrence 应用到 TypeScript, TSX 或 JSX 源码副本. */
 export function generateLocalizedSourceFile(
@@ -254,11 +219,8 @@ export function generateLocalizedSourceFile(
 function localizeHtmlFragment(
 	englishHtml: string,
 	occurrences: readonly ResolvedHtmlOccurrence[],
-	options?: {
-		readonly htmlLang?: string;
-		readonly unresolvedCount?: number;
-	},
-): GeneratedWebviewHtmlSourceOutputs {
+	unresolvedCount = 0,
+): GeneratedLocalizedHtmlFragment {
 	const root = parseHtmlDocument(englishHtml);
 	const elements: HtmlElementNode[] = [];
 	const contentNodes = new Map<string, HtmlElementNode>();
@@ -273,7 +235,6 @@ function localizeHtmlFragment(
 	const contentOccurrences = new Map<string, ResolvedHtmlOccurrence>();
 	const attributeOccurrencesByElementStart = new Map<number, ResolvedHtmlOccurrence[]>();
 	let translatedCount = 0;
-	let unresolvedCount = options?.unresolvedCount ?? 0;
 
 	for (const occurrence of occurrences) {
 		if (occurrence.attribute == null) {
@@ -347,16 +308,8 @@ function localizeHtmlFragment(
 		}
 	}
 
-	let localizedHtml = applyReplacements(englishHtml, replacements);
-	if (options?.htmlLang != null) {
-		localizedHtml = localizedHtml.replace(
-			/<html\b([^>]*)\blang="en"([^>]*)>/u,
-			`<html$1lang="${options.htmlLang}"$2>`,
-		);
-	}
-
 	return {
-		localizedHtml: localizedHtml,
+		localizedHtml: applyReplacements(englishHtml, replacements),
 		translatedCount: translatedCount,
 		unresolvedCount: unresolvedCount,
 	};
@@ -597,25 +550,6 @@ function escapeHtmlAttribute(text: string): string {
 	return escapeHtmlText(text).replaceAll('"', "&quot;");
 }
 
-function lineColumnToOffset(text: string, line: number, column: number): number {
-	let currentLine = 1;
-	let currentColumn = 1;
-	for (let index = 0; index < text.length; index++) {
-		if (currentLine === line && currentColumn === column) {
-			return index;
-		}
-
-		if (text[index] === "\n") {
-			currentLine++;
-			currentColumn = 1;
-		} else {
-			currentColumn++;
-		}
-	}
-
-	return text.length;
-}
-
 function localizeRuntimeTemplate(
 	template: ts.TemplateLiteral,
 	sourceFile: ts.SourceFile,
@@ -662,9 +596,7 @@ function localizeRuntimeTemplate(
 		};
 	}
 
-	const localized = localizeHtmlFragment(fragment.html, resolvedOccurrences, {
-		unresolvedCount: unresolvedCount,
-	});
+	const localized = localizeHtmlFragment(fragment.html, resolvedOccurrences, unresolvedCount);
 	const value = `\`${renderLocalizedTemplateLiteralContent(localized.localizedHtml, fragment.expressions)}\``;
 	const currentValue = getNodeTextWithNestedReplacements(template, sourceFile, existingReplacements);
 
@@ -945,6 +877,7 @@ function shouldLocalizeImperativeDisplayNode(
 	node: ts.StringLiteralLike | ts.TemplateExpression,
 	sourceFile: ts.SourceFile,
 ): boolean {
+	if (isLiteralUnionCallArgument(node, sourceFile)) return false;
 	if (ts.isTaggedTemplateExpression(node.parent) && node.parent.template === node) return false;
 	if (ts.isJsxAttribute(node.parent)) return false;
 	if (ts.isJsxExpression(node.parent) && ts.isJsxAttribute(node.parent.parent)) return false;

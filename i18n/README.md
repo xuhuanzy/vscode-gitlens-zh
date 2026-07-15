@@ -42,13 +42,3 @@ interface I18nLayerOptions {
 5. pipeline 校验镜像后将其作为 overlay 应用到可丢弃的 `.upstream` 构建树.
 
 普通 build/package 不应隐式刷新 catalog 或 workset. 上游升级后应显式执行同步并审查变更.
-
-## 已移除的旧接线
-
-以下旧实现不属于控制层, 不在本仓库维护:
-
-- runtime dynamic webpack loader.
-- webview webpack plugin 与 localized webpack config.
-- 对上游 `scripts/build.mjs`、`webpack.config.mjs` 的 i18n 分流修改.
-
-本地化生成结果由 pipeline 统一 overlay, 上游继续运行其原生构建脚本.

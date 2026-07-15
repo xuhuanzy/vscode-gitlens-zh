@@ -23,18 +23,11 @@ import {
 	type HtmlElementNode,
 } from "./html.mts";
 import { buildSyntheticHtmlTemplateFragment, buildSyntheticTextTemplateFragment } from "./template.mts";
-import { createDisplayContextAnalyzer } from "./displayContext.mts";
+import { createDisplayContextAnalyzer, isLiteralUnionCallArgument } from "./displayContext.mts";
 
 export interface WebviewsExtractionResult {
 	readonly occurrences: SourceOccurrence[];
 	readonly issues: CatalogIssue[];
-}
-
-export interface HtmlExtractionTarget {
-	readonly kind: "html";
-	readonly file: string;
-	readonly html: string;
-	readonly shell: "settings";
 }
 
 export interface RuntimeSourceTarget {
@@ -46,8 +39,6 @@ export interface RuntimeSourceTarget {
 	readonly mode?: "supported" | "deferred";
 	readonly deferredReason?: string;
 }
-
-type ExtractionTarget = HtmlExtractionTarget | RuntimeSourceTarget;
 
 interface MatchDefinition {
 	readonly kind: "text" | "attribute";
@@ -90,19 +81,19 @@ const {
 });
 const litTemplateTagNames = new Set(["html"]);
 
-/** 从受支持的 HTML 和源码目标中提取 webview occurrence, 延后目标只记录问题. */
-export function extractSupportedWebviewOccurrences(targets: readonly ExtractionTarget[]): WebviewsExtractionResult {
+/** 从受支持的源码目标中提取 webview occurrence, 延后目标只记录问题. */
+export function extractSupportedWebviewOccurrences(targets: readonly RuntimeSourceTarget[]): WebviewsExtractionResult {
 	const occurrences: SourceOccurrence[] = [];
 	const issues: CatalogIssue[] = [];
 	const seenIds = new Set<string>();
 
 	for (const target of targets) {
-		if (target.kind === "source" && target.mode === "deferred") {
+		if (target.mode === "deferred") {
 			issues.push(...extractDeferredSourceIssues(target));
 			continue;
 		}
 
-		const matches = target.kind === "html" ? extractHtmlMatches(target.html) : extractSourceMatches(target, issues);
+		const matches = extractSourceMatches(target, issues);
 		for (const match of matches) {
 			const occurrence = createOccurrence(target, match);
 			if (seenIds.has(occurrence.id)) {
@@ -298,11 +289,10 @@ function extractImperativeLocalizationMatches(
 	];
 }
 
-function createOccurrence(target: ExtractionTarget, match: MatchDefinition): SourceOccurrence {
-	const sourceText = target.kind === "html" ? target.html : target.source;
-	const reference = createSourceReference(target.file, sourceText, match.start, match.end, match.attribute);
-	const output = createRuntimeOutputReference(getOutputBundle(target), createRuntimeOutputKey(target, match));
-	const anchor = `webviews.${getOutputBundle(target)}.${output.key}`;
+function createOccurrence(target: RuntimeSourceTarget, match: MatchDefinition): SourceOccurrence {
+	const reference = createSourceReference(target.file, target.source, match.start, match.end, match.attribute);
+	const output = createRuntimeOutputReference(target.bundle, createRuntimeOutputKey(target, match));
+	const anchor = `webviews.${target.bundle}.${output.key}`;
 	const slot = match.attribute == null ? "text" : match.attribute;
 	const pattern = parseMessagePattern(match.text);
 	const authorityId = createAuthorityId(pattern);
@@ -310,7 +300,7 @@ function createOccurrence(target: ExtractionTarget, match: MatchDefinition): Sou
 	return {
 		id: createOccurrenceId("webviews", anchor, slot),
 		domain: "webviews",
-		scope: target.kind === "html" ? `webviews.${target.shell}.shell` : `webviews.${target.bundle}.runtime`,
+		scope: `webviews.${target.bundle}.runtime`,
 		anchor: anchor,
 		slot: slot,
 		authorityId: authorityId,
@@ -320,17 +310,12 @@ function createOccurrence(target: ExtractionTarget, match: MatchDefinition): Sou
 	};
 }
 
-function createRuntimeOutputKey(target: ExtractionTarget, match: MatchDefinition): string {
-	const bundle = getOutputBundle(target);
-	const digestSource = `${target.kind}:${bundle}:${match.sourceKind}:${match.kind}:${match.context}:${match.attribute ?? "text"}:${match.text}`;
+function createRuntimeOutputKey(target: RuntimeSourceTarget, match: MatchDefinition): string {
+	const digestSource = `${target.kind}:${target.bundle}:${match.sourceKind}:${match.kind}:${match.context}:${match.attribute ?? "text"}:${match.text}`;
 	const suffix = shortHash(digestSource);
 	const context = sanitizeKeySegment(match.context).replaceAll(".", "-");
 	const attribute = match.attribute == null ? "text" : sanitizeKeySegment(match.attribute);
-	return `${bundle}.${context}.${attribute}.${suffix}`;
-}
-
-function getOutputBundle(target: ExtractionTarget): string {
-	return target.kind === "html" ? target.shell : target.bundle;
+	return `${target.bundle}.${context}.${attribute}.${suffix}`;
 }
 
 function createRuntimeOutputReference(bundle: string, key: string): OutputReference {
@@ -354,7 +339,7 @@ function createSourceReference(
 	return {
 		kind: "source",
 		file: file,
-		syntax: file.endsWith(".html") ? "html" : file.endsWith(".tsx") || file.endsWith(".jsx") ? "tsx" : "ts",
+		syntax: file.endsWith(".tsx") || file.endsWith(".jsx") ? "tsx" : "ts",
 		start: start,
 		end: end,
 		attribute: attribute,
@@ -606,6 +591,7 @@ function shouldExtractImperativeDisplayNode(
 	node: ts.StringLiteralLike | ts.TemplateExpression,
 	sourceFile: ts.SourceFile,
 ): boolean {
+	if (isLiteralUnionCallArgument(node, sourceFile)) return false;
 	if (ts.isTaggedTemplateExpression(node.parent) && node.parent.template === node) return false;
 	if (ts.isJsxAttribute(node.parent)) return false;
 	if (ts.isJsxExpression(node.parent) && ts.isJsxAttribute(node.parent.parent)) return false;

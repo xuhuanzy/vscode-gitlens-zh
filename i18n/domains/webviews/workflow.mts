@@ -36,10 +36,10 @@ import type { I18nLayerOptions } from "../../core/context.mts";
 
 import { createWebviewsDomainContext, type WebviewsDomainContext } from "./context.mts";
 import { extractSupportedWebviewOccurrences } from "./extractor.mts";
-import { generateLocalizedHtmlSourceFile, generateLocalizedSourceFile } from "./generator.mts";
+import { generateLocalizedSourceFile } from "./generator.mts";
 
 interface DynamicSourceTarget {
-	readonly bundle: "welcome" | "rebase" | "home" | "commitDetails" | "timeline" | "graph" | "composer";
+	readonly bundle: "welcome" | "rebase" | "home" | "commitDetails" | "timeline" | "graph" | "composer" | "settings";
 	readonly directories?: readonly string[];
 	readonly files?: readonly string[];
 }
@@ -50,12 +50,18 @@ interface DeferredRuntimeTarget {
 	readonly directories: readonly string[];
 }
 
-interface StaticHtmlTarget {
-	readonly shell: "settings";
-	readonly file: string;
-}
-
 const supportedDynamicSourceTargets: readonly DynamicSourceTarget[] = [
+	{
+		bundle: "settings",
+		files: [
+			"src/webviews/apps/settings/actions.ts",
+			"src/webviews/apps/settings/model.ts",
+			"src/webviews/apps/settings/settings.ts",
+			"src/webviews/apps/settings/state.ts",
+			"src/webviews/apps/settings/settings.css.ts",
+		],
+		directories: ["src/webviews/apps/settings/categories", "src/webviews/apps/settings/components"],
+	},
 	{
 		bundle: "welcome",
 		files: [
@@ -107,9 +113,6 @@ const deferredRuntimeTargets: readonly DeferredRuntimeTarget[] = [
 	},
 ];
 
-const settingsHtmlSourceFile = "src/webviews/apps/settings/settings.html";
-const settingsHtmlPartialsDirectory = "src/webviews/apps/settings/partials";
-
 export type WorkflowOptions = I18nLayerOptions;
 
 /** 从受支持的 webview 源码刷新共享 catalog, workset 和 reconciliation report. */
@@ -123,10 +126,7 @@ export function syncWebviewsI18n(options: WorkflowOptions = {}): {
 	const previousCatalog = loadWebviewsCatalog(context);
 	const previousWorkset = loadWebviewsWorkset(context);
 	const bundle = loadAuthorityBundle(context);
-	const extraction = extractSupportedWebviewOccurrences([
-		...loadStaticHtmlExtractionTargets(context),
-		...loadDynamicExtractionTargets(context),
-	]);
+	const extraction = extractSupportedWebviewOccurrences(loadDynamicExtractionTargets(context));
 	const catalogScope = getWebviewsCatalogScope();
 	const scopedPreviousCatalog = withCatalogScope(previousCatalog, catalogScope);
 	const catalog = reconcileCatalog(previousCatalog, extraction.occurrences, catalogScope);
@@ -169,7 +169,7 @@ export function promoteWebviewsAuthority(options: WorkflowOptions = {}): {
 	};
 }
 
-/** 生成设置 HTML 与动态 webview 源码的完整本地化输出. */
+/** 生成动态 webview 源码的完整本地化输出. */
 export function generateWebviewsLocalizedOutputs(options: WorkflowOptions = {}): {
 	readonly context: WebviewsDomainContext;
 	readonly translatedCount: number;
@@ -177,13 +177,12 @@ export function generateWebviewsLocalizedOutputs(options: WorkflowOptions = {}):
 } {
 	const syncResult = syncWebviewsI18n(options);
 	const context = syncResult.context;
-	const settingsSources = generateWebviewsLocalizedSettingsSourcesCore(context);
 	const dynamicSources = generateWebviewsLocalizedDynamicSourcesCore(context);
 
 	return {
 		context: context,
-		translatedCount: settingsSources.translatedCount + dynamicSources.translatedCount,
-		unresolvedCount: settingsSources.unresolvedCount + dynamicSources.unresolvedCount,
+		translatedCount: dynamicSources.translatedCount,
+		unresolvedCount: dynamicSources.unresolvedCount,
 	};
 }
 
@@ -203,54 +202,6 @@ export function generateWebviewsLocalizedDynamicSources(options: WorkflowOptions
 	};
 }
 
-/** 仅生成设置页 HTML 及其 partial 的本地化镜像. */
-export function generateWebviewsLocalizedSettingsSources(options: WorkflowOptions = {}): {
-	readonly context: WebviewsDomainContext;
-	readonly translatedCount: number;
-	readonly unresolvedCount: number;
-} {
-	const context = ensureControlledWebviewFiles(options);
-	const settingsSources = generateWebviewsLocalizedSettingsSourcesCore(context);
-
-	return {
-		context: context,
-		translatedCount: settingsSources.translatedCount,
-		unresolvedCount: settingsSources.unresolvedCount,
-	};
-}
-
-function generateWebviewsLocalizedSettingsSourcesCore(context: WebviewsDomainContext): {
-	readonly translatedCount: number;
-	readonly unresolvedCount: number;
-} {
-	const catalog = loadWebviewsCatalog(context);
-	const bundle = loadAuthorityBundle(context);
-	let translatedCount = 0;
-	let unresolvedCount = 0;
-	const staticTargets = loadStaticHtmlTargets(context);
-
-	assertUniqueGeneratedMirrorPaths(
-		staticTargets.map((target) => ({ owner: `webviews:${target.shell}`, relativePath: target.file })),
-	);
-
-	for (const target of staticTargets) {
-		const html = loadSourceTargetContents(context, target.file);
-		if (html == null) continue;
-
-		const generated = generateLocalizedHtmlSourceFile(html, target.file, catalog.occurrences, bundle, {
-			htmlLang: target.file === settingsHtmlSourceFile ? "zh-CN" : undefined,
-		});
-		writeTextFile(path.join(context.generatedRootDir, ...target.file.split("/")), generated.localizedHtml);
-		translatedCount += generated.translatedCount;
-		unresolvedCount += generated.unresolvedCount;
-	}
-
-	return {
-		translatedCount: translatedCount,
-		unresolvedCount: unresolvedCount,
-	};
-}
-
 function generateWebviewsLocalizedDynamicSourcesCore(context: WebviewsDomainContext): {
 	readonly translatedCount: number;
 	readonly unresolvedCount: number;
@@ -266,13 +217,9 @@ function generateWebviewsLocalizedDynamicSourcesCore(context: WebviewsDomainCont
 			...(target.directories?.flatMap((directory) => enumerateSourceFiles(context, directory)) ?? []),
 		]),
 	);
-	assertUniqueGeneratedMirrorPaths([
-		...loadStaticHtmlTargets(context).map((target) => ({
-			owner: `webviews:${target.shell}`,
-			relativePath: target.file,
-		})),
-		...[...allLocalizedSourceFiles].map((file) => ({ owner: "webviews:source", relativePath: file })),
-	]);
+	assertUniqueGeneratedMirrorPaths(
+		[...allLocalizedSourceFiles].map((file) => ({ owner: "webviews:source", relativePath: file })),
+	);
 
 	for (const file of [...allLocalizedSourceFiles].sort((left, right) => left.localeCompare(right))) {
 		const source = loadSourceTargetContents(context, file);
@@ -374,38 +321,12 @@ function loadDynamicExtractionTargets(context: WebviewsDomainContext) {
 	];
 }
 
-function loadStaticHtmlExtractionTargets(context: WebviewsDomainContext) {
-	return loadStaticHtmlTargets(context)
-		.map((target) => {
-			const html = loadSourceTargetContents(context, target.file);
-			if (html == null) return undefined;
-
-			return {
-				kind: "html" as const,
-				file: target.file,
-				html: html,
-				shell: target.shell,
-			};
-		})
-		.filter((target): target is Exclude<typeof target, undefined> => target != null);
-}
-
 function loadSourceTargetContents(context: WebviewsDomainContext, relativeFile: string): string | undefined {
 	try {
 		return fs.readFileSync(path.join(context.upstreamRoot, ...relativeFile.split("/")), "utf8");
 	} catch {
 		return undefined;
 	}
-}
-
-function loadStaticHtmlTargets(context: WebviewsDomainContext): StaticHtmlTarget[] {
-	return [
-		{ shell: "settings", file: settingsHtmlSourceFile },
-		...enumerateHtmlFiles(context, settingsHtmlPartialsDirectory).map((file) => ({
-			shell: "settings" as const,
-			file: file,
-		})),
-	];
 }
 
 function loadDynamicSourceTargets(
@@ -472,16 +393,6 @@ function enumerateSourceFiles(context: WebviewsDomainContext, directory: string)
 			cwd: absoluteDirectory,
 			exclude: ["**/__tests__/**", "**/*.d.ts", "**/*.test.{ts,tsx,jsx}", "**/*.css.ts"],
 		})
-		.map((file) => path.relative(context.upstreamRoot, path.join(absoluteDirectory, file)).replaceAll("\\", "/"))
-		.sort((left, right) => left.localeCompare(right));
-}
-
-function enumerateHtmlFiles(context: WebviewsDomainContext, directory: string): string[] {
-	const absoluteDirectory = path.join(context.upstreamRoot, ...directory.split("/"));
-	if (!fs.existsSync(absoluteDirectory)) return [];
-
-	return fs
-		.globSync("**/*.html", { cwd: absoluteDirectory, exclude: ["**/__tests__/**"] })
 		.map((file) => path.relative(context.upstreamRoot, path.join(absoluteDirectory, file)).replaceAll("\\", "/"))
 		.sort((left, right) => left.localeCompare(right));
 }

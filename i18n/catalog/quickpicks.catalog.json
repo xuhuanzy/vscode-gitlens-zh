@@ -2,7 +2,7 @@
 	"$schema": "../schemas/sourceCatalog.schema.json",
 	"version": 3,
 	"domain": "quickpicks",
-	"generatedAt": "2026-06-16T06:40:12.980Z",
+	"generatedAt": "2026-07-15T21:14:00.453Z",
 	"occurrences": [
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.string-160-15.label.3de75d8fe8#label",

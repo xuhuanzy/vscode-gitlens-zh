@@ -3,7 +3,7 @@
 	"version": 2,
 	"kind": "messages",
 	"locale": "zh-cn",
-	"updatedAt": "2026-06-16T06:39:20.270Z",
+	"updatedAt": "2026-07-15T21:07:38.140Z",
 	"entries": [
 		{
 			"id": "message.000d1a29b2365349f8762064ef86edc1f548f435002395035bdc26f6c87754fc",
@@ -47,6 +47,12 @@
 			"translation": "显示贮藏"
 		},
 		{
+			"id": "message.0077ff483e62624aa8ccb72f308732820b438eb7db7356514bd4c7d804c4ed1e",
+			"kind": "literal",
+			"source": "Merged",
+			"translation": "已合并"
+		},
+		{
 			"id": "message.0079882206a57c5e49aad13d64f87914c881d198649ad2360b50607b95e11b1d",
 			"kind": "literal",
 			"source": "Sort branches",
@@ -57,6 +63,18 @@
 			"kind": "literal",
 			"source": "Discard Staged Changes",
 			"translation": "放弃已暂存更改"
+		},
+		{
+			"id": "message.00b6333faf315ddcf1419ab29018b340043d68d66c7acfc56c416c4fdc85de56",
+			"kind": "template",
+			"source": "${slot1} ${slot2} ${slot3} ${slot4} to automatically link issues in commit messages.",
+			"translation": "${slot1} ${slot2} ${slot3} ${slot4}，即可自动链接提交消息中的 Issue。",
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3",
+				"slot4"
+			]
 		},
 		{
 			"id": "message.00ee94ff2c6a3e99cb9a4779b5ebc8beff352d2c42f0b3b1bec60646184331da",
@@ -77,6 +95,12 @@
 			"translation": "分支视图"
 		},
 		{
+			"id": "message.010512b1cfc03cbfc4b41e8e84f2adcce57e25620173f13fd10fc407101c33f8",
+			"kind": "literal",
+			"source": "No matching settings",
+			"translation": "没有匹配的设置"
+		},
+		{
 			"id": "message.0110ed5d31e27daf4089cf61ff0d1532e1e2d8d358eb63c4f8d85c4ed13bfcef",
 			"kind": "literal",
 			"source": "Show Account on Home",
@@ -87,6 +111,12 @@
 			"kind": "literal",
 			"source": "Change Base...",
 			"translation": "更改基准..."
+		},
+		{
+			"id": "message.0114a18413685d97c34b334761840d6ed2cf8f44d074908bec303c670c5fb892",
+			"kind": "literal",
+			"source": "Then page in this many more rows when scrolling",
+			"translation": "滚动时每次再加载这么多行"
 		},
 		{
 			"id": "message.011b2099f480e1d505a4c5bb8d4213fad9318b51c9528eee6f201279c981211d",
@@ -105,6 +135,12 @@
 			"kind": "literal",
 			"source": "GitLens — Git supercharged",
 			"translation": "GitLens — 强化 Git 能力"
+		},
+		{
+			"id": "message.0158c9f09b8dc85c2e6d7744de53d1dead43dd3a054b297d8c2be86e921e99ff",
+			"kind": "literal",
+			"source": "Authored Date — absolute",
+			"translation": "作者日期 - 绝对时间"
 		},
 		{
 			"id": "message.017e546d105c2d2d43b537a3e5ae109de8e39ac7452e84dafb6bedb419d72bc4",
@@ -132,6 +168,12 @@
 			"kind": "literal",
 			"source": "you",
 			"translation": "你"
+		},
+		{
+			"id": "message.01a8d80f827040a8fea5578ace8178558f6f3fe39c1273cadbb4b2c9d4332672",
+			"kind": "literal",
+			"source": "GitLens Settings",
+			"translation": "GitLens 设置"
 		},
 		{
 			"id": "message.01af62f62be5c10e3c7204413e7fbb196b40fd8a2fdfdd382e4d02e142b05061",
@@ -311,6 +353,24 @@
 			"translation": "无法加载分支"
 		},
 		{
+			"id": "message.03cc41cb99f8cbda08cde695c2bfd9da84107beae7ec4bf08a2aa2ab95a900a8",
+			"kind": "literal",
+			"source": "Take Incoming",
+			"translation": "采用传入版本"
+		},
+		{
+			"id": "message.03d5337a4526b0aa698c1bbf97e611273b6a29eafe3328847022346c29bea2ea",
+			"kind": "literal",
+			"source": "Add lane color tokens",
+			"translation": "添加泳道颜色令牌"
+		},
+		{
+			"id": "message.03e0957050fffa10cd78262048a3457be0b7a077eb5e5165ab6f653d7cddc25c",
+			"kind": "literal",
+			"source": "Match alphanumeric references",
+			"translation": "匹配字母数字引用"
+		},
+		{
 			"id": "message.0408031f863f631d82374b894c0a299f1de2da10873b4e05f3e20cea0f4261cc",
 			"kind": "literal",
 			"source": "Specifies how branches are sorted in quick pick menus and views",
@@ -331,6 +391,12 @@
 			"kind": "literal",
 			"source": "Autolink",
 			"translation": "自动链接"
+		},
+		{
+			"id": "message.0499fe9db1732ef12ec981183a0b7edf0c4e635146531fbbfabe6af10a5315fc",
+			"kind": "literal",
+			"source": "Start from an issue or pull request, and Kepler creates the environment, launches the agent, and keeps related work organized in a single Task across repositories.",
+			"translation": "从 Issue 或拉取请求开始，Kepler 会创建环境、启动代理，并将跨仓库的相关工作整理到同一个任务中。"
 		},
 		{
 			"id": "message.04d22af477f6a56642a01bd79707515280b1d1b4d854159b837bbff04326ae88",
@@ -473,6 +539,12 @@
 			"translation": "提交编排器反馈"
 		},
 		{
+			"id": "message.067538fea48b5081d03a01dff483954f5621a513e5c074f610f1b7f325bc9261",
+			"kind": "literal",
+			"source": "Took incoming",
+			"translation": "已采用传入版本"
+		},
+		{
 			"id": "message.06a8a27f39c0566994fc806deafa66f398b382db03df8b37d4c72b29dfec51ec",
 			"kind": "literal",
 			"source": "Start PR Review",
@@ -596,10 +668,22 @@
 			"translation": "同步状态"
 		},
 		{
+			"id": "message.07c39983381fb3d6e283cc0d0651b069e6ab38b545dcd657acc376f88446c007",
+			"kind": "literal",
+			"source": "Commit Author",
+			"translation": "提交作者"
+		},
+		{
 			"id": "message.07d93bce496cbc91fdf13c824944edf2484b2b00c96bce48745486ee257ada6c",
 			"kind": "literal",
 			"source": "Specifies the length of abbreviated commit SHAs",
 			"translation": "指定缩写提交 SHA 的长度"
+		},
+		{
+			"id": "message.07dbb91817becf9b2f0bcf61cc7045f53dafb5f66cd4afc6e5f5b0a312144a24",
+			"kind": "literal",
+			"source": "Pull Request that introduced the commit",
+			"translation": "引入此提交的拉取请求"
 		},
 		{
 			"id": "message.07f62778251c8f26440c7779a4c76a8cafaa73cfa9082b6bf91936c394deb45b",
@@ -640,6 +724,15 @@
 			"translation": "指定 _云补丁_ 视图如何显示文件图标"
 		},
 		{
+			"id": "message.08217bdbb8171bde30513651667de59ee0ba0266daffef6200f4df4186569e96",
+			"kind": "template",
+			"source": "${slot1} to search every GitLens setting.",
+			"translation": "${slot1}即可搜索所有 GitLens 设置。",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.08261342ecb1035a8b7417067ccf7f3dbca57276fc9920cd241c549047a6379b",
 			"kind": "literal",
 			"source": "gitlens.views.tags",
@@ -650,6 +743,12 @@
 			"kind": "literal",
 			"source": "Short date format",
 			"translation": "短日期格式"
+		},
+		{
+			"id": "message.083a00d0b775ff2326c3b8415ee9d07a1045c67c941dad58f2614da389196bd6",
+			"kind": "literal",
+			"source": "Refine Resolutions",
+			"translation": "优化解决方案"
 		},
 		{
 			"id": "message.0841739dd220fa75556c61e1e29aa3b0a14b1e6f76029d8fcfb5b1f2f63659ef",
@@ -712,6 +811,12 @@
 			"translation": "很可能"
 		},
 		{
+			"id": "message.09035fbe9eafa7f6e6ac863a26e6fd334cd23fca39829c83137f3c628b282216",
+			"kind": "literal",
+			"source": "am / pm",
+			"translation": "am / pm"
+		},
+		{
 			"id": "message.0909f5ab6502769bc6e5d0fc906b13857ccf0c2ac04c5945336a06c836e022bd",
 			"kind": "rich",
 			"source": "Specifies the format of stashes in the views. See [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens) in the GitLens docs",
@@ -762,6 +867,12 @@
 			"translation": "快速显示提交"
 		},
 		{
+			"id": "message.097a6addc5ea8207a5f86fabf121a952e1c682929e5a52eb8777fa84ec0214ca",
+			"kind": "literal",
+			"source": "Delete autolink",
+			"translation": "删除自动链接"
+		},
+		{
 			"id": "message.0981bc5478a78f2cf397a1da91eea66f6819a440a667029dc0ba54b6eea0b8f4",
 			"kind": "literal",
 			"source": "Always ask where to put new worktrees",
@@ -772,6 +883,12 @@
 			"kind": "literal",
 			"source": "Learn more about GitKraken security",
 			"translation": "进一步了解 GitKraken 安全性"
+		},
+		{
+			"id": "message.09e19d875f30b6979c086d8753c1c9ce475a7f9ebfe98e8c05802afbe43c1a03",
+			"kind": "literal",
+			"source": "AI Provider & Model",
+			"translation": "AI 提供商和模型"
 		},
 		{
 			"id": "message.09e1b6420efc4af3cf203d948f9957d7e0501112eb124fda9e31a95a704cc1ac",
@@ -799,6 +916,12 @@
 			"kind": "literal",
 			"source": "Actions",
 			"translation": "操作"
+		},
+		{
+			"id": "message.0a15702ec5a9682d5ee83b931c0598d6d0823a8e072d43ecf6fb6e435f2c9568",
+			"kind": "literal",
+			"source": "Jira and Linear are connected — issue keys in commit messages link automatically.",
+			"translation": "Jira 和 Linear 已连接 - 提交消息中的 Issue 键将自动生成链接。"
 		},
 		{
 			"id": "message.0a24630b2fd8aa09f5b903528a49cf50c4cded492b6aed5ac1743319a9255bf2",
@@ -865,6 +988,12 @@
 			"kind": "literal",
 			"source": "Continue",
 			"translation": "继续"
+		},
+		{
+			"id": "message.0ac957a84e63051160cf8ca2188662a3ba8ef31a63b060747cfd70b136f17a44",
+			"kind": "literal",
+			"source": "Save for",
+			"translation": "保存到"
 		},
 		{
 			"id": "message.0ac9c3241fa2a7c6cc57182cc0f84fa0b25963503318150c47035f0a3ad7eed8",
@@ -934,6 +1063,12 @@
 			"kind": "literal",
 			"source": "Open Walkthrough",
 			"translation": "打开演练"
+		},
+		{
+			"id": "message.0b57faf69a29b6fbcc43363a823d814ec2bea32873a4eec98a76084a4f8b2107",
+			"kind": "literal",
+			"source": "Commit Date (short)",
+			"translation": "提交日期（短格式）"
 		},
 		{
 			"id": "message.0b84b835807b56e97d19d19ef3fc757b82487c641bea59b0f7aaf97c68fc6762",
@@ -1048,6 +1183,12 @@
 			"translation": "让 AI 协助理解此补丁中的更改。"
 		},
 		{
+			"id": "message.0d2b49406e3cf2187d52ae7a6e3b0a80d28b7dff54586c047365626be58e1669",
+			"kind": "literal",
+			"source": "Review Changes...",
+			"translation": "审阅更改..."
+		},
+		{
 			"id": "message.0d31a9027a85e974db55fb8a4a7c354801bceb358b048d388994a52a563d89d1",
 			"kind": "literal",
 			"source": "Connect Integrations...",
@@ -1076,6 +1217,12 @@
 			"kind": "literal",
 			"source": " more ",
 			"translation": " more "
+		},
+		{
+			"id": "message.0d7dbc42e9e5406303c84ae77dfb8ce699a27514c549002bfc0afc0d4fdf04ed",
+			"kind": "literal",
+			"source": "Commit Date — relative",
+			"translation": "提交日期 - 相对时间"
 		},
 		{
 			"id": "message.0d7f3d6f711ffdf673c04492d36cfebe31289084ce5f8e8215d436e38ad50464",
@@ -1180,6 +1327,12 @@
 			]
 		},
 		{
+			"id": "message.0ef3f5d6e800dd4efd5175f5690928ae786175c8cd8a167ff8cbe44f8da88ab5",
+			"kind": "literal",
+			"source": "Resolve Conflicts (Preview)",
+			"translation": "解决冲突（预览）"
+		},
+		{
 			"id": "message.0ef79674e4af65d5234116a10b90043a2cc80555e3cdd5caddd65d006fa15cb4",
 			"kind": "literal",
 			"source": "Specifies how the _Cloud Workspaces_ view will display file icons",
@@ -1190,6 +1343,12 @@
 			"kind": "literal",
 			"source": "View as Tree",
 			"translation": "以树形显示"
+		},
+		{
+			"id": "message.0f33871f3b29892c416461085e255620a1543535743644bb4309bce5f44a4fb9",
+			"kind": "literal",
+			"source": "editor",
+			"translation": "编辑器"
 		},
 		{
 			"id": "message.0f3e56bb5c7dcc453372c80973b007eac4a14292401cbcafa33f659988132196",
@@ -1270,6 +1429,14 @@
 			"translation": "正在加载更改…"
 		},
 		{
+			"id": "message.100137932c854d68dd6e95e8e3fc6622a2183426a35c5b3f0587a5754fcfd38d",
+			"kind": "rich",
+			"source": "Specifies the AI provider and model to use for GitLens' AI features. Should be formatted as `provider:model` (e.g. `openai:gpt-5.5` or `anthropic:claude-sonnet-5`), `gitkraken` for GitKraken AI provided models, or `vscode` for models provided by the VS Code extension API (e.g. Copilot)",
+			"translation": "指定用于 GitLens AI 功能的 AI 提供商和模型。格式应为 `provider:model`（例如 `openai:gpt-5.5` 或 `anthropic:claude-sonnet-5`）；GitKraken AI 提供的模型使用 `gitkraken`，VS Code 扩展 API 提供的模型（例如 Copilot）使用 `vscode`。",
+			"format": "markdown",
+			"slots": []
+		},
+		{
 			"id": "message.10457d033faf6a3612d5934450ddb846a1a0bf69fb603d744996a31378221caa",
 			"kind": "literal",
 			"source": "Choose authors…",
@@ -1333,6 +1500,18 @@
 			"translation": "创建一个 Issue"
 		},
 		{
+			"id": "message.11532e08991fc84f5bd3fc29bd6f5fe3955bf4b8853e0cf18683e1fdaa57d60b",
+			"kind": "literal",
+			"source": "AI features have been disabled by your GitKraken admin.",
+			"translation": "GitKraken 管理员已禁用 AI 功能。"
+		},
+		{
+			"id": "message.1175708ea044ae6ba24d9e109a235a1d49a21ff97406c6befbec6887dac4adf0",
+			"kind": "literal",
+			"source": "Add a Stash All Changes command",
+			"translation": "添加“贮藏所有更改”命令"
+		},
+		{
 			"id": "message.117cb088f66aac6cfe2fefd2e6b05db64a6099651b831282137959188970dc1e",
 			"kind": "literal",
 			"source": "Added (Both)",
@@ -1364,6 +1543,12 @@
 			]
 		},
 		{
+			"id": "message.11ba2dcc505cac1e7ff5acb2801a710219b3c4ba0f3cc5d6c2d1b09be520908d",
+			"kind": "literal",
+			"source": "Add Copy Remote File URL * commands",
+			"translation": "添加“复制远程文件 URL *”命令"
+		},
+		{
 			"id": "message.11d2268587612d5a4e800a577ae6571a16ab6bf8df1cf5a9508f8fcc0ccba2ec",
 			"kind": "template",
 			"source": "Every ${slot1} while in view",
@@ -1383,6 +1568,12 @@
 			"kind": "literal",
 			"source": "Detach Tags View",
 			"translation": "分离标签视图"
+		},
+		{
+			"id": "message.11e6efd81b779dd62d18bf5504d8766544b3e5ea69bee2e4155e7f5d5915628f",
+			"kind": "literal",
+			"source": "Focus on Worktree",
+			"translation": "聚焦工作树"
 		},
 		{
 			"id": "message.11ed73291b735343a62b7a43828fe93d5bba8887025234ed6ea6baffd1fe4355",
@@ -1469,6 +1660,12 @@
 			]
 		},
 		{
+			"id": "message.1289c2a9ee68384ac33ebfcb3cc35f4d7120400bd88551a19e13ee187eb15643",
+			"kind": "literal",
+			"source": "Toggle File Blame command",
+			"translation": "“切换文件追溯”命令"
+		},
+		{
 			"id": "message.1294b9fdbfa1668c9b17355eb388cfd7fdd2db2d917ed10421c532affa5ceffc",
 			"kind": "literal",
 			"source": "Pull Request View",
@@ -1481,10 +1678,22 @@
 			"translation": "全部折叠"
 		},
 		{
+			"id": "message.12d8fcba13732a8afce3d15e3584a73b8a0d1e6a90907a5314a5dc5c17e5cb31",
+			"kind": "literal",
+			"source": "Change Set",
+			"translation": "更改集"
+		},
+		{
 			"id": "message.12f1507a2ba69fa9ff7e542cadf212db56a9977006079a146b9baa054e05b2c3",
 			"kind": "literal",
 			"source": "All time",
 			"translation": "全部时段"
+		},
+		{
+			"id": "message.12f187aa9527b765317aaf557263a1d55ecd98b1eadd3816161e8578bdc4c233",
+			"kind": "literal",
+			"source": "Year, 4-digit (2018)",
+			"translation": "年份，4 位数字（2018）"
 		},
 		{
 			"id": "message.13182d1d0c63e6ece708ccfda175f67dd179656bd63e56db86b9b8fd08da1c51",
@@ -1500,6 +1709,12 @@
 			"slots": [
 				"slot1"
 			]
+		},
+		{
+			"id": "message.1353674e5dd03db4defcc1e022311e80e1048fbabd421a06a11271c1f35a2d60",
+			"kind": "literal",
+			"source": "Resolve Conflicts…",
+			"translation": "解决冲突…"
 		},
 		{
 			"id": "message.135778e7ead61d26b87b2037324f38a23f60c6b6fdd5870fe4bd156e02894551",
@@ -1584,10 +1799,22 @@
 			"translation": "仅在悬停于行注解上时显示"
 		},
 		{
+			"id": "message.143023d9db438cfd742d2b2df035209d1207e38e6018b170eed2a65f4bb416cb",
+			"kind": "literal",
+			"source": "Add a Copy Relative Path command",
+			"translation": "添加“复制相对路径”命令"
+		},
+		{
 			"id": "message.1438f2894ea8a187c7190f0487fbfd782da823fa070021acd57155a4cc23d704",
 			"kind": "literal",
 			"source": ">Retry",
 			"translation": ">重试"
+		},
+		{
+			"id": "message.1439a07bb8816db0e91668b94efc3df5194291b1934a4a439a25516c3acf4523",
+			"kind": "literal",
+			"source": "Authored Date — relative",
+			"translation": "作者日期 - 相对时间"
 		},
 		{
 			"id": "message.143d2028546deb66599ac11e25a434cacfda063e6b195ab8a60fde6a3f703edd",
@@ -1621,6 +1848,12 @@
 			"kind": "literal",
 			"source": "Adds an unobtrusive blame annotation at the end of the current line",
 			"translation": "在当前行末尾添加不显眼的追溯注解"
+		},
+		{
+			"id": "message.146d16b8938f670225fb879b14c931704f27a7b6bd4fc55a4a1f46a7cc6b2d76",
+			"kind": "literal",
+			"source": "Add a Show Commit Graph command",
+			"translation": "添加“显示提交图”命令"
 		},
 		{
 			"id": "message.14ac8eb9bdea5e8d713142161ea6cf76cb23e7e7388b893c178b0ef5ef5594d1",
@@ -1671,6 +1904,12 @@
 			"translation": "指定当前激活的 GitLens 模式（如果有）"
 		},
 		{
+			"id": "message.15253518a7b51351ec45d2b45860b9f86549fbdfb393608d2c7c7fd7e9ab5ec2",
+			"kind": "literal",
+			"source": "This file is no longer conflicted.",
+			"translation": "此文件已不再存在冲突。"
+		},
+		{
 			"id": "message.152aef272556ff5d4ae6bb2d18007ca877c47ed418bded9a79fc004578242673",
 			"kind": "template",
 			"source": "Showing ${slot1} of ${slot2} files\nClick to show all files",
@@ -1679,6 +1918,12 @@
 				"slot1",
 				"slot2"
 			]
+		},
+		{
+			"id": "message.153513e0e688b85f268fed075d86b844cd9f004fe4620119837c91e5fd978769",
+			"kind": "literal",
+			"source": "Excluded when Committing",
+			"translation": "提交时排除"
 		},
 		{
 			"id": "message.154198154c91a98c2f9d0e3aa7fe8b8063b58662d421dd0132e39586c5872565",
@@ -1898,6 +2143,12 @@
 			"translation": "分离启动台视图"
 		},
 		{
+			"id": "message.171c4f769ca5e93c54da5c3ee446cee4a6e85534104751427d069ca09af47fb4",
+			"kind": "literal",
+			"source": "No commits changed this file on this side.",
+			"translation": "此侧没有提交更改过该文件。"
+		},
+		{
 			"id": "message.173b554dbc11da216c7fdab013de05477a5f2f46b329589bdd0849e644f10c1d",
 			"kind": "literal",
 			"source": "View Branches as Tree",
@@ -1914,6 +2165,12 @@
 			"kind": "literal",
 			"source": "Files Treemap",
 			"translation": "文件树图"
+		},
+		{
+			"id": "message.176291d21524a6774408ac0b5b0c95f28085405464e6cdc8bb7dae1da1da6f11",
+			"kind": "literal",
+			"source": "Delete File",
+			"translation": "删除文件"
 		},
 		{
 			"id": "message.176ba5cfb6319ad1c1372a3fb147546f1e3e3d76bafe6c09c6e9e3634af7e981",
@@ -2175,6 +2432,12 @@
 			"translation": "创建新分支"
 		},
 		{
+			"id": "message.1bfe7b3ef6168b17191bcd3160eb608289f273586d11accb92c72c87356994f4",
+			"kind": "literal",
+			"source": "main",
+			"translation": "main"
+		},
+		{
 			"id": "message.1c0817f9e62a6457a078354ac84edd526b9f6325dcb4fd91e2780784f3d169b4",
 			"kind": "literal",
 			"source": "Resolve Conflicts with AI",
@@ -2279,6 +2542,12 @@
 			"translation": "隐藏启动台视图"
 		},
 		{
+			"id": "message.1ce19191c7b4ae8e8c019aa2c8a0f9b4c2189d1720d794eb504a6f1ae1c140f8",
+			"kind": "literal",
+			"source": "Case-sensitive matching",
+			"translation": "区分大小写匹配"
+		},
+		{
 			"id": "message.1cf8a0d4d275cba48640bb55d5d27eb2f6ad78b32203d09babcc8f626e4f9245",
 			"kind": "literal",
 			"source": "Compose Commits with AI",
@@ -2297,10 +2566,31 @@
 			"translation": "复制远程分支 URL"
 		},
 		{
+			"id": "message.1d13d4290b23810d5ddc021d554bb378170f21cad1e3fdb13aa30d07711fcb8a",
+			"kind": "template",
+			"source": "Switch AI Model ${slot1}",
+			"translation": "切换 AI 模型 ${slot1}",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
+			"id": "message.1d16c1411f6b1e01a968d00f8bc68f80a3c41dcae41fbfa7b895250deb6d8924",
+			"kind": "literal",
+			"source": "Show Branch Actions",
+			"translation": "显示分支操作"
+		},
+		{
 			"id": "message.1d29b36210e4492a62b75bb6352d587245a149b6f92c457956510868e65aa778",
 			"kind": "literal",
 			"source": "Add to the Source Control groups context menu",
 			"translation": "添加到源代码管理分组上下文菜单"
+		},
+		{
+			"id": "message.1d2b71279671af175ddc4925cc6f9181836c92162205b5192c95356365764db1",
+			"kind": "literal",
+			"source": "Resolved",
+			"translation": "已解决"
 		},
 		{
 			"id": "message.1d3a50cc53ffa757b200d6f45899f36c4e7b8b45e6772420b491ceea30191abc",
@@ -2319,6 +2609,12 @@
 			"kind": "literal",
 			"source": "Include Unassigned Changes",
 			"translation": "包含未分配的更改"
+		},
+		{
+			"id": "message.1d6a2d28ac8def77557f56d90f139dc6447e5b86a28fbe767e049278ad98ea23",
+			"kind": "literal",
+			"source": "Supercharge the parser",
+			"translation": "全面增强解析器"
 		},
 		{
 			"id": "message.1d6b9255b06ecab9a34a0fec1890e4cf9da8a505f660cfe30e05ac5033605f39",
@@ -2497,6 +2793,12 @@
 			"translation": "配置自动链接，以便在提交消息中将 Jira 或 Zendesk 工单等外部引用转换为链接。"
 		},
 		{
+			"id": "message.1ef9e1882572c8650beab2e369ed6d374a0298a3c1f6dbf53c67ec202dec51ea",
+			"kind": "literal",
+			"source": "Show this many search results at first and when paging",
+			"translation": "首次显示以及每次翻页时显示这么多搜索结果"
+		},
+		{
 			"id": "message.1f0fb80f677a90e5170dbdba3c5d7ca686dd65ccce9de9679784390a7790e3d3",
 			"kind": "literal",
 			"source": "Navigate complex repositories with a searchable, color-coded commit timeline. Instantly understand branch relationships, authorship patterns, and commit sequences.",
@@ -2507,6 +2809,12 @@
 			"kind": "literal",
 			"source": "Open Current Branch on Remote",
 			"translation": "在远程上打开当前分支"
+		},
+		{
+			"id": "message.1f3d6899892566bc241cbd403a2e716a9ced71a422f30ab7f3291ec335167782",
+			"kind": "literal",
+			"source": "Ln 3, Col 12",
+			"translation": "第 3 行，第 12 列"
 		},
 		{
 			"id": "message.1f736ce6d4538b2c292cb84fc459699e31645cc593125ea548c45fc3619b919e",
@@ -2624,6 +2932,14 @@
 			"translation": "导航"
 		},
 		{
+			"id": "message.206f1ac621fefc385df78e0ec3880a5f7878fe38c47993d1d9596128d6667d81",
+			"kind": "rich",
+			"source": "Sorts working changes by the `scm.defaultViewSortKey` setting",
+			"translation": "按 `scm.defaultViewSortKey` 设置对工作树更改排序",
+			"format": "markdown",
+			"slots": []
+		},
+		{
 			"id": "message.2077dcf866c27b8c7e0fb39c10f4d4f9fd8fc75f66929dfdf6747d0414cb3e74",
 			"kind": "literal",
 			"source": "Specifies whether to only follow the first parent when showing commits on the _Commit Graph_",
@@ -2737,6 +3053,12 @@
 			"kind": "literal",
 			"source": "Repositories view",
 			"translation": "仓库视图"
+		},
+		{
+			"id": "message.2228274ed0955ce4634e03d0cc4fc7a0a131373c5a45c57345a85f9bd61c5633",
+			"kind": "literal",
+			"source": "Changes Indicator, e.g. +1 ~3 -0",
+			"translation": "更改指示器，例如 +1 ~3 -0"
 		},
 		{
 			"id": "message.225629009cc55b0433363ada1cc022b42d4a65a922b420ffa20cfa6f574cab7b",
@@ -2889,6 +3211,12 @@
 			]
 		},
 		{
+			"id": "message.23f7fa2e001415a5db9e1d81854888a022150af71886abc830d1e042af1ac9ea",
+			"kind": "literal",
+			"source": "Unpin this Commit\nRestores Automatic Following",
+			"translation": "取消固定此提交\n恢复自动跟随"
+		},
+		{
 			"id": "message.23ffed3efb32f2994bfc5febc38311e50d27263aabdc3a012a8de55d1cb6fc27",
 			"kind": "literal",
 			"source": "Jump to File History view settings",
@@ -2934,6 +3262,12 @@
 			"translation": "移除分支关联"
 		},
 		{
+			"id": "message.244dbf12df40fdbd50fe84b2cb7dd5de981d1d2fb34b36791c7898e59b1c2379",
+			"kind": "literal",
+			"source": "Comparison of the current branch or working tree with a user-selected reference (branch, tag, etc)",
+			"translation": "当前分支或工作树与用户选择的引用（分支、标签等）的比较"
+		},
+		{
 			"id": "message.245e26fe96a6ab3f60f6f4031dc5ce655b527d25c36eac91488a1fe05cfe1e14",
 			"kind": "literal",
 			"source": "Reactivate Pro Trial",
@@ -2947,6 +3281,12 @@
 			"slots": [
 				"slot1"
 			]
+		},
+		{
+			"id": "message.246de4ad38f6afb5f9a98bb82d9c12f6ab6ad2d4a7f59e83efb32e66bd609d38",
+			"kind": "literal",
+			"source": "Resolve conflicts",
+			"translation": "解决冲突"
 		},
 		{
 			"id": "message.24841485531b1fef1c94cfd5a85ce1fe95949ae437d99f18e4a9793bbc7f27f1",
@@ -2994,6 +3334,12 @@
 			"translation": "还原提交..."
 		},
 		{
+			"id": "message.251d80ccbb998d129d50b060592a0ee3421b454e805abd5dd34364b7230c58c3",
+			"kind": "literal",
+			"source": "Reload the window",
+			"translation": "重新加载窗口"
+		},
+		{
 			"id": "message.252b8f31864773bd2efd3ab55119784830e30323ef58b554c6409ed0d061f9c1",
 			"kind": "literal",
 			"source": "Show the following sections under each repository",
@@ -3026,10 +3372,22 @@
 			]
 		},
 		{
+			"id": "message.25df3d96bf546c03e898e55cd762013eb18ca2e48e1ed3aea6ba7ce918cd215d",
+			"kind": "literal",
+			"source": "Couldn’t load AI status.",
+			"translation": "无法加载 AI 状态。"
+		},
+		{
 			"id": "message.25f1662ad310068091aec0ca959243421d47152f9bff4ca4738485453ba8711a",
 			"kind": "literal",
 			"source": "Reset Views Layout",
 			"translation": "重置视图布局"
+		},
+		{
+			"id": "message.2617e1e41a29877ace7707eb2382aced27755be61608bac937322bd44026a10f",
+			"kind": "literal",
+			"source": "Unlock with Pro",
+			"translation": "使用 Pro 解锁"
 		},
 		{
 			"id": "message.26182d2c20d591ddfda7a835fe43ad0458d987bd1bfd07b548b92f7029cbae6b",
@@ -3151,6 +3509,15 @@
 			"slots": [
 				"slot1",
 				"slot2"
+			]
+		},
+		{
+			"id": "message.26c3672968f41f78630723b04331f3352f967c677cfb979309ccd17221edb807",
+			"kind": "template",
+			"source": "You can also ${slot1} to search every GitLens setting.",
+			"translation": "你也可以${slot1}来搜索所有 GitLens 设置。",
+			"slots": [
+				"slot1"
 			]
 		},
 		{
@@ -3311,6 +3678,12 @@
 			"translation": "退出 GitKraken"
 		},
 		{
+			"id": "message.27f76e64342a22c6c9d3bbf2aa286e57b9d1f148f9bd2e5ba67821d278a93265",
+			"kind": "literal",
+			"source": "Auto Compose Commits",
+			"translation": "自动编排提交"
+		},
+		{
 			"id": "message.2802b28e760db5d0cfaf06a3363f22f6f9c7cbc90c9b77b44ce8f8e5a9eaa7d4",
 			"kind": "literal",
 			"source": "Copy Remote URL",
@@ -3391,6 +3764,12 @@
 			"translation": "指定是否在 _云工作区_ 视图中显示每个仓库的当前分支的上游状态"
 		},
 		{
+			"id": "message.28f7366320bc7f2e2f5cd1e35d5058240d4672637f834182ef3c72041805f91f",
+			"kind": "literal",
+			"source": "Authored Date — based on date setting",
+			"translation": "作者日期 - 根据日期设置"
+		},
+		{
 			"id": "message.28fbc7ef89f4540a0b39d233515f3f967517bfca3fd8364418edaaefd8780452",
 			"kind": "literal",
 			"source": "Hide Branch Comparison",
@@ -3428,6 +3807,12 @@
 			"kind": "literal",
 			"source": "Jump to Commit Graph settings",
 			"translation": "跳转到提交图设置"
+		},
+		{
+			"id": "message.297b287dfad59b16171b00d238c3e5dc4ea53a91a9211453c93178ac1e7f71bc",
+			"kind": "literal",
+			"source": "No merge base — commit history unavailable.",
+			"translation": "没有合并基准 - 无法获取提交历史。"
 		},
 		{
 			"id": "message.297caca40308bbefa07b2bac0ea2863cefcdeb55eef378228de0c223f38dcc94",
@@ -3478,6 +3863,12 @@
 			"translation": "当 Visual File History 是活动编辑器时，在其旁边打开编辑器；否则在活动编辑器组中打开"
 		},
 		{
+			"id": "message.29d83df584285962ce26c99ad79e492ff31d4110474de1382e2a1645260d4db3",
+			"kind": "literal",
+			"source": "Month, 2-digit (07)",
+			"translation": "月份，2 位数字（07）"
+		},
+		{
 			"id": "message.29e1396935758a29cb63e7c35a748f38eaba2e6d292c86ab9f24dd1546ac76f3",
 			"kind": "literal",
 			"source": "Amend Previous Commit",
@@ -3506,6 +3897,12 @@
 			"kind": "literal",
 			"source": "Aligns to the right",
 			"translation": "右对齐"
+		},
+		{
+			"id": "message.29fd6f6b3e0017c158852919e44a07c01ea9bece02f0b88e03e7bfc18263c12e",
+			"kind": "literal",
+			"source": "Explain Branch Changes",
+			"translation": "解释分支更改"
 		},
 		{
 			"id": "message.2a0547da6a123101673e9a52809d389b95b3a21856f9f46d4821e26bf2bd9e29",
@@ -3562,6 +3959,12 @@
 			"translation": "为了充分发挥 GitLens Pro 的价值，请完成此引导并访问我们的帮助中心以获取深入指南。"
 		},
 		{
+			"id": "message.2a8d0d68ddf728e321e0dd7fa0cdf2ae7a410340276bd33bf2e7c883f484c301",
+			"kind": "literal",
+			"source": "Eric Amodio",
+			"translation": "Eric Amodio"
+		},
+		{
 			"id": "message.2aaab03dc698ff98ab1a23b1399f2c823cedc65907ae12aa58399b5f3e805fe2",
 			"kind": "template",
 			"source": "${slot1} Jump to Working Changes",
@@ -3607,6 +4010,12 @@
 			"translation": "远程"
 		},
 		{
+			"id": "message.2bae9b77acbd15f8a5387b3024b88cb514552acb811e8dfabf811d324e6e8214",
+			"kind": "literal",
+			"source": "On",
+			"translation": "开启"
+		},
+		{
 			"id": "message.2bb26f866a4529f072eef55e404edf99e24d6e037ff8e159f24b5bc92b5a5fd1",
 			"kind": "literal",
 			"source": "by name, descending",
@@ -3623,6 +4032,12 @@
 			"kind": "literal",
 			"source": "Git Drop Stash...",
 			"translation": "Git 丢弃贮藏..."
+		},
+		{
+			"id": "message.2be2be81d44c3a048a2ac19f6691e1e6960b581a7d08790ebf8aa75f8401f6c9",
+			"kind": "literal",
+			"source": "#1138",
+			"translation": "#1138"
 		},
 		{
 			"id": "message.2c0df7e7f1502fe2b8fb9fc37c2579d0341446979ea19644ba60e074e2bc87c7",
@@ -3906,6 +4321,12 @@
 			"translation": "在远程上打开 (Web)"
 		},
 		{
+			"id": "message.30543bad4e0f89dcd7736fd14677f67ed35b1f78550a91d248d22eeba90dd27a",
+			"kind": "literal",
+			"source": "Launchpad organizes your pull requests into actionable groups to help you focus and keep your team unblocked.",
+			"translation": "启动台会将拉取请求整理为可操作的分组，帮助你保持专注并避免团队工作受阻。"
+		},
+		{
 			"id": "message.305ca4b427c5605d328c5e56a263734dfb5c0a9c8e0e64f70a8f79bb64b2a84c",
 			"kind": "template",
 			"source": "Open Walkthrough ${slot1}",
@@ -3977,6 +4398,12 @@
 			"kind": "literal",
 			"source": "File icons",
 			"translation": "文件图标"
+		},
+		{
+			"id": "message.313f876608ab6317e2155380e7fd0ecba552be833fcd7cd4529bfb3f27f5b00d",
+			"kind": "literal",
+			"source": "Add a Generate Commit Message (Experimental) command",
+			"translation": "添加“生成提交消息（实验性）”命令"
 		},
 		{
 			"id": "message.31614ce7679d0ba5f69767308de7b9ab63de83f62f1b37836c8f682d6c1e9e25",
@@ -4076,6 +4503,12 @@
 			]
 		},
 		{
+			"id": "message.323babc7582b442223e201fac0affac978f68a61401ccdf0ad9919379587dbfd",
+			"kind": "literal",
+			"source": "Commit Author (except you)",
+			"translation": "提交作者（你除外）"
+		},
+		{
 			"id": "message.3254415c3c8471a3c5e8d298dc65634f203631fe74ed1f55f6133af88c402a70",
 			"kind": "literal",
 			"source": "Unable to detect conflicts.",
@@ -4106,6 +4539,15 @@
 			"kind": "literal",
 			"source": "pull request",
 			"translation": "拉取请求"
+		},
+		{
+			"id": "message.32d4582789984c011d05d0c3a7d1cc33caa910f03e7f5aad94aac9b02dcf95d9",
+			"kind": "template",
+			"source": "No settings match “ ${slot1} ”.",
+			"translation": "没有与“${slot1}”匹配的设置。",
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.32de1aa62174f5c555f43bd5aa1ff21dee25246044809ae8402a86d6adce5c15",
@@ -4279,6 +4721,12 @@
 			]
 		},
 		{
+			"id": "message.34eac725b1b736871a00d4b8699365e5acf3a6066955ddaa0d0dcdb33893a42e",
+			"kind": "literal",
+			"source": "supercharge.ts",
+			"translation": "supercharge.ts"
+		},
+		{
 			"id": "message.34f6462434a1c922b89b5490976f744e94241523a4a44c599871b8be6c1a3c09",
 			"kind": "literal",
 			"source": "Specifies how the _Remotes_ view will display file icons",
@@ -4390,6 +4838,12 @@
 			"translation": "编组到 GitLens 视图"
 		},
 		{
+			"id": "message.35cff9607e1ca14c182fc0882f3607fcadd4e36f39dfab62af31a6459c00c186",
+			"kind": "literal",
+			"source": "Hour, 24-hour 2-digit (19)",
+			"translation": "小时，24 小时制 2 位数字（19）"
+		},
+		{
 			"id": "message.360f408087f9949e60020b39edb15c8369710491764b2747f6a7b55c2b0e59fb",
 			"kind": "literal",
 			"source": "Finish & Commit",
@@ -4443,6 +4897,12 @@
 			"kind": "literal",
 			"source": "Get Started with GitLens",
 			"translation": "开始使用 GitLens"
+		},
+		{
+			"id": "message.36a39557f80896c47472df397eaf8200784fcdf20ae4c5880787fd450b35671f",
+			"kind": "literal",
+			"source": "Commit Author First Name",
+			"translation": "提交作者名字"
 		},
 		{
 			"id": "message.36b98ba7051e6a216d2347bc114b166d7a20ad7b9d25755ea8636ebf99661205",
@@ -4500,6 +4960,12 @@
 			"kind": "literal",
 			"source": "Specifies whether to provide any hovers",
 			"translation": "指定是否提供任何悬停"
+		},
+		{
+			"id": "message.375e28c3b550a63a174eb11468c17dd91fcda51c14fb10cd820a879f03dc4180",
+			"kind": "literal",
+			"source": "Minute, 2-digit (18)",
+			"translation": "分钟，2 位数字（18）"
 		},
 		{
 			"id": "message.376b5bf51e884598d395a05ce7126cf22bd67718fc3fdf1105b234c6ae681f29",
@@ -4572,10 +5038,22 @@
 			"translation": "推送"
 		},
 		{
+			"id": "message.383a7f02e0e4f8f361e730fe9b5aa3db8d588d704e9d0df0c0784960627cb1df",
+			"kind": "literal",
+			"source": "Merge branch graph-perf",
+			"translation": "合并分支 graph-perf"
+		},
+		{
 			"id": "message.3842e2b42a93a0eba8c466856818e368ad8b8cf3d25f82cc92de59c5173d7659",
 			"kind": "literal",
 			"source": "Force Push",
 			"translation": "强制推送"
+		},
+		{
+			"id": "message.384481b89ea03649fbf59fad3e5f29cefd0ffb2736850e2f3ad49d7c8a5823cd",
+			"kind": "literal",
+			"source": "AI features are currently disabled — use the switch above to enable them.",
+			"translation": "AI 功能当前已禁用 - 使用上方开关启用。"
 		},
 		{
 			"id": "message.3891706f48d7eedaf41635b777098284e80ad35a9130d4bdc53a568840d97fd0",
@@ -4746,6 +5224,15 @@
 			"translation": "详情面板中的新审阅模式会通读任意提交或 WIP，并呈现带严重性标记的洞察和更改摘要，帮助你在交付前确保没有遗漏。"
 		},
 		{
+			"id": "message.3a46a0c4369cd535abc35aa92cd935617f73eb2be8d6395dd35d61a0c32ae5ab",
+			"kind": "template",
+			"source": "${slot1} need your input",
+			"translation": "${slot1} 需要你提供信息",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.3a475fd26999303067196190fbd79bd16fd8df893d2c4745c9377acc41760ab5",
 			"kind": "literal",
 			"source": "Show ghost branch / tag when hovering over or selecting a commit",
@@ -4809,6 +5296,12 @@
 			"translation": "Git 贮藏列表..."
 		},
 		{
+			"id": "message.3b18fda63da60400706eff773a55c62a83a975ea9c6c154f7f13d9178af8d2cb",
+			"kind": "literal",
+			"source": "Add a Share submenu",
+			"translation": "添加“共享”子菜单"
+		},
+		{
 			"id": "message.3b2829419c9465f1c759e8d387568ce28247288205ce8e52f340e5357c2ced18",
 			"kind": "literal",
 			"source": "Re-enable MCP",
@@ -4819,6 +5312,12 @@
 			"kind": "literal",
 			"source": "Stashes (5)",
 			"translation": "贮藏 (5)"
+		},
+		{
+			"id": "message.3b451ad63923af7afb19ef14e4d0d066616ee65bde9b7bdb480c1d5cc6c8d96d",
+			"kind": "literal",
+			"source": "Resolution",
+			"translation": "解决方案"
 		},
 		{
 			"id": "message.3b5b0ab0e9d8167fdc70b70f79ff9ab787300c73b6465aeac4da99e7ada844d3",
@@ -4833,6 +5332,12 @@
 			"translation": "将一个<branch、tag 或 ref>与另一个<branch、tag 或 ref>进行比较\n\n[比较引用...](command:gitlens.views.searchAndCompare.selectForCompare)",
 			"format": "markdown",
 			"slots": []
+		},
+		{
+			"id": "message.3bb7a0de01c25614e679cd7da601064277df7e462fab4215ca566cfb0088e913",
+			"kind": "literal",
+			"source": "Explain Commit Changes...",
+			"translation": "解释提交更改..."
 		},
 		{
 			"id": "message.3bc4c111e964f3aecbc1f27578bbcd5b7bec371ac1a9037506f8295498612350",
@@ -4854,6 +5359,12 @@
 			"slots": [
 				"slot1"
 			]
+		},
+		{
+			"id": "message.3bf8906a04c41fe07bf7ee74f2eb55a7a4478cd3a49b4354d7aaa1be215b87c1",
+			"kind": "literal",
+			"source": "Custom autolinks",
+			"translation": "自定义自动链接"
 		},
 		{
 			"id": "message.3bfafeea65e2c7db1662fff2608ba6115b10d388e802ca2960265fea0ba7d534",
@@ -4888,6 +5399,12 @@
 			"kind": "literal",
 			"source": "Close Unchanged Files",
 			"translation": "关闭未更改的文件"
+		},
+		{
+			"id": "message.3c6750d8fcc65b210cb151a86926051be2a765166067991ba4cee7eb7e748f3f",
+			"kind": "literal",
+			"source": "Reveal in Explorer View",
+			"translation": "在资源管理器视图中显示"
 		},
 		{
 			"id": "message.3c73c87f9bda84d95e4f054c3f3986c083c8671ef1d682df0e3313b867383aad",
@@ -4942,6 +5459,12 @@
 			"kind": "literal",
 			"source": "(Experimental) Specifies a limit on the number of pull requests to be queried in the _Launchpad_",
 			"translation": "（实验性）指定在 _启动台_ 中可查询的拉取请求数量上限"
+		},
+		{
+			"id": "message.3d63b4d4556b32bebaa7654ff88732d34147d18ff7771e2186c286d73f6b1dd6",
+			"kind": "literal",
+			"source": "Open Changes with Working File (Worktree)",
+			"translation": "打开与工作树文件的更改比较"
 		},
 		{
 			"id": "message.3d69049865ff0fe73abc3fbb461b9bc3a23faab446e51eb7ea08044b428ee7da",
@@ -5027,6 +5550,12 @@
 			]
 		},
 		{
+			"id": "message.3e1d5a56fc4ed43e7a39869cf18b52ac45d512d9b39ea282d14e0beba79b29ae",
+			"kind": "literal",
+			"source": "Apply Resolutions",
+			"translation": "应用解决方案"
+		},
+		{
 			"id": "message.3e2d867de7feac0c00138b7d678899ef0b315c2081225480e163893d21d74bce",
 			"kind": "literal",
 			"source": "Changes",
@@ -5037,6 +5566,12 @@
 			"kind": "literal",
 			"source": "Hide Worktrees",
 			"translation": "隐藏工作树"
+		},
+		{
+			"id": "message.3e4d90b3aacf54057ed576de423c2cfd8685cd295834867a6158cc598d3976eb",
+			"kind": "literal",
+			"source": "Recompose Commits From Here...",
+			"translation": "从此处重新编排提交..."
 		},
 		{
 			"id": "message.3e4e408f008fd0b30a1a9c2ae3cfe5458ea5d9fbfb7aa83786382423238b7047",
@@ -5181,6 +5716,12 @@
 			"translation": "打开更改 (difftool)"
 		},
 		{
+			"id": "message.3fd9bdf8be84e602de3a51d84e3a5a4caefc30652f0ccb44316202dbb7555cd1",
+			"kind": "literal",
+			"source": "Add to the Copy As submenu",
+			"translation": "添加到“复制为”子菜单"
+		},
+		{
 			"id": "message.3fe8c8c56e9a93e934bc052fef0f43c05129b85f4e824c0b133d80ebe9e1b402",
 			"kind": "template",
 			"source": "Add to the ${slot1} submenu",
@@ -5216,6 +5757,12 @@
 			"translation": "仅查看当前分支"
 		},
 		{
+			"id": "message.4044b5e827c4e700e4a193828af015715e29316807cee9d4c7523f95d146c302",
+			"kind": "literal",
+			"source": "Add an Add Co-authors command",
+			"translation": "添加“添加共同作者”命令"
+		},
+		{
 			"id": "message.405a7a364c9133b46ff286bf34cc703b50d60b5cb0b161fad988ac3427285797",
 			"kind": "literal",
 			"source": "Always selects the HEAD row",
@@ -5226,6 +5773,18 @@
 			"kind": "literal",
 			"source": "Previous Change",
 			"translation": "上一个更改"
+		},
+		{
+			"id": "message.406a1cee527355ac7e967d1b0b926063fb5f7fef2d90f65f05ad36f5a097d8be",
+			"kind": "literal",
+			"source": "Day of week, full (Wednesday)",
+			"translation": "星期，完整格式（星期三）"
+		},
+		{
+			"id": "message.407051e3e5351475ae112ca450147524d712371790debf0c164bc59f35fbad62",
+			"kind": "literal",
+			"source": "Follow-Up",
+			"translation": "后续处理"
 		},
 		{
 			"id": "message.4090a4d16de39e74902596c096b36f999070cd7952aa68670fe82f21b67f0205",
@@ -5244,6 +5803,14 @@
 			"kind": "literal",
 			"source": "Specifies the font size of the inline blame annotation",
 			"translation": "指定行内追溯注解的字体大小"
+		},
+		{
+			"id": "message.4101161eab388534090944a4875d699af4467aa45574321139774958ff19cfc0",
+			"kind": "rich",
+			"source": "- return code;",
+			"translation": "- return code;",
+			"format": "markdown",
+			"slots": []
 		},
 		{
 			"id": "message.4105d19b6dc106bdd02322054626eddb085a052f0ef85a75ad0a342f4e416998",
@@ -5325,6 +5892,12 @@
 			"kind": "literal",
 			"source": "remote branch",
 			"translation": "远程分支"
+		},
+		{
+			"id": "message.41e81dd29904c7354de5a3a55e42eb02f9800c55287f2b1d9ec9bc8f1a34d1e9",
+			"kind": "literal",
+			"source": "Needs your input",
+			"translation": "需要你提供信息"
 		},
 		{
 			"id": "message.41e9dd2f4cd685ae87d5d042b7da90252b8a185ff3addf39b7ccaaada33367f0",
@@ -5690,6 +6263,12 @@
 			"translation": "指定是否在 _搜索与比较_ 视图中显示头像图像而不是提交（或状态）图标"
 		},
 		{
+			"id": "message.4638b837cb8b3c3f84cb46e4c845807b9f3529a4ba50b62fc6400c3de2cd5aea",
+			"kind": "literal",
+			"source": "Renamed & deleted",
+			"translation": "已重命名并删除"
+		},
+		{
 			"id": "message.464c8de3a9e8786033ea03711151a1e70ae042065b566db2791d2c591ab944d6",
 			"kind": "literal",
 			"source": "Jump to Remotes view settings",
@@ -5702,12 +6281,28 @@
 			"translation": "指定 gravatar 默认（后备）图像的样式"
 		},
 		{
+			"id": "message.465e43593c41d466541d39fadfe11523ab81bdeabf368c3038662ef7414bd1b0",
+			"kind": "literal",
+			"source": "Add Copy as Patch and Share as Cloud Patch... commands",
+			"translation": "添加“复制为补丁”和“共享为云补丁...”命令"
+		},
+		{
 			"id": "message.4668da7dfb1826af7cb1b28d0631deb1ee6e2e2342dad9a6e16182613deffcde",
 			"kind": "template",
 			"source": "${slot1} Restructure changes into clean, review-ready commits and catch issues early with severity-tagged reviews you can delegate to an agent.",
 			"translation": "${slot1} 将更改重组为清晰、便于审阅的提交，并通过可委派给代理的严重性标记审阅及早发现问题。",
 			"slots": [
 				"slot1"
+			]
+		},
+		{
+			"id": "message.467cc70287f49a6099150bcddfaba76c67e810371dac4ddb1cff34f76a2f888c",
+			"kind": "template",
+			"source": "${slot1} of ${slot2} resolved",
+			"translation": "已解决 ${slot1}/${slot2}",
+			"slots": [
+				"slot1",
+				"slot2"
 			]
 		},
 		{
@@ -5854,6 +6449,12 @@
 			"translation": "在远程服务上打开该提交（如果可用）"
 		},
 		{
+			"id": "message.4856af5eaa5d2602e3a27adf2089c2fb0ca7f7c3cf450ab4bbe53b1a823e71d7",
+			"kind": "literal",
+			"source": "Symlink",
+			"translation": "符号链接"
+		},
+		{
 			"id": "message.487226f10fa0becc1cdbe1387da823e822b6e6e71d3ad3432a944e99a1de6fd2",
 			"kind": "literal",
 			"source": "gitlens.autolinks",
@@ -5876,6 +6477,12 @@
 			"kind": "literal",
 			"source": "Shown when hovering anywhere over the line",
 			"translation": "在悬停于该行任意位置时显示"
+		},
+		{
+			"id": "message.488fe200153e85adc1c2fb26257d8a29d81fdd6dd06da4fb342176133145293f",
+			"kind": "literal",
+			"source": "Aa",
+			"translation": "Aa"
 		},
 		{
 			"id": "message.48f231db7a6197aa78ad7c21e36666791b4656dd477873716429477ff10322f6",
@@ -5933,6 +6540,12 @@
 			]
 		},
 		{
+			"id": "message.499528a8d1f5fcb5721dbf3766064f84af6c937cc71d568dd2008b6f9be079a0",
+			"kind": "literal",
+			"source": "Live preview",
+			"translation": "实时预览"
+		},
+		{
 			"id": "message.49a6e8d98d5316b967ca36c2c18bb0ec667e7269be69a5b5f5a9de972c1d0c73",
 			"kind": "literal",
 			"source": "GitKraken MCP has been disabled via settings",
@@ -5984,6 +6597,12 @@
 			"translation": "新提交将添加到当前分支。"
 		},
 		{
+			"id": "message.4a33721efafa9c09b4856805a93f46bf6381069a3aeb468fa8008f0b79799038",
+			"kind": "literal",
+			"source": "Choose AI Model…",
+			"translation": "选择 AI 模型…"
+		},
+		{
 			"id": "message.4a42e8391271ace6dfae7c3b347d345a3194e06b218e884f763482aae1878612",
 			"kind": "literal",
 			"source": "Sort by Name",
@@ -5994,6 +6613,12 @@
 			"kind": "literal",
 			"source": "Show markers on the Commit Graph scrollbar",
 			"translation": "在提交图滚动条上显示标记"
+		},
+		{
+			"id": "message.4a868773f1fb4091fe9f8aad569d2ed054ae7be9a046202ee3df2c7e42f726a0",
+			"kind": "literal",
+			"source": "Hot/cold threshold (days)",
+			"translation": "冷热阈值（天）"
 		},
 		{
 			"id": "message.4a8763c5c8e6baaec9765439d48e959d3c3d14e1df9746dca1828e43f179cb79",
@@ -6041,6 +6666,12 @@
 			"kind": "literal",
 			"source": "Recompose Selected Commits (Preview)",
 			"translation": "重新编排所选提交（预览）"
+		},
+		{
+			"id": "message.4b07c8a38761095f8a45ec248504abc13ecff8ab2ed9af3c961f1f00c3929569",
+			"kind": "literal",
+			"source": "(May 6, 2016)",
+			"translation": "（2016 年 5 月 6 日）"
 		},
 		{
 			"id": "message.4b4568a8c1cb57ef2c47b533a102b3db48bcf0ce7cec51843a1b17538d7f5ca8",
@@ -6218,6 +6849,15 @@
 			"translation": "从工作区中移除..."
 		},
 		{
+			"id": "message.4cfc7bb4ca1e95027f44b93629bf743e00f650ad76d28f8c404b382aa3721892",
+			"kind": "template",
+			"source": "Check your spelling, or try a setting name like ${slot1}.",
+			"translation": "检查拼写，或尝试使用类似 ${slot1} 的设置名称。",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.4d1d2a5b295350e36e89b990ed8028a9a11824eefc3ac20f1c6e267e54f7c905",
 			"kind": "literal",
 			"source": "Specifies whether to show associated issues on branches in the _Commit Graph_. Requires a connection to a supported issue service (e.g. GitHub)",
@@ -6256,6 +6896,18 @@
 			"translation": "按作者筛选提交..."
 		},
 		{
+			"id": "message.4d9d96688d4cd5f451048e80f7e61a8df5b960bc3daf8126ca80889c7204b457",
+			"kind": "literal",
+			"source": "Both deleted",
+			"translation": "两侧均已删除"
+		},
+		{
+			"id": "message.4da2f453cb7fc0076eb321653fc5531f3134400bf1e25f1644d8555d5cee619d",
+			"kind": "literal",
+			"source": "Conflict details",
+			"translation": "冲突详情"
+		},
+		{
 			"id": "message.4db110b8d115e343b08062b8c30172a697cd64f737ebd5af3a3d306cddac3fc0",
 			"kind": "literal",
 			"source": "Welcome to GitLens Pro",
@@ -6274,6 +6926,12 @@
 			"translation": "指定 _交互式变基编辑器_ 的布局密度"
 		},
 		{
+			"id": "message.4dd30c4dcbb66e8cc453b708933a792cd9b34dcc5023e393fee823519bf4c0fa",
+			"kind": "literal",
+			"source": "Options",
+			"translation": "选项"
+		},
+		{
 			"id": "message.4dd419b944d3c4e86aea9033300cd610b7883a511678d4232b9e2173bf6cb46b",
 			"kind": "template",
 			"source": "Reactivate your Pro trial and experience all the new Pro features — free for another ${slot1}!",
@@ -6287,6 +6945,12 @@
 			"kind": "literal",
 			"source": "Show Statistics",
 			"translation": "显示统计信息"
+		},
+		{
+			"id": "message.4e22a8d58a5b88d6a78ae7c53079e46e0762fa6fdad4d2264b22b043a89d4a49",
+			"kind": "literal",
+			"source": "Get Kepler",
+			"translation": "获取 Kepler"
 		},
 		{
 			"id": "message.4e324125abda719955a9a391b6f4796e55fb6c6efff39cfe404505370a834ee2",
@@ -6332,6 +6996,15 @@
 			"kind": "literal",
 			"source": "Fetch",
 			"translation": "获取"
+		},
+		{
+			"id": "message.4edf50767c5f9ad94dde3ba8237163f1fb1cb0c363f0c57713a95fc72f6f04b1",
+			"kind": "template",
+			"source": "No settings match “ ${slot1} ”",
+			"translation": "没有与“${slot1}”匹配的设置",
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.4ee3fe608fc2879073738b95acd01731b25caf870de039cf469ed3cc334eff0f",
@@ -6390,6 +7063,15 @@
 			"translation": "按最近提交日期降序"
 		},
 		{
+			"id": "message.4f4d608e7b1b542a7405b100ada95136e7bafd110d2e94e25ea8ef5533cd4e89",
+			"kind": "template",
+			"source": "“ ${slot1} ” was renamed differently on each side",
+			"translation": "“${slot1}”在两侧被重命名为不同名称",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.4f5f5b8ec208135d2c4039d77925e6447fd5550dcde014c4947cefd01b39b2fb",
 			"kind": "literal",
 			"source": "Add gutter indicator",
@@ -6432,6 +7114,12 @@
 			"translation": "打开与指定修订比较的更改..."
 		},
 		{
+			"id": "message.501024d04724ac7c7a272c3734d97cb4f71d1f3712d7fa4596d3d3096521573c",
+			"kind": "literal",
+			"source": "Day of month (25)",
+			"translation": "月中日期（25）"
+		},
+		{
 			"id": "message.5025222334898239115ab6f52d6679fb4fda1491db8b8ffa23e747938ef6a80b",
 			"kind": "literal",
 			"source": "Cancel",
@@ -6450,6 +7138,12 @@
 			"translation": "[试用 GitLens Pro](command:gitlens.plus.signUp?%7B%22source%22%3A%22cloud-patches%22%7D)\n\n免费体验 GitLens Pro 14 天，无需信用卡。或[登录](command:gitlens.plus.login?%7B%22source%22%3A%22cloud-patches%22%7D)。",
 			"format": "markdown",
 			"slots": []
+		},
+		{
+			"id": "message.50849235a608b20642d1381f178029ccf26bf15bfb6c1d269aae44c03962e2e7",
+			"kind": "literal",
+			"source": "Settings categories",
+			"translation": "设置分类"
 		},
 		{
 			"id": "message.50983ac35acd33b7e1335aa45f102e72c83af76ee75124044129be5549784da7",
@@ -6645,6 +7339,12 @@
 			"kind": "literal",
 			"source": "Unpin this Commit Restores Automatic Following",
 			"translation": "取消固定此提交 恢复自动跟随"
+		},
+		{
+			"id": "message.52692a00295e14805095660c9e1d09ac811415462572340f03710c4f95b278f7",
+			"kind": "literal",
+			"source": "Commit Changes",
+			"translation": "提交更改"
 		},
 		{
 			"id": "message.528e90e6b47f33b59cb8e82f0db3555b3e6a6c61e5fcde2210e45a4892de1d2d",
@@ -6873,6 +7573,12 @@
 			"translation": "清除过滤器"
 		},
 		{
+			"id": "message.54ce0d9564c6bb16d1af22a750c3cbc657644d66349d41a3fe98c01651d2bd22",
+			"kind": "literal",
+			"source": "a1",
+			"translation": "a1"
+		},
+		{
 			"id": "message.54d08657d2100497f05e4e11dfbb19b7c9f43942731f90d45427d33c9ace9ebd",
 			"kind": "literal",
 			"source": "No Uncommitted Changes",
@@ -6922,6 +7628,16 @@
 			"kind": "literal",
 			"source": "Specifies whether to show the upstream status of the current branch for each repository in the _Repositories_ view",
 			"translation": "指定是否在 _仓库_ 视图中显示每个仓库的当前分支的上游状态"
+		},
+		{
+			"id": "message.5577efc650f50821b741beb66e498983fb33c8f1b1d439f71cdffe35f95646f5",
+			"kind": "template",
+			"source": "${slot1}, 9 years ago via PR #1 (May 6, 2016) ${slot2}",
+			"translation": "${slot1}，9 年前通过 PR #1（2016 年 5 月 6 日）${slot2}",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.5582651b63e6f1be3479aaa69ab4a8771f48b38adc05c8de0fb871dff1bf610a",
@@ -7033,6 +7749,12 @@
 			"translation": "（提交者）"
 		},
 		{
+			"id": "message.564f367ecca1d36b9c80410f313357e65113ed887591a671d1c1b60c439de6e1",
+			"kind": "literal",
+			"source": "Sign up and connect",
+			"translation": "注册并连接"
+		},
+		{
 			"id": "message.5654baf1c829e62d81d9d109bf7edac99e664bcedbad9a879ea83f395eee5ecb",
 			"kind": "literal",
 			"source": "Hot/cold threshold",
@@ -7136,6 +7858,12 @@
 			"translation": "显示该提交的快速文件详情（默认）"
 		},
 		{
+			"id": "message.57b7fe9015804437141e984292a5ee826b98c1b17dd74c6b988e9bb557e3a157",
+			"kind": "literal",
+			"source": "Pin this Commit\nSuspends Automatic Following",
+			"translation": "固定此提交\n暂停自动跟随"
+		},
+		{
 			"id": "message.57c04c18506887ebbd489a565493bc91807a8851f637586de538da80f9e05a58",
 			"kind": "literal",
 			"source": ">Start Work on an Issue",
@@ -7155,6 +7883,12 @@
 			"kind": "literal",
 			"source": "Rebase paused due to conflicts",
 			"translation": "变基因冲突而暂停"
+		},
+		{
+			"id": "message.5801f446807a35a62758b3c17db27212e360485a5306d48dbcc4e2b98d1ab63f",
+			"kind": "literal",
+			"source": "Hour, 12-hour (7)",
+			"translation": "小时，12 小时制（7）"
 		},
 		{
 			"id": "message.580e64fa8a9625daffffa75272a79cd11e4d08da1751d59ff8d2804026d5c522",
@@ -7229,6 +7963,12 @@
 			"translation": "迷你地图"
 		},
 		{
+			"id": "message.587cde9cff17b540b258a36cb73eb4dfad4ea85528e37b41e0216b6c87c8770f",
+			"kind": "literal",
+			"source": "Add a File Annotations submenu",
+			"translation": "添加“文件注解”子菜单"
+		},
+		{
 			"id": "message.58a2f652c92388d7be6ca9421d21c3da657e391831c6cb0f03021538796164f5",
 			"kind": "rich",
 			"source": "Specifies the format (in markdown) of hover shown over the blame information in the status bar. See [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens) in the GitLens docs",
@@ -7299,6 +8039,12 @@
 			"translation": "在详情面板中使用 AI 审阅更改"
 		},
 		{
+			"id": "message.5915d76f23aeccc6bc7175b9910fa4d1a280a057847b6a2cec220c46d2525244",
+			"kind": "literal",
+			"source": "Month, short (Jul)",
+			"translation": "月份，短格式（7 月）"
+		},
+		{
 			"id": "message.5919c7692f75629daeba84e85ac1c82683850f942d8e5fd25a64b93ef0e85a37",
 			"kind": "template",
 			"source": "Files Changed (${slot1})",
@@ -7346,6 +8092,12 @@
 			"kind": "literal",
 			"source": "Auto-Compose Commits:",
 			"translation": "自动编排提交："
+		},
+		{
+			"id": "message.59e5f79461063648d52010c5aef6c599258511861f0d0c5b98921e48ec7bb1f3",
+			"kind": "literal",
+			"source": "Add a File Annotations submenu or command",
+			"translation": "添加“文件注解”子菜单或命令"
 		},
 		{
 			"id": "message.59e65640d6da406f1c75fbf411e97881d4f71f3c9ef88734e1c490534ef2651c",
@@ -7555,6 +8307,12 @@
 			"translation": "刷新仓库访问权限"
 		},
 		{
+			"id": "message.5c1a032236aa02b0e00007f9451a65ca7132232d73b2cab99c90978ed8573026",
+			"kind": "literal",
+			"source": "Add an Open Changes with submenu",
+			"translation": "添加“打开更改方式”子菜单"
+		},
+		{
 			"id": "message.5c1eabb7de309a3878e89138972b9207501d2688b951ba07f24ba51dd3394dd4",
 			"kind": "literal",
 			"source": "Inspect View",
@@ -7582,6 +8340,12 @@
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with commits in the _Branches_ view. Requires a connection to a supported remote service (e.g. GitHub)",
 			"translation": "指定是否在 _分支_ 视图中显示与提交关联的拉取请求（如果有）。需要连接到受支持的远程服务（例如 GitHub）"
+		},
+		{
+			"id": "message.5c52094b903e57e1e10be4e27f753a7ca788495a8d9898870c08635c2add9259",
+			"kind": "literal",
+			"source": "AI model required to regenerate commit messages",
+			"translation": "重新生成提交消息需要 AI 模型"
 		},
 		{
 			"id": "message.5c71231f9789da0979314d0877ddedeb0862b5ebb5a21566f3075617b1c4dcbd",
@@ -7740,6 +8504,12 @@
 			"translation": "添加到源代码管理仓库工具栏"
 		},
 		{
+			"id": "message.5e6378016e6682318b80c436b0199cac2b4b34dc60c9476d08373f2f19669cc0",
+			"kind": "literal",
+			"source": "File mode",
+			"translation": "文件模式"
+		},
+		{
 			"id": "message.5e7d4ebf05c6b8466314c25a598ad87373f6e2ed8eeacffc4368b9cee8589c6a",
 			"kind": "template",
 			"source": "${slot1} save reviewers 10+ minutes per review",
@@ -7804,6 +8574,12 @@
 			"kind": "literal",
 			"source": "Loading Error",
 			"translation": "加载错误"
+		},
+		{
+			"id": "message.5ee87b8d42d8d63016190b7604c6437c7b9e736a781fd5693951b2e120778d93",
+			"kind": "literal",
+			"source": "Regenerating commit message…",
+			"translation": "正在重新生成提交消息…"
 		},
 		{
 			"id": "message.5f0da027366ba5b4190f68992af53da3a31915b548c06f14a02376ffd40fdca6",
@@ -7969,6 +8745,12 @@
 			"kind": "literal",
 			"source": "Comparison of the",
 			"translation": "比较"
+		},
+		{
+			"id": "message.61109b7076c077eb692c302d386534b167becabbcbeb0694470e11902ae39b44",
+			"kind": "literal",
+			"source": "Search settings",
+			"translation": "搜索设置"
 		},
 		{
 			"id": "message.611d0897d4992af79e65b346b8a912056a4f9236aaeea26be6d2b0c2aff1a4b5",
@@ -8153,6 +8935,12 @@
 			"slots": []
 		},
 		{
+			"id": "message.63e38dd515eab74a45fd145c6221dda05f9b1afa0e538e99c2ec180ff4ca7f54",
+			"kind": "literal",
+			"source": "Cache the DAG layout",
+			"translation": "缓存 DAG 布局"
+		},
+		{
 			"id": "message.641c727a366762fcb861d56659e227b5a6e6d9260a6ec4ac4269d5ad4876db82",
 			"kind": "literal",
 			"source": "Adds on-demand blame annotations for the whole file",
@@ -8239,6 +9027,12 @@
 			"translation": "设置"
 		},
 		{
+			"id": "message.64d4134f90571d81f0cc852765267f4bb01b81aaf1d158e278fd86611d34fae0",
+			"kind": "literal",
+			"source": "Save settings for",
+			"translation": "设置保存到"
+		},
+		{
 			"id": "message.65002e48dfc8463359f4fb83078e8f78d4602c56badd14b8740a17a93d9156e6",
 			"kind": "literal",
 			"source": "Review Changes (Preview)...",
@@ -8249,6 +9043,18 @@
 			"kind": "literal",
 			"source": "Show conflicts",
 			"translation": "显示冲突"
+		},
+		{
+			"id": "message.651b0467cece863e3bcba42b54a352dbe488e00e3ed2f3753127bb76ee778dea",
+			"kind": "literal",
+			"source": "Conflict type",
+			"translation": "冲突类型"
+		},
+		{
+			"id": "message.654e351a80bb1cdb45bf29fabca0b4afbd65f1baddf714693692fdc48fb3599a",
+			"kind": "literal",
+			"source": "Comparison Commits",
+			"translation": "比较提交"
 		},
 		{
 			"id": "message.6552631d4af2c559a0d3b12e4c557f798a2e08da19025d1a5e84505d05c3c0f0",
@@ -8279,6 +9085,12 @@
 			"slots": [
 				"slot1"
 			]
+		},
+		{
+			"id": "message.6562abd3dcca57fb1616c03e4b48d4d8236d900ae07dfe81fad73e25495fc611",
+			"kind": "literal",
+			"source": "Second, 2-digit (00)",
+			"translation": "秒，2 位数字（00）"
 		},
 		{
 			"id": "message.65a65cb9c33d98cde2fbcea928a969d86d92f70a138845f02e96e122535ba237",
@@ -8328,10 +9140,26 @@
 			"translation": "打开用户设置"
 		},
 		{
+			"id": "message.6610485c08e8d5ca584a46427774da31d0bd1e36c6fbc4ec0d37ee6c9e17d286",
+			"kind": "literal",
+			"source": "Text",
+			"translation": "文本"
+		},
+		{
 			"id": "message.6626c83bd5b23f515b205c848d12641509b284822cf9ce27062ce8beb6962eeb",
 			"kind": "literal",
 			"source": "Jump to Sorting settings",
 			"translation": "跳转到排序设置"
+		},
+		{
+			"id": "message.6645559ad613363122ecf86bb8a40a5b4265124567d3eca5fef78ebdb1b711f4",
+			"kind": "template",
+			"source": "${slot1} ${slot2} resolved",
+			"translation": "${slot1} ${slot2} 已解决",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.66518d61771810b835f167ef796321fbe22c0dbd202b588ebdfb87247831169c",
@@ -8397,6 +9225,12 @@
 			"kind": "literal",
 			"source": "Specifies the whether to fade out older lines",
 			"translation": "指定是否淡化较旧的行"
+		},
+		{
+			"id": "message.66d150a098acf74949ef80a2a9a6667d96ff1bd78d10b6259ce1716ae3718955",
+			"kind": "literal",
+			"source": "Authored Date (short)",
+			"translation": "作者日期（短格式）"
 		},
 		{
 			"id": "message.66e288101d4b620a11de69053d7d7a6108a13f8e72ce7c1d4f92c7477bedace2",
@@ -8482,6 +9316,12 @@
 			"translation": "选择 AI 模型"
 		},
 		{
+			"id": "message.67bf0b0c3001635ab85099ef482bd01d95cdf7e305fa4b2b9c2da8e2ff76c81f",
+			"kind": "literal",
+			"source": "No resolutions ready to apply",
+			"translation": "没有可应用的解决方案"
+		},
+		{
 			"id": "message.67c4fa44d8dc95338f9f8bb8e79f50651f98ad4021cc0a9560a4218e7aa30ba2",
 			"kind": "literal",
 			"source": "Specifies whether to provide information about the Pull Request (if any) that introduced the commit in the inline blame annotation. Requires a connection to a supported remote service (e.g. GitHub)",
@@ -8544,6 +9384,12 @@
 			"kind": "literal",
 			"source": "⚠ Worktrees are not supported by your version of Git. Please upgrade to a more recent version.",
 			"translation": "⚠ 你的 Git 版本不支持工作树。请升级到较新的版本。"
+		},
+		{
+			"id": "message.686048c1a7c98fcfd41d83c680b0cee777712be87755db4ee081cdb119b1d9c6",
+			"kind": "literal",
+			"source": "Generate Changelog...",
+			"translation": "生成变更日志..."
 		},
 		{
 			"id": "message.68678c222b831cc278bd7744a3354e408389b61251cf715a0a70f5d008486f55",
@@ -8704,6 +9550,12 @@
 			"translation": "Git 删除分支..."
 		},
 		{
+			"id": "message.6a192ee2a47b9168acd2f9360bf07796bbee86e9bd6439af2d8609070064feb6",
+			"kind": "literal",
+			"source": "5e7c190",
+			"translation": "5e7c190"
+		},
+		{
 			"id": "message.6a28d7b73b82bbe05cc0860f069b38e2caf9499e152c141dd3efd3f99ef93ddc",
 			"kind": "literal",
 			"source": "Will run",
@@ -8714,6 +9566,12 @@
 			"kind": "literal",
 			"source": "Show Revision Commit",
 			"translation": "显示修订提交"
+		},
+		{
+			"id": "message.6a47dd80876ae8cb4f9eb175bfbd4fb5ae09001823f5761cfaa7b056795fdc7f",
+			"kind": "literal",
+			"source": "Switch Model",
+			"translation": "切换模型"
 		},
 		{
 			"id": "message.6a6efaa8c2448b2acf5b4efee8309b28cab07551835c56e9b8354c9d60bec053",
@@ -8760,6 +9618,12 @@
 			"kind": "literal",
 			"source": "Specifies how the _Cloud Workspaces_ view will display branches and tags",
 			"translation": "指定 _云工作区_ 视图如何显示分支和标签"
+		},
+		{
+			"id": "message.6b128d91da2de3525ac19f9f67e9f2da702e18b6dc647c4affcfee60777edbaf",
+			"kind": "literal",
+			"source": "Fix minimap sparkline",
+			"translation": "修复迷你图折线图"
 		},
 		{
 			"id": "message.6b172eb3feccbe6a74964595f589c2278a0b19c00313aa2c31bb09eb246c4175",
@@ -8820,6 +9684,12 @@
 			"kind": "literal",
 			"source": "Specifies where the indicators of the file changes annotations will be shown",
 			"translation": "指定文件更改注解指示器的显示位置"
+		},
+		{
+			"id": "message.6b9c38dfbb3fdf4c4cb003baea44acdd3865e2d8ce686f3aa08150bd67553258",
+			"kind": "literal",
+			"source": "Recompose Selected Commits...",
+			"translation": "重新编排所选提交..."
 		},
 		{
 			"id": "message.6b9fd16e31da9e90d6025b421b3e10f91711b37e1319b4df39a2e557ba718e12",
@@ -8910,6 +9780,12 @@
 			"translation": "显示"
 		},
 		{
+			"id": "message.6d1801bb8b5742272965ed323b5a51759d73584eb4afe83d4009b9fac4debacb",
+			"kind": "literal",
+			"source": "Open in Settings UI",
+			"translation": "在设置界面中打开"
+		},
+		{
 			"id": "message.6d18b1802e7312ffc2e63473975edc29f9048afae80512ce269983d360872214",
 			"kind": "literal",
 			"source": "Specifies how the _File History_ view will display files",
@@ -8952,10 +9828,26 @@
 			"translation": "让 AI 智能重组这些提交，使消息更清晰、逻辑分组更合理。"
 		},
 		{
+			"id": "message.6d8dec50eabe4eb032b59197fd0a91a1026614de7e93ca05539a3a0d804ca993",
+			"kind": "template",
+			"source": "${slot1} matching ${slot2}",
+			"translation": "${slot1} 匹配 ${slot2}",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
+		},
+		{
 			"id": "message.6d9879ef3833b2d0980c63ed1e452d96af60c9df6bb652443eea83a87b6fc7a1",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of status icons in the _Line History_ view",
 			"translation": "指定是否在 _行历史_ 视图中显示头像图像而不是状态图标"
+		},
+		{
+			"id": "message.6db6d0d85c4244a19afc134f18743d0c36881b484542b329904c780dbe5d89c6",
+			"kind": "literal",
+			"source": "Insert token",
+			"translation": "插入令牌"
 		},
 		{
 			"id": "message.6dc1e8c67330fda034d0d9089fd7e22aa624b29b33a8e3c76ce40a1bf20efd5c",
@@ -8974,6 +9866,16 @@
 			"kind": "literal",
 			"source": "Visualizes the volume of additions and deletions per day. Computing this requires reading each commit's diff stats and can take a while on large repos.",
 			"translation": "可视化每天的新增和删除量。计算此数据需要读取每个提交的差异统计，在大型仓库中可能需要一段时间。"
+		},
+		{
+			"id": "message.6e10b50d3a64afa7e635cff69ced0fec6bfdeb1677dc50aed3b3842fb9cfd560",
+			"kind": "template",
+			"source": "Hold ${slot1} ${slot2}",
+			"translation": "按住 ${slot1} ${slot2}",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.6e116828aec39ae6dc70b0282bad8e8fef096e7a2c0db02a629457ea31eaf8ad",
@@ -9146,6 +10048,12 @@
 			"translation": "正在加载自动链接…"
 		},
 		{
+			"id": "message.6ff4168d69233677fb5ae914eae8c7e221dfe5b45f3d13d00f8eab7d6aabbfe9",
+			"kind": "literal",
+			"source": "Explain Unpushed Changes",
+			"translation": "解释未推送的更改"
+		},
+		{
 			"id": "message.6ff4e0ce8cf2c8c1f02c38e13ad027b06a6c4e69935666174655d0856b62b5d2",
 			"kind": "literal",
 			"source": "Editing",
@@ -9168,6 +10076,12 @@
 			"kind": "literal",
 			"source": "Worktrees View Options",
 			"translation": "工作树视图选项"
+		},
+		{
+			"id": "message.705f9596c67e3aa92cae77f9eafb4dd3b14e8101bcbab9c6517284b45e2088eb",
+			"kind": "literal",
+			"source": "Commit Message",
+			"translation": "提交消息"
 		},
 		{
 			"id": "message.707f31a0a3f38567fcef9bf271aa4815f00ae94913d010e4c4db854eb3916f6b",
@@ -9204,6 +10118,12 @@
 			"kind": "literal",
 			"source": "Manage Account",
 			"translation": "管理账户"
+		},
+		{
+			"id": "message.70e550e584eb18dd1c09e6dfcbd87921edc981c32b7aeb684c25fe792b07ba8c",
+			"kind": "literal",
+			"source": "Search settings (try a name like gitlens.currentLine.format)",
+			"translation": "搜索设置（可尝试输入类似 gitlens.currentLine.format 的名称）"
 		},
 		{
 			"id": "message.70f39e88e71eeae294b7bd3fe4cf6d7b30d21b6d7c5afaac1205c4fade46159c",
@@ -9442,6 +10362,12 @@
 			"kind": "literal",
 			"source": "Avoids clearing the previous blame information when changing lines to reduce status bar \"flashing\"",
 			"translation": "在切换行时避免清除之前的追溯信息，以减少状态栏“闪烁”"
+		},
+		{
+			"id": "message.7325a3aaca2f916cc1d5af2470df88bb415523059e68148b98e0fe0b61ad222d",
+			"kind": "literal",
+			"source": "Recompose Commits...",
+			"translation": "重新编排提交..."
 		},
 		{
 			"id": "message.734c47ac425fbe57510784fe352418a6894cfddfbf2b6a96f0295efbf02ed75d",
@@ -9713,6 +10639,12 @@
 			"translation": "搜索提交"
 		},
 		{
+			"id": "message.7632e9eb479cb92ccb206ac31359293afbf9fb90044f2d951f8cbfe47cc44582",
+			"kind": "literal",
+			"source": "Incoming",
+			"translation": "传入版本"
+		},
+		{
 			"id": "message.7657e66177b1ce73452db7263a83f73076f21813351c7428b87e3e035eedc667",
 			"kind": "template",
 			"source": "${slot1} ${slot2} your review",
@@ -9727,6 +10659,12 @@
 			"kind": "literal",
 			"source": "Specifies the keymap to use for GitLens shortcut keys",
 			"translation": "指定 GitLens 快捷键使用的键位映射"
+		},
+		{
+			"id": "message.766c79acdf5e342aa1006bd26ffd1cc912933ca6bf8644bf32bf03f158f767c2",
+			"kind": "literal",
+			"source": "Follow up — e.g. \"Also check for error handling\"",
+			"translation": "后续处理 - 例如“也检查一下错误处理”"
 		},
 		{
 			"id": "message.766eb6a3cf5318a0f3322d94a68d904d28d0a1958de2cd84df63ca2786ffcf7d",
@@ -9809,6 +10747,21 @@
 			"slots": [
 				"slot1",
 				"slot2"
+			]
+		},
+		{
+			"id": "message.7744f4a97ce110471f373c4201e00c10ad05b9c25a14ba5d11ab91c6f68ea9b2",
+			"kind": "literal",
+			"source": "PR #1",
+			"translation": "PR #1"
+		},
+		{
+			"id": "message.774b1f082f4d6c83f6795fb5b593d8c9c929902177db4a10a9beef03c6cb0015",
+			"kind": "template",
+			"source": "Add ${slot1} to the URL so the reference value is linked.",
+			"translation": "将 ${slot1} 添加到 URL，以便为引用值生成链接。",
+			"slots": [
+				"slot1"
 			]
 		},
 		{
@@ -9940,6 +10893,12 @@
 			"slots": []
 		},
 		{
+			"id": "message.787cb447001e180d13549e60af8e1b40177ba1dfa90260915b7a1e345ea74c8e",
+			"kind": "literal",
+			"source": "UTC offset (+01:00)",
+			"translation": "UTC 偏移量（+01:00）"
+		},
+		{
 			"id": "message.7886383d9dd6c400922fac7492041cccea49e074dbc3339d265e396c8ac1b2e1",
 			"kind": "literal",
 			"source": "Apply Changes",
@@ -10036,6 +10995,12 @@
 			"translation": "跳转到工作树视图设置"
 		},
 		{
+			"id": "message.794706ca8f5c7dc833c973bc017bde476c4831b0b03f3dd61fa84a7a4562e59f",
+			"kind": "literal",
+			"source": "Explain Working Changes...",
+			"translation": "解释工作树更改..."
+		},
+		{
 			"id": "message.795b5ad9069dec4e216e284cf0c7282274c2c9fa0fa5ad042bc7aaf0eee9ecef",
 			"kind": "literal",
 			"source": "Last Prompt",
@@ -10061,6 +11026,12 @@
 			"slots": [
 				"slot1"
 			]
+		},
+		{
+			"id": "message.79bc19ae7fbb860adbb28264df823cf11776b7f37c3a069851c96b40a1e028cb",
+			"kind": "literal",
+			"source": "Re-enable GitKraken MCP",
+			"translation": "重新启用 GitKraken MCP"
 		},
 		{
 			"id": "message.79bec0a085c286748ef1a9b8df88a5cae0ca8848576e24e64d39b96a90d53d4e",
@@ -10119,6 +11090,12 @@
 			"slots": [
 				"slot1"
 			]
+		},
+		{
+			"id": "message.7aff93342756f6c256058d5cb8dd1123933a87c1a7e0d0b838618d993c366ad8",
+			"kind": "literal",
+			"source": "AM / PM",
+			"translation": "AM / PM"
 		},
 		{
 			"id": "message.7b2ba64a5928e0391349a96e558ca98843708782166c7d993c2659c84ad31b16",
@@ -10253,6 +11230,12 @@
 			"translation": "清除已审阅文件"
 		},
 		{
+			"id": "message.7cd7e63bd33b03db55d9a8f80031a01d4c2af6d6a25e4b9e72ba4e0e67a45f9b",
+			"kind": "literal",
+			"source": "Toggle File Heatmap command",
+			"translation": "“切换文件热度图”命令"
+		},
+		{
 			"id": "message.7cdaa08f44833533c771c880f1b9bf8d77f7a796cfb994957045836f05aaa98a",
 			"kind": "literal",
 			"source": "Paste Copied Changes (Patch)",
@@ -10263,6 +11246,12 @@
 			"kind": "literal",
 			"source": "Containers scope",
 			"translation": "容器范围"
+		},
+		{
+			"id": "message.7ce2e1029e46d2a2bb6d811d152356b16d9afcc01ce26c2055734cc19ee9c90b",
+			"kind": "literal",
+			"source": "Toggle File Changes command",
+			"translation": "“切换文件更改”命令"
 		},
 		{
 			"id": "message.7cfddf6bb85c15d0bc30afec735e103ea24f994418d82ea7fea4f22529b3609f",
@@ -10393,6 +11382,12 @@
 			"translation": "注解格式"
 		},
 		{
+			"id": "message.7e3deb5bc32ee005bf262941def191e6e58fca48fc9d013684bfb963e39259c1",
+			"kind": "literal",
+			"source": "Use Esc key to dismiss the active file annotations",
+			"translation": "使用 Esc 键关闭活动的文件注解"
+		},
+		{
 			"id": "message.7e53df1c4c82728ff248a921bfbb58b8ec3da27fd6613b64ffa622fb80672a23",
 			"kind": "literal",
 			"source": "Remote Branches",
@@ -10459,6 +11454,15 @@
 			"kind": "literal",
 			"source": "Toggle Line Blame",
 			"translation": "切换行追溯"
+		},
+		{
+			"id": "message.7f21c463eb5e00e54400d29b6dfd81e5f49a35e2d9ffdcb2bff340719269131d",
+			"kind": "template",
+			"source": "v ${slot1}",
+			"translation": "v${slot1}",
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.7f581e5346c094dd319c738f37dd4a80ff47a567597c5180276a94164fc7e6f1",
@@ -10650,6 +11654,12 @@
 			"kind": "literal",
 			"source": "Show Conflicts",
 			"translation": "显示冲突"
+		},
+		{
+			"id": "message.81d3f511c3cfe80b6ad253b7ce9009559e9f24e567cd0ca229a2b6fa332e7516",
+			"kind": "literal",
+			"source": "GitLens helps you understand and review agent-generated work inside your IDE. Kepler, GitKraken's Agentic Development Environment (ADE), gives you a dedicated workspace to coordinate AI agents, organize Tasks, and manage complex development workflows from one place.",
+			"translation": "GitLens 可帮助你在 IDE 中理解和审阅代理生成的工作。GitKraken 的代理式开发环境（ADE）Kepler 提供专用工作区，让你可以在一处协调 AI 代理、组织任务并管理复杂的开发工作流。"
 		},
 		{
 			"id": "message.821af4147f38550155c72eb14c2472032d1e7f74fefdf3a0159cd2625feb7a3d",
@@ -10976,6 +11986,15 @@
 			"translation": "在新窗口中打开仓库"
 		},
 		{
+			"id": "message.862baff49daca012485b1633ca3414246107497954399f12a10c4459834967df",
+			"kind": "template",
+			"source": "Matches prefixes that are followed by a reference value within commit messages. The URL must contain a ${slot1} for the reference value to be included in the link.",
+			"translation": "匹配提交消息中后跟引用值的前缀。URL 必须包含 ${slot1}，才能将引用值包含在链接中。",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.86320e194033d6cf20993452cdda267285f5e6ff7caf83b5aade785d11af1a9b",
 			"kind": "template",
 			"source": "After continuing, you will have ${slot1} to preview ${slot2} privately hosted repos. ${slot3} For full access to all GitLens Pro features, ${slot4} — no credit card required.",
@@ -11005,6 +12024,12 @@
 			"translation": "隐藏标签视图"
 		},
 		{
+			"id": "message.868806bd9c6e26e4de912932d27ae68fccc41b63506cd444556525877bb8ba52",
+			"kind": "literal",
+			"source": "to Resume Dragging",
+			"translation": "以继续拖动"
+		},
+		{
 			"id": "message.86a1be553cccdaf1db0eeccc2aa9e6c11432938155e7222ba48b7a061ab7b081",
 			"kind": "literal",
 			"source": "Make some working directory changes and Reload or come back to this view to see how it works.",
@@ -11027,6 +12052,12 @@
 				"slot3",
 				"slot4"
 			]
+		},
+		{
+			"id": "message.86d9d00966e4991352a24bf98be10d47cf147ce4e4becc1c9ff5db44cec1d1c6",
+			"kind": "literal",
+			"source": "Automatically show the details panel to the right or below the Commit Graph based on the available width",
+			"translation": "根据可用宽度，自动在提交图右侧或下方显示详情面板"
 		},
 		{
 			"id": "message.86eb418cf7bc3c13fdbf363829838a8b184569d77d836bbb2789254e2f465d33",
@@ -11111,6 +12142,12 @@
 			"translation": "指定行内追溯注解的字体样式"
 		},
 		{
+			"id": "message.8877176ef0f1bdd4d902243fcd714e28453809d267184a61655923527fb0a138",
+			"kind": "literal",
+			"source": "Open in the merge editor",
+			"translation": "在合并编辑器中打开"
+		},
+		{
 			"id": "message.889976d869dc859dd026e23431559688a59d0734c674677c0c4a738c0f2e87da",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images in the file blame annotations",
@@ -11185,6 +12222,12 @@
 			"translation": "没有提交"
 		},
 		{
+			"id": "message.898fc83fa30703e3941d7b090533e7ef75bb5795249f6ce95d17a7c4097d902d",
+			"kind": "literal",
+			"source": "Resolve Conflicts...",
+			"translation": "解决冲突..."
+		},
+		{
 			"id": "message.89b73bb5b141e36411b7e15519cbd359036bc5c919288d4b951c88c80ecde0a1",
 			"kind": "literal",
 			"source": "Specifies how the _Remotes_ view will display files",
@@ -11255,6 +12298,12 @@
 			"kind": "literal",
 			"source": "This commit is not reachable from any branch or tag",
 			"translation": "无法从任何分支或标签到达此提交"
+		},
+		{
+			"id": "message.8a4fb705a105e6f28c593e663213c57b3f3f72f317dc921aa5e1d48de5f2673d",
+			"kind": "literal",
+			"source": "Hour, 12-hour 2-digit (07)",
+			"translation": "小时，12 小时制 2 位数字（07）"
 		},
 		{
 			"id": "message.8a6967555d8effc441f053972a7286d11769c02c60c1329095fa95f14ff96579",
@@ -11344,6 +12393,14 @@
 			"translation": "关闭欢迎页"
 		},
 		{
+			"id": "message.8afdc7221236bae493399a5282bbb37a745617fe8feac7128ccf8d978c44c109",
+			"kind": "rich",
+			"source": "Sorts working changes by stage — staged, then mixed, then unstaged — ordering within each stage by the `scm.defaultViewSortKey` setting",
+			"translation": "按阶段对工作树更改排序：已暂存、混合、未暂存；每个阶段内按照 `scm.defaultViewSortKey` 设置排序",
+			"format": "markdown",
+			"slots": []
+		},
+		{
 			"id": "message.8b097d03dfc458236d14ff037478fcc83888a5e36a3d54be25deeb6c6b43b717",
 			"kind": "template",
 			"source": "${slot1} Message copied to the clipboard",
@@ -11392,6 +12449,12 @@
 			"slots": [
 				"slot1"
 			]
+		},
+		{
+			"id": "message.8b8ed9d3693f57b7c75186cfd22ec6b0455f2599ba2d92a38eec31b3c9f6db15",
+			"kind": "literal",
+			"source": "Commit or Authored Date — based on date setting",
+			"translation": "提交日期或作者日期 - 根据日期设置"
 		},
 		{
 			"id": "message.8b9198eb94a3853b89f3c28027a30c21a1d97f8c3f454874b542ba65ea804da9",
@@ -11506,6 +12569,18 @@
 			"translation": "提交树图"
 		},
 		{
+			"id": "message.8d5f2a26193899a47bcd4031d6a47fe269a6dc3e6cb37d9e0f24905704dbce19",
+			"kind": "literal",
+			"source": "Launchpad — connect an integration to see pull requests",
+			"translation": "启动台 - 连接集成以查看拉取请求"
+		},
+		{
+			"id": "message.8d71fb87df7e8b61e04b2891747ce7ebecfbd4c2b410a25f8b70d71b7f8e2fbf",
+			"kind": "literal",
+			"source": "Pull Request State (open, merged, closed)",
+			"translation": "拉取请求状态（打开、已合并、已关闭）"
+		},
+		{
 			"id": "message.8d73b41b9f93303da065f39fa1c7318a7a26af7bae3fe83f9506f4ffb718e83e",
 			"kind": "literal",
 			"source": "Open All Changes with Working Tree, Individually",
@@ -11545,6 +12620,12 @@
 			"translation": "在提交图中打开分支"
 		},
 		{
+			"id": "message.8df2d4f9fa633f510389eea06d884f94cbaae37f08a06b1c15b6e1a53d6e8b53",
+			"kind": "literal",
+			"source": "Day of week, short (Wed)",
+			"translation": "星期，短格式（周三）"
+		},
+		{
 			"id": "message.8dfe6ec667e2457925699f21e0fd9da23c0f89d3b6dd8eac30eefae88b78c52d",
 			"kind": "literal",
 			"source": "Added by Incoming",
@@ -11555,6 +12636,12 @@
 			"kind": "literal",
 			"source": "Streamline Workflow with the Home View",
 			"translation": "通过主页视图简化工作流"
+		},
+		{
+			"id": "message.8e328e3dd2f51f2fcf7901d3d60d45fd50436455744277ea20644fe457018667",
+			"kind": "literal",
+			"source": "Kept current",
+			"translation": "已保留当前版本"
 		},
 		{
 			"id": "message.8e33b8a7d7e8f7d9d6020f214cde57f75ff2fef44f8c2617a49b09ff9e48d401",
@@ -11581,6 +12668,12 @@
 			"translation": "加入 #gitlens 频道"
 		},
 		{
+			"id": "message.8e5b0afe28e15ccddc448b58922030bc104018c99fe3a205cf1b033f0bdf8dd4",
+			"kind": "literal",
+			"source": "Commit Author Last Name",
+			"translation": "提交作者姓氏"
+		},
+		{
 			"id": "message.8e64ef2a4dedb44213b1aebc0b4d332e5101a4e8a69a9c385ade99bc612ff546",
 			"kind": "literal",
 			"source": "Graph",
@@ -11605,6 +12698,12 @@
 			"kind": "literal",
 			"source": "Connect Remote Integration",
 			"translation": "连接远程集成"
+		},
+		{
+			"id": "message.8ee6220fd99e9381821f5b701dec0da911c3ce6771b5b43bd538e7ef6191679f",
+			"kind": "literal",
+			"source": "Commit Author E-mail",
+			"translation": "提交作者电子邮件"
 		},
 		{
 			"id": "message.8f07a73e42ee4faf7ff0fb58479744caf3bd6d85e5e6d9c8eb9b10424aaa808c",
@@ -11773,6 +12872,15 @@
 			]
 		},
 		{
+			"id": "message.90cf24533c90e78501f362411f71f582cd8e6f64a4960cc7bc6b7ae57bb5702b",
+			"kind": "template",
+			"source": "Conflict · ${slot1}",
+			"translation": "冲突 · ${slot1}",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.90ef2083f28025e94dc625998c76564793a52ff05da90dd929f5d865e78b5e72",
 			"kind": "literal",
 			"source": "Adds a heatmap indicator on the right edge of the file blame annotations",
@@ -11783,6 +12891,12 @@
 			"kind": "literal",
 			"source": "End of selected scope",
 			"translation": "所选范围结束"
+		},
+		{
+			"id": "message.9107da9380c19d1b1976d550107dfbe8595ad8f3c4e16ac82b11befd4cc25e2b",
+			"kind": "literal",
+			"source": "Case-sensitive",
+			"translation": "区分大小写"
 		},
 		{
 			"id": "message.910cd453c9de0756b1028e7804c7546cf0d86b2ce2483f005e958a9ae67a335f",
@@ -12071,6 +13185,21 @@
 			"translation": "提交前可以先审查"
 		},
 		{
+			"id": "message.94e78198f2a1960b3cc00a7311000068d2b4b7ec8d47bdee84617678e224fd2c",
+			"kind": "literal",
+			"source": "Take your agent workflows further",
+			"translation": "进一步提升代理工作流"
+		},
+		{
+			"id": "message.951eb011f46cd16f92cc498391f2e9ce2f477047af235dc0a68a38235662db8e",
+			"kind": "template",
+			"source": "Installed ${slot1}",
+			"translation": "已安装 ${slot1}",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.95210315c0db68b348823ea863724bd1eb121f3bdc40bee58d7b7d60bb07ec1f",
 			"kind": "literal",
 			"source": "Specifies the command to be executed when the blame status bar item is clicked",
@@ -12251,6 +13380,12 @@
 			"translation": "gitlens.fileAnnotations"
 		},
 		{
+			"id": "message.97327b6c0fc7e4336037a7593c02dde25df4b9f71076ebe5689c0b54c26d992d",
+			"kind": "literal",
+			"source": "Day of month, 2-digit (25)",
+			"translation": "月中日期，2 位数字（25）"
+		},
+		{
 			"id": "message.97377ede62efa1c4e390f22d99cc317b9c0562ddf49436166cbc3a7a653c5bc7",
 			"kind": "literal",
 			"source": "Working changes have changed since this plan was generated.",
@@ -12295,6 +13430,12 @@
 			"translation": "基准"
 		},
 		{
+			"id": "message.97ad9e35c6ca4dd8a5913a3405d58b644e04ea1f9e2f1eca08aacc657e3b961d",
+			"kind": "literal",
+			"source": "Create",
+			"translation": "创建"
+		},
+		{
 			"id": "message.97bcaa3018f8ef7fa7ec15dadbc90f0c072c382dc5f9d41bda0c285c877fb7f0",
 			"kind": "template",
 			"source": "${slot1} is behind ${slot2}",
@@ -12335,6 +13476,12 @@
 			"kind": "literal",
 			"source": "Inspect",
 			"translation": "检查"
+		},
+		{
+			"id": "message.983e0ae91a9f2414472035d4dc4370d1a29e880aff331d46c72ed44060f8b879",
+			"kind": "literal",
+			"source": "Both renamed",
+			"translation": "两侧均已重命名"
 		},
 		{
 			"id": "message.984544c197e9b15aff222fd147d2cac68b508a295aeda28a416ad67e6afbbb29",
@@ -12716,6 +13863,15 @@
 			]
 		},
 		{
+			"id": "message.9bce040c7df9c9d646ba898ce0ff96eb140c7c90cfec8a10d96bc96b412527cb",
+			"kind": "template",
+			"source": "Commits will be signed using ${slot1}",
+			"translation": "将使用 ${slot1} 签名提交",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.9c0b223f731b377a9afc9e0c9124c7d822d7587176baa7985e05e79243ec7688",
 			"kind": "literal",
 			"source": "Specifies whether to reverse the minimap orientation in the _Commit Graph_ so that older commits appear on the left and newer commits on the right",
@@ -12762,6 +13918,12 @@
 			"translation": "已修改（双方）"
 		},
 		{
+			"id": "message.9ca96d756d94255fb8d9caadc6472f13def4b025c904e1d6893ec1292e049824",
+			"kind": "literal",
+			"source": "Added (current)",
+			"translation": "已添加（当前）"
+		},
+		{
 			"id": "message.9cb51cdb71e7e52356fe5351ddf4f2fbfa1fe181919c9b0fd321113ae242e7e1",
 			"kind": "literal",
 			"source": "Idle",
@@ -12780,10 +13942,22 @@
 			"translation": "启用调试（跟踪）日志"
 		},
 		{
+			"id": "message.9cd1dcb53ed82a7aee7fa98004a3c1a73d816253a75ef4654e7edb3ee30e782f",
+			"kind": "literal",
+			"source": "Focus on Branch",
+			"translation": "聚焦分支"
+		},
+		{
 			"id": "message.9ce8ae22668909f4c783335fdc52c2e9ff09d0a277fdb7776ba6d36a33ed3ea8",
 			"kind": "literal",
 			"source": "Specifies whether to reveal tags in the _Tags_ view, otherwise they revealed in the _Repositories_ view",
 			"translation": "指定是否在 _标签_ 视图中显示标签，否则会在 _仓库_ 视图中显示它们"
+		},
+		{
+			"id": "message.9d103d3e47507964e8b0cccfc3925d5fcd897c6841c426e52910936efa97f4dc",
+			"kind": "literal",
+			"source": "Hovers are off",
+			"translation": "悬停提示已关闭"
 		},
 		{
 			"id": "message.9d1f3dad5265176a2e5edb2e76b130d81909ffca57155c3a55d9460d19d07354",
@@ -12828,6 +14002,12 @@
 			"kind": "literal",
 			"source": "Show Repositories View",
 			"translation": "显示仓库视图"
+		},
+		{
+			"id": "message.9d6e3113cfa0712c9e32572c0de71c243a63b16ab66155800c69d8b4b3054eaf",
+			"kind": "literal",
+			"source": "(Experimental) Specifies whether to show the home header (account and integrations status) at the top of the _Commit Graph_",
+			"translation": "（实验性）指定是否在 _提交图_ 顶部显示主页标头（账户和集成状态）"
 		},
 		{
 			"id": "message.9d7de72b39c99acd11096f679e23b6565655144bf3f8c7a11607bbee16609f8b",
@@ -12927,6 +14107,18 @@
 			"slots": [
 				"slot1"
 			]
+		},
+		{
+			"id": "message.9e6679a77a95716d0f033e9c9ac57d5e0989939057484dbcdde36f0bb5e86bfd",
+			"kind": "literal",
+			"source": "Commit or Authored Date — absolute",
+			"translation": "提交日期或作者日期 - 绝对时间"
+		},
+		{
+			"id": "message.9e66defc5a75944a7b868bf136b708fd110dee659917426e8792f8c70a087f6d",
+			"kind": "literal",
+			"source": "Commit Date — based on date setting",
+			"translation": "提交日期 - 根据日期设置"
 		},
 		{
 			"id": "message.9e7336590ee61b36f90d3c0f23a418d874766d0323742448d8cdd57d3653ee79",
@@ -13121,6 +14313,12 @@
 			"translation": "显示标签"
 		},
 		{
+			"id": "message.a0a5f1c7a09f3cd18939ea35c3d56f1b2b6e337047bb28d38045b408e4f61cca",
+			"kind": "literal",
+			"source": "Start scrolling at this many rows from the edge",
+			"translation": "距离边缘剩余这么多行时开始滚动加载"
+		},
+		{
 			"id": "message.a0ad57c32cf0c69374306eace2451b38bd6550eb02ba6f2854b85ea274d9e366",
 			"kind": "literal",
 			"source": "Group Launchpad View",
@@ -13207,6 +14405,12 @@
 			"translation": "为私有托管的仓库解锁此功能："
 		},
 		{
+			"id": "message.a1b9edaf6bd6ac0e52319b329d53bfd5c4630ebeb5eae286cd2b25ccce655bd8",
+			"kind": "literal",
+			"source": "Renamed & modified",
+			"translation": "已重命名并修改"
+		},
+		{
 			"id": "message.a1be84d425286b433a04f8807fd3167cfe5f9b809d2f0b3ac7adee2dbb9a45ff",
 			"kind": "literal",
 			"source": "Sort by Discovery Time",
@@ -13288,6 +14492,12 @@
 			"translation": "指定文档在编辑后且仍未保存时允许重新执行追溯的最大大小（行数）。使用 0 表示不设上限"
 		},
 		{
+			"id": "message.a2ca7a38e6ae953f2a061cc4a81c75728c3860fa5a85c4a637027654faff9926",
+			"kind": "literal",
+			"source": "Commit or Authored Date — relative",
+			"translation": "提交日期或作者日期 - 相对时间"
+		},
+		{
 			"id": "message.a2fd909b835a142f5de3fab867077074f361d2da8183d5a85ad03517fc51a421",
 			"kind": "literal",
 			"source": "Create Pull Request",
@@ -13362,6 +14572,12 @@
 			"translation": "按最近提交日期升序"
 		},
 		{
+			"id": "message.a3d4582d987e61434108c88b5777e0e78505b6cd8e282bcf0a578c5a8aa1abb0",
+			"kind": "literal",
+			"source": "Compare the",
+			"translation": "比较"
+		},
+		{
 			"id": "message.a3ea22430ed3845ca25b10f0f3a324e3b3aebb24dc021d39ac2ea2b751e86bb7",
 			"kind": "literal",
 			"source": "Toggles file blame annotations",
@@ -13401,6 +14617,15 @@
 			"kind": "literal",
 			"source": "Specifies whether to provide a heatmap indicator in the file blame annotations",
 			"translation": "指定是否在文件追溯注解中提供热度图指示器"
+		},
+		{
+			"id": "message.a499b2f1b4bedcf63fe785db7b43ab89c769bd290044cfc40ef0db186aa3fcf4",
+			"kind": "template",
+			"source": "${slot1} about formatting options",
+			"translation": "${slot1}以了解格式选项",
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.a4c81c7aa74c2151457aadd5db97f377bdac5776807c07e679bc34edf4ec95b4",
@@ -13559,6 +14784,12 @@
 			]
 		},
 		{
+			"id": "message.a6497e3c895ad566ec9f0573a638f289a169306ceab812a71963581dae4a220f",
+			"kind": "literal",
+			"source": "Off",
+			"translation": "关闭"
+		},
+		{
 			"id": "message.a6689afaab2112a44797c8805a3425ab9026b732f05fde5fa504b95f78b38948",
 			"kind": "template",
 			"source": "Connect to ${slot1}${slot2}",
@@ -13603,6 +14834,12 @@
 			"kind": "literal",
 			"source": "Specifies debug mode",
 			"translation": "指定调试模式"
+		},
+		{
+			"id": "message.a6c8b638da336b148df06d63719908f61d49cecbfd769c8994f2d2965f0a730f",
+			"kind": "literal",
+			"source": "Submodule",
+			"translation": "子模块"
 		},
 		{
 			"id": "message.a6e72f77ec3b23eb22e403f0684477eaa598b3cc69279732644638976677fdda",
@@ -13777,6 +15014,15 @@
 			"translation": "配置自动链接"
 		},
 		{
+			"id": "message.a922c62f72a60089e65de333a29adefabf7c7d6281cc7c6beb01e243671b58e1",
+			"kind": "template",
+			"source": "Tip — run ${slot1} to override this for the current window.",
+			"translation": "提示 - 运行 ${slot1} 可为当前窗口覆盖此设置。",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.a943e2c128220b68b40b76c130db32c45b0a50e028d9ff314b19d79b9b3e58d9",
 			"kind": "literal",
 			"source": "lines",
@@ -13832,6 +15078,12 @@
 			"slots": [
 				"slot1"
 			]
+		},
+		{
+			"id": "message.a9c336d5073b2e55f3c80c223e93c3564ef488d735d536b6f90c93d5a545c322",
+			"kind": "literal",
+			"source": "Take Current",
+			"translation": "采用当前版本"
 		},
 		{
 			"id": "message.a9c51154e0ecfab0a79d9322001a516cb2572a35ac54465b4890333407fd5a3b",
@@ -13911,6 +15163,12 @@
 			"kind": "literal",
 			"source": "Warning (Non-Critical)",
 			"translation": "警告（非严重）"
+		},
+		{
+			"id": "message.aa7e6aa0c50179f46e6efbd56277a02f02b10fb66606559377148844ea0ce169",
+			"kind": "literal",
+			"source": "Commit SHA",
+			"translation": "提交 SHA"
 		},
 		{
 			"id": "message.aa85f0464d5bca4758c399b70db1faceb9ad5b736a6d3b88ef64a6be8f4695f6",
@@ -14005,6 +15263,15 @@
 			"translation": "解释更改（预览）"
 		},
 		{
+			"id": "message.abb94410b8c0b8ba595b8a5475f6a46779244743d6d581252f282f43be85fa57",
+			"kind": "template",
+			"source": "No commits ahead of ${slot1}, showing working tree changes",
+			"translation": "没有领先 ${slot1} 的提交，正在显示工作树更改",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.abbec086bf350551432bb2c5aeec9b9bee4664ef0b4efbfc0ae56505bcf8cfb5",
 			"kind": "literal",
 			"source": "Search & Compare view",
@@ -14057,6 +15324,12 @@
 			"kind": "literal",
 			"source": "Compare with Working Tree",
 			"translation": "与工作区比较"
+		},
+		{
+			"id": "message.ac6d66027ea427a6f2157246a83462cd9bd3767069269d66b409106e55b65d6d",
+			"kind": "literal",
+			"source": "Couldn’t load the current model",
+			"translation": "无法加载当前模型"
 		},
 		{
 			"id": "message.ac982dc740997332b5ff1bb3e740ee1aa2efbfbafd0704712ad8ac6526469804",
@@ -14299,10 +15572,22 @@
 			]
 		},
 		{
+			"id": "message.af7ebb8527a60c44463229e92d9abdf2127f5722ba3d9905c3ccca02f6488358",
+			"kind": "literal",
+			"source": "https://example.com/TICKET?q=&lt;num&gt;",
+			"translation": "https://example.com/TICKET?q=&lt;num&gt;"
+		},
+		{
 			"id": "message.af83af14ae0b4cf69ecb833299bc6ecea93f7472ced5b3e968c66db526c2cf68",
 			"kind": "literal",
 			"source": "Compare Selected Commits",
 			"translation": "比较所选提交"
+		},
+		{
+			"id": "message.af920f8bf7e95bdeb8c700934cb7afd8311ce4e5ef3be828d802bf2d9db4e200",
+			"kind": "literal",
+			"source": "Specifies how working (uncommitted) changes are sorted in the _Commit Graph_'s working changes (WIP) details",
+			"translation": "指定 _提交图_ 工作树更改（WIP）详情中未提交更改的排序方式"
 		},
 		{
 			"id": "message.afa2c4cebea2dda908368311fee130707d00ac3956d6f2e1b34ce6b5788ab53b",
@@ -14408,6 +15693,12 @@
 			"translation": "日期格式"
 		},
 		{
+			"id": "message.b0f930749f7e7fb8181905bfb42368ef66f2e80f13560bbfcebda2d4490ba737",
+			"kind": "literal",
+			"source": "Eric Amodio, 3 minutes ago",
+			"translation": "Eric Amodio，3 分钟前"
+		},
+		{
 			"id": "message.b13036a14d663a2b2ac8909505b37216c69b26aacf80d9663405d01b27f34b79",
 			"kind": "template",
 			"source": "${slot1} see how a file has evolved with a graph of what changed and when",
@@ -14492,6 +15783,12 @@
 			"translation": "工作树视图"
 		},
 		{
+			"id": "message.b239028255bff1d3175da4d88b0567c4ce2b3a88a27865246e44cf021776d845",
+			"kind": "literal",
+			"source": "Open Unstaged Changes",
+			"translation": "打开未暂存更改"
+		},
+		{
 			"id": "message.b250e2847fa1fc4cc0635896f9a2a2bf58fb37f5527b7485d3c8e3e4bd24c8f5",
 			"kind": "literal",
 			"source": "Open Keyboard Shortcuts",
@@ -14571,6 +15868,12 @@
 			"translation": "Git 删除工作树..."
 		},
 		{
+			"id": "message.b346ebc7923b9b677880fe8bb7ccf016d7bb9fb732f9ff582a2297d14b165b58",
+			"kind": "literal",
+			"source": "Re-enable",
+			"translation": "重新启用"
+		},
+		{
 			"id": "message.b34e911d5e78d9ec80ea786c7e53f6ea9b2040775e15d29200cf92354433175a",
 			"kind": "literal",
 			"source": "Create Commits",
@@ -14608,6 +15911,12 @@
 			"slots": []
 		},
 		{
+			"id": "message.b38780362fa81308312db599350f92dc690afffa06acb37d5c6f629ad5ed3eb0",
+			"kind": "literal",
+			"source": "Add a Stash Changes command",
+			"translation": "添加“贮藏更改”命令"
+		},
+		{
 			"id": "message.b3a7564464b7b808d390b29308ff7b89b86ff79a2948e7176075dae0ac40e1fe",
 			"kind": "literal",
 			"source": "Start Review on a PR…",
@@ -14630,6 +15939,12 @@
 			"kind": "literal",
 			"source": "Change Upstream...",
 			"translation": "更改上游..."
+		},
+		{
+			"id": "message.b3d644ff53e75b848ca8d2193b70e2ff16b3ea85e7d55264e117357cc33ec37f",
+			"kind": "literal",
+			"source": "Month, full (July)",
+			"translation": "月份，完整格式（七月）"
 		},
 		{
 			"id": "message.b41b24b6e71424d0f1c91b900ddba0d675226aa565515c9de542ec5a4a6d02f4",
@@ -14772,6 +16087,18 @@
 			"slots": []
 		},
 		{
+			"id": "message.b6512cda4d6768d60e61b3d2203ff5446cf4f12d3ab1168a1979d9a3acb9e510",
+			"kind": "literal",
+			"source": "Review changes in the details panel",
+			"translation": "在详情面板中审阅更改"
+		},
+		{
+			"id": "message.b65b02d37af597ab9a9ad3c48d498edd7c3be4f2891f7fc21664d48ac3767b89",
+			"kind": "literal",
+			"source": "Why this resolution",
+			"translation": "采用此解决方案的原因"
+		},
+		{
 			"id": "message.b664f43412bd06f9ca5230648316e374d8672f15f16078f91c928ed59ccea7c3",
 			"kind": "literal",
 			"source": "Detect potential conflicts before starting your rebase and take action to resolve them.",
@@ -14788,6 +16115,12 @@
 			"kind": "literal",
 			"source": "Interactive Rebase Editor",
 			"translation": "交互式变基编辑器"
+		},
+		{
+			"id": "message.b6b4bd7a673e7c6f82029e2eb21decfc73e7ab32f6294c70db66a368c0e7113d",
+			"kind": "literal",
+			"source": "Conflict Details",
+			"translation": "冲突详情"
 		},
 		{
 			"id": "message.b6b82bcb126c87c8cac484256e96a9d2ebb9871a553b6098a5b7ec17135fe3e7",
@@ -14838,6 +16171,12 @@
 			"kind": "literal",
 			"source": "Add to the editor group toolbar",
 			"translation": "添加到编辑器组工具栏"
+		},
+		{
+			"id": "message.b74986baefc1382e611cb1f2efa0b627878c797496731063fdd873299be0ffc7",
+			"kind": "literal",
+			"source": "Reinstall",
+			"translation": "重新安装"
 		},
 		{
 			"id": "message.b74e7c835873281ebaef6f7814bdf3fcab8c1dea833c44668ae5a95ed1897ffb",
@@ -14918,6 +16257,12 @@
 			"kind": "literal",
 			"source": "File scope",
 			"translation": "文件范围"
+		},
+		{
+			"id": "message.b7ea63fbc710a5bc6a3ecab34ab32b1dd3f1a1220686a09e7bdb2777545428b5",
+			"kind": "literal",
+			"source": "Include a change set to commit",
+			"translation": "包含要提交的更改集"
 		},
 		{
 			"id": "message.b7f0e5bfcfc9d8ff33d259b4be6cc8c9217e9f84165e0eff15ec0742b83e5969",
@@ -15412,6 +16757,12 @@
 			]
 		},
 		{
+			"id": "message.be0e3a62e39dd90ad6632a66876ba9e9048e37087d5ec78767fd227b3705a6a3",
+			"kind": "literal",
+			"source": "open the Settings UI",
+			"translation": "打开设置界面"
+		},
+		{
 			"id": "message.be155a3c2d09a779f20a17ebf627c2d48a9d65970162723f987fd1ff1e73479f",
 			"kind": "literal",
 			"source": "Instructions — e.g. \"Group by feature, keep perf changes separate\"",
@@ -15592,6 +16943,12 @@
 			"translation": "工作区"
 		},
 		{
+			"id": "message.c08eb8c2affee56820f98dd7f5e65ed82e86d595e868603bd8c9cdd3d339e0b1",
+			"kind": "literal",
+			"source": "Both added",
+			"translation": "两侧均已添加"
+		},
+		{
 			"id": "message.c08fb02fbab77da32a0ad7463850eb01f86db3bac224c884e9027f19acffe6c3",
 			"kind": "literal",
 			"source": "Learn more",
@@ -15636,6 +16993,12 @@
 			"kind": "literal",
 			"source": "Install Claude Hooks",
 			"translation": "安装 Claude Hooks"
+		},
+		{
+			"id": "message.c1387969313cd0f6ab82cd81f336aa29a476b5f7c2243190a98c6240d2c9081e",
+			"kind": "literal",
+			"source": "Specifies whether to show a badge with the working tree change count on the _Commit Graph_ view",
+			"translation": "指定是否在 _提交图_ 视图中显示包含工作树更改数量的徽章"
 		},
 		{
 			"id": "message.c1469ded3785b7c7b3908cfb785224dbb8c3b346a5a239b0b8111a5c726af9b6",
@@ -15840,6 +17203,12 @@
 			"translation": "代理"
 		},
 		{
+			"id": "message.c33af872217dc1544e69733f327336add7042cf75ca2e8a85d7321908203ac29",
+			"kind": "literal",
+			"source": "Connect Agents",
+			"translation": "连接代理"
+		},
+		{
 			"id": "message.c35eb0d5cc5fed40207686ac90a0b9387c190f84a0142853dabf3501f95dc77d",
 			"kind": "literal",
 			"source": "MMMM Do, YYYY",
@@ -15873,10 +17242,22 @@
 			]
 		},
 		{
+			"id": "message.c3aa695875719f77dbfd1bf9c2568b7d1451e6ddac535e8c27c51870b4582a43",
+			"kind": "literal",
+			"source": "Modified & deleted",
+			"translation": "已修改并删除"
+		},
+		{
 			"id": "message.c3b5218086590c086db9e3ca7f1c151be5c653cbf35f9f390a8e55d82d546e2a",
 			"kind": "literal",
 			"source": "Displays files as a tree",
 			"translation": "以树形显示文件"
+		},
+		{
+			"id": "message.c3e22466ae6b7a425bbe170090d6aea0dc1e8ca8991546c589e7f3fd04f53ae5",
+			"kind": "literal",
+			"source": "Show this many rows at first",
+			"translation": "首次显示这么多行"
 		},
 		{
 			"id": "message.c3e9c2cac9a4cdea86d72c312df56fb5b0d9052d9bc711a63917c738e706a41f",
@@ -15891,12 +17272,24 @@
 			"translation": "创建新分支"
 		},
 		{
+			"id": "message.c41c1953b07d6b38f4b2c0fe7864f7fec93a123482216a7939ee05e38772c25f",
+			"kind": "literal",
+			"source": "Unable to load conflict details.",
+			"translation": "无法加载冲突详情。"
+		},
+		{
 			"id": "message.c420b729ac878bad81a9fb82f8cbf5cf948dde6cb9d64dbd27b6d623c5bf66b5",
 			"kind": "rich",
 			"source": "Specifies whether to copy full or abbreviated commit SHAs to the clipboard. Abbreviates to the length of `#gitlens.advanced.abbreviatedShaLength#`.",
 			"translation": "指定复制到剪贴板的是完整还是缩写的提交 SHA。缩写长度由 `#gitlens.advanced.abbreviatedShaLength#` 决定。",
 			"format": "markdown",
 			"slots": []
+		},
+		{
+			"id": "message.c422f4e5b1adfcf1dbc08f12c24cdf70c468e4e365bb29f5e1ed9e94c717d476",
+			"kind": "literal",
+			"source": "Alternatively, search for or choose a commit",
+			"translation": "或者，搜索或选择一个提交"
 		},
 		{
 			"id": "message.c4278ec25d5d4f5492f802e5059b49e489fda9d8113f6b732c29187a9493bbfb",
@@ -15950,6 +17343,12 @@
 			"translation": "Worktrees："
 		},
 		{
+			"id": "message.c4efdbd2c6cc8c1f30a05655549e6fb1674cd6dad9ab664fef9335fda834016f",
+			"kind": "literal",
+			"source": "Binary",
+			"translation": "二进制文件"
+		},
+		{
 			"id": "message.c5088377884d9e5deec65e96b8bd93c799332924e022fcbfad3d6c70ecd90eba",
 			"kind": "literal",
 			"source": "Displays contributors for the selected file or folder",
@@ -15974,6 +17373,12 @@
 			"translation": "class=\"walkthrough-progress__button\" appearance=\"toolbar\" tooltip=\"关闭\" aria-label=\"关闭\" >"
 		},
 		{
+			"id": "message.c560d6d442e1f25fa2508302eb6decd1137412d03750c8bbc0c6046d72d05dc0",
+			"kind": "literal",
+			"source": "Explain Stash Changes...",
+			"translation": "解释贮藏更改..."
+		},
+		{
 			"id": "message.c5b55337f807cfb25988e66cdf6389631e46bc9ca50e1155c887cfb7968b61fb",
 			"kind": "literal",
 			"source": "Showing Smart Branches Only",
@@ -15996,6 +17401,18 @@
 			]
 		},
 		{
+			"id": "message.c5d7ebb0248f58c154f60855ff7b44277f44e53cc8aebccb0e0d71e4f80e88bd",
+			"kind": "literal",
+			"source": "Excluded when Recomposing",
+			"translation": "重新编排时排除"
+		},
+		{
+			"id": "message.c5e857718166a8a4e71d189184eee6c87598934691443843ebe70292ec40698a",
+			"kind": "literal",
+			"source": "Show a comparison of the current branch or working tree with a user-selected reference (branch, tag, etc)",
+			"translation": "显示当前分支或工作树与用户选择的引用（分支、标签等）的比较"
+		},
+		{
 			"id": "message.c62de0f6986762b4b001fa5db72e463ee08e09bf36b6775ddaf7f550093edd95",
 			"kind": "literal",
 			"source": "Resolve Conflicts",
@@ -16015,6 +17432,12 @@
 			"slots": [
 				"slot1"
 			]
+		},
+		{
+			"id": "message.c673498d23c0c99707bea7f2ebef97df4d0c31db03e24e2a840c639bb8acfce9",
+			"kind": "literal",
+			"source": "Switch Agent",
+			"translation": "切换代理"
 		},
 		{
 			"id": "message.c6c417c376a5f2060caf7f03510ffefa598b639a1e71efad71d3636f34841a06",
@@ -16044,6 +17467,12 @@
 			"translation": "将设置保存到"
 		},
 		{
+			"id": "message.c6ff276b8ab2480e6cd70627be38ff7c089311ef6f2199bab6100573b0fecfed",
+			"kind": "literal",
+			"source": "After unsaved changes, don't recompute annotations on files with more than (lines)",
+			"translation": "存在未保存更改后，不要为超过以下行数的文件重新计算注解"
+		},
+		{
 			"id": "message.c7026c680fc4d86226d765aed1c5cfe2dade2f42fd348dd0a65ea5cc4914f2ec",
 			"kind": "literal",
 			"source": "Active Branch",
@@ -16057,6 +17486,12 @@
 			"slots": [
 				"slot1"
 			]
+		},
+		{
+			"id": "message.c70fbfe8849fcc21cd2fa7ff77a3cd7cf1f6281c09668b8f718459ac800d0a8a",
+			"kind": "literal",
+			"source": "AI Features",
+			"translation": "AI 功能"
 		},
 		{
 			"id": "message.c71e1da97316dd0eede14835a744b7a1deac2f8cebd7eb22b78f0e223168a068",
@@ -16080,6 +17515,12 @@
 			"translation": "活动工作范围"
 		},
 		{
+			"id": "message.c72c8ecb22241ccf5e6f2e1abad739c2e48513a878eebeb23764710ba3d7fca1",
+			"kind": "literal",
+			"source": "Open formatting docs",
+			"translation": "打开格式文档"
+		},
+		{
 			"id": "message.c74b05f8e410aa2a370a6bba32b803a97358512933e2faa356b714848745be42",
 			"kind": "template",
 			"source": "Query: ${slot1}",
@@ -16093,6 +17534,12 @@
 			"kind": "literal",
 			"source": "Compare References...",
 			"translation": "比较引用..."
+		},
+		{
+			"id": "message.c77417aed701418d9c0c88021adacdfa540c65bd9365446f26ea0c2059b7d1c8",
+			"kind": "literal",
+			"source": "Create a Pull Request with AI",
+			"translation": "使用 AI 创建拉取请求"
 		},
 		{
 			"id": "message.c783998edfdc8e3a357f4138574edaa9d2f279d329ea7a655e34ed2afb91853d",
@@ -16174,6 +17621,12 @@
 			"translation": "指定是否在_Contributors_ 视图中显示贡献者统计信息。根据仓库大小不同，计算过程可能需要一些时间"
 		},
 		{
+			"id": "message.c86ffe267ac6c2d15edb14b12ee3eaec0fed54bc749c53fa4633bf1980e76211",
+			"kind": "literal",
+			"source": "Use keyboard shortcuts",
+			"translation": "使用键盘快捷键"
+		},
+		{
 			"id": "message.c87ca9f211125756537b88e772554d71ab0529f8acfc8365722a75800af3a38b",
 			"kind": "literal",
 			"source": "Specifies the number of days after which a pull request is considered stale and moved to Other in the _Launchpad_",
@@ -16184,6 +17637,12 @@
 			"kind": "literal",
 			"source": "Add to the Source Control groups toolbar",
 			"translation": "添加到源代码管理分组工具栏"
+		},
+		{
+			"id": "message.c88bd467658833596a292dd9ee9e20fdf734ff201c478ee4839f536942ca8538",
+			"kind": "literal",
+			"source": "Example:",
+			"translation": "示例："
 		},
 		{
 			"id": "message.c894935a18e18285110be7a6e1cfd8c99eaed864fb1f756f5bbcd72189812753",
@@ -16212,6 +17671,12 @@
 			"kind": "literal",
 			"source": "Visualize Repo History",
 			"translation": "可视化仓库历史"
+		},
+		{
+			"id": "message.c9501bbc7668ec57d68b2e51dd294d9260ea1cd9af7628abec2dbe5165e4fdc9",
+			"kind": "literal",
+			"source": "Commit or Authored Date (short)",
+			"translation": "提交日期或作者日期（短格式）"
 		},
 		{
 			"id": "message.c9610441bd6f539216690a297952ed37bea24294169345fed31b939b8bdb71b0",
@@ -16356,6 +17821,12 @@
 			"translation": "删除分支..."
 		},
 		{
+			"id": "message.cb37bd8202b1f22024a8308ec7ac52642454e59a90b210fffb0eece189a851ef",
+			"kind": "literal",
+			"source": "Day of month, ordinal (25th)",
+			"translation": "月中日期，序数格式（25th）"
+		},
+		{
 			"id": "message.cb3d1b94cb17799dbf93d8c30a7b0ead65712153b8ec57600018b3f877849c0a",
 			"kind": "literal",
 			"source": "Cloud Patches ᴘʀᴇᴠɪᴇᴡ — privately and securely share code with specific teammates and other developers, accessible from anywhere. Enhance collaboration without adding noise to your repositories.",
@@ -16376,6 +17847,12 @@
 			"kind": "literal",
 			"source": "shows the current file history",
 			"translation": "显示当前文件历史"
+		},
+		{
+			"id": "message.cb570a981b8c92c3061c30ddebb6e26c6355d938c3204009f6e152220effb7e0",
+			"kind": "literal",
+			"source": "Add a prefix to match, e.g. TICKET-",
+			"translation": "添加要匹配的前缀，例如 TICKET-"
 		},
 		{
 			"id": "message.cb738694036a36469b1e1117aeb1f1b6f7c8fd880eeb4b20fb9de8a48ad91938",
@@ -16545,6 +18022,12 @@
 			"translation": "可选指导 — 例如“生成文件优先使用传入更改”"
 		},
 		{
+			"id": "message.cd7c557fce2aad6dfd9b90ca54d7247b325cca728a559f670848c829629e9a80",
+			"kind": "literal",
+			"source": "UTF-8",
+			"translation": "UTF-8"
+		},
+		{
 			"id": "message.cd8328c626278ee5da023876dc18f68c20b686973e6396ec2ebbe8a628915ff5",
 			"kind": "literal",
 			"source": "Hide Branch Comparisons",
@@ -16643,6 +18126,12 @@
 			"translation": "统一工作区"
 		},
 		{
+			"id": "message.ce5d013db4893a695d40b0e10715e442b526572b65077617ba3dcaa64921edfe",
+			"kind": "literal",
+			"source": "Choose the conflicts to resolve with AI, then review each resolution before applying.",
+			"translation": "选择要使用 AI 解决的冲突，然后在应用前审阅每个解决方案。"
+		},
+		{
 			"id": "message.ce6ecc365ce71689fe5731b15aa90b3c1e2253c20336c0af953cbaf549d9428d",
 			"kind": "rich",
 			"source": "Automatically switches between displaying files as a `tree` or `list` based on the `#gitlens.views.branches.files.threshold#` value and the number of files at each nesting level",
@@ -16655,6 +18144,15 @@
 			"kind": "literal",
 			"source": "Welcome to GitLens: Unlock Your Repo’s Full Story",
 			"translation": "欢迎使用 GitLens：解锁仓库的完整脉络"
+		},
+		{
+			"id": "message.ce946801ccb2f0f119bd6f4f7746528ca60a54739b9576537ca44c985a2f79ae",
+			"kind": "template",
+			"source": "Launchpad — ${slot1}",
+			"translation": "启动台 - ${slot1}",
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.ce95653144ee088db119977dc1b82d9a23f8ff292a3289be6f025e8f9ed5a33e",
@@ -16679,6 +18177,12 @@
 			"kind": "literal",
 			"source": "Open Pull Request Details",
 			"translation": "打开拉取请求详情"
+		},
+		{
+			"id": "message.cf19b75cb7091744497f455237bb8dad04f21aba3ae1a4b231536dcc2da00fc6",
+			"kind": "literal",
+			"source": "1 author (Eric Amodio)",
+			"translation": "1 位作者（Eric Amodio）"
 		},
 		{
 			"id": "message.cf1e14cf8f47f00385fe79c8cd0473f1cb841d1314a33c46c746695b22bc9dd3",
@@ -16708,6 +18212,12 @@
 			]
 		},
 		{
+			"id": "message.cf6616b659affd7fd8476e6c3cf4cb5401872bea9da9e348ea0a1872b16bb50a",
+			"kind": "literal",
+			"source": "Couldn’t load integration status.",
+			"translation": "无法加载集成状态。"
+		},
+		{
 			"id": "message.cf74003540107640a9c916d1645c41e7118ff879157c8a56cd1230a04331e1b8",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images in quick pick menus when applicable",
@@ -16734,10 +18244,22 @@
 			"translation": " reachability-range-chip--current"
 		},
 		{
+			"id": "message.cfc94417821b69caaef36b45e36ca09ada58c82793a17f763eb5bda9598708ad",
+			"kind": "literal",
+			"source": "Add Open Changed Files and Close Unchanged Files commands",
+			"translation": "添加“打开已更改文件”和“关闭未更改文件”命令"
+		},
+		{
 			"id": "message.cff06e8e30759394cc9594f5d947c301b80a087a9dabedc815895f2f19669f41",
 			"kind": "literal",
 			"source": "What's New (Release Notes)",
 			"translation": "新内容（发行说明）"
+		},
+		{
+			"id": "message.cff7633678270fd8fb8dff27582b1cfc82cd16219f4a5bed754e063bcd7cd594",
+			"kind": "literal",
+			"source": "Needs review",
+			"translation": "需要审阅"
 		},
 		{
 			"id": "message.cfff5d4e9679f2f7375f569d5c7228b9435804e8691aa661ec0b872ef675906d",
@@ -16768,6 +18290,18 @@
 			"kind": "literal",
 			"source": "Visual History",
 			"translation": "可视历史"
+		},
+		{
+			"id": "message.d06b16a5ce6c94a7eaeb09d275a308a1c8b2f0f6efb65fe40e8ee00f616553bd",
+			"kind": "literal",
+			"source": "Manage",
+			"translation": "管理"
+		},
+		{
+			"id": "message.d091159cfdf062bfeb5879e1fe26302538c2de191124b3bc1c7d2269ca20a712",
+			"kind": "literal",
+			"source": "Regenerate Commit Message",
+			"translation": "重新生成提交消息"
 		},
 		{
 			"id": "message.d0b15b41e0ba282cb2ff154e918ce6e6fff43c8786e7c5c261fa0fd7cba57ed1",
@@ -16872,6 +18406,12 @@
 			"translation": "显示提交图视图"
 		},
 		{
+			"id": "message.d247b7a7287df22c9e4aec7ab0002496c4bb61dda421fa24dbf7fd5dfcb9106c",
+			"kind": "literal",
+			"source": "View Changes",
+			"translation": "查看更改"
+		},
+		{
 			"id": "message.d25566d69cf408c04652fd7e4c33e357c041477678a6c9a450d10231b7c6e4c3",
 			"kind": "literal",
 			"source": "Specifies how the _Tags_ view will display file icons",
@@ -16941,6 +18481,12 @@
 			"translation": "指定是否在 _云工作区_ 视图中查询与分支和提交关联的拉取请求。需要连接到受支持的远程服务（例如 GitHub）"
 		},
 		{
+			"id": "message.d33223d31184729007a952d0fa8d021eac1e6c33965f77ee6f9c875657625bc5",
+			"kind": "literal",
+			"source": "Alphanumeric",
+			"translation": "字母数字"
+		},
+		{
 			"id": "message.d334b8973769767de5494ed90e2805ba02bc29d0d863d5614d367514ad4f5be1",
 			"kind": "literal",
 			"source": "Generate Changelog (Preview)",
@@ -17004,6 +18550,12 @@
 			"translation": "显示远程分支标记"
 		},
 		{
+			"id": "message.d3ed983f8c32bcd16592e641d0cb8048d5d0f2e693a7999bf3078696ba5efabb",
+			"kind": "literal",
+			"source": "Add an Open Changes submenu",
+			"translation": "添加“打开更改”子菜单"
+		},
+		{
 			"id": "message.d3f4a586ab6b2d1f6756eb6c2eb5b204246c62ee01c0e0626bfdddd4dcc9bfb4",
 			"kind": "literal",
 			"source": "Setup Commit Signing...",
@@ -17031,6 +18583,14 @@
 			"kind": "literal",
 			"source": "Ctrl+Enter",
 			"translation": "Ctrl+Enter"
+		},
+		{
+			"id": "message.d471e7d8d0b593a6701101ed8f3a7629ecbc5ec30db553fd9cab78446849b1e4",
+			"kind": "rich",
+			"source": "Let **GitKraken AI** turn your changes into clear, logical commits - making reviews efficient and keeping your commit history clean.\n\n**- Auto-Compose Commits:** instantly generate a sequence of commits with descriptive summaries in an interactive editor\n**- Explain Commits and Branches:** understand changes without wasting time diving into the diffs\n**- Create PR Titles & Descriptions:** save reviewers 10+ minutes per review\n\nStay in control - review and edit before committing.\nSee how effortless documenting your work can be, all without leaving VS Code.\n\n[Compose Commits](command:gitlens.walkthrough.showComposer)",
+			"translation": "让 **GitKraken AI** 将你的更改整理成清晰且逻辑连贯的提交，从而提高审阅效率并保持提交历史整洁。\n\n**- 自动编排提交：** 在交互式编辑器中即时生成一系列带有描述性摘要的提交\n**- 解释提交和分支：** 无需耗时深入查看差异即可理解更改\n**- 创建拉取请求标题和描述：** 每次审阅可为审阅者节省 10 分钟以上\n\n始终掌控整个过程，提交前可先审阅和编辑。\n无需离开 VS Code，即可轻松记录你的工作。\n\n[编排提交](command:gitlens.walkthrough.showComposer)",
+			"format": "markdown",
+			"slots": []
 		},
 		{
 			"id": "message.d48c4f212895729af9146f2e281d398a62ce6d67158ab33e268b196266d19f62",
@@ -17255,6 +18815,12 @@
 			]
 		},
 		{
+			"id": "message.d7b641030b2d997d69818c9c7da183332810915e01bdf0b69b08daf06918c944",
+			"kind": "literal",
+			"source": "Insert a token",
+			"translation": "插入令牌"
+		},
+		{
 			"id": "message.d7bc25a60a313e38427787aade0dbc6a9cc27ac4daf348ea64816d4cc1f2f07e",
 			"kind": "rich",
 			"source": "As a **GitLens Pro** user, you have access to powerful tools that accelerate PR reviews, provide deeper code history visualizations, and streamline collaboration across your team.\n\n[Continue the Walkthrough](command:gitlens.walkthrough.openWalkthrough)\n\nTo get the most out of your **GitLens Pro** experience, complete the walkthrough and visit our Help Center for in-depth guides.\n\n**[Learn more in the Help Center](command:gitlens.walkthrough.openHelpCenter)**",
@@ -17267,6 +18833,12 @@
 			"kind": "literal",
 			"source": "Undo last action",
 			"translation": "撤销上次操作"
+		},
+		{
+			"id": "message.d7ce6b22ee852d1b692d7ace978e8e77c55e2e83c75c4121778f815de5fd9a12",
+			"kind": "literal",
+			"source": "Loading conflict details…",
+			"translation": "正在加载冲突详情…"
 		},
 		{
 			"id": "message.d7d599237c3f0e6067cd39f787381a23e1bedfaf675e88a0a30683d526b71a23",
@@ -17439,10 +19011,22 @@
 			"translation": "指定是否在 _启动台_ 状态栏指示器上使用颜色"
 		},
 		{
+			"id": "message.da2c7c71ba1c9eb4a16c819036f8c953576ab429e635957d80a805ea7492fb51",
+			"kind": "literal",
+			"source": "Open File (Worktree)",
+			"translation": "打开文件（工作树）"
+		},
+		{
 			"id": "message.da32d2b12d4978b3f93c427f2a24a96dd7cf704cfd56ed79885e8bd372a6705b",
 			"kind": "literal",
 			"source": "2 minutes",
 			"translation": "2 分钟"
+		},
+		{
+			"id": "message.da58057583cc6068ad93afaa8ba0476cc27f36203d15997845c8afb614fedbe8",
+			"kind": "literal",
+			"source": "Resolve Conflicts in Commit Graph",
+			"translation": "在提交图中解决冲突"
 		},
 		{
 			"id": "message.da5dba01712e8bddea7ad1d88d7b60e99b0ba2cb7658759d695421b6c441f584",
@@ -17553,6 +19137,12 @@
 			"translation": " current"
 		},
 		{
+			"id": "message.dbb607789ad401a79b79802f79a07d55784003f6283e58c231584c252b36ad33",
+			"kind": "literal",
+			"source": "Stash Selected Changes",
+			"translation": "贮藏所选更改"
+		},
+		{
 			"id": "message.dbd21d00baea15b94c1df563841fbfc543dfcf0ac3fd418cfe824bc1f9a0be69",
 			"kind": "template",
 			"source": "Force Push ${slot1} to ${slot2} ${slot3}",
@@ -17606,6 +19196,12 @@
 			"kind": "literal",
 			"source": "Specifies whether to show a minimap of commit activity above the _Commit Graph_",
 			"translation": "指定是否在 _提交图_ 上方显示提交活动迷你地图"
+		},
+		{
+			"id": "message.dc68af427f90d8dd2a2f813d7f8288b2ee68c27bbbe25b3925d301ce86867dff",
+			"kind": "literal",
+			"source": "Year, 2-digit (18)",
+			"translation": "年份，2 位数字（18）"
 		},
 		{
 			"id": "message.dc797fed68db584800138c30b177d9afe82d500f69fdfc2c0d148ae1670e4d32",
@@ -17712,6 +19308,12 @@
 			]
 		},
 		{
+			"id": "message.dd9aa3710c4a8ef66ee3177c8cf324ca93aa8b042ef4f18e9e048a03ff827591",
+			"kind": "literal",
+			"source": "Add an Open Worktree for Pull Request command",
+			"translation": "添加“为拉取请求打开工作树”命令"
+		},
+		{
 			"id": "message.ddb1ad1c1fb981d79b71cb965c5720960c36e8065948cc29536334d96365041c",
 			"kind": "literal",
 			"source": "Open on Remote",
@@ -17734,6 +19336,18 @@
 			"kind": "literal",
 			"source": "Add CodeLens to the following scopes",
 			"translation": "在以下范围添加 CodeLens"
+		},
+		{
+			"id": "message.ddeac38946f52d8b157e767fd6d558870c4ed45662339a831e965ae57be70f09",
+			"kind": "literal",
+			"source": "Recompose Changes",
+			"translation": "重新编排更改"
+		},
+		{
+			"id": "message.ddf65c2fc57718f1b6c4a372416038f8d2ef490537ae72a06c941f0251aeba5c",
+			"kind": "literal",
+			"source": "Copy Selected Changes (Patch)",
+			"translation": "复制所选更改（补丁）"
 		},
 		{
 			"id": "message.de19ada07ca3fc7164e8cfef12b752be39f37464b7504bbac2952cc53b65ac3d",
@@ -18004,6 +19618,12 @@
 			"translation": "将工作区与用户所选引用进行比较"
 		},
 		{
+			"id": "message.e2511811522be380c08e60f202c11c53609210bf6e8d66af54084987327c7eb3",
+			"kind": "literal",
+			"source": "Added (incoming)",
+			"translation": "已添加（传入）"
+		},
+		{
 			"id": "message.e255e34215307b18a57e2798d512cc05417e6313941eee9dfefec79135081178",
 			"kind": "literal",
 			"source": "Delete Stash...",
@@ -18045,6 +19665,12 @@
 			"translation": "Alt"
 		},
 		{
+			"id": "message.e2a40c694a33530f9fe41dece73a124278ed43bedb50fc8c1109e3df3881c528",
+			"kind": "literal",
+			"source": "Branch & Tag Tips",
+			"translation": "分支和标签提示"
+		},
+		{
 			"id": "message.e2a75bef50441cb9610ba804a600e78fa94c4a578c0494210920ef9d2b40030d",
 			"kind": "literal",
 			"source": "Commit Graph:",
@@ -18067,6 +19693,18 @@
 			"kind": "literal",
 			"source": "Specifies whether to show the commits on the current branch for each repository in the _Cloud Workspaces_ view",
 			"translation": "指定是否在 _云工作区_ 视图中显示每个仓库的当前分支上的提交"
+		},
+		{
+			"id": "message.e2bfacdfb53db1760acdcb8751be739211a9a092c22a5ad942d8e1d12118b930",
+			"kind": "literal",
+			"source": "Cloud integrations",
+			"translation": "云集成"
+		},
+		{
+			"id": "message.e2defe05c2cbe72166a4b5acfd850bdc0e6fc78c972e4c7ed39e6c2cde5f1f60",
+			"kind": "literal",
+			"source": "Included when Recomposing",
+			"translation": "重新编排时包含"
 		},
 		{
 			"id": "message.e2fa0ba0eb3c53d6350c2830d3165034958eae927c1152da44f750f7e3d17d3d",
@@ -18421,6 +20059,12 @@
 			"translation": "陈旧"
 		},
 		{
+			"id": "message.e6e122c4ef798bc83c2c0dcf5c83b176f5390ad161760bbdaf38792a4aecbe82",
+			"kind": "literal",
+			"source": "Available tokens",
+			"translation": "可用令牌"
+		},
+		{
 			"id": "message.e6f5863b89ddc00d1a9bad7dbb98cf2454baa8804bd5a89c9fe8540fd00f0845",
 			"kind": "template",
 			"source": "${slot1} Leverage Git and Integration information from GitLens in AI chat. ${slot2} ${slot3}",
@@ -18480,6 +20124,16 @@
 			"translation": "（结果可能已过时）"
 		},
 		{
+			"id": "message.e80db04e3d7b2f0e91810f47189bd43689e092772b8bdb0f436eca9ca48c4d72",
+			"kind": "template",
+			"source": "GitLens Settings couldn’t load — ${slot1}. ${slot2} to try again.",
+			"translation": "GitLens 设置无法加载 - ${slot1}。${slot2}以重试。",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
+		},
+		{
 			"id": "message.e8131b5c2e595bb0e3c3f819009fa28fdb9852cc5582139820b4d06009ecf34e",
 			"kind": "literal",
 			"source": "Specifies whether to skip onboarding experiences, such as welcome views and walkthroughs. Useful for ephemeral environments like containers or sandboxes",
@@ -18504,6 +20158,12 @@
 			"kind": "literal",
 			"source": "Sorts contributors by commit count in ascending order",
 			"translation": "按提交次数升序排序贡献者"
+		},
+		{
+			"id": "message.e874f8b8fd7d32a4b4066f32d1bfd5a54dbc30fe0a12134f7e4def8a9029048e",
+			"kind": "literal",
+			"source": "Current",
+			"translation": "当前"
 		},
 		{
 			"id": "message.e88ebb25204fc20944f0b063af5cb02071b73c532ef866497a5a9ed9f1722494",
@@ -18668,6 +20328,12 @@
 			"translation": "添加文件或代码块最近一次更改的作者和日期"
 		},
 		{
+			"id": "message.ea6b2b1addafb5614dc17c8f0327250689959900d626c79fd7b309d232c8f941",
+			"kind": "literal",
+			"source": "Add an Open on Remote (Web) submenu",
+			"translation": "添加“在远程（Web）上打开”子菜单"
+		},
+		{
 			"id": "message.ea846f41ff393a39482d12c144ad68db3273fb420d0283d60d64579d7960e4a4",
 			"kind": "literal",
 			"source": "Pin Side Bar",
@@ -18687,6 +20353,12 @@
 			"kind": "literal",
 			"source": "Specifies whether to enable virtual repositories support",
 			"translation": "指定是否启用虚拟仓库支持"
+		},
+		{
+			"id": "message.eaa4691990c7ae56f6be3630c189fd3fbeef0396e55ad6a27d9cb69b5d2fa06e",
+			"kind": "literal",
+			"source": "Changes Indicator (short), e.g. +1~3",
+			"translation": "更改指示器（短格式），例如 +1~3"
 		},
 		{
 			"id": "message.eaba450610fe64d7f92bab0df0b8c878bf3975421e268244da00aaebaec61c03",
@@ -18823,6 +20495,12 @@
 			"translation": "指定是否在 _云工作区_ 视图中显示每个仓库的工作树"
 		},
 		{
+			"id": "message.ec3e3a26e2fa840f4b0a1fea04cb30f62d54f55fa754d697df2fdf2bcfdda134",
+			"kind": "literal",
+			"source": "Included when Committing",
+			"translation": "提交时包含"
+		},
+		{
 			"id": "message.ec4fd876637e4c29b4bb211c8697ac0f33377e020233cd5311b1b3e062aaafd0",
 			"kind": "literal",
 			"source": "Specifies how the _Cloud Workspaces_ view will display files",
@@ -18917,6 +20595,12 @@
 			"translation": "聚焦提交图"
 		},
 		{
+			"id": "message.ed81b9cfdcb35445393967cdb051e1a1ed605f9c89c9bc847f3348b22108bb31",
+			"kind": "literal",
+			"source": "+ return optimize(parse(code));",
+			"translation": "+ return optimize(parse(code));"
+		},
+		{
 			"id": "message.ed8cac4fefa2478bd17952b647aa8dd77aa761852b8c5847dd5dc6bd18698ad3",
 			"kind": "template",
 			"source": "With agents running across multiple worktrees, working changes used to mean opening another window or directory just to remember what you (or your agent) left half-finished. Not anymore. ${slot1} every worktree's working changes are visible at the same time, in the same Graph. ${slot2} when you're heads-down on one branch, scope the Graph to just the commits that matter &mdash; the bigger picture is always one click away.",
@@ -18969,6 +20653,12 @@
 			"translation": "定位仓库..."
 		},
 		{
+			"id": "message.ee22ceab49794554488f076b2948e9212d8c3313506dde5d3b4dcf24369ff12f",
+			"kind": "literal",
+			"source": "AI integrations",
+			"translation": "AI 集成"
+		},
+		{
 			"id": "message.ee2e42d1a7745450f8c55f63180834eb56a4e81bc9576e6a65660b1d6f5cd7f4",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary branch nesting in the _Remotes_ view. Only applies when `#gitlens.views.remotes.branches.layout#` is set to `tree`",
@@ -18987,6 +20677,12 @@
 			"kind": "literal",
 			"source": "gitlens.views.commitDetails",
 			"translation": "gitlens.views.commitDetails"
+		},
+		{
+			"id": "message.ee6f748ef7cdd7dbe4e7aee93650a9714260e41e2ba12bd1cf6f01235c781e53",
+			"kind": "literal",
+			"source": "Linear",
+			"translation": "Linear"
 		},
 		{
 			"id": "message.ee75ebd6483204dc23b89aa17e4fd4147d0e69025895a81e52623f431a943991",
@@ -19291,6 +20987,12 @@
 				"slot2",
 				"slot3"
 			]
+		},
+		{
+			"id": "message.f1f6fd567a94c17819cdb731f0a7ac6de4dfb27f2c5a938ec1ae89b69abf457d",
+			"kind": "literal",
+			"source": "Launchpad — all caught up",
+			"translation": "启动台 - 已全部处理"
 		},
 		{
 			"id": "message.f1ff774b8385a587f0b8c84c93d6c18b65c65878fd1b10ecb4ac0246eced999d",
@@ -19696,10 +21398,22 @@
 			"translation": "仅显示已加星标为收藏的分支 — 也包括当前分支"
 		},
 		{
+			"id": "message.f677a203cb816e63d258256333477bb63e4580d98137337f6084e34a3affc971",
+			"kind": "literal",
+			"source": "Open the CHANGELOG",
+			"translation": "打开 CHANGELOG"
+		},
+		{
 			"id": "message.f6ebaf566cec214b6976952343ed862dc6f041e805eebfeebed6fdb732559083",
 			"kind": "literal",
 			"source": "Current Tool",
 			"translation": "当前工具"
+		},
+		{
+			"id": "message.f6f0207bf1c3483efe05ee3448ded5c34814962ca2bb0327d456867583880a47",
+			"kind": "literal",
+			"source": "Commit Date — absolute",
+			"translation": "提交日期 - 绝对时间"
 		},
 		{
 			"id": "message.f706d79056abb7ce346dda9cb9028f28054fca918953a85fa9e46d1a726749cd",
@@ -19856,6 +21570,12 @@
 			"translation": "创建云补丁..."
 		},
 		{
+			"id": "message.f879c1f6542db61f61d6a14615cf94ab3de47c7e39e0e23c80f1c80444c57fc6",
+			"kind": "literal",
+			"source": "After unsaved changes, pause recomputing annotations for (ms)",
+			"translation": "存在未保存更改后，暂停重新计算注解的时长（毫秒）"
+		},
+		{
 			"id": "message.f880f3ed81c945bd52a54a53b5e8117cb5f2bcee1c5e511ca698afd909c92d39",
 			"kind": "literal",
 			"source": "Pro feature",
@@ -19885,6 +21605,12 @@
 			"slots": [
 				"slot1"
 			]
+		},
+		{
+			"id": "message.f8fa73ca61f34d184bde9cf04d53d793a192b74a9506be944bd866b3fcdaae15",
+			"kind": "literal",
+			"source": "Select an AI model to enable AI features",
+			"translation": "选择 AI 模型以启用 AI 功能"
 		},
 		{
 			"id": "message.f905b68040656aa169614c72c2fe640f699f693ce3d0cfa87f85b27bee622c76",
@@ -19970,6 +21696,12 @@
 			"translation": "主页：重新获取仓库状态失败"
 		},
 		{
+			"id": "message.fa383d9284aeadcaa86b926febaddbb7ee555c9c3bdf1b93563c126e965883e3",
+			"kind": "literal",
+			"source": "TICKET-",
+			"translation": "TICKET-"
+		},
+		{
 			"id": "message.fa3ec7fcdd6a6e2fb23f63bfaec70304886ba17e28f6f4a0de6b45e40020d1de",
 			"kind": "literal",
 			"source": "Compare Working Tree to Here",
@@ -20031,6 +21763,12 @@
 			"kind": "literal",
 			"source": "Branches view",
 			"translation": "分支视图"
+		},
+		{
+			"id": "message.fab3bf4ad4cc8baefd23882ad8897b2e3e69f0a5957a4b50427d6867fc6f653f",
+			"kind": "literal",
+			"source": "Explain Branch Changes...",
+			"translation": "解释分支更改..."
 		},
 		{
 			"id": "message.facb23fbf628c144b688382e7829b2ea7a513fcb180f42aab3ab9eb9b168f5a1",
@@ -20162,6 +21900,12 @@
 			"translation": "自定义整个文件的按需追溯、更改或热度图注解"
 		},
 		{
+			"id": "message.fc86227d7bb52567a7f0091c39b3c83abf55d924ce44a94f7c02be356a87089d",
+			"kind": "literal",
+			"source": "Recompose — e.g. \"Merge commits 1 and 2, they&apos;re related\"",
+			"translation": "重新编排 - 例如“合并提交 1 和 2，它们相关”"
+		},
+		{
 			"id": "message.fca2c0f929509349fcb033af27fe41bfefca6c0674f2cb34cd01e0cc39af3b7f",
 			"kind": "literal",
 			"source": "Refresh Launchpad",
@@ -20210,6 +21954,15 @@
 			"translation": " reachability-list-item--current"
 		},
 		{
+			"id": "message.fd6cf97a58ce724b7fd5063c43053284d19a61568ab2b1c256f7b64651345b8c",
+			"kind": "template",
+			"source": "Supercharged ${slot1}",
+			"translation": "全面增强 ${slot1}",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.fd752d526fe4bd5f3fbe4722e4e704daabb169f60b795e49ba42d726a8be9a5d",
 			"kind": "literal",
 			"source": "Switch to Tree Layout",
@@ -20228,6 +21981,18 @@
 			"kind": "literal",
 			"source": "Specifies whether to query for pull requests associated with each branch and commits in the _Remotes_ view. Requires a connection to a supported remote service (e.g. GitHub)",
 			"translation": "指定是否在 _远程_ 视图中查询与每个分支和提交关联的拉取请求。需要连接到受支持的远程服务（例如 GitHub）"
+		},
+		{
+			"id": "message.fde9cd64809772fc58d53bcabe744aa899b04acce6ebd39428da2e64786981ac",
+			"kind": "literal",
+			"source": "Add a Visualize Repository History command",
+			"translation": "添加“可视化仓库历史”命令"
+		},
+		{
+			"id": "message.fe13a74e6f4f02a0c519ecea10a4cacd1372f0780fee6984b6769bfc6048d412",
+			"kind": "literal",
+			"source": "Add a File History submenu",
+			"translation": "添加“文件历史”子菜单"
 		},
 		{
 			"id": "message.fe1909088586491783cc4d68f638ce91c7c7c73b8f387d2ce6932f731d52c380",

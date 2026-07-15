@@ -11,6 +11,48 @@ interface DisplayContextAdapter {
 	readonly isTranslatableAttribute: (attribute: string, tag?: string) => boolean;
 }
 
+/** 判定展示表达式是否同时作为同文件字面量联合类型参数, 避免翻译运行时判别值. */
+export function isLiteralUnionCallArgument(node: ts.Node, sourceFile: ts.SourceFile): boolean {
+	let argument: ts.Node = node;
+	let parent = node.parent;
+	while (
+		parent != null &&
+		(ts.isParenthesizedExpression(parent) ||
+			ts.isAsExpression(parent) ||
+			ts.isNonNullExpression(parent) ||
+			(ts.isConditionalExpression(parent) && (parent.whenTrue === argument || parent.whenFalse === argument)))
+	) {
+		argument = parent;
+		parent = parent.parent;
+	}
+	if (!ts.isCallExpression(parent)) return false;
+
+	const parameterIndex = parent.arguments.indexOf(argument as ts.Expression);
+	if (parameterIndex === -1) return false;
+
+	const functionName = ts.isIdentifier(parent.expression) ? parent.expression.text : undefined;
+	if (functionName == null) return false;
+
+	let declaration: ts.FunctionDeclaration | undefined;
+	const visit = (current: ts.Node): void => {
+		if (declaration != null) return;
+		if (ts.isFunctionDeclaration(current) && current.name?.text === functionName) {
+			declaration = current;
+			return;
+		}
+		ts.forEachChild(current, visit);
+	};
+	visit(sourceFile);
+
+	const parameterType = declaration?.parameters[parameterIndex]?.type;
+	if (parameterType == null) return false;
+	const members = ts.isUnionTypeNode(parameterType) ? parameterType.types : [parameterType];
+	return (
+		members.length > 0 &&
+		members.every((member) => ts.isLiteralTypeNode(member) && ts.isStringLiteral(member.literal))
+	);
+}
+
 /** 创建共享 AST 判定器, 用于识别最终流向 HTML, JSX 或命令式 UI 的文本表达式. */
 export function createDisplayContextAnalyzer(adapter: DisplayContextAdapter) {
 	function hasHtmlTemplateAncestor(node: ts.Node, sourceFile: ts.SourceFile): boolean {

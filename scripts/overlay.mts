@@ -19,7 +19,6 @@ import {
 import {
 	createPendingReport as createWebviewsPendingReport,
 	generateWebviewsLocalizedDynamicSources,
-	generateWebviewsLocalizedSettingsSources,
 	promoteWebviewsAuthority,
 	syncWebviewsI18n,
 } from "../i18n/domains/webviews/workflow.mts";
@@ -87,9 +86,8 @@ export function generateAndApplySourceOverlay(config: ResolvedLayerConfig): {
 		unresolved += result.unresolvedCount;
 	}
 	const dynamicWebviews = generateWebviewsLocalizedDynamicSources(options);
-	const settingsWebviews = generateWebviewsLocalizedSettingsSources(options);
-	translated += dynamicWebviews.translatedCount + settingsWebviews.translatedCount;
-	unresolved += dynamicWebviews.unresolvedCount + settingsWebviews.unresolvedCount;
+	translated += dynamicWebviews.translatedCount;
+	unresolved += dynamicWebviews.unresolvedCount;
 
 	const files = fs.existsSync(context.generatedRootDir)
 		? fs

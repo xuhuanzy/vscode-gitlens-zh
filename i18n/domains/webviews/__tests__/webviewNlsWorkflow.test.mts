@@ -13,131 +13,50 @@ import {
 import { createTestLayerOptions, withTempRoot } from "../../../testing/tempRoot.mts";
 import { createWebviewsDomainContext } from "../context.mts";
 import {
-	createPendingReport,
 	generateWebviewsLocalizedDynamicSources,
 	generateWebviewsLocalizedOutputs,
-	generateWebviewsLocalizedSettingsSources,
 	promoteWebviewsAuthority,
 	syncWebviewsI18n,
 } from "../workflow.mts";
 
-test("runs the settings workflow", () => {
+test("extracts and localizes the 18.3 settings runtime sources", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeTextFile(
 			rootDir,
-			"src/webviews/apps/settings/settings.html",
+			"src/webviews/apps/settings/settings.ts",
 			[
-				"<!doctype html>",
-				'<html lang="en">',
-				"<body>",
-				'\t<h1 title="Open Settings">Settings</h1>',
-				'\t<p>Adds a <a title="Show View in Side Bar" href="command:gitlens.showLineHistoryView">Line History view</a>, hidden by default</p>',
-				'\t<span class="setting__hint">Example: <span data-setting-preview="currentLine.format" data-setting-preview-default="${author}"></span></span>',
-				"</body>",
-				"</html>",
+				"import { html } from 'lit';",
+				'export const view = () => html`<h1 title="Search settings">Settings</h1>`;',
+				"export const placeholder = 'Search settings';",
 				"",
 			].join("\n"),
 		);
-
-		const syncResult = syncWebviewsI18n(createTestLayerOptions(rootDir));
-		expect(syncResult.occurrenceCount).toBeGreaterThanOrEqual(3);
-
-		const context = createWebviewsDomainContext(createTestLayerOptions(rootDir));
-		const catalog = loadWebviewsCatalog(context);
-		const workset = loadWebviewsWorkset(context);
-		expect(catalog.domain).toBe("webviews");
-		expect(workset.domain).toBe("webviews");
-		expect(workset.entries.some((entry) => entry.source.includes("${author}"))).toBe(false);
-
-		saveWebviewsWorkset(context, {
-			...workset,
-			entries: workset.entries.map((entry) =>
-				entry.source === "Settings"
-					? { ...entry, status: "approved", translation: "设置" }
-					: entry.source === "Line History view"
-						? { ...entry, status: "approved", translation: "行历史视图" }
-						: entry.source === "Open Settings"
-							? { ...entry, status: "approved", translation: "打开设置" }
-							: entry.source === "Show View in Side Bar"
-								? { ...entry, status: "approved", translation: "在侧边栏中显示视图" }
-								: entry.source === "Adds a ${slot1}, hidden by default"
-									? { ...entry, status: "approved", translation: "添加${slot1}（默认隐藏）" }
-									: entry.source === "Example: ${slot1}"
-										? { ...entry, status: "approved", translation: "示例：${slot1}" }
-										: entry,
-			),
-		});
-
-		const promoteResult = promoteWebviewsAuthority(createTestLayerOptions(rootDir));
-		expect(promoteResult.promoted.length).toBeGreaterThanOrEqual(3);
-
-		const generateResult = generateWebviewsLocalizedOutputs(createTestLayerOptions(rootDir));
-		expect(generateResult.translatedCount).toBeGreaterThanOrEqual(3);
-
-		const localizedHtml = loadGeneratedSource(context, "src/webviews/apps/settings/settings.html");
-		expect(localizedHtml).toBeDefined();
-		expect(localizedHtml!).toContain("设置");
-		expect(localizedHtml!).toContain('title="打开设置"');
-		expect(localizedHtml!).toContain(
-			'<p>添加<a title="在侧边栏中显示视图" href="command:gitlens.showLineHistoryView">行历史视图</a>（默认隐藏）</p>',
-		);
-		expect(localizedHtml!).toContain("示例：");
-		expect(localizedHtml!).toContain("${author}");
-		expect(localizedHtml!).toContain('<html lang="zh-CN">');
-
-		const report = createPendingReport(createTestLayerOptions(rootDir));
-		expect(report.domain).toBe("webviews");
-	});
-});
-
-test("does not read localized dist when generating settings", () => {
-	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeTextFile(
 			rootDir,
-			"src/webviews/apps/settings/settings.html",
-			[
-				"<!doctype html>",
-				'<html lang="en">',
-				"<body>",
-				"\t<select>",
-				"\t\t<option>Toggles file changes from the commit</option>",
-				"\t</select>",
-				"</body>",
-				"</html>",
-				"",
-			].join("\n"),
+			"src/webviews/apps/settings/categories/general.ts",
+			"import { html } from 'lit';\nexport const view = () => html`<span>General settings</span>`;\n",
 		);
 
-		syncWebviewsI18n(createTestLayerOptions(rootDir));
-		const context = createWebviewsDomainContext(createTestLayerOptions(rootDir));
-		approveTranslations(context, {
-			"Toggles file changes from the commit": "切换该提交的文件更改",
-		});
-		promoteWebviewsAuthority(createTestLayerOptions(rootDir));
-		generateWebviewsLocalizedSettingsSources(createTestLayerOptions(rootDir));
-
-		const localizedHtml = loadGeneratedSource(context, "src/webviews/apps/settings/settings.html");
-		expect(localizedHtml ?? "").toMatch(/<html lang="zh-CN">/u);
-		expect(localizedHtml ?? "").toMatch(/切换该提交的文件更改/u);
-		expect(
-			fs.readFileSync(path.join(rootDir, "src", "webviews", "apps", "settings", "settings.html"), "utf8"),
-		).toMatch(/<html lang="en">/u);
-		expect(
-			fs.readFileSync(path.join(rootDir, "src", "webviews", "apps", "settings", "settings.html"), "utf8"),
-		).toMatch(/Toggles file changes from the commit/u);
-
-		syncWebviewsI18n(createTestLayerOptions(rootDir));
+		const options = createTestLayerOptions(rootDir);
+		syncWebviewsI18n(options);
+		const context = createWebviewsDomainContext(options);
 		const catalog = loadWebviewsCatalog(context);
-		const workset = loadWebviewsWorkset(context);
 		expect(
 			catalog.occurrences.some(
-				(occurrence) => occurrence.pattern.text === "Toggles file changes from the commit",
+				(occurrence) => occurrence.output?.kind === "runtime-key" && occurrence.output.bundle === "settings",
 			),
 		).toBe(true);
-		expect(catalog.occurrences.some((occurrence) => occurrence.pattern.text === "切换该提交的文件更改")).toBe(
-			false,
-		);
-		expect(workset.entries.some((entry) => entry.source === "切换该提交的文件更改")).toBe(false);
+
+		approveTranslations(context, {
+			Settings: "设置",
+			"Search settings": "搜索设置",
+			"General settings": "常规设置",
+		});
+		promoteWebviewsAuthority(options);
+		generateWebviewsLocalizedDynamicSources(options);
+
+		expect(loadGeneratedSource(context, "src/webviews/apps/settings/settings.ts")).toContain("设置");
+		expect(loadGeneratedSource(context, "src/webviews/apps/settings/categories/general.ts")).toContain("常规设置");
 	});
 });
 
@@ -145,10 +64,8 @@ test("preserves shared webview host entries during sync", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeTextFile(
 			rootDir,
-			"src/webviews/apps/settings/settings.html",
-			["<!doctype html>", '<html lang="en">', "<body>", "\t<h1>Settings</h1>", "</body>", "</html>", ""].join(
-				"\n",
-			),
+			"src/webviews/apps/settings/settings.ts",
+			"import { html } from 'lit';\nexport const view = () => html`<h1>Settings</h1>`;\n",
 		);
 
 		const context = createWebviewsDomainContext(createTestLayerOptions(rootDir));
@@ -317,6 +234,33 @@ test("preserves template expression discriminants during overlay", () => {
 		expect(localizedHome!).not.toMatch(/_activeTab === '最近'/u);
 		expect(localizedHome!).not.toMatch(/switchTab\('最近'\)/u);
 		expect(localizedHome!).not.toMatch(/activeView === '文件'/u);
+	});
+});
+
+test("does not extract literal-union call arguments as display text", () => {
+	withTempRoot("gitlens-webview-", (rootDir) => {
+		writeDefaultSettingsSource(rootDir);
+		writeTextFile(
+			rootDir,
+			"src/webviews/apps/plus/graph/components/status.ts",
+			[
+				"import { html } from 'lit';",
+				"function formatStatus(verb: 'Composing' | 'Reviewing' | 'Resolving') {",
+				"\treturn html`<span>${verb}...</span>`;",
+				"}",
+				"export function renderStatus(mode: 'compose' | 'review') {",
+				"\treturn formatStatus(mode === 'compose' ? 'Composing' : 'Reviewing');",
+				"}",
+				"export const resolving = formatStatus('Resolving');",
+				"",
+			].join("\n"),
+		);
+
+		syncWebviewsI18n(createTestLayerOptions(rootDir));
+		const catalog = loadWebviewsCatalog(createWebviewsDomainContext(createTestLayerOptions(rootDir)));
+		for (const discriminant of ["Composing", "Reviewing", "Resolving"]) {
+			expect(catalog.occurrences.some((occurrence) => occurrence.pattern.text === discriminant)).toBe(false);
+		}
 	});
 });
 
@@ -1318,105 +1262,6 @@ test("reports deferred runtime boundaries", () => {
 	});
 });
 
-test("preserves runtime anchors in localized settings", () => {
-	withTempRoot("gitlens-webview-", (rootDir) => {
-		writeTextFile(
-			rootDir,
-			"src/webviews/apps/settings/settings.html",
-			[
-				"<!doctype html>",
-				'<html lang="en">',
-				"<body>",
-				'\t<a id="version" title="Open CHANGELOG"></a>',
-				'\t<select id="scopes" name="scope"></select>',
-				'\t<div id="token-popup" data-component="autolink-integration"></div>',
-				'\t<section data-component="autolinks">Autolinks</section>',
-				"</body>",
-				"</html>",
-				"",
-			].join("\n"),
-		);
-
-		syncWebviewsI18n(createTestLayerOptions(rootDir));
-		const context = createWebviewsDomainContext(createTestLayerOptions(rootDir));
-		approveTranslations(context, {
-			Autolinks: "自动链接",
-			"Open CHANGELOG": "打开 CHANGELOG",
-		});
-		promoteWebviewsAuthority(createTestLayerOptions(rootDir));
-		generateWebviewsLocalizedSettingsSources(createTestLayerOptions(rootDir));
-
-		const localizedHtml = loadGeneratedSource(context, "src/webviews/apps/settings/settings.html");
-		expect(localizedHtml).toBeDefined();
-		for (const marker of [
-			'id="version"',
-			'id="scopes"',
-			'id="token-popup"',
-			'data-component="autolink-integration"',
-			'data-component="autolinks"',
-		]) {
-			expect(
-				localizedHtml!.includes(marker),
-				`localized settings source must preserve runtime marker ${marker}`,
-			).toBe(true);
-		}
-	});
-});
-
-test("preserves structural nodes in generated sources", () => {
-	withTempRoot("gitlens-webview-", (rootDir) => {
-		writeTextFile(
-			rootDir,
-			"src/webviews/apps/settings/settings.html",
-			[
-				"<!doctype html>",
-				'<html lang="en">',
-				"<body>",
-				"\t<header>",
-				"\t\t<h1><gitlens-logo></gitlens-logo> <small>Git Supercharged</small></h1>",
-				'\t\t<p><span>Version <a id="version" title="Open CHANGELOG" aria-label="Open CHANGELOG"></a></span><a title="Open Release Notes" href="https://example.com/releases">Release notes</a></p>',
-				"\t</header>",
-				"</body>",
-				"</html>",
-				"",
-			].join("\n"),
-		);
-
-		syncWebviewsI18n(createTestLayerOptions(rootDir));
-
-		const context = createWebviewsDomainContext(createTestLayerOptions(rootDir));
-		const workset = loadWebviewsWorkset(context);
-		saveWebviewsWorkset(context, {
-			...workset,
-			entries: workset.entries.map((entry) =>
-				entry.source === "Git Supercharged"
-					? { ...entry, status: "approved", translation: "Git 全面增强" }
-					: entry.source === "Open CHANGELOG"
-						? { ...entry, status: "approved", translation: "打开 CHANGELOG" }
-						: entry.source === "Open Release Notes"
-							? { ...entry, status: "approved", translation: "打开发布说明" }
-							: entry.source === "Release notes"
-								? { ...entry, status: "approved", translation: "发布说明" }
-								: entry.source === "Version"
-									? { ...entry, status: "approved", translation: "版本" }
-									: entry,
-			),
-		});
-
-		promoteWebviewsAuthority(createTestLayerOptions(rootDir));
-		generateWebviewsLocalizedOutputs(createTestLayerOptions(rootDir));
-
-		const localizedHtml = loadGeneratedSource(context, "src/webviews/apps/settings/settings.html");
-		expect(localizedHtml).toBeDefined();
-		expect(localizedHtml!).toContain("<gitlens-logo></gitlens-logo>");
-		expect(localizedHtml!).toContain('id="version"');
-		expect(localizedHtml!).toContain('title="打开 CHANGELOG"');
-		expect(localizedHtml!).toContain('aria-label="打开 CHANGELOG"');
-		expect(localizedHtml!).toContain("发布说明");
-		expect(localizedHtml!).toContain("版本");
-	});
-});
-
 test("preserves named slot subtrees", () => {
 	withTempRoot("gitlens-webview-", (rootDir) => {
 		writeDefaultSettingsSource(rootDir);
@@ -1606,11 +1451,7 @@ test("preserves graph popover menu structure", () => {
 });
 
 function writeDefaultSettingsSource(rootDir: string): void {
-	writeTextFile(
-		rootDir,
-		"src/webviews/apps/settings/settings.html",
-		["<!doctype html>", '<html lang="en">', "<body></body>", "</html>", ""].join("\n"),
-	);
+	writeTextFile(rootDir, "src/webviews/apps/settings/settings.ts", "export const settings = 'Settings';\n");
 }
 
 function loadGeneratedSource(

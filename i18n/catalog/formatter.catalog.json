@@ -2,7 +2,7 @@
 	"$schema": "../schemas/sourceCatalog.schema.json",
 	"version": 3,
 	"domain": "formatter",
-	"generatedAt": "2026-06-16T06:40:12.912Z",
+	"generatedAt": "2026-07-15T21:14:00.409Z",
 	"occurrences": [
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.html-title-795-17.html-title.6c6d54369b#html-title",
