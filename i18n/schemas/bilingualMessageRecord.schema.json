@@ -1,0 +1,48 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Bilingual Message Record",
+	"type": "object",
+	"definitions": {
+		"baseEntry": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["id", "kind", "source", "translation"],
+			"properties": {
+				"id": { "type": "string" },
+				"kind": { "enum": ["literal", "template", "rich"] },
+				"source": { "type": "string" },
+				"translation": { "type": "string" },
+				"slots": { "type": "array", "items": { "type": "string" } },
+				"format": { "const": "markdown" }
+			}
+		}
+	},
+	"anyOf": [
+		{
+			"allOf": [
+				{ "$ref": "#/definitions/baseEntry" },
+				{
+					"properties": { "kind": { "const": "literal" } }
+				}
+			]
+		},
+		{
+			"allOf": [
+				{ "$ref": "#/definitions/baseEntry" },
+				{
+					"properties": { "kind": { "const": "template" } },
+					"required": ["slots"]
+				}
+			]
+		},
+		{
+			"allOf": [
+				{ "$ref": "#/definitions/baseEntry" },
+				{
+					"properties": { "kind": { "const": "rich" } },
+					"required": ["format", "slots"]
+				}
+			]
+		}
+	]
+}

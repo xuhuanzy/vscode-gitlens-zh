@@ -1,0 +1,75 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Translation Workset",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["$schema", "version", "locale", "domain", "generatedAt", "entries"],
+	"properties": {
+		"$schema": { "type": "string" },
+		"version": { "const": 2 },
+		"locale": { "type": "string", "minLength": 1 },
+		"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "webviewHost"] },
+		"generatedAt": { "type": "string", "format": "date-time" },
+		"entries": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/entry" }
+		}
+	},
+	"definitions": {
+		"translationValue": {
+			"anyOf": [{ "type": "string" }, { "type": "null" }]
+		},
+		"baseEntry": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["id", "kind", "source", "translation", "sourceHash", "occurrenceIds", "status"],
+			"properties": {
+				"id": { "type": "string" },
+				"kind": { "enum": ["literal", "template", "rich"] },
+				"source": { "type": "string" },
+				"translation": { "$ref": "#/definitions/translationValue" },
+				"slots": { "type": "array", "items": { "type": "string" } },
+				"format": { "const": "markdown" },
+				"sourceHash": { "type": "string" },
+				"occurrenceIds": {
+					"type": "array",
+					"minItems": 1,
+					"uniqueItems": true,
+					"items": { "type": "string" }
+				},
+				"status": { "enum": ["pending", "translated", "needsReview", "approved"] },
+				"note": { "type": "string" }
+			}
+		},
+		"entry": {
+			"anyOf": [
+				{
+					"allOf": [
+						{ "$ref": "#/definitions/baseEntry" },
+						{
+							"properties": { "kind": { "const": "literal" } }
+						}
+					]
+				},
+				{
+					"allOf": [
+						{ "$ref": "#/definitions/baseEntry" },
+						{
+							"properties": { "kind": { "const": "template" } },
+							"required": ["slots"]
+						}
+					]
+				},
+				{
+					"allOf": [
+						{ "$ref": "#/definitions/baseEntry" },
+						{
+							"properties": { "kind": { "const": "rich" } },
+							"required": ["format", "slots"]
+						}
+					]
+				}
+			]
+		}
+	}
+}

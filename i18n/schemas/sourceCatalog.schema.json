@@ -1,0 +1,99 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Source Catalog",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["$schema", "version", "domain", "generatedAt", "occurrences"],
+	"properties": {
+		"$schema": { "type": "string" },
+		"version": { "const": 3 },
+		"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "webviewHost"] },
+		"generatedAt": { "type": "string", "format": "date-time" },
+		"occurrences": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/occurrence" }
+		}
+	},
+	"definitions": {
+		"sourceReference": {
+			"anyOf": [
+				{
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["kind", "file", "segments"],
+					"properties": {
+						"kind": { "const": "json" },
+						"file": { "type": "string" },
+						"segments": {
+							"type": "array",
+							"items": {
+								"anyOf": [{ "type": "string" }, { "type": "integer" }]
+							}
+						}
+					}
+				},
+				{
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["kind", "file", "syntax", "start", "end"],
+					"properties": {
+						"kind": { "const": "source" },
+						"file": { "type": "string" },
+						"syntax": { "type": "string" },
+						"start": { "$ref": "#/definitions/position" },
+						"end": { "$ref": "#/definitions/position" },
+						"attribute": { "type": "string" }
+					}
+				}
+			]
+		},
+		"position": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["line", "column"],
+			"properties": {
+				"line": { "type": "integer", "minimum": 1 },
+				"column": { "type": "integer", "minimum": 1 }
+			}
+		},
+		"outputReference": {
+			"anyOf": [
+				{
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["kind", "key"],
+					"properties": {
+						"kind": { "const": "manifest-key" },
+						"key": { "type": "string" }
+					}
+				},
+				{
+					"type": "object",
+					"additionalProperties": false,
+					"required": ["kind", "bundle", "key"],
+					"properties": {
+						"kind": { "const": "runtime-key" },
+						"bundle": { "type": "string" },
+						"key": { "type": "string" }
+					}
+				}
+			]
+		},
+		"occurrence": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["id", "domain", "scope", "anchor", "slot", "authorityId", "pattern", "reference"],
+			"properties": {
+				"id": { "type": "string" },
+				"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "webviewHost"] },
+				"scope": { "type": "string" },
+				"anchor": { "type": "string" },
+				"slot": { "type": "string" },
+				"authorityId": { "type": "string" },
+				"pattern": { "$ref": "./messagePattern.schema.json" },
+				"reference": { "$ref": "#/definitions/sourceReference" },
+				"output": { "$ref": "#/definitions/outputReference" }
+			}
+		}
+	}
+}

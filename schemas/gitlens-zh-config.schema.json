@@ -1,0 +1,19 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["upstream"],
+	"properties": {
+		"$schema": { "type": "string" },
+		"upstream": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["repository", "tag", "commit"],
+			"properties": {
+				"repository": { "type": "string", "minLength": 1 },
+				"tag": { "type": "string", "minLength": 1 },
+				"commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" }
+			}
+		}
+	}
+}

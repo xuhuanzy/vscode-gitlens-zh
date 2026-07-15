@@ -1,0 +1,7 @@
+repos:
+    - repo: local
+      hooks:
+          - id: oxfmt
+            name: oxfmt
+            entry: pnpm exec oxfmt --no-error-on-unmatched-pattern
+            language: system

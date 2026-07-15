@@ -1,0 +1,23 @@
+{
+	"name": "gitlens-zh-layer",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"glzh": "node ./scripts/glzh.mts",
+		"format": "oxfmt .",
+		"format:check": "oxfmt --check .",
+		"check": "tsc",
+		"test": "node --test i18n/**/__tests__/*.test.mts scripts/__tests__/*.test.mts"
+	},
+	"devDependencies": {
+		"@types/node": "22.15.21",
+		"oxfmt": "^0.58.0",
+		"typescript": "6.0.3"
+	},
+	"engines": {
+		"node": ">=22.18.0",
+		"pnpm": ">=11.5.1 <12"
+	},
+	"packageManager": "pnpm@11.5.1"
+}

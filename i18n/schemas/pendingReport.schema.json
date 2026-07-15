@@ -1,0 +1,61 @@
+{
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"title": "Pending Localization Report",
+	"type": "object",
+	"additionalProperties": false,
+	"required": ["$schema", "version", "locale", "domain", "generatedAt", "counts", "coverage", "items"],
+	"properties": {
+		"$schema": { "type": "string" },
+		"version": { "const": 1 },
+		"locale": { "type": "string", "minLength": 1 },
+		"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "webviewHost"] },
+		"generatedAt": { "type": "string", "format": "date-time" },
+		"counts": { "$ref": "#/definitions/counts" },
+		"coverage": { "$ref": "#/definitions/coverage" },
+		"items": {
+			"type": "array",
+			"items": { "$ref": "#/definitions/item" }
+		}
+	},
+	"definitions": {
+		"counts": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["total", "pending", "translated", "needsReview", "approved", "promotable"],
+			"properties": {
+				"total": { "type": "integer", "minimum": 0 },
+				"pending": { "type": "integer", "minimum": 0 },
+				"translated": { "type": "integer", "minimum": 0 },
+				"needsReview": { "type": "integer", "minimum": 0 },
+				"approved": { "type": "integer", "minimum": 0 },
+				"promotable": { "type": "integer", "minimum": 0 }
+			}
+		},
+		"coverage": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["catalogOccurrences", "resolvedOccurrences", "unresolvedOccurrences", "readyForGeneration"],
+			"properties": {
+				"catalogOccurrences": { "type": "integer", "minimum": 0 },
+				"resolvedOccurrences": { "type": "integer", "minimum": 0 },
+				"unresolvedOccurrences": { "type": "integer", "minimum": 0 },
+				"readyForGeneration": { "type": "boolean" }
+			}
+		},
+		"item": {
+			"type": "object",
+			"additionalProperties": false,
+			"required": ["id", "status", "occurrenceIds"],
+			"properties": {
+				"id": { "type": "string" },
+				"status": { "enum": ["pending", "translated", "needsReview", "approved"] },
+				"occurrenceIds": {
+					"type": "array",
+					"minItems": 1,
+					"uniqueItems": true,
+					"items": { "type": "string" }
+				}
+			}
+		}
+	}
+}

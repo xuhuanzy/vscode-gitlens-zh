@@ -1,0 +1,47 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "glzh: prepare",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["glzh", "dev", "prepare"],
+			"options": { "cwd": "${workspaceFolder}" },
+			"problemMatcher": []
+		},
+		{
+			"label": "glzh: watch",
+			"type": "shell",
+			"command": "pnpm",
+			"args": ["glzh", "dev", "watch"],
+			"options": { "cwd": "${workspaceFolder}" },
+			"isBackground": true,
+			"problemMatcher": {
+				"owner": "typescript",
+				"source": "ts",
+				"applyTo": "closedDocuments",
+				"fileLocation": ["relative", "${workspaceFolder}/.upstream"],
+				"pattern": [
+					{
+						"kind": "location",
+						"regexp": "(ERROR|WARNING) in (.*?):(\\d+):(\\d+)",
+						"severity": 1,
+						"file": 2,
+						"line": 3,
+						"column": 4
+					},
+					{
+						"regexp": "\\s*TS(\\d+):\\s*(.*)$",
+						"code": 1,
+						"message": 2
+					}
+				],
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "\\[build\\] Compilation starting",
+					"endsPattern": "\\[build\\] Compiled (successfully|with problems)"
+				}
+			}
+		}
+	]
+}

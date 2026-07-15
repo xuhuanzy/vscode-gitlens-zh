@@ -1,0 +1,8 @@
+{
+	"$schema": "./schemas/gitlens-zh-config.schema.json",
+	"upstream": {
+		"repository": "https://github.com/gitkraken/vscode-gitlens.git",
+		"tag": "v18.2.0",
+		"commit": "de0e444891dec080027f33472cefbf62c5eda4c7"
+	}
+}

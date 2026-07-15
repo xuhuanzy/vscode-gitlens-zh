@@ -1,0 +1,8 @@
+{
+	"$schema": "../schemas/translationWorkset.schema.json",
+	"version": 2,
+	"locale": "zh-cn",
+	"domain": "webviews",
+	"generatedAt": "2026-06-16T06:39:20.270Z",
+	"entries": []
+}

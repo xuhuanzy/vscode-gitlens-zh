@@ -1,0 +1,1155 @@
+import * as ts from "typescript";
+
+import type { AuthorityBundle, MessagePattern, SourceOccurrence } from "../../core/model.mts";
+import { resolveOccurrenceTranslation } from "../../core/authority.mts";
+
+import {
+	collectElementContentPattern,
+	getContentRangeKey,
+	parseHtmlDocument,
+	shouldExtractRootContent,
+	visitHtmlElements,
+	type HtmlElementNode,
+	type HtmlNode,
+} from "./html.mts";
+import { extractHtmlMatches } from "./extractor.mts";
+import { buildSyntheticHtmlTemplateFragment, buildSyntheticTextTemplateFragment } from "./template.mts";
+import { createDisplayContextAnalyzer } from "./displayContext.mts";
+
+export interface GeneratedWebviewHtmlSourceOutputs {
+	readonly localizedHtml: string;
+	readonly translatedCount: number;
+	readonly unresolvedCount: number;
+}
+
+export interface GeneratedWebviewLocalizedSourceFile {
+	readonly contents: string;
+	readonly translatedCount: number;
+	readonly unresolvedCount: number;
+}
+
+interface ResolvedHtmlOccurrence {
+	readonly start: number;
+	readonly end: number;
+	readonly attribute?: string;
+	readonly resolved: MessagePattern;
+}
+
+const translatableJsxAttributeNames = new Set([
+	"title",
+	"aria-label",
+	"placeholder",
+	"tooltip",
+	"label",
+	"alt-label",
+	"banner-title",
+	"primary-button",
+	"secondary-button",
+]);
+const translatableAttributesByTag = new Map([["gl-tooltip", new Set(["content"])]]);
+const translatablePropertyAssignmentNames = new Set(["title"]);
+const translatablePropertyDeclarationNames = new Set(["explanationLabel", "placeholder"]);
+const {
+	hasHtmlTemplateAncestor,
+	hasRenderedJsxExpressionAncestor,
+	hasImperativeDisplayContextAncestor,
+	isImperativeDisplayPropertyValue,
+} = createDisplayContextAnalyzer({
+	isHtmlTemplateTag: isHtmlTemplateTag,
+	getPropertyName: getPropertyName,
+	getStaticStringValue: getStaticStringValue,
+	getJsxAttributeName: getJsxAttributeName,
+	getJsxElementTagName: getJsxElementTagName,
+	isTranslatableAttribute: isTranslatableAttribute,
+});
+
+/** 将已解析 occurrence 应用到 HTML 源码, 并保留未覆盖的结构和原文. */
+export function generateLocalizedHtmlSourceFile(
+	englishHtml: string,
+	sourceFilePath: string,
+	occurrences: readonly SourceOccurrence[],
+	bundle: AuthorityBundle,
+	options?: { readonly htmlLang?: string },
+): GeneratedWebviewHtmlSourceOutputs {
+	const resolvedOccurrences: ResolvedHtmlOccurrence[] = [];
+	let unresolvedCount = 0;
+
+	for (const occurrence of occurrences) {
+		if (occurrence.reference.kind !== "source" || occurrence.reference.file !== sourceFilePath) continue;
+		if (occurrence.output?.kind !== "runtime-key") continue;
+
+		const resolved = resolveOccurrenceTranslation(occurrence, bundle);
+		if (resolved == null) {
+			unresolvedCount++;
+			continue;
+		}
+
+		resolvedOccurrences.push({
+			start: lineColumnToOffset(englishHtml, occurrence.reference.start.line, occurrence.reference.start.column),
+			end: lineColumnToOffset(englishHtml, occurrence.reference.end.line, occurrence.reference.end.column),
+			attribute: occurrence.reference.attribute,
+			resolved: resolved,
+		});
+	}
+
+	return localizeHtmlFragment(englishHtml, resolvedOccurrences, {
+		htmlLang: options?.htmlLang,
+		unresolvedCount: unresolvedCount,
+	});
+}
+
+/** 将已解析 occurrence 应用到 TypeScript, TSX 或 JSX 源码副本. */
+export function generateLocalizedSourceFile(
+	sourceText: string,
+	sourceFilePath: string,
+	occurrences: readonly SourceOccurrence[],
+	bundle: AuthorityBundle,
+): GeneratedWebviewLocalizedSourceFile {
+	const relevantOccurrences = occurrences.filter(
+		(occurrence) =>
+			occurrence.output?.kind === "runtime-key" &&
+			occurrence.reference.kind === "source" &&
+			occurrence.reference.file === sourceFilePath,
+	);
+	const availableSourceTexts = new Set(relevantOccurrences.map((occurrence) => occurrence.pattern.text));
+	const resolvedBySourceText = new Map<string, MessagePattern>();
+
+	for (const occurrence of relevantOccurrences) {
+		const resolved = resolveOccurrenceTranslation(occurrence, bundle);
+		if (resolved == null || resolvedBySourceText.has(occurrence.pattern.text)) continue;
+
+		resolvedBySourceText.set(occurrence.pattern.text, resolved);
+	}
+
+	const sourceFile = ts.createSourceFile(
+		sourceFilePath,
+		sourceText,
+		ts.ScriptTarget.Latest,
+		true,
+		getScriptKindFromFilePath(sourceFilePath),
+	);
+	const replacements: Array<{ readonly start: number; readonly end: number; readonly value: string }> = [];
+	let translatedCount = 0;
+	let unresolvedCount = 0;
+
+	const visit = (node: ts.Node): void => {
+		ts.forEachChild(node, visit);
+
+		if (ts.isTaggedTemplateExpression(node) && isHtmlTemplateTag(node.tag, sourceFile)) {
+			const localized = localizeRuntimeTemplate(
+				node.template,
+				sourceFile,
+				availableSourceTexts,
+				resolvedBySourceText,
+				replacements,
+			);
+			translatedCount += localized.translatedCount;
+			unresolvedCount += localized.unresolvedCount;
+
+			if (localized.value != null) {
+				replacements.push({
+					start: node.template.getStart(sourceFile),
+					end: node.template.getEnd(),
+					value: localized.value,
+				});
+			}
+		}
+
+		if (ts.isJsxText(node)) {
+			const localized = localizeJsxTextNode(node, sourceFile, availableSourceTexts, resolvedBySourceText);
+			translatedCount += localized.translatedCount;
+			unresolvedCount += localized.unresolvedCount;
+
+			if (localized.value != null) {
+				replacements.push({
+					start: node.getStart(sourceFile),
+					end: node.getEnd(),
+					value: localized.value,
+				});
+			}
+		}
+
+		if (ts.isJsxAttribute(node)) {
+			const localized = localizeJsxAttribute(node, sourceFile, availableSourceTexts, resolvedBySourceText);
+			translatedCount += localized.translatedCount;
+			unresolvedCount += localized.unresolvedCount;
+
+			if (localized.value != null && node.initializer != null) {
+				replacements.push({
+					start: node.initializer.getStart(sourceFile),
+					end: node.initializer.getEnd(),
+					value: localized.value,
+				});
+			}
+		}
+
+		if (ts.isPropertyAssignment(node)) {
+			const localized = localizeImperativePropertyAssignment(
+				node,
+				sourceFile,
+				availableSourceTexts,
+				resolvedBySourceText,
+			);
+			translatedCount += localized.translatedCount;
+			unresolvedCount += localized.unresolvedCount;
+
+			if (localized.value != null) {
+				replacements.push({
+					start: node.initializer.getStart(sourceFile),
+					end: node.initializer.getEnd(),
+					value: localized.value,
+				});
+			}
+		}
+
+		if (ts.isPropertyDeclaration(node)) {
+			const localized = localizeImperativePropertyDeclaration(
+				node,
+				sourceFile,
+				availableSourceTexts,
+				resolvedBySourceText,
+			);
+			translatedCount += localized.translatedCount;
+			unresolvedCount += localized.unresolvedCount;
+
+			if (localized.value != null && node.initializer != null) {
+				replacements.push({
+					start: node.initializer.getStart(sourceFile),
+					end: node.initializer.getEnd(),
+					value: localized.value,
+				});
+			}
+		}
+
+		if (
+			(ts.isStringLiteralLike(node) || ts.isTemplateExpression(node)) &&
+			!hasHtmlTemplateAncestor(node, sourceFile)
+		) {
+			const localized = localizeImperativeDisplayNode(
+				node,
+				sourceFile,
+				availableSourceTexts,
+				resolvedBySourceText,
+				replacements,
+			);
+			translatedCount += localized.translatedCount;
+			unresolvedCount += localized.unresolvedCount;
+
+			if (localized.value != null) {
+				replacements.push({
+					start: node.getStart(sourceFile),
+					end: node.getEnd(),
+					value: localized.value,
+				});
+			}
+		}
+	};
+
+	visit(sourceFile);
+	const effectiveReplacements = filterNestedReplacements(replacements);
+
+	return {
+		contents: repairTemplateArgumentSeparators(applyReplacements(sourceText, effectiveReplacements)),
+		translatedCount: translatedCount,
+		unresolvedCount: unresolvedCount,
+	};
+}
+
+function localizeHtmlFragment(
+	englishHtml: string,
+	occurrences: readonly ResolvedHtmlOccurrence[],
+	options?: {
+		readonly htmlLang?: string;
+		readonly unresolvedCount?: number;
+	},
+): GeneratedWebviewHtmlSourceOutputs {
+	const root = parseHtmlDocument(englishHtml);
+	const elements: HtmlElementNode[] = [];
+	const contentNodes = new Map<string, HtmlElementNode>();
+	if (shouldExtractRootContent(root)) {
+		contentNodes.set(getContentRangeKey(root.openTagEnd, root.closeTagStart), root);
+	}
+	visitHtmlElements(root, (element) => {
+		elements.push(element);
+		contentNodes.set(getContentRangeKey(element.openTagEnd, element.closeTagStart), element);
+	});
+
+	const contentOccurrences = new Map<string, ResolvedHtmlOccurrence>();
+	const attributeOccurrencesByElementStart = new Map<number, ResolvedHtmlOccurrence[]>();
+	let translatedCount = 0;
+	let unresolvedCount = options?.unresolvedCount ?? 0;
+
+	for (const occurrence of occurrences) {
+		if (occurrence.attribute == null) {
+			const key = getContentRangeKey(occurrence.start, occurrence.end);
+			if (!contentNodes.has(key)) {
+				unresolvedCount++;
+				continue;
+			}
+
+			contentOccurrences.set(key, occurrence);
+			translatedCount++;
+			continue;
+		}
+
+		const owner = findOwningElement(elements, occurrence.start, occurrence.end);
+		if (owner == null) {
+			unresolvedCount++;
+			continue;
+		}
+
+		const existing = attributeOccurrencesByElementStart.get(owner.start);
+		if (existing == null) {
+			attributeOccurrencesByElementStart.set(owner.start, [occurrence]);
+		} else {
+			existing.push(occurrence);
+		}
+		translatedCount++;
+	}
+
+	const renderCache = new Map<string, string>();
+	const replacements: Array<{ readonly start: number; readonly end: number; readonly value: string }> = [];
+	const topLevelContentOccurrences = [...contentOccurrences.values()].filter(
+		(occurrence) =>
+			![...contentOccurrences.values()].some(
+				(other) =>
+					other !== occurrence &&
+					other.start <= occurrence.start &&
+					other.end >= occurrence.end &&
+					(other.start !== occurrence.start || other.end !== occurrence.end),
+			),
+	);
+
+	for (const resolvedOccurrence of topLevelContentOccurrences) {
+		const node = contentNodes.get(getContentRangeKey(resolvedOccurrence.start, resolvedOccurrence.end));
+		if (node == null) continue;
+		replacements.push({
+			start: resolvedOccurrence.start,
+			end: resolvedOccurrence.end,
+			value: renderPatternContent(
+				node,
+				resolvedOccurrence.resolved,
+				englishHtml,
+				contentOccurrences,
+				attributeOccurrencesByElementStart,
+				renderCache,
+			),
+		});
+	}
+
+	for (const attributeOccurrences of attributeOccurrencesByElementStart.values()) {
+		for (const resolvedOccurrence of attributeOccurrences) {
+			if (isWithinAnyRange(resolvedOccurrence.start, resolvedOccurrence.end, topLevelContentOccurrences)) {
+				continue;
+			}
+
+			replacements.push({
+				start: resolvedOccurrence.start,
+				end: resolvedOccurrence.end,
+				value: escapeHtmlAttribute(resolvedOccurrence.resolved.text),
+			});
+		}
+	}
+
+	let localizedHtml = applyReplacements(englishHtml, replacements);
+	if (options?.htmlLang != null) {
+		localizedHtml = localizedHtml.replace(
+			/<html\b([^>]*)\blang="en"([^>]*)>/u,
+			`<html$1lang="${options.htmlLang}"$2>`,
+		);
+	}
+
+	return {
+		localizedHtml: localizedHtml,
+		translatedCount: translatedCount,
+		unresolvedCount: unresolvedCount,
+	};
+}
+
+function renderNodeHtml(
+	node: HtmlNode,
+	englishHtml: string,
+	contentOccurrences: ReadonlyMap<string, ResolvedHtmlOccurrence>,
+	attributeOccurrencesByElementStart: ReadonlyMap<number, readonly ResolvedHtmlOccurrence[]>,
+	cache: Map<string, string>,
+): string {
+	if (node.kind === "text") {
+		return englishHtml.slice(node.start, node.end);
+	}
+
+	const cacheKey = `${node.start}:${node.end}`;
+	const cached = cache.get(cacheKey);
+	if (cached != null) return cached;
+
+	let openTag = englishHtml.slice(node.start, node.openTagEnd);
+	const attributeOccurrences = attributeOccurrencesByElementStart.get(node.start) ?? [];
+	if (attributeOccurrences.length !== 0) {
+		openTag = applyReplacements(
+			openTag,
+			attributeOccurrences.map((occurrence) => ({
+				start: occurrence.start - node.start,
+				end: occurrence.end - node.start,
+				value: escapeHtmlAttribute(occurrence.resolved.text),
+			})),
+		);
+	}
+
+	if (node.end === node.openTagEnd) {
+		cache.set(cacheKey, openTag);
+		return openTag;
+	}
+
+	const rendered = `${openTag}${renderElementInnerHtml(
+		node,
+		englishHtml,
+		contentOccurrences,
+		attributeOccurrencesByElementStart,
+		cache,
+	)}${englishHtml.slice(node.closeTagStart, node.end)}`;
+	cache.set(cacheKey, rendered);
+	return rendered;
+}
+
+function renderElementInnerHtml(
+	element: HtmlElementNode,
+	englishHtml: string,
+	contentOccurrences: ReadonlyMap<string, ResolvedHtmlOccurrence>,
+	attributeOccurrencesByElementStart: ReadonlyMap<number, readonly ResolvedHtmlOccurrence[]>,
+	cache: Map<string, string>,
+): string {
+	const contentOccurrence = contentOccurrences.get(getContentRangeKey(element.openTagEnd, element.closeTagStart));
+	if (contentOccurrence != null) {
+		return renderPatternContent(
+			element,
+			contentOccurrence.resolved,
+			englishHtml,
+			contentOccurrences,
+			attributeOccurrencesByElementStart,
+			cache,
+		);
+	}
+
+	return element.children
+		.map((child) =>
+			renderNodeHtml(child, englishHtml, contentOccurrences, attributeOccurrencesByElementStart, cache),
+		)
+		.join("");
+}
+
+function renderPatternContent(
+	element: HtmlElementNode,
+	resolved: MessagePattern,
+	englishHtml: string,
+	contentOccurrences: ReadonlyMap<string, ResolvedHtmlOccurrence>,
+	attributeOccurrencesByElementStart: ReadonlyMap<number, readonly ResolvedHtmlOccurrence[]>,
+	cache: Map<string, string>,
+): string {
+	switch (resolved.kind) {
+		case "template": {
+			const pattern = collectElementContentPattern(element);
+			if (pattern == null) {
+				return escapeHtmlText(resolved.text);
+			}
+
+			const slotHtml = new Map(
+				pattern.slots.map((slot) => [
+					slot.name,
+					renderNodeHtml(
+						slot.node,
+						englishHtml,
+						contentOccurrences,
+						attributeOccurrencesByElementStart,
+						cache,
+					),
+				]),
+			);
+			const preserveHtml = pattern.preserves.map((preserve) => ({
+				gapIndex: preserve.gapIndex,
+				html: renderNodeHtml(
+					preserve.node,
+					englishHtml,
+					contentOccurrences,
+					attributeOccurrencesByElementStart,
+					cache,
+				),
+			}));
+			return renderLocalizedPattern(resolved.text, slotHtml, preserveHtml);
+		}
+		case "literal":
+		case "rich":
+			return renderLocalizedPattern(
+				resolved.text,
+				new Map<string, string>(),
+				(collectElementContentPattern(element)?.preserves ?? []).map((preserve) => ({
+					gapIndex: preserve.gapIndex,
+					html: renderNodeHtml(
+						preserve.node,
+						englishHtml,
+						contentOccurrences,
+						attributeOccurrencesByElementStart,
+						cache,
+					),
+				})),
+			);
+	}
+}
+
+function renderLocalizedPattern(
+	text: string,
+	slotHtml: ReadonlyMap<string, string>,
+	preserveHtml: ReadonlyArray<{ readonly gapIndex: number; readonly html: string }>,
+): string {
+	const segments: string[] = [];
+	let lastIndex = 0;
+	for (const match of text.matchAll(/\$\{([^}]+)\}/gu)) {
+		const [placeholder, slotName] = match;
+		const matchIndex = match.index ?? 0;
+		const literal = text.slice(lastIndex, matchIndex);
+		if (literal.length !== 0) {
+			segments.push(escapeHtmlText(literal));
+		}
+		segments.push(slotHtml.get(slotName) ?? placeholder);
+		lastIndex = matchIndex + placeholder.length;
+	}
+
+	const tail = text.slice(lastIndex);
+	if (tail.length !== 0) {
+		segments.push(escapeHtmlText(tail));
+	}
+
+	return mergePreservedHtml(segments, preserveHtml);
+}
+
+function mergePreservedHtml(
+	segments: readonly string[],
+	preserveHtml: ReadonlyArray<{ readonly gapIndex: number; readonly html: string }>,
+): string {
+	if (segments.length === 0 && preserveHtml.length === 0) return "";
+
+	const byGap = new Map<number, string[]>();
+	for (const preserve of preserveHtml) {
+		const entries = byGap.get(preserve.gapIndex);
+		if (entries == null) {
+			byGap.set(preserve.gapIndex, [preserve.html]);
+		} else {
+			entries.push(preserve.html);
+		}
+	}
+
+	let result = (byGap.get(0) ?? []).join("");
+	for (let index = 0; index < segments.length; index++) {
+		result += segments[index];
+		result += (byGap.get(index + 1) ?? []).join("");
+	}
+
+	for (const [gapIndex, html] of byGap) {
+		if (gapIndex <= segments.length) continue;
+		result += html.join("");
+	}
+
+	return result;
+}
+
+function findOwningElement(
+	elements: readonly HtmlElementNode[],
+	start: number,
+	end: number,
+): HtmlElementNode | undefined {
+	return elements.find((element) => element.start <= start && element.openTagEnd >= end);
+}
+
+function applyReplacements(
+	source: string,
+	replacements: ReadonlyArray<{ readonly start: number; readonly end: number; readonly value: string }>,
+): string {
+	let result = source;
+	for (const replacement of [...replacements].sort((left, right) => right.start - left.start)) {
+		result = `${result.slice(0, replacement.start)}${replacement.value}${result.slice(replacement.end)}`;
+	}
+	return result;
+}
+
+function repairTemplateArgumentSeparators(source: string): string {
+	// Localized template-expression replacements can occasionally swallow the original comma that
+	// separates the next literal argument in bundled JS callsites.
+	return source.replace(/(`(?:\\.|[^`\n])*`)(\s+)(["'])/gu, "$1,$2$3");
+}
+
+function isWithinAnyRange(
+	start: number,
+	end: number,
+	ranges: ReadonlyArray<{ readonly start: number; readonly end: number }>,
+): boolean {
+	return ranges.some((range) => range.start <= start && range.end >= end);
+}
+
+function escapeHtmlText(text: string): string {
+	const preservedEntities: string[] = [];
+	const protectedText = text.replace(/&(?:#(?:x[a-fA-F0-9]+|\d+)|[a-zA-Z][a-zA-Z0-9]+);/gu, (entity) => {
+		preservedEntities.push(entity);
+		return `__GL_I18N_ENTITY_${preservedEntities.length - 1}__`;
+	});
+
+	return protectedText
+		.replaceAll("&", "&amp;")
+		.replaceAll("<", "&lt;")
+		.replaceAll(">", "&gt;")
+		.replace(/__GL_I18N_ENTITY_(\d+)__/gu, (_, index: string) => preservedEntities[Number(index)] ?? "");
+}
+
+function escapeHtmlAttribute(text: string): string {
+	return escapeHtmlText(text).replaceAll('"', "&quot;");
+}
+
+function lineColumnToOffset(text: string, line: number, column: number): number {
+	let currentLine = 1;
+	let currentColumn = 1;
+	for (let index = 0; index < text.length; index++) {
+		if (currentLine === line && currentColumn === column) {
+			return index;
+		}
+
+		if (text[index] === "\n") {
+			currentLine++;
+			currentColumn = 1;
+		} else {
+			currentColumn++;
+		}
+	}
+
+	return text.length;
+}
+
+function localizeRuntimeTemplate(
+	template: ts.TemplateLiteral,
+	sourceFile: ts.SourceFile,
+	availableSourceTexts: ReadonlySet<string>,
+	resolvedBySourceText: ReadonlyMap<string, MessagePattern>,
+	existingReplacements: ReadonlyArray<{ readonly start: number; readonly end: number; readonly value: string }>,
+): { readonly value?: string; readonly translatedCount: number; readonly unresolvedCount: number } {
+	const fragment = buildSyntheticHtmlTemplateFragment(
+		template,
+		sourceFile,
+		(expression) => `\${${getNodeTextWithNestedReplacements(expression, sourceFile, existingReplacements)}}`,
+	);
+	if (!hasLocalizableLiteralHtml(fragment.html)) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+	const resolvedOccurrences: ResolvedHtmlOccurrence[] = [];
+	let unresolvedCount = 0;
+
+	for (const match of extractHtmlMatches(fragment.html)) {
+		if (shouldPreserveEnglishSourceText(sourceFile.fileName, match.text)) continue;
+		if (!availableSourceTexts.has(match.text)) continue;
+
+		const resolved = resolvedBySourceText.get(match.text);
+		if (resolved == null) {
+			unresolvedCount++;
+			continue;
+		}
+
+		resolvedOccurrences.push({
+			start: match.start,
+			end: match.end,
+			attribute: match.attribute,
+			resolved: resolved,
+		});
+	}
+
+	if (resolvedOccurrences.length === 0) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: unresolvedCount,
+		};
+	}
+
+	const localized = localizeHtmlFragment(fragment.html, resolvedOccurrences, {
+		unresolvedCount: unresolvedCount,
+	});
+	const value = `\`${renderLocalizedTemplateLiteralContent(localized.localizedHtml, fragment.expressions)}\``;
+	const currentValue = getNodeTextWithNestedReplacements(template, sourceFile, existingReplacements);
+
+	return {
+		value: value === currentValue ? undefined : value,
+		translatedCount: localized.translatedCount,
+		unresolvedCount: localized.unresolvedCount,
+	};
+}
+
+function hasLocalizableLiteralHtml(html: string): boolean {
+	const stripped = html
+		.replace(/<gl-i18n-slot data-slot="slot\d+"><\/gl-i18n-slot>/gu, "")
+		.replace(/__GL_I18N_SLOT_slot\d+__/gu, "")
+		.trim();
+
+	return /[\p{L}\p{N}]/u.test(stripped);
+}
+
+function getNodeTextWithNestedReplacements(
+	node: ts.Node,
+	sourceFile: ts.SourceFile,
+	replacements: ReadonlyArray<{ readonly start: number; readonly end: number; readonly value: string }>,
+): string {
+	const start = node.getStart(sourceFile);
+	const end = node.getEnd();
+	const nested = filterNestedReplacements(
+		replacements.filter((replacement) => replacement.start >= start && replacement.end <= end),
+	);
+	if (nested.length === 0) {
+		return sourceFile.text.slice(start, end);
+	}
+
+	return applyReplacements(
+		sourceFile.text.slice(start, end),
+		nested.map((replacement) => ({
+			start: replacement.start - start,
+			end: replacement.end - start,
+			value: replacement.value,
+		})),
+	);
+}
+
+function filterNestedReplacements(
+	replacements: ReadonlyArray<{ readonly start: number; readonly end: number; readonly value: string }>,
+): Array<{ readonly start: number; readonly end: number; readonly value: string }> {
+	return replacements.filter(
+		(replacement) =>
+			!replacements.some(
+				(other) =>
+					other !== replacement &&
+					other.start <= replacement.start &&
+					other.end >= replacement.end &&
+					(other.start !== replacement.start || other.end !== replacement.end),
+			),
+	);
+}
+
+function localizeImperativePropertyAssignment(
+	node: ts.PropertyAssignment,
+	sourceFile: ts.SourceFile,
+	availableSourceTexts: ReadonlySet<string>,
+	resolvedBySourceText: ReadonlyMap<string, MessagePattern>,
+): { readonly value?: string; readonly translatedCount: number; readonly unresolvedCount: number } {
+	const propertyName = getPropertyName(node.name);
+	if (propertyName == null || !translatablePropertyAssignmentNames.has(propertyName)) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+
+	const text = getStaticStringValue(node.initializer);
+	if (text == null || !availableSourceTexts.has(text)) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+
+	const resolved = resolvedBySourceText.get(text);
+	if (resolved == null) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 1,
+		};
+	}
+
+	const value = JSON.stringify(resolved.text);
+	const currentValue = sourceFile.text.slice(node.initializer.getStart(sourceFile), node.initializer.getEnd());
+
+	return {
+		value: value === currentValue ? undefined : value,
+		translatedCount: 1,
+		unresolvedCount: 0,
+	};
+}
+
+function localizeImperativePropertyDeclaration(
+	node: ts.PropertyDeclaration,
+	sourceFile: ts.SourceFile,
+	availableSourceTexts: ReadonlySet<string>,
+	resolvedBySourceText: ReadonlyMap<string, MessagePattern>,
+): { readonly value?: string; readonly translatedCount: number; readonly unresolvedCount: number } {
+	const propertyName = getPropertyName(node.name);
+	if (propertyName == null || !translatablePropertyDeclarationNames.has(propertyName)) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+
+	const initializer = node.initializer;
+	if (initializer == null) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+
+	const text = getStaticStringValue(initializer);
+	if (text == null || !availableSourceTexts.has(text)) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+
+	const resolved = resolvedBySourceText.get(text);
+	if (resolved == null) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 1,
+		};
+	}
+
+	const value = JSON.stringify(resolved.text);
+	const currentValue = sourceFile.text.slice(initializer.getStart(sourceFile), initializer.getEnd());
+
+	return {
+		value: value === currentValue ? undefined : value,
+		translatedCount: 1,
+		unresolvedCount: 0,
+	};
+}
+
+function localizeImperativeDisplayNode(
+	node: ts.StringLiteralLike | ts.TemplateExpression,
+	sourceFile: ts.SourceFile,
+	availableSourceTexts: ReadonlySet<string>,
+	resolvedBySourceText: ReadonlyMap<string, MessagePattern>,
+	existingReplacements: ReadonlyArray<{ readonly start: number; readonly end: number; readonly value: string }>,
+): { readonly value?: string; readonly translatedCount: number; readonly unresolvedCount: number } {
+	if (!shouldLocalizeImperativeDisplayNode(node, sourceFile)) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+
+	const source = getImperativeDisplaySource(node, sourceFile, existingReplacements);
+	if (
+		source == null ||
+		shouldPreserveEnglishSourceText(sourceFile.fileName, source.text) ||
+		!availableSourceTexts.has(source.text)
+	) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+
+	const resolved = resolvedBySourceText.get(source.text);
+	if (resolved == null) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 1,
+		};
+	}
+
+	if (!shouldApplyImperativeDisplayTranslation(node, resolved)) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+
+	const value = renderLocalizedImperativeDisplayValue(node, resolved.text, source.expressions);
+	const currentValue = getNodeTextWithNestedReplacements(node, sourceFile, existingReplacements);
+
+	return {
+		value: value === currentValue ? undefined : value,
+		translatedCount: 1,
+		unresolvedCount: 0,
+	};
+}
+
+function localizeJsxTextNode(
+	node: ts.JsxText,
+	sourceFile: ts.SourceFile,
+	availableSourceTexts: ReadonlySet<string>,
+	resolvedBySourceText: ReadonlyMap<string, MessagePattern>,
+): { readonly value?: string; readonly translatedCount: number; readonly unresolvedCount: number } {
+	const text = normalizeJsxText(node.getText(sourceFile));
+	if (!availableSourceTexts.has(text)) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+
+	const resolved = resolvedBySourceText.get(text);
+	if (resolved == null) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 1,
+		};
+	}
+
+	const value = renderLocalizedJsxText(resolved.text);
+	const currentValue = sourceFile.text.slice(node.getStart(sourceFile), node.getEnd());
+
+	return {
+		value: value === currentValue ? undefined : value,
+		translatedCount: 1,
+		unresolvedCount: 0,
+	};
+}
+
+function localizeJsxAttribute(
+	node: ts.JsxAttribute,
+	sourceFile: ts.SourceFile,
+	availableSourceTexts: ReadonlySet<string>,
+	resolvedBySourceText: ReadonlyMap<string, MessagePattern>,
+): { readonly value?: string; readonly translatedCount: number; readonly unresolvedCount: number } {
+	const attributeName = getJsxAttributeName(node.name);
+	if (attributeName == null || !isTranslatableAttribute(attributeName, getJsxElementTagName(node))) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+
+	if (node.initializer == null) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+
+	const text = getStaticJsxAttributeValue(node.initializer);
+	if (text == null || !availableSourceTexts.has(text)) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 0,
+		};
+	}
+
+	const resolved = resolvedBySourceText.get(text);
+	if (resolved == null) {
+		return {
+			translatedCount: 0,
+			unresolvedCount: 1,
+		};
+	}
+
+	const value = renderLocalizedJsxAttributeValue(node.initializer, resolved.text);
+	const currentValue = sourceFile.text.slice(node.initializer.getStart(sourceFile), node.initializer.getEnd());
+
+	return {
+		value: value === currentValue ? undefined : value,
+		translatedCount: 1,
+		unresolvedCount: 0,
+	};
+}
+
+function shouldLocalizeImperativeDisplayNode(
+	node: ts.StringLiteralLike | ts.TemplateExpression,
+	sourceFile: ts.SourceFile,
+): boolean {
+	if (ts.isTaggedTemplateExpression(node.parent) && node.parent.template === node) return false;
+	if (ts.isJsxAttribute(node.parent)) return false;
+	if (ts.isJsxExpression(node.parent) && ts.isJsxAttribute(node.parent.parent)) return false;
+	if (ts.isBinaryExpression(node.parent)) {
+		switch (node.parent.operatorToken.kind) {
+			case ts.SyntaxKind.EqualsEqualsToken:
+			case ts.SyntaxKind.EqualsEqualsEqualsToken:
+			case ts.SyntaxKind.ExclamationEqualsToken:
+			case ts.SyntaxKind.ExclamationEqualsEqualsToken:
+				return false;
+		}
+	}
+	if (ts.isCaseClause(node.parent)) return false;
+	if (ts.isPropertyAssignment(node.parent)) {
+		const propertyName = getPropertyName(node.parent.name);
+		if (propertyName != null && propertyName === "title") return false;
+	}
+
+	return (
+		hasHtmlTemplateAncestor(node, sourceFile) ||
+		hasRenderedJsxExpressionAncestor(node) ||
+		hasImperativeDisplayContextAncestor(node, sourceFile)
+	);
+}
+
+function getImperativeDisplaySource(
+	node: ts.StringLiteralLike | ts.TemplateExpression,
+	sourceFile: ts.SourceFile,
+	existingReplacements: ReadonlyArray<{ readonly start: number; readonly end: number; readonly value: string }>,
+): { readonly text: string; readonly expressions: ReadonlyMap<string, string> } | undefined {
+	if (ts.isTemplateExpression(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+		return buildSyntheticTextTemplateFragment(
+			node,
+			sourceFile,
+			(expression) => `\${${getNodeTextWithNestedReplacements(expression, sourceFile, existingReplacements)}}`,
+		);
+	}
+
+	return {
+		text: node.text,
+		expressions: new Map<string, string>(),
+	};
+}
+
+function renderLocalizedImperativeDisplayValue(
+	node: ts.StringLiteralLike | ts.TemplateExpression,
+	text: string,
+	expressions: ReadonlyMap<string, string>,
+): string {
+	if (ts.isTemplateExpression(node) || ts.isNoSubstitutionTemplateLiteral(node)) {
+		return `\`${renderLocalizedPlainTemplateLiteralContent(text, expressions)}\``;
+	}
+
+	return JSON.stringify(text);
+}
+
+function shouldApplyImperativeDisplayTranslation(
+	node: ts.StringLiteralLike | ts.TemplateExpression,
+	resolved: MessagePattern,
+): boolean {
+	if (!ts.isTemplateExpression(node) && !ts.isNoSubstitutionTemplateLiteral(node)) {
+		return true;
+	}
+
+	return resolved.kind === "template";
+}
+
+function shouldPreserveEnglishSourceText(sourceFilePath: string, text: string): boolean {
+	const normalizedPath = sourceFilePath.replaceAll("\\", "/");
+	if (!normalizedPath.endsWith("src/webviews/apps/shared/components/search/search-box.ts")) {
+		return false;
+	}
+
+	return text === "No" || text === "${slot1} of ${slot2} ${slot3}";
+}
+
+function renderLocalizedTemplateLiteralContent(
+	localizedHtml: string,
+	expressions: ReadonlyMap<string, string>,
+): string {
+	const placeholder = /<gl-i18n-slot data-slot="(slot\d+)"><\/gl-i18n-slot>|__GL_I18N_SLOT_(slot\d+)__/gu;
+	let result = "";
+	let lastIndex = 0;
+
+	for (const match of localizedHtml.matchAll(placeholder)) {
+		const [raw, elementSlotName, attributeSlotName] = match;
+		const slotName = elementSlotName ?? attributeSlotName;
+		const index = match.index ?? 0;
+		result += escapeTemplateLiteralText(localizedHtml.slice(lastIndex, index));
+		result += expressions.get(slotName) ?? escapeTemplateLiteralText(raw);
+		lastIndex = index + raw.length;
+	}
+
+	result += escapeTemplateLiteralText(localizedHtml.slice(lastIndex));
+	return result;
+}
+
+function renderLocalizedPlainTemplateLiteralContent(text: string, expressions: ReadonlyMap<string, string>): string {
+	let result = "";
+	let lastIndex = 0;
+	for (const match of text.matchAll(/\$\{([^}]+)\}/gu)) {
+		const [placeholder, slotName] = match;
+		const index = match.index ?? 0;
+		result += escapeTemplateLiteralText(text.slice(lastIndex, index));
+		result += expressions.get(slotName) ?? escapeTemplateLiteralText(placeholder);
+		lastIndex = index + placeholder.length;
+	}
+
+	result += escapeTemplateLiteralText(text.slice(lastIndex));
+	return result;
+}
+
+function escapeTemplateLiteralText(text: string): string {
+	return text.replaceAll("\\", "\\\\").replaceAll("`", "\\`").replaceAll("${", "\\${");
+}
+
+function renderLocalizedJsxText(text: string): string {
+	if (/[{}<>]/u.test(text)) {
+		return `{${JSON.stringify(text)}}`;
+	}
+
+	return text;
+}
+
+function renderLocalizedJsxAttributeValue(initializer: ts.JsxAttributeValue, text: string): string {
+	if (ts.isStringLiteral(initializer)) {
+		return JSON.stringify(text);
+	}
+
+	return `{${JSON.stringify(text)}}`;
+}
+
+function isHtmlTemplateTag(tag: ts.LeftHandSideExpression, sourceFile: ts.SourceFile): boolean {
+	return /\bhtml\b/u.test(tag.getText(sourceFile));
+}
+
+function getStaticStringValue(node: ts.Expression): string | undefined {
+	if (ts.isStringLiteralLike(node)) {
+		return node.text;
+	}
+
+	if (ts.isNoSubstitutionTemplateLiteral(node)) {
+		return node.text;
+	}
+
+	return undefined;
+}
+
+function getStaticJsxAttributeValue(initializer: ts.JsxAttributeValue): string | undefined {
+	if (ts.isStringLiteral(initializer)) {
+		return initializer.text;
+	}
+
+	if (!ts.isJsxExpression(initializer) || initializer.expression == null) {
+		return undefined;
+	}
+
+	return getStaticStringValue(initializer.expression);
+}
+
+function isTranslatableAttribute(attribute: string, tag?: string): boolean {
+	if (translatableJsxAttributeNames.has(attribute)) return true;
+
+	const normalizedTag = tag?.toLowerCase();
+	if (normalizedTag == null) return false;
+	return translatableAttributesByTag.get(normalizedTag)?.has(attribute) ?? false;
+}
+
+function getJsxElementTagName(node: ts.JsxAttribute): string | undefined {
+	const parent = node.parent;
+	if (!ts.isJsxAttributes(parent)) return undefined;
+
+	const element = parent.parent;
+	if (ts.isJsxOpeningElement(element) || ts.isJsxSelfClosingElement(element)) {
+		return element.tagName.getText().toLowerCase();
+	}
+
+	return undefined;
+}
+
+function getJsxAttributeName(name: ts.JsxAttributeName): string | undefined {
+	if (ts.isIdentifier(name)) return name.text;
+
+	return undefined;
+}
+
+function normalizeJsxText(text: string): string {
+	return text.replace(/\s+/gu, " ").trim();
+}
+
+function getScriptKindFromFilePath(filePath: string): ts.ScriptKind {
+	if (filePath.endsWith(".tsx")) return ts.ScriptKind.TSX;
+	if (filePath.endsWith(".jsx")) return ts.ScriptKind.JSX;
+	if (filePath.endsWith(".ts")) return ts.ScriptKind.TS;
+	return ts.ScriptKind.JS;
+}
+
+function getPropertyName(name: ts.PropertyName): string | undefined {
+	if (ts.isIdentifier(name) || ts.isStringLiteralLike(name)) {
+		return name.text;
+	}
+
+	return undefined;
+}
