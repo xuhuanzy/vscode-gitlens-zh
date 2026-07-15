@@ -49,19 +49,15 @@ const translatableJsxAttributeNames = new Set([
 const translatableAttributesByTag = new Map([["gl-tooltip", new Set(["content"])]]);
 const translatablePropertyAssignmentNames = new Set(["title"]);
 const translatablePropertyDeclarationNames = new Set(["explanationLabel", "placeholder"]);
-const {
-	hasHtmlTemplateAncestor,
-	hasRenderedJsxExpressionAncestor,
-	hasImperativeDisplayContextAncestor,
-	isImperativeDisplayPropertyValue,
-} = createDisplayContextAnalyzer({
-	isHtmlTemplateTag: isHtmlTemplateTag,
-	getPropertyName: getPropertyName,
-	getStaticStringValue: getStaticStringValue,
-	getJsxAttributeName: getJsxAttributeName,
-	getJsxElementTagName: getJsxElementTagName,
-	isTranslatableAttribute: isTranslatableAttribute,
-});
+const { hasHtmlTemplateAncestor, hasRenderedJsxExpressionAncestor, hasImperativeDisplayContextAncestor } =
+	createDisplayContextAnalyzer({
+		isHtmlTemplateTag: isHtmlTemplateTag,
+		getPropertyName: getPropertyName,
+		getStaticStringValue: getStaticStringValue,
+		getJsxAttributeName: getJsxAttributeName,
+		getJsxElementTagName: getJsxElementTagName,
+		isTranslatableAttribute: isTranslatableAttribute,
+	});
 
 /** 将已解析 occurrence 应用到 HTML 源码, 并保留未覆盖的结构和原文. */
 export function generateLocalizedHtmlSourceFile(

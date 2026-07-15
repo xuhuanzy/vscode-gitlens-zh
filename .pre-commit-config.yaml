@@ -5,3 +5,10 @@ repos:
             name: oxfmt
             entry: pnpm exec oxfmt --no-error-on-unmatched-pattern
             language: system
+    - repo: https://github.com/oxc-project/mirrors-oxlint
+      rev: v1.74.0
+      hooks:
+          - id: oxlint
+            verbose: true
+            types_or: [file]
+            files: \.[cm]?[jt]sx?$

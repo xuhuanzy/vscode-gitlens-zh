@@ -1,12 +1,6 @@
 import * as ts from "typescript";
 
-import type {
-	CatalogIssue,
-	I18nDomain,
-	OutputReference,
-	SourceOccurrence,
-	SourceReference,
-} from "../../core/model.mts";
+import type { CatalogIssue, OutputReference, SourceOccurrence, SourceReference } from "../../core/model.mts";
 import {
 	createAuthorityId,
 	createOccurrenceId,

@@ -38,6 +38,8 @@ pnpm glzh dev watch
 pnpm glzh package
 pnpm glzh verify
 pnpm test
+pnpm lint
+pnpm lint:fix
 pnpm format
 pnpm format:check
 ```
@@ -49,6 +51,7 @@ pnpm format:check
 - `dev watch`：准备本地化上游后运行上游 `watch`；修改 `i18n/authority/` 时会重放 overlay，webpack 随后增量编译。
 - `package`：先运行上游只读检查，再执行 production quick bundle，并生成 VSIX 到 `artifacts/`。
 - `verify`：执行配置、i18n、TypeScript 版本和可重放性检查。
+- `lint` / `lint:fix`：使用 Oxlint 检查控制仓库脚本与 i18n 代码，或应用安全自动修复。
 - `format` / `format:check`：使用 Oxfmt 写入格式化结果或只检查格式。
 
 `build` 与 `package` 支持 `--offline`，要求 `.upstream/` 与依赖已经就绪；`--clean` 只允许清理由本项目管理且已确认位于仓库内的工作目录。

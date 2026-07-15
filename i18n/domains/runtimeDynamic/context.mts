@@ -5,7 +5,6 @@ import {
 	createI18nLayerContext,
 	type DomainContext,
 	type I18nLayerInput,
-	type I18nLayerOptions,
 } from "../../core/context.mts";
 
 export type RuntimeDynamicDomain = "formatter" | "quickpicks" | "webviewHost";

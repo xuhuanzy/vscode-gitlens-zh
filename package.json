@@ -7,12 +7,15 @@
 		"glzh": "node ./scripts/glzh.mts",
 		"format": "oxfmt .",
 		"format:check": "oxfmt --check .",
+		"lint": "oxlint .",
+		"lint:fix": "oxlint --fix .",
 		"check": "tsc",
 		"test": "vitest run"
 	},
 	"devDependencies": {
 		"@types/node": "22.15.21",
 		"oxfmt": "^0.58.0",
+		"oxlint": "^1.74.0",
 		"typescript": "6.0.3",
 		"vitest": "^4.1.10"
 	},
