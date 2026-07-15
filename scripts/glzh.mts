@@ -11,7 +11,13 @@ import {
 	reportI18n,
 	syncI18n,
 } from "./overlay.mts";
-import { getUpstreamStatus, installUpstreamDependencies, prepareUpstream, runInteractiveCommand } from "./upstream.mts";
+import {
+	getUpstreamStatus,
+	installUpstreamDependencies,
+	markFullBuild,
+	prepareUpstream,
+	runInteractiveCommand,
+} from "./upstream.mts";
 
 const controlRoot = path.resolve(import.meta.dirname, "..");
 
@@ -116,16 +122,26 @@ function prepareDevelopment(
 	config: ReturnType<typeof loadLayerConfig>,
 	options: { readonly clean: boolean; readonly offline: boolean },
 ): unknown {
-	prepareUpstream(config, options);
+	const upstream = prepareUpstream(config, options);
 	const overlay = generateAndApplySourceOverlay(config);
 	installUpstreamDependencies(config, { offline: options.offline });
-	runInteractiveCommand("pnpm", ["run", "build:quick"], config.upstreamRoot, "BUILD_FAILED");
+	const fullBuildRequired =
+		upstream.fullBuild !== true ||
+		upstream.builtTag !== config.upstream.tag ||
+		upstream.builtCommit !== config.upstream.commit;
+	runInteractiveCommand(
+		"pnpm",
+		["run", fullBuildRequired ? "build" : "build:quick"],
+		config.upstreamRoot,
+		"BUILD_FAILED",
+	);
+	if (fullBuildRequired) markFullBuild(config);
 	const manifest = applyLocalizedManifest(config);
 	return {
 		upstream: config.upstream.commit,
 		overlay: summarizeOverlay(overlay),
 		manifest: manifest,
-		mode: "development-quick",
+		mode: fullBuildRequired ? "development-full" : "development-quick",
 	};
 }
 

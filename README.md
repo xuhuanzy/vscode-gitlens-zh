@@ -44,7 +44,7 @@ pnpm format:check
 - `upstream refresh`：按配置重建或校验 `.upstream/`。
 - `i18n sync`：从锁定上游显式刷新 catalog/workset；普通构建不会改写翻译真源。
 - `build`：校验 i18n 基线，生成 overlay，并调用上游 `build:quick`。
-- `dev prepare`：生成完整本地化 overlay 与 manifest/NLS，并执行保留 source map 的上游 `build:quick`；避开完整构建中与调试无关的全仓格式化。
+- `dev prepare`：生成完整本地化 overlay 与 manifest/NLS；当 `.upstream/.git/gl-managed.json` 中记录的 tag/commit 未完成完整构建，或版本发生变化时执行上游完整 `build`，否则使用 `build:quick` 加快重复调试启动。
 - `dev watch`：准备本地化上游后运行上游 `watch`；修改 `i18n/authority/` 时会重放 overlay，webpack 随后增量编译。
 - `package`：先运行上游只读检查，再执行 production quick bundle，并生成 VSIX 到 `artifacts/`。
 - `verify`：执行配置、i18n、TypeScript 版本和可重放性检查。

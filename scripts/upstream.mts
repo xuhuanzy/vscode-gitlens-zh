@@ -21,9 +21,19 @@ export interface UpstreamStatus {
 	readonly commit?: string;
 	readonly shallow?: boolean;
 	readonly dirty?: boolean;
+	readonly builtTag?: string;
+	readonly builtCommit?: string;
+	readonly fullBuild?: boolean;
 }
 
-const managedFileName = "glzh-managed.json";
+interface ManagedMetadata {
+	readonly repository: string;
+	readonly tag: string;
+	readonly commit: string;
+	readonly fullBuild: boolean;
+}
+
+const managedFileName = "gl-managed.json";
 
 /** 读取当前上游工作树状态, 不创建, 更新或删除任何文件. */
 export function getUpstreamStatus(config: ResolvedLayerConfig): UpstreamStatus {
@@ -31,6 +41,10 @@ export function getUpstreamStatus(config: ResolvedLayerConfig): UpstreamStatus {
 	const gitDir = path.join(config.upstreamRoot, ".git");
 	const managedFile = path.join(gitDir, managedFileName);
 	if (!fs.existsSync(gitDir)) return { exists: true, managed: false };
+
+	const metadata = fs.existsSync(managedFile)
+		? (JSON.parse(fs.readFileSync(managedFile, "utf8")) as ManagedMetadata)
+		: undefined;
 
 	return {
 		exists: true,
@@ -44,7 +58,15 @@ export function getUpstreamStatus(config: ResolvedLayerConfig): UpstreamStatus {
 				"UPSTREAM_IDENTITY_MISMATCH",
 			).trim() === "true",
 		dirty: runGit(config.upstreamRoot, ["status", "--porcelain"], "UPSTREAM_IDENTITY_MISMATCH").trim().length !== 0,
+		builtTag: metadata?.tag,
+		builtCommit: metadata?.commit,
+		fullBuild: metadata?.fullBuild,
 	};
+}
+
+/** 记录当前锁定版本已经完成完整构建, 供后续开发准备复用生成资源. */
+export function markFullBuild(config: ResolvedLayerConfig): void {
+	writeManagedMetadata(config, true);
 }
 
 /** 准备锁定版本的浅克隆, 仅在明确允许时重建受管理的上游目录. */
@@ -59,7 +81,6 @@ export function prepareUpstream(config: ResolvedLayerConfig, options: PrepareOpt
 	let status = getUpstreamStatus(config);
 	const identityMatches =
 		status.exists &&
-		status.managed &&
 		status.repository === config.upstream.repository &&
 		status.commit === config.upstream.commit &&
 		status.shallow === true;
@@ -75,6 +96,7 @@ export function prepareUpstream(config: ResolvedLayerConfig, options: PrepareOpt
 		fs.rmSync(config.upstreamRoot, { recursive: true, force: true });
 		status = { exists: false, managed: false };
 	}
+	if (identityMatches && (options.clean || !status.managed)) writeManagedMetadata(config, false);
 
 	if (!status.exists) {
 		if (options.offline)
@@ -107,7 +129,7 @@ export function prepareUpstream(config: ResolvedLayerConfig, options: PrepareOpt
 					`Tag ${config.upstream.tag} resolved to ${actualCommit}, expected ${config.upstream.commit}`,
 				);
 			}
-			fs.writeFileSync(path.join(config.upstreamRoot, ".git", managedFileName), "", "utf8");
+			writeManagedMetadata(config, false);
 		} catch (ex) {
 			if (fs.existsSync(config.upstreamRoot)) fs.rmSync(config.upstreamRoot, { recursive: true, force: true });
 			throw ex;
@@ -117,6 +139,23 @@ export function prepareUpstream(config: ResolvedLayerConfig, options: PrepareOpt
 	runGit(config.upstreamRoot, ["reset", "--hard", config.upstream.commit], "UPSTREAM_RESET_FAILED");
 	runGit(config.upstreamRoot, ["clean", "-ffd"], "UPSTREAM_RESET_FAILED");
 	return getUpstreamStatus(config);
+}
+
+function writeManagedMetadata(config: ResolvedLayerConfig, fullBuild: boolean): void {
+	fs.writeFileSync(
+		path.join(config.upstreamRoot, ".git", managedFileName),
+		JSON.stringify(
+			{
+				repository: config.upstream.repository,
+				tag: config.upstream.tag,
+				commit: config.upstream.commit,
+				fullBuild: fullBuild,
+			},
+			undefined,
+			2,
+		) + "\n",
+		"utf8",
+	);
 }
 
 /** 使用控制层管理的 pnpm store 安装上游依赖, 并清理已失效的 node_modules 链接. */

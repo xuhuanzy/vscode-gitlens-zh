@@ -6,7 +6,7 @@ import { pathToFileURL } from "node:url";
 import test from "node:test";
 
 import { loadLayerConfig, PipelineError } from "../config.mts";
-import { getUpstreamStatus, installUpstreamDependencies, prepareUpstream } from "../upstream.mts";
+import { getUpstreamStatus, installUpstreamDependencies, markFullBuild, prepareUpstream } from "../upstream.mts";
 
 const fixtureRoot = path.resolve(".work", "tests", `upstream-${process.pid}`);
 
@@ -28,7 +28,25 @@ test("prepare creates a managed depth-one checkout from a local tagged repositor
 	assert.equal(status.commit, repository.commit);
 	assert.equal(status.shallow, true);
 	assert.equal(status.dirty, false);
-	assert.equal(fs.readFileSync(path.join(config.upstreamRoot, ".git", "glzh-managed.json"), "utf8"), "");
+	const managedFile = path.join(config.upstreamRoot, ".git", "gl-managed.json");
+	assert.deepEqual(JSON.parse(fs.readFileSync(managedFile, "utf8")), {
+		repository: repository.url,
+		tag: "18.2.0",
+		commit: repository.commit,
+		fullBuild: false,
+	});
+	assert.equal(status.fullBuild, false);
+	fs.rmSync(managedFile);
+	const restored = prepareUpstream(config);
+	assert.equal(restored.managed, true);
+	assert.equal(fs.existsSync(managedFile), true);
+	markFullBuild(config);
+	const built = getUpstreamStatus(config);
+	assert.equal(built.fullBuild, true);
+	assert.equal(built.builtTag, "18.2.0");
+	assert.equal(built.builtCommit, repository.commit);
+	const cleaned = prepareUpstream(config, { clean: true });
+	assert.equal(cleaned.fullBuild, false);
 });
 
 test("prepare refuses an unknown existing upstream directory without deleting it", () => {
