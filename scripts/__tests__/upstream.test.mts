@@ -1,13 +1,20 @@
 import { spawnSync } from "node:child_process";
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { afterAll, expect, test } from "vitest";
 
 import { loadLayerConfig } from "../config.mts";
-import { getUpstreamStatus, installUpstreamDependencies, markFullBuild, prepareUpstream } from "../upstream.mts";
+import {
+	getUpstreamStatus,
+	installUpstreamDependencies,
+	markFullBuildComplete,
+	prepareUpstream,
+	runUpstreamScript,
+} from "../upstream.mts";
 
-const fixtureRoot = path.resolve(".work", "tests", `upstream-${process.pid}`);
+const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "upstream-tests-"));
 
 afterAll(() => fs.rmSync(fixtureRoot, { recursive: true, force: true }));
 
@@ -29,26 +36,91 @@ test("prepare creates a managed depth-one checkout from a local tagged repositor
 	expect(status.dirty).toBe(false);
 	const managedFile = path.join(config.upstreamRoot, ".git", "gl-managed.json");
 	expect(JSON.parse(fs.readFileSync(managedFile, "utf8"))).toEqual({
-		repository: repository.url,
 		tag: "18.2.0",
 		commit: repository.commit,
-		fullBuild: false,
+		requiresFullBuild: true,
 	});
-	expect(status.fullBuild).toBe(false);
+	expect(status.requiresFullBuild).toBe(true);
 	fs.rmSync(managedFile);
 	const restored = prepareUpstream(config);
 	expect(restored.managed).toBe(true);
 	expect(fs.existsSync(managedFile)).toBe(true);
-	markFullBuild(config);
-	const built = getUpstreamStatus(config);
-	expect(built.fullBuild).toBe(true);
-	expect(built.builtTag).toBe("18.2.0");
-	expect(built.builtCommit).toBe(repository.commit);
-	const cleaned = prepareUpstream(config, { clean: true });
-	expect(cleaned.fullBuild).toBe(false);
+	markFullBuildComplete(config);
+	expect(getUpstreamStatus(config).requiresFullBuild).toBe(false);
+	expect(prepareUpstream(config).requiresFullBuild).toBe(false);
+	const refreshed = prepareUpstream(config, { requireFullBuild: true });
+	expect(refreshed.requiresFullBuild).toBe(true);
+	expect(refreshed.builtTag).toBe("18.2.0");
+	expect(refreshed.builtCommit).toBe(repository.commit);
 });
 
-test("prepare refuses an unknown existing upstream directory without deleting it", () => {
+test("prepare reuses a locally available locked tag without contacting the remote", () => {
+	const controlRoot = path.join(fixtureRoot, "local-revision");
+	const repository = createBareTaggedRepository(path.join(fixtureRoot, "local-revision-remote"));
+	writeLayerConfig(controlRoot, repository.url, repository.commit);
+	let config = loadLayerConfig(controlRoot);
+	prepareUpstream(config);
+	markFullBuildComplete(config);
+
+	const nextCommit = addTaggedCommit(repository, "18.3.0");
+	runGit(config.upstreamRoot, ["fetch", "--depth", "1", "origin", "refs/tags/18.3.0:refs/tags/18.3.0"]);
+	fs.rmSync(repository.bare, { recursive: true, force: true });
+	writeLayerConfig(controlRoot, repository.url, nextCommit, "18.3.0");
+	config = loadLayerConfig(controlRoot);
+
+	const prepared = prepareUpstream(config);
+
+	expect(prepared.commit).toBe(nextCommit);
+	expect(prepared.dirty).toBe(false);
+	expect(prepared.requiresFullBuild).toBe(true);
+	expect(prepared.builtTag).toBe("18.3.0");
+	expect(prepared.builtCommit).toBe(nextCommit);
+});
+
+test("prepare fetches the locked tag when the local git repository does not contain it", () => {
+	const controlRoot = path.join(fixtureRoot, "fetched-revision");
+	const repository = createBareTaggedRepository(path.join(fixtureRoot, "fetched-revision-remote"));
+	writeLayerConfig(controlRoot, repository.url, repository.commit);
+	let config = loadLayerConfig(controlRoot);
+	prepareUpstream(config);
+
+	const nextCommit = addTaggedCommit(repository, "18.3.0");
+	writeLayerConfig(controlRoot, repository.url, nextCommit, "18.3.0");
+	config = loadLayerConfig(controlRoot);
+
+	const prepared = prepareUpstream(config);
+
+	expect(prepared.commit).toBe(nextCommit);
+	expect(runGit(config.upstreamRoot, ["rev-parse", "refs/tags/18.3.0^{commit}"]).trim()).toBe(nextCommit);
+});
+
+test("upstream scripts run against the current managed tree without resetting localized changes", () => {
+	const controlRoot = path.join(fixtureRoot, "upstream-scripts");
+	const repository = createBareTaggedRepository(path.join(fixtureRoot, "script-remote"));
+	writeLayerConfig(controlRoot, repository.url, repository.commit);
+	const config = loadLayerConfig(controlRoot);
+	prepareUpstream(config);
+	const localizedFile = path.join(config.upstreamRoot, "localized.txt");
+	fs.writeFileSync(localizedFile, "keep", "utf8");
+	const calls: string[][] = [];
+
+	runUpstreamScript(config, "build", (_command, args) => {
+		calls.push([...args]);
+		if (args.includes("install")) {
+			const webpackEntry = path.join(config.upstreamRoot, "node_modules", "webpack", "bin", "webpack.js");
+			fs.mkdirSync(path.dirname(webpackEntry), { recursive: true });
+			fs.writeFileSync(webpackEntry, "", "utf8");
+		}
+	});
+
+	expect(calls).toEqual([
+		[`--config.store-dir=${path.join(config.workRoot, "pnpm-store")}`, "install", "--frozen-lockfile"],
+		["run", "build"],
+	]);
+	expect(fs.readFileSync(localizedFile, "utf8")).toBe("keep");
+});
+
+test("prepare automatically replaces an unknown existing upstream directory", () => {
 	const controlRoot = path.join(fixtureRoot, "unknown-directory");
 	const repository = createBareTaggedRepository(path.join(fixtureRoot, "unused-remote"));
 	writeLayerConfig(controlRoot, repository.url, repository.commit);
@@ -57,8 +129,10 @@ test("prepare refuses an unknown existing upstream directory without deleting it
 	const sentinel = path.join(config.upstreamRoot, "owned-by-user.txt");
 	fs.writeFileSync(sentinel, "keep", "utf8");
 
-	expect(() => prepareUpstream(config)).toThrow(expect.objectContaining({ code: "UPSTREAM_IDENTITY_MISMATCH" }));
-	expect(fs.readFileSync(sentinel, "utf8")).toBe("keep");
+	const prepared = prepareUpstream(config);
+
+	expect(prepared.commit).toBe(repository.commit);
+	expect(fs.existsSync(sentinel)).toBe(false);
 });
 
 test("dependency install keeps the pnpm store under work root and replaces stale upstream links", () => {
@@ -70,13 +144,11 @@ test("dependency install keeps the pnpm store under work root and replaces stale
 	fs.writeFileSync(staleFile, "stale", "utf8");
 	const calls: string[][] = [];
 
-	installUpstreamDependencies(config, {
-		run: (_command, args) => {
-			calls.push([...args]);
-			const webpackEntry = path.join(config.upstreamRoot, "node_modules", "webpack", "bin", "webpack.js");
-			fs.mkdirSync(path.dirname(webpackEntry), { recursive: true });
-			fs.writeFileSync(webpackEntry, "", "utf8");
-		},
+	installUpstreamDependencies(config, (_command, args) => {
+		calls.push([...args]);
+		const webpackEntry = path.join(config.upstreamRoot, "node_modules", "webpack", "bin", "webpack.js");
+		fs.mkdirSync(path.dirname(webpackEntry), { recursive: true });
+		fs.writeFileSync(webpackEntry, "", "utf8");
 	});
 
 	const storeRoot = path.join(config.workRoot, "pnpm-store");
@@ -85,7 +157,14 @@ test("dependency install keeps the pnpm store under work root and replaces stale
 	expect(fs.existsSync(path.join(controlRoot, ".pnpm-store"))).toBe(false);
 });
 
-function createBareTaggedRepository(root: string): { readonly url: string; readonly commit: string } {
+interface RepositoryFixture {
+	readonly url: string;
+	readonly commit: string;
+	readonly source: string;
+	readonly bare: string;
+}
+
+function createBareTaggedRepository(root: string): RepositoryFixture {
 	const source = path.join(root, "source");
 	const bare = path.join(root, "upstream.git");
 	fs.mkdirSync(source, { recursive: true });
@@ -99,15 +178,26 @@ function createBareTaggedRepository(root: string): { readonly url: string; reado
 	const commit = runGit(source, ["rev-parse", "HEAD"]).trim();
 	fs.mkdirSync(root, { recursive: true });
 	runGit(root, ["clone", "--bare", source, bare]);
-	return { url: pathToFileURL(bare).href, commit };
+	const url = pathToFileURL(bare).href;
+	runGit(source, ["remote", "add", "origin", url]);
+	return { url, commit, source, bare };
 }
 
-function writeLayerConfig(controlRoot: string, repository: string, commit: string): void {
+function addTaggedCommit(repository: RepositoryFixture, tag: string): string {
+	fs.appendFileSync(path.join(repository.source, "README.md"), `${tag}\n`, "utf8");
+	runGit(repository.source, ["add", "README.md"]);
+	runGit(repository.source, ["commit", "-m", tag]);
+	runGit(repository.source, ["tag", tag]);
+	runGit(repository.source, ["push", "origin", `refs/tags/${tag}`]);
+	return runGit(repository.source, ["rev-parse", "HEAD"]).trim();
+}
+
+function writeLayerConfig(controlRoot: string, repository: string, commit: string, tag = "18.2.0"): void {
 	fs.mkdirSync(controlRoot, { recursive: true });
 	fs.writeFileSync(
 		path.join(controlRoot, "gitlens-zh.config.json"),
 		JSON.stringify({
-			upstream: { repository, tag: "18.2.0", commit },
+			upstream: { repository, tag, commit },
 		}),
 		"utf8",
 	);

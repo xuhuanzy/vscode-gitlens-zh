@@ -4,15 +4,7 @@ import path from "node:path";
 
 import { isWithin, PipelineError, type ResolvedLayerConfig } from "./config.mts";
 
-export interface PrepareOptions {
-	readonly clean?: boolean;
-	readonly offline?: boolean;
-}
-
-export interface InstallUpstreamDependenciesOptions {
-	readonly offline?: boolean;
-	readonly run?: (command: string, args: readonly string[], cwd: string, errorCode: string) => void;
-}
+type CommandRunner = (command: string, args: readonly string[], cwd: string, errorCode: string) => void;
 
 export interface UpstreamStatus {
 	readonly exists: boolean;
@@ -23,32 +15,37 @@ export interface UpstreamStatus {
 	readonly dirty?: boolean;
 	readonly builtTag?: string;
 	readonly builtCommit?: string;
-	readonly fullBuild?: boolean;
+	readonly requiresFullBuild: boolean;
 }
 
+export type UpstreamScript = "build" | "build:quick" | "bundle";
+
 interface ManagedMetadata {
-	readonly repository: string;
 	readonly tag: string;
 	readonly commit: string;
-	readonly fullBuild: boolean;
+	readonly requiresFullBuild: boolean;
 }
 
 const managedFileName = "gl-managed.json";
 
 /** 读取当前上游工作树状态, 不创建, 更新或删除任何文件. */
 export function getUpstreamStatus(config: ResolvedLayerConfig): UpstreamStatus {
-	if (!fs.existsSync(config.upstreamRoot)) return { exists: false, managed: false };
+	if (!fs.existsSync(config.upstreamRoot)) return { exists: false, managed: false, requiresFullBuild: true };
 	const gitDir = path.join(config.upstreamRoot, ".git");
 	const managedFile = path.join(gitDir, managedFileName);
-	if (!fs.existsSync(gitDir)) return { exists: true, managed: false };
-
-	const metadata = fs.existsSync(managedFile)
-		? (JSON.parse(fs.readFileSync(managedFile, "utf8")) as ManagedMetadata)
-		: undefined;
+	if (!fs.existsSync(gitDir)) return { exists: true, managed: false, requiresFullBuild: true };
+	let metadata: ManagedMetadata | undefined;
+	if (fs.existsSync(managedFile)) {
+		try {
+			metadata = JSON.parse(fs.readFileSync(managedFile, "utf8")) as ManagedMetadata;
+		} catch {
+			metadata = undefined;
+		}
+	}
 
 	return {
 		exists: true,
-		managed: fs.existsSync(managedFile),
+		managed: metadata != null,
 		repository: runGit(config.upstreamRoot, ["remote", "get-url", "origin"], "UPSTREAM_IDENTITY_MISMATCH").trim(),
 		commit: runGit(config.upstreamRoot, ["rev-parse", "HEAD"], "UPSTREAM_IDENTITY_MISMATCH").trim(),
 		shallow:
@@ -60,17 +57,24 @@ export function getUpstreamStatus(config: ResolvedLayerConfig): UpstreamStatus {
 		dirty: runGit(config.upstreamRoot, ["status", "--porcelain"], "UPSTREAM_IDENTITY_MISMATCH").trim().length !== 0,
 		builtTag: metadata?.tag,
 		builtCommit: metadata?.commit,
-		fullBuild: metadata?.fullBuild,
+		requiresFullBuild:
+			metadata == null ||
+			metadata.tag !== config.upstream.tag ||
+			metadata.commit !== config.upstream.commit ||
+			metadata.requiresFullBuild !== false,
 	};
 }
 
-/** 记录当前锁定版本已经完成完整构建, 供后续开发准备复用生成资源. */
-export function markFullBuild(config: ResolvedLayerConfig): void {
-	writeManagedMetadata(config, true);
+/** 记录当前锁定版本已经成功完成完整 development build. */
+export function markFullBuildComplete(config: ResolvedLayerConfig): void {
+	writeManagedMetadata(config, false);
 }
 
-/** 准备锁定版本的浅克隆, 仅在明确允许时重建受管理的上游目录. */
-export function prepareUpstream(config: ResolvedLayerConfig, options: PrepareOptions = {}): UpstreamStatus {
+/** 确保受管上游树指向锁定版本, 优先复用本地 tag, 缺失时再拉取或重建. */
+export function prepareUpstream(
+	config: ResolvedLayerConfig,
+	options: { readonly requireFullBuild?: boolean } = {},
+): UpstreamStatus {
 	if (
 		!isWithin(config.controlRoot, config.upstreamRoot) ||
 		path.dirname(config.upstreamRoot) !== config.controlRoot
@@ -78,29 +82,23 @@ export function prepareUpstream(config: ResolvedLayerConfig, options: PrepareOpt
 		throw new PipelineError("CONFIG_INVALID", "Refusing to manage an upstream directory outside the control root");
 	}
 
-	let status = getUpstreamStatus(config);
-	const identityMatches =
-		status.exists &&
-		status.repository === config.upstream.repository &&
-		status.commit === config.upstream.commit &&
-		status.shallow === true;
-
-	if (status.exists && !identityMatches) {
-		if (!options.clean) {
-			throw new PipelineError(
-				"UPSTREAM_IDENTITY_MISMATCH",
-				"The existing .upstream is not the managed locked checkout; rerun with --clean to rebuild it",
-				{ ...status },
-			);
+	let reuseLocalGit = false;
+	let requiresFullBuild = true;
+	if (fs.existsSync(config.upstreamRoot)) {
+		try {
+			const status = getUpstreamStatus(config);
+			reuseLocalGit = status.repository === config.upstream.repository && status.shallow === true;
+			if (reuseLocalGit) {
+				requiresFullBuild = options.requireFullBuild === true || status.requiresFullBuild;
+			}
+		} catch {
+			reuseLocalGit = false;
+			requiresFullBuild = true;
 		}
-		fs.rmSync(config.upstreamRoot, { recursive: true, force: true });
-		status = { exists: false, managed: false };
+		if (!reuseLocalGit) fs.rmSync(config.upstreamRoot, { recursive: true, force: true });
 	}
-	if (identityMatches && (options.clean || !status.managed)) writeManagedMetadata(config, false);
 
-	if (!status.exists) {
-		if (options.offline)
-			throw new PipelineError("UPSTREAM_OFFLINE_MISS", "No upstream checkout is available offline");
+	if (!reuseLocalGit) {
 		try {
 			runCommand(
 				"git",
@@ -118,38 +116,51 @@ export function prepareUpstream(config: ResolvedLayerConfig, options: PrepareOpt
 				config.controlRoot,
 				"UPSTREAM_UNAVAILABLE",
 			);
-			const actualCommit = runGit(
-				config.upstreamRoot,
-				["rev-parse", "HEAD"],
-				"UPSTREAM_IDENTITY_MISMATCH",
-			).trim();
-			if (actualCommit !== config.upstream.commit) {
-				throw new PipelineError(
-					"UPSTREAM_TAG_MOVED",
-					`Tag ${config.upstream.tag} resolved to ${actualCommit}, expected ${config.upstream.commit}`,
-				);
-			}
-			writeManagedMetadata(config, false);
 		} catch (ex) {
 			if (fs.existsSync(config.upstreamRoot)) fs.rmSync(config.upstreamRoot, { recursive: true, force: true });
 			throw ex;
 		}
 	}
 
+	const tagRef = `refs/tags/${config.upstream.tag}^{commit}`;
+	let tagCommit: string | undefined;
+	const probe = spawnSync(
+		"git",
+		[...(process.platform === "win32" ? ["-c", "http.sslBackend=openssl"] : []), "rev-parse", "--verify", tagRef],
+		{ cwd: config.upstreamRoot, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] },
+	);
+	if (probe.error != null) throw new PipelineError("UPSTREAM_UNAVAILABLE", probe.error.message);
+	if (probe.status === 0) tagCommit = probe.stdout.trim();
+
+	if (tagCommit == null) {
+		runGit(
+			config.upstreamRoot,
+			["fetch", "--depth", "1", "origin", `refs/tags/${config.upstream.tag}:refs/tags/${config.upstream.tag}`],
+			"UPSTREAM_UNAVAILABLE",
+		);
+		tagCommit = runGit(config.upstreamRoot, ["rev-parse", "--verify", tagRef], "UPSTREAM_UNAVAILABLE").trim();
+	}
+	if (tagCommit !== config.upstream.commit) {
+		throw new PipelineError(
+			"UPSTREAM_TAG_MOVED",
+			`Tag ${config.upstream.tag} resolved to ${tagCommit}, expected ${config.upstream.commit}`,
+		);
+	}
+
 	runGit(config.upstreamRoot, ["reset", "--hard", config.upstream.commit], "UPSTREAM_RESET_FAILED");
 	runGit(config.upstreamRoot, ["clean", "-ffd"], "UPSTREAM_RESET_FAILED");
+	writeManagedMetadata(config, requiresFullBuild);
 	return getUpstreamStatus(config);
 }
 
-function writeManagedMetadata(config: ResolvedLayerConfig, fullBuild: boolean): void {
+function writeManagedMetadata(config: ResolvedLayerConfig, requiresFullBuild: boolean): void {
 	fs.writeFileSync(
 		path.join(config.upstreamRoot, ".git", managedFileName),
 		JSON.stringify(
 			{
-				repository: config.upstream.repository,
 				tag: config.upstream.tag,
 				commit: config.upstream.commit,
-				fullBuild: fullBuild,
+				requiresFullBuild: requiresFullBuild,
 			},
 			undefined,
 			2,
@@ -158,10 +169,35 @@ function writeManagedMetadata(config: ResolvedLayerConfig, fullBuild: boolean): 
 	);
 }
 
+/** 在当前已准备的上游树中安装依赖并执行上游脚本, 不重置工作树或应用本地化覆盖层. */
+export function runUpstreamScript(
+	config: ResolvedLayerConfig,
+	script: UpstreamScript,
+	run: CommandRunner = runInteractiveCommand,
+): void {
+	const status = getUpstreamStatus(config);
+	if (
+		!status.exists ||
+		!status.managed ||
+		status.repository !== config.upstream.repository ||
+		status.commit !== config.upstream.commit ||
+		status.shallow !== true
+	) {
+		throw new PipelineError(
+			"UPSTREAM_NOT_READY",
+			"The locked upstream checkout is not ready; run glzh upstream refresh first",
+			{ ...status },
+		);
+	}
+
+	installUpstreamDependencies(config, run);
+	run("pnpm", ["run", script], config.upstreamRoot, "BUILD_FAILED");
+}
+
 /** 使用控制层管理的 pnpm store 安装上游依赖, 并清理已失效的 node_modules 链接. */
 export function installUpstreamDependencies(
 	config: ResolvedLayerConfig,
-	options: InstallUpstreamDependenciesOptions = {},
+	run: CommandRunner = runInteractiveCommand,
 ): void {
 	const storeRoot = path.resolve(config.workRoot, "pnpm-store");
 	const nodeModulesRoot = path.resolve(config.upstreamRoot, "node_modules");
@@ -176,8 +212,7 @@ export function installUpstreamDependencies(
 
 	fs.mkdirSync(config.workRoot, { recursive: true });
 	const args = [`--config.store-dir=${storeRoot}`, "install", "--frozen-lockfile"];
-	if (options.offline) args.push("--offline");
-	(options.run ?? runInteractiveCommand)("pnpm", args, config.upstreamRoot, "DEPENDENCY_INSTALL_FAILED");
+	run("pnpm", args, config.upstreamRoot, "DEPENDENCY_INSTALL_FAILED");
 
 	if (!fs.existsSync(webpackEntry)) {
 		throw new PipelineError(

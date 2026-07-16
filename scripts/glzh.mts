@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 
@@ -13,10 +12,10 @@ import {
 } from "./overlay.mts";
 import {
 	getUpstreamStatus,
-	installUpstreamDependencies,
-	markFullBuild,
+	markFullBuildComplete,
 	prepareUpstream,
 	runInteractiveCommand,
+	runUpstreamScript,
 } from "./upstream.mts";
 
 const controlRoot = path.resolve(import.meta.dirname, "..");
@@ -37,32 +36,48 @@ if (path.resolve(process.argv[1] ?? "") === import.meta.filename) {
 	}
 }
 
-/** 解析控制层命令并按顺序执行上游准备, i18n 生成, 构建或打包流程. */
-export async function execute(args: readonly string[]): Promise<unknown> {
-	const config = loadLayerConfig(controlRoot);
-	const command = args[0];
-	const action = args[1];
-	const clean = args.includes("--clean");
-	const offline = args.includes("--offline");
+/** 解析控制层命令, 将纯上游操作与本地化重放及制品流程分开执行. */
+export async function execute(args: readonly string[], root = controlRoot): Promise<unknown> {
+	const config = loadLayerConfig(root);
 	const passthroughIndex = args.indexOf("--");
+	const controllerArgs = passthroughIndex === -1 ? args : args.slice(0, passthroughIndex);
+	const passthrough = passthroughIndex === -1 ? [] : args.slice(passthroughIndex + 1);
+	const option = controllerArgs.find((arg) => arg.startsWith("--"));
+	if (option != null) {
+		throw new PipelineError("CONFIG_INVALID", `Unknown option: ${option}`);
+	}
+
+	const command = controllerArgs[0];
+	const action = controllerArgs[1];
+	if (command !== "package" && passthrough.length !== 0) {
+		throw new PipelineError("CONFIG_INVALID", "Only glzh package accepts arguments after --");
+	}
 
 	switch (command) {
 		case "upstream":
+			if (controllerArgs.length !== 2) {
+				throw new PipelineError("CONFIG_INVALID", "Usage: glzh upstream status|refresh|build|build:quick");
+			}
 			switch (action) {
 				case "status":
 					return getUpstreamStatus(config);
 				case "refresh":
-					return prepareUpstream(config, { clean: clean, offline: offline });
+					return prepareUpstream(config, { requireFullBuild: true });
+				case "build":
+				case "build:quick":
+					runUpstreamScript(config, action);
+					if (action === "build") markFullBuildComplete(config);
+					return { upstream: config.upstream.commit, script: action };
 				default:
-					throw new PipelineError(
-						"CONFIG_INVALID",
-						"Usage: glzh upstream status|refresh [--clean] [--offline]",
-					);
+					throw new PipelineError("CONFIG_INVALID", "Usage: glzh upstream status|refresh|build|build:quick");
 			}
 		case "i18n":
-			prepareUpstream(config, { clean: clean, offline: offline });
+			if (controllerArgs.length !== 2) {
+				throw new PipelineError("CONFIG_INVALID", "Usage: glzh i18n sync|report|promote");
+			}
 			switch (action) {
 				case "sync":
+					prepareUpstream(config);
 					return syncI18n(config);
 				case "report":
 					return reportI18n(config);
@@ -71,170 +86,44 @@ export async function execute(args: readonly string[]): Promise<unknown> {
 				default:
 					throw new PipelineError("CONFIG_INVALID", "Usage: glzh i18n sync|report|promote");
 			}
-		case "build":
-			return build(config, { clean: clean, offline: offline });
-		case "dev":
-			switch (action) {
-				case "prepare":
-					return prepareDevelopment(config, {
-						clean: clean,
-						offline: offline,
-					});
-				case "watch":
-					return watchDevelopment(config, {
-						clean: clean,
-						offline: offline,
-					});
-				default:
-					throw new PipelineError(
-						"CONFIG_INVALID",
-						"Usage: glzh dev prepare [--clean] [--offline] | glzh dev watch [--clean] [--offline]",
-					);
+		case "build": {
+			if (controllerArgs.length !== 1) {
+				throw new PipelineError("CONFIG_INVALID", "Usage: glzh build");
 			}
+			const prepared = prepareLocalizedUpstream(config);
+			const requiresFullBuild = prepared.status.requiresFullBuild;
+			runUpstreamScript(config, requiresFullBuild ? "build" : "build:quick");
+			if (requiresFullBuild) markFullBuildComplete(config);
+			const manifest = applyLocalizedManifest(config);
+			return {
+				upstream: config.upstream.commit,
+				overlay: prepared.overlay,
+				manifest: manifest,
+				mode: requiresFullBuild ? "full" : "quick",
+			};
+		}
 		case "package":
-			return packageExtension(config, {
-				clean: clean,
-				offline: offline,
-				passthrough: passthroughIndex === -1 ? [] : args.slice(passthroughIndex + 1),
-			});
-		case "verify":
-			return verify(config, { clean: clean, offline: offline });
+			if (controllerArgs.length !== 1) {
+				throw new PipelineError("CONFIG_INVALID", "Usage: glzh package [-- <vsce arguments>]");
+			}
+			return packageExtension(config, passthrough);
 		default:
 			throw new PipelineError(
 				"CONFIG_INVALID",
-				"Usage: glzh upstream|i18n|build|dev|package|verify. See README.md for command details",
+				"Usage: glzh upstream|i18n|build|package. See README.md for command details",
 			);
 	}
 }
 
-function build(
-	config: ReturnType<typeof loadLayerConfig>,
-	options: { readonly clean: boolean; readonly offline: boolean },
-): unknown {
-	prepareUpstream(config, options);
+function prepareLocalizedUpstream(config: ReturnType<typeof loadLayerConfig>) {
+	const status = prepareUpstream(config);
 	const overlay = generateAndApplySourceOverlay(config);
-	installUpstreamDependencies(config, { offline: options.offline });
-	runInteractiveCommand("pnpm", ["run", "build:quick"], config.upstreamRoot, "BUILD_FAILED");
-	return { upstream: config.upstream.commit, overlay: summarizeOverlay(overlay), mode: "quick" };
+	return { status: status, overlay: summarizeOverlay(overlay) };
 }
 
-function prepareDevelopment(
-	config: ReturnType<typeof loadLayerConfig>,
-	options: { readonly clean: boolean; readonly offline: boolean },
-): unknown {
-	const upstream = prepareUpstream(config, options);
-	const overlay = generateAndApplySourceOverlay(config);
-	installUpstreamDependencies(config, { offline: options.offline });
-	const fullBuildRequired =
-		upstream.fullBuild !== true ||
-		upstream.builtTag !== config.upstream.tag ||
-		upstream.builtCommit !== config.upstream.commit;
-	runInteractiveCommand(
-		"pnpm",
-		["run", fullBuildRequired ? "build" : "build:quick"],
-		config.upstreamRoot,
-		"BUILD_FAILED",
-	);
-	if (fullBuildRequired) markFullBuild(config);
-	const manifest = applyLocalizedManifest(config);
-	return {
-		upstream: config.upstream.commit,
-		overlay: summarizeOverlay(overlay),
-		manifest: manifest,
-		mode: fullBuildRequired ? "development-full" : "development-quick",
-	};
-}
-
-async function watchDevelopment(
-	config: ReturnType<typeof loadLayerConfig>,
-	options: { readonly clean: boolean; readonly offline: boolean },
-): Promise<unknown> {
-	prepareUpstream(config, options);
-	const initialOverlay = generateAndApplySourceOverlay(config);
-	installUpstreamDependencies(config, { offline: options.offline });
-	const manifestSourceFiles = ["package.json", "package.nls.json", `package.nls.${locale}.json`].map((file) => ({
-		file: file,
-		contents: fs.existsSync(path.join(config.upstreamRoot, file))
-			? fs.readFileSync(path.join(config.upstreamRoot, file), "utf8")
-			: undefined,
-	}));
-	const initialManifest = applyLocalizedManifest(config);
-
-	let refreshTimer: NodeJS.Timeout | undefined;
-	let refreshCount = 0;
-	const authorityRoot = path.join(config.controlRoot, "i18n", "authority");
-	const refresh = () => {
-		if (refreshTimer != null) clearTimeout(refreshTimer);
-		refreshTimer = setTimeout(() => {
-			try {
-				const overlay = generateAndApplySourceOverlay(config);
-				for (const source of manifestSourceFiles) {
-					const target = path.join(config.upstreamRoot, source.file);
-					if (source.contents == null) fs.rmSync(target, { force: true });
-					else fs.writeFileSync(target, source.contents, "utf8");
-				}
-				const manifest = applyLocalizedManifest(config);
-				refreshCount++;
-				console.log(
-					`[glzh] i18n overlay refreshed (${overlay.files.length} files, ${overlay.translated} translations, ${manifest.localizedKeys} manifest keys)`,
-				);
-			} catch (ex) {
-				const error =
-					ex instanceof PipelineError
-						? ex
-						: new PipelineError("I18N_DEV_REFRESH_FAILED", ex instanceof Error ? ex.message : String(ex));
-				console.error(
-					JSON.stringify(
-						{ code: error.code, message: error.message, details: error.details },
-						undefined,
-						"\t",
-					),
-				);
-			}
-		}, 150);
-	};
-
-	const watcher = fs.watch(authorityRoot, { recursive: true }, refresh);
-
-	console.log(`[glzh] watching ${path.relative(config.controlRoot, authorityRoot)} and upstream development sources`);
-	const child = spawn(
-		process.platform === "win32" ? (process.env.ComSpec ?? "cmd.exe") : "pnpm",
-		process.platform === "win32" ? ["/d", "/s", "/c", "pnpm run watch"] : ["run", "watch"],
-		{
-			cwd: config.upstreamRoot,
-			stdio: "inherit",
-		},
-	);
-
-	await new Promise<void>((resolve, reject) => {
-		child.once("error", (error) => reject(new PipelineError("BUILD_FAILED", error.message)));
-		child.once("exit", (code, signal) => {
-			if (code === 0 || signal != null) resolve();
-			else reject(new PipelineError("BUILD_FAILED", `pnpm exited with code ${code ?? 1}`));
-		});
-	}).finally(() => {
-		if (refreshTimer != null) clearTimeout(refreshTimer);
-		watcher.close();
-	});
-
-	return {
-		upstream: config.upstream.commit,
-		overlay: summarizeOverlay(initialOverlay),
-		manifest: initialManifest,
-		refreshCount: refreshCount,
-		mode: "development-watch",
-	};
-}
-
-function packageExtension(
-	config: ReturnType<typeof loadLayerConfig>,
-	options: { readonly clean: boolean; readonly offline: boolean; readonly passthrough: readonly string[] },
-): unknown {
-	prepareUpstream(config, options);
-	const overlay = generateAndApplySourceOverlay(config);
-	installUpstreamDependencies(config, { offline: options.offline });
-	runInteractiveCommand("pnpm", ["run", "check"], config.upstreamRoot, "BUILD_FAILED");
-	runInteractiveCommand("pnpm", ["run", "bundle:quick"], config.upstreamRoot, "BUILD_FAILED");
+function packageExtension(config: ReturnType<typeof loadLayerConfig>, passthrough: readonly string[]): unknown {
+	const prepared = prepareLocalizedUpstream(config);
+	runUpstreamScript(config, "bundle");
 	const manifest = applyLocalizedManifest(config);
 	fs.mkdirSync(config.artifactsRoot, { recursive: true });
 	const packageJson = JSON.parse(fs.readFileSync(path.join(config.upstreamRoot, "package.json"), "utf8")) as {
@@ -244,25 +133,16 @@ function packageExtension(
 	const artifact = path.join(config.artifactsRoot, `${packageJson.name}-${packageJson.version}-${locale}.vsix`);
 	runInteractiveCommand(
 		"pnpm",
-		["exec", "vsce", "package", "--no-dependencies", "--out", artifact, ...options.passthrough],
+		["exec", "vsce", "package", "--no-dependencies", "--out", artifact, ...passthrough],
 		config.upstreamRoot,
 		"PACKAGE_FAILED",
 	);
 	return {
 		upstream: config.upstream.commit,
-		overlay: summarizeOverlay(overlay),
+		overlay: prepared.overlay,
 		manifest: manifest,
 		artifact: artifact,
 	};
-}
-
-function verify(
-	config: ReturnType<typeof loadLayerConfig>,
-	options: { readonly clean: boolean; readonly offline: boolean },
-): unknown {
-	const upstream = prepareUpstream(config, options);
-	const overlay = generateAndApplySourceOverlay(config);
-	return { upstream: upstream, overlay: summarizeOverlay(overlay) };
 }
 
 function summarizeOverlay(overlay: ReturnType<typeof generateAndApplySourceOverlay>) {

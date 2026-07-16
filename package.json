@@ -5,6 +5,8 @@
 	"type": "module",
 	"scripts": {
 		"glzh": "node ./scripts/glzh.mts",
+		"build": "node ./scripts/glzh.mts build",
+		"package": "node ./scripts/glzh.mts package --",
 		"format": "oxfmt .",
 		"format:check": "oxfmt --check .",
 		"lint": "oxlint .",

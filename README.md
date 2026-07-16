@@ -26,17 +26,16 @@ GitLens 中文分支，使用可重放覆盖层的方式处理 Gitlens 源码生
 ## 常用命令
 
 ```powershell
-pnpm install --frozen-lockfile
 pnpm glzh upstream status
 pnpm glzh upstream refresh
+pnpm glzh upstream build
+pnpm glzh upstream build:quick
 pnpm glzh i18n sync
 pnpm glzh i18n report
 pnpm glzh i18n promote
-pnpm glzh build
-pnpm glzh dev prepare
-pnpm glzh dev watch
-pnpm glzh package
-pnpm glzh verify
+pnpm build
+pnpm package
+pnpm check
 pnpm test
 pnpm lint
 pnpm lint:fix
@@ -44,28 +43,26 @@ pnpm format
 pnpm format:check
 ```
 
-- `glzh upstream refresh`：按配置重建或校验 `.upstream/`。
+- `glzh upstream refresh`：通过 Git 重置 `.upstream/` 为配置锁定的 tag/commit。
+- `glzh upstream build`：在当前 `.upstream/` 上执行上游完整 development build。
+- `glzh upstream build:quick`：在当前 `.upstream/` 上执行上游 quick development build。
 - `glzh i18n sync`：从锁定上游显式刷新 catalog/workset；普通构建不会改写翻译真源。
-- `glzh build`：校验 i18n 基线，生成 overlay，并调用上游 `build:quick`。
-- `glzh dev prepare`：生成完整本地化 overlay 与 manifest/NLS；当 `.upstream/.git/gl-managed.json` 中记录的 tag/commit 未完成完整构建，或版本发生变化时执行上游完整 `build`，否则使用 `build:quick` 加快重复调试启动。
-- `glzh dev watch`：准备本地化上游后运行上游 `watch`；修改 `i18n/authority/` 时会重放 overlay，webpack 随后增量编译。
-- `glzh package`：先运行上游只读检查，再执行 production quick bundle，并生成 VSIX 到 `artifacts/`。
-- `glzh verify`：执行配置、i18n、TypeScript 版本和可重放性检查。
+- `build`：构建中文 Gitlens。
+- `package`：生成中文 VSIX 到 `artifacts/`。
+- `check`：检查控制仓库 TypeScript。
 - `lint` / `lint:fix`：使用 Oxlint 检查控制仓库脚本与 i18n 代码，或应用安全自动修复。
 - `format` / `format:check`：使用 Oxfmt 写入格式化结果或只检查格式。
-
-`build` 与 `package` 支持 `--offline`，要求 `.upstream/` 与依赖已经就绪；`--clean` 只允许清理由本项目管理且已确认位于仓库内的工作目录。
 
 ## 工作流
 
 ### 更新上游版本
 
 1. 更新 `gitlens-zh.config.json` 中的 tag 与完整 commit。
-2. 执行 `pnpm glzh upstream refresh --clean`。
+2. 执行 `pnpm glzh upstream refresh`。
 3. 执行 `pnpm glzh i18n sync`，审阅并提交 catalog/workset 变化。
-4. 执行 `pnpm glzh verify` 和 `pnpm glzh package`。
+4. 执行 `pnpm check`、`pnpm test` 和 `pnpm package`。
 
 ### 更新翻译
 
-编辑 `i18n/authority/` 或工作流产生的待翻译数据，随后运行 `i18n report`、`verify` 与 `build`。
+编辑 `i18n/authority/` 或工作流产生的待翻译数据，随后运行 `i18n report`、`check` 与 `build`。
 构建生成物仅存在于 `.work/`、`.upstream/` 和 `artifacts/`，不应提交。

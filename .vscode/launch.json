@@ -26,34 +26,7 @@
 			"smartStep": true,
 			"sourceMapRenames": true,
 			"sourceMaps": true,
-			"preLaunchTask": "glzh: prepare"
-		},
-		{
-			"type": "extensionHost",
-			"request": "launch",
-			"name": "Watch",
-			"runtimeExecutable": "${execPath}",
-			"args": ["--profile=Debugging (GitLens)", "--extensionDevelopmentPath=${workspaceFolder}/.upstream"],
-			"debugWebviews": true,
-			"rendererDebugOptions": {
-				"outFiles": ["${workspaceFolder}/.upstream/dist/webviews/**/*.js"],
-				"pauseForSourceMap": true,
-				"showAsyncStacks": true,
-				"smartStep": true,
-				"sourceMapRenames": true,
-				"sourceMaps": true,
-				"urlFilter": "*eamodio.gitlens*",
-				"webRoot": "${workspaceFolder}/.upstream/src/webviews/apps"
-			},
-			"outFiles": ["${workspaceFolder}/.upstream/dist/**/*.js"],
-			"pauseForSourceMap": true,
-			"runtimeSourcemapPausePatterns": ["${workspaceFolder}/.upstream/dist/**/*.js"],
-			"showAsyncStacks": true,
-			"skipFiles": ["<node_internals>/**", "**/node_modules/**", "**/resources/app/out/vs/**"],
-			"smartStep": true,
-			"sourceMapRenames": true,
-			"sourceMaps": true,
-			"preLaunchTask": "glzh: watch"
+			"preLaunchTask": "glzh: build"
 		}
 	]
 }
