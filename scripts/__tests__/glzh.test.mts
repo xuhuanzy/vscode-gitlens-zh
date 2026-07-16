@@ -102,12 +102,15 @@ test("build uses a quick build when prepare reports that a full build is not req
 	expect(upstream.markFullBuildComplete).not.toHaveBeenCalled();
 });
 
-test("report and promote no longer reset upstream when they only consume controlled i18n data", async () => {
+test("report resets upstream before refreshing reports while promote only consumes controlled i18n data", async () => {
 	await execute(["i18n", "report"]);
+	expect(upstream.prepare).toHaveBeenCalledOnce();
+	expect(overlay.report).toHaveBeenCalledOnce();
+
+	upstream.prepare.mockClear();
 	await execute(["i18n", "promote"]);
 
 	expect(upstream.prepare).not.toHaveBeenCalled();
-	expect(overlay.report).toHaveBeenCalledOnce();
 	expect(overlay.promote).toHaveBeenCalledOnce();
 });
 

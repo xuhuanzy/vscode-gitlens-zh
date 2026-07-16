@@ -80,6 +80,7 @@ export async function execute(args: readonly string[], root = controlRoot): Prom
 					prepareUpstream(config);
 					return syncI18n(config);
 				case "report":
+					prepareUpstream(config);
 					return reportI18n(config);
 				case "promote":
 					return promoteI18n(config);
