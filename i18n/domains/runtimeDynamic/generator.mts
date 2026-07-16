@@ -51,7 +51,7 @@ export function generateLocalizedRuntimeDynamicSourceFile(
 				item.reference.kind === "source" &&
 				item.reference.file === target.file &&
 				item.pattern.text === match.text &&
-				item.slot === match.slot &&
+				item.reference.attribute === match.slot &&
 				item.scope === `${target.domain}.${target.group}`,
 		);
 		if (occurrence?.output == null || !relevantOccurrences.has(outputReferenceId(occurrence.output))) continue;

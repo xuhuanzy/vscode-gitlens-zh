@@ -45,7 +45,13 @@ export function ensureDomainFiles(
 }
 
 export function loadCatalog(context: DomainContext): SourceCatalogFile {
-	return readJsonFile<SourceCatalogFile>(context.catalogFile);
+	const catalog = readJsonFile<unknown>(context.catalogFile);
+	if (typeof catalog !== "object" || catalog == null || !("version" in catalog) || catalog.version !== 6) {
+		const version =
+			typeof catalog === "object" && catalog != null && "version" in catalog ? catalog.version : undefined;
+		throw new Error(`Unsupported source catalog version: ${String(version)}`);
+	}
+	return catalog as SourceCatalogFile;
 }
 
 export function saveCatalog(context: DomainContext, catalog: SourceCatalogFile): void {
@@ -97,7 +103,7 @@ export function createEmptyCatalogFile(options: {
 }): SourceCatalogFile {
 	return {
 		$schema: options.schemaPath,
-		version: 5,
+		version: 6,
 		domain: options.domain,
 		occurrences: [],
 	};

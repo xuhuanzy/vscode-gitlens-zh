@@ -79,8 +79,6 @@ export type OutputReference =
 export interface SourceOccurrence {
 	readonly id: string;
 	readonly scope: string;
-	readonly anchor: string;
-	readonly slot: string;
 	readonly authorityId: string;
 	readonly pattern: MessagePattern;
 	readonly reference: SourceReference;
@@ -91,7 +89,6 @@ export type ReconciliationChange = "added" | "changed" | "moved" | "removed" | "
 
 export interface CatalogIssue {
 	readonly occurrenceId?: string;
-	readonly anchor?: string;
 	readonly reference?: SourceReference;
 	readonly output?: OutputReference;
 	readonly reason: string;
@@ -100,7 +97,6 @@ export interface CatalogIssue {
 export interface CatalogReconciliationEntry {
 	readonly occurrenceId: string;
 	readonly change: ReconciliationChange;
-	readonly anchor?: string;
 	readonly previousReference?: SourceReference;
 	readonly currentReference?: SourceReference;
 	readonly previousSourceHash?: string;
@@ -111,7 +107,7 @@ export interface CatalogReconciliationEntry {
 
 export interface SourceCatalogFile {
 	readonly $schema: string;
-	readonly version: 5;
+	readonly version: 6;
 	readonly domain: I18nDomain;
 	readonly occurrences: SourceOccurrence[];
 }
@@ -327,8 +323,8 @@ export function createAuthorityId(pattern: MessagePattern): string {
 	return `message.${createPatternFingerprint(pattern)}`;
 }
 
-export function createOccurrenceId(domain: I18nDomain, anchor: string, slot: string): string {
-	return `${domain}:${anchor}#${slot}`;
+export function createOccurrenceId(domain: I18nDomain, identity: string): string {
+	return `${domain}:${identity}`;
 }
 
 export function createContentHash(value: string): string {

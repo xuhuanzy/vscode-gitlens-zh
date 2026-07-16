@@ -10,13 +10,32 @@ import {
 	saveWorkset as saveRuntimeDynamicWorkset,
 } from "../../../core/store.mts";
 import { createRuntimeDynamicDomainContext } from "../context.mts";
-import { extractRuntimeDynamicMatches } from "../extractor.mts";
+import { extractRuntimeDynamicMatches, extractRuntimeDynamicOccurrences } from "../extractor.mts";
 import {
 	createPendingReport,
 	generateRuntimeDynamicLocalizedOutputs,
 	promoteRuntimeDynamicAuthority,
 	syncRuntimeDynamicI18n,
 } from "../workflow.mts";
+
+test("keeps runtime occurrence identities stable when source positions move", () => {
+	const source = 'export const item = { label: "Open Repository" };\n';
+	const target = {
+		domain: "quickpicks" as const,
+		group: "commands",
+		file: "src/commands/open.ts",
+		source: source,
+		syntax: "ts" as const,
+	};
+
+	const original = extractRuntimeDynamicOccurrences([target]);
+	const moved = extractRuntimeDynamicOccurrences([{ ...target, source: `\n\n${source}` }]);
+
+	expect(original.occurrences).toHaveLength(1);
+	expect(moved.occurrences.map((occurrence) => occurrence.id)).toEqual(
+		original.occurrences.map((occurrence) => occurrence.id),
+	);
+});
 
 test("localizes webview host registration titles", () => {
 	withTempRoot("gitlens-runtime-webview-host-", (rootDir) => {
@@ -101,14 +120,12 @@ test("stores webview host entries with webviews files", () => {
 			JSON.stringify(
 				{
 					$schema: "../schemas/sourceCatalog.schema.json",
-					version: 5,
+					version: 6,
 					domain: "webviews",
 					occurrences: [
 						{
 							id: "webviews:webviews.home.home.lit-template-1-root.text.123#text",
 							scope: "webviews.home",
-							anchor: "webviews.home.home.lit-template-1-root.text.123",
-							slot: "text",
 							authorityId: "message.webviews-only",
 							pattern: {
 								kind: "literal",

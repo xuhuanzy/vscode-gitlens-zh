@@ -96,10 +96,9 @@ test("promotes localized manifest entries", () => {
 		);
 		expect(commandTitleOccurrence).toBeDefined();
 		expect(commandCategoryOccurrence).toBeDefined();
-		expect(commandTitleOccurrence!.anchor).toBe(commandCategoryOccurrence!.anchor);
 		expect(commandTitleOccurrence!.id).not.toBe(commandCategoryOccurrence!.id);
-		expect(commandTitleOccurrence!.slot).toBe("title");
-		expect(commandCategoryOccurrence!.slot).toBe("category");
+		expect("anchor" in commandTitleOccurrence!).toBe(false);
+		expect("slot" in commandTitleOccurrence!).toBe(false);
 		expect(commandTitleOccurrence!.reference.kind).toBe("json");
 		expect("extractedFrom" in commandTitleOccurrence!.reference).toBe(false);
 

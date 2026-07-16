@@ -92,8 +92,7 @@ export function extractManifestOccurrences(
 		const resolved = resolveSource(value, englishNls);
 		if (resolved.missingTokenKey != null) {
 			issues.push({
-				occurrenceId: createOccurrenceId("manifest", definition.anchor, definition.slot),
-				anchor: definition.anchor,
+				occurrenceId: createOccurrenceId("manifest", `${definition.anchor}#${definition.slot}`),
 				reference: createJsonSourceReference("package.json", definition.pathSegments),
 				output: createManifestKeyOutputReference(definition.key),
 				reason: `Missing english package.nls entry for token '${resolved.missingTokenKey}'`,
@@ -110,7 +109,6 @@ export function extractManifestOccurrences(
 		if (existing != null) {
 			issues.push({
 				occurrenceId: occurrence.id,
-				anchor: occurrence.anchor,
 				reference: occurrence.reference,
 				output: occurrence.output,
 				reason: `Duplicate manifest localization key detected for '${definition.key}'`,
@@ -385,10 +383,8 @@ function extractWalkthroughs(
 function createOccurrence(input: OccurrenceInput): SourceOccurrence {
 	const pattern = parseMessagePattern(input.sourceText);
 	return {
-		id: createOccurrenceId("manifest", input.anchor, input.slot),
+		id: createOccurrenceId("manifest", `${input.anchor}#${input.slot}`),
 		scope: input.scope,
-		anchor: input.anchor,
-		slot: input.slot,
 		authorityId: createAuthorityId(pattern),
 		pattern: pattern,
 		reference: createJsonSourceReference("package.json", input.pathSegments),

@@ -1,11 +1,12 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import type { PendingReportFile } from "../../core/model.mts";
+import type { MessagePattern, PendingReportFile } from "../../core/model.mts";
 import {
 	filterOccurrenceIdsByScope,
 	filterWorksetEntriesByScope,
 	promoteApprovedEntries,
+	resolveOccurrenceTranslation,
 	syncWorkset,
 	type WorksetScopeOptions,
 } from "../../core/authority.mts";
@@ -36,7 +37,8 @@ import type { I18nLayerOptions } from "../../core/context.mts";
 
 import { createWebviewsDomainContext, type WebviewsDomainContext } from "./context.mts";
 import { extractSupportedWebviewOccurrences } from "./extractor.mts";
-import { generateLocalizedSourceFile } from "./generator.mts";
+import { applyWebviewTranslations } from "./generator.mts";
+import { analyzeWebviewSource } from "./sourcePlan.mts";
 
 interface DynamicSourceTarget {
 	readonly bundle: "welcome" | "rebase" | "home" | "commitDetails" | "timeline" | "graph" | "composer" | "settings";
@@ -228,7 +230,33 @@ function generateWebviewsLocalizedDynamicSourcesCore(context: WebviewsDomainCont
 			continue;
 		}
 
-		const localizedSource = generateLocalizedSourceFile(source, file, catalog.occurrences, bundle);
+		const relevantOccurrences = catalog.occurrences.filter(
+			(occurrence) =>
+				occurrence.output?.kind === "runtime-key" &&
+				occurrence.reference.kind === "source" &&
+				occurrence.reference.file === file,
+		);
+		const sourceBundle = relevantOccurrences.find(
+			(occurrence) => occurrence.output?.kind === "runtime-key",
+		)?.output;
+		let localizedSource = { contents: source, translatedCount: 0, unresolvedCount: 0 };
+		if (sourceBundle != null && sourceBundle.kind === "runtime-key") {
+			const plan = analyzeWebviewSource({
+				file: file,
+				source: source,
+				syntax: file.endsWith(".tsx") ? "tsx" : file.endsWith(".jsx") ? "jsx" : "ts",
+				bundle: sourceBundle.bundle,
+			});
+			const occurrencesById = new Map(relevantOccurrences.map((occurrence) => [occurrence.id, occurrence]));
+			const translations = new Map<string, MessagePattern>();
+			for (const site of plan.sites) {
+				const occurrence = occurrencesById.get(site.id);
+				if (occurrence == null) continue;
+				const resolved = resolveOccurrenceTranslation(occurrence, bundle);
+				if (resolved != null) translations.set(site.id, resolved);
+			}
+			localizedSource = applyWebviewTranslations(plan, translations);
+		}
 		writeTextFile(path.join(context.generatedRootDir, ...file.split("/")), localizedSource.contents);
 		localizedSourceTranslatedCount += localizedSource.translatedCount;
 		localizedSourceUnresolvedCount += localizedSource.unresolvedCount;

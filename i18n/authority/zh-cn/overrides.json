@@ -8,94 +8,7 @@
 		{
 			"selector": {
 				"kind": "occurrence",
-				"occurrenceId": "webviews:webviews.composer.composer.imperative-display-1164-59.text.0b8c8030cc#text"
-			},
-			"translationPattern": {
-				"kind": "literal",
-				"text": "个文件"
-			},
-			"updatedAt": "2026-04-26T10:37:32.854Z",
-			"note": "Narrows English file-count unit translation to composer count display."
-		},
-		{
-			"selector": {
-				"kind": "occurrence",
-				"occurrenceId": "webviews:webviews.composer.composer.imperative-display-1164-68.text.4088cc4ac8#text"
-			},
-			"translationPattern": {
-				"kind": "literal",
-				"text": "个文件"
-			},
-			"updatedAt": "2026-04-26T10:37:32.854Z",
-			"note": "Narrows English file-count unit translation to composer count display."
-		},
-		{
-			"selector": {
-				"kind": "occurrence",
-				"occurrenceId": "webviews:webviews.composer.composer.imperative-display-156-74.text.8c6b00790b#text"
-			},
-			"translationPattern": {
-				"kind": "literal",
-				"text": "个文件"
-			},
-			"updatedAt": "2026-04-26T10:37:32.854Z",
-			"note": "Narrows English file-count unit translation to composer count display."
-		},
-		{
-			"selector": {
-				"kind": "occurrence",
-				"occurrenceId": "webviews:webviews.composer.composer.imperative-display-156-83.text.a31968f73f#text"
-			},
-			"translationPattern": {
-				"kind": "literal",
-				"text": "个文件"
-			},
-			"updatedAt": "2026-04-26T10:37:32.854Z",
-			"note": "Narrows English file-count unit translation to composer count display."
-		},
-		{
-			"selector": {
-				"kind": "occurrence",
-				"occurrenceId": "webviews:webviews.home.home.imperative-display-255-17.text.236db107e2#text"
-			},
-			"translationPattern": {
-				"kind": "template",
-				"text": "需要审查者",
-				"slots": []
-			},
-			"updatedAt": "2026-04-24T18:05:11.563Z",
-			"note": "Drops English agreement helper from Launchpad generated display text."
-		},
-		{
-			"selector": {
-				"kind": "occurrence",
-				"occurrenceId": "webviews:webviews.home.home.imperative-display-261-17.text.e56472643b#text"
-			},
-			"translationPattern": {
-				"kind": "template",
-				"text": "CI 检查未通过",
-				"slots": []
-			},
-			"updatedAt": "2026-04-24T18:05:11.563Z",
-			"note": "Drops English agreement helper from Launchpad generated display text."
-		},
-		{
-			"selector": {
-				"kind": "occurrence",
-				"occurrenceId": "webviews:webviews.home.home.imperative-display-267-17.text.44e0e56343#text"
-			},
-			"translationPattern": {
-				"kind": "template",
-				"text": "存在冲突",
-				"slots": []
-			},
-			"updatedAt": "2026-04-24T18:05:11.563Z",
-			"note": "Drops English agreement helper from Launchpad generated display text."
-		},
-		{
-			"selector": {
-				"kind": "occurrence",
-				"occurrenceId": "webviews:webviews.home.home.lit-template-12-li-1-a-launchpad-action-span-1.text.f8f37e5489#text"
+				"occurrenceId": "webviews:home:ce728cb731a814207e4824c035b9a1e39d19a5da885c0a7342680d008edbbabd"
 			},
 			"translationPattern": {
 				"kind": "template",
@@ -108,7 +21,7 @@
 		{
 			"selector": {
 				"kind": "occurrence",
-				"occurrenceId": "webviews:webviews.home.home.lit-template-13-li-1-a-launchpad-action-span-1.text.ebb9304efb#text"
+				"occurrenceId": "webviews:home:8f5f854fdb1b4d95dc947e8e49b16ef552a2eb6cb3de346802ba4be34be1fd46"
 			},
 			"translationPattern": {
 				"kind": "template",
@@ -121,7 +34,7 @@
 		{
 			"selector": {
 				"kind": "occurrence",
-				"occurrenceId": "webviews:webviews.home.home.lit-template-14-li-1-a-launchpad-action-span-1.text.6137fd4da2#text"
+				"occurrenceId": "webviews:home:e714e85ead5d11e3bdcc8cc3e267c4d958b36dfe7c60c01825938fada30f7539"
 			},
 			"translationPattern": {
 				"kind": "template",
@@ -130,19 +43,6 @@
 			},
 			"updatedAt": "2026-04-24T18:05:11.563Z",
 			"note": "Drops English agreement helper from Launchpad generated display text."
-		},
-		{
-			"selector": {
-				"kind": "occurrence",
-				"occurrenceId": "webviews:webviews.rebase.rebase.lit-template-12-gl-popover-1-div-indicator-span-indicator__content.text.e9ad6e715b#text"
-			},
-			"translationPattern": {
-				"kind": "template",
-				"text": "检测到 ${slot1} 个冲突${slot3}",
-				"slots": ["slot1", "slot3"]
-			},
-			"updatedAt": "2026-04-24T18:05:11.563Z",
-			"note": "Drops English plural suffix helper from Rebase generated display text."
 		}
 	]
 }

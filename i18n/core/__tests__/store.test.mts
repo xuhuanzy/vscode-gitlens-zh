@@ -6,7 +6,46 @@ import { expect, test } from "vitest";
 import { createTestLayerOptions } from "../../testing/tempRoot.mts";
 import { createDomainContext, createI18nLayerContext } from "../context.mts";
 import type { TranslationWorksetFile } from "../model.mts";
-import { readJsonFile, readJsonFileIfMissing, saveWorkset } from "../store.mts";
+import { createEmptyCatalogFile, loadCatalog, readJsonFile, readJsonFileIfMissing, saveWorkset } from "../store.mts";
+
+test("creates catalog v6 files", () => {
+	expect(
+		createEmptyCatalogFile({
+			schemaPath: "../schemas/sourceCatalog.schema.json",
+			domain: "webviews",
+		}),
+	).toEqual({
+		$schema: "../schemas/sourceCatalog.schema.json",
+		version: 6,
+		domain: "webviews",
+		occurrences: [],
+	});
+});
+
+test("rejects catalog v5 files", () => {
+	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "gitlens-i18n-store-"));
+	try {
+		const context = createDomainContext(createI18nLayerContext(createTestLayerOptions(rootDir)), {
+			domain: "webviews",
+			artifactId: "webviews",
+		});
+		fs.mkdirSync(path.dirname(context.catalogFile), { recursive: true });
+		fs.writeFileSync(
+			context.catalogFile,
+			JSON.stringify({
+				$schema: "../schemas/sourceCatalog.schema.json",
+				version: 5,
+				domain: "webviews",
+				occurrences: [],
+			}),
+			"utf8",
+		);
+
+		expect(() => loadCatalog(context)).toThrow("Unsupported source catalog version: 5");
+	} finally {
+		fs.rmSync(rootDir, { recursive: true, force: true });
+	}
+});
 
 test("throws when reading invalid JSON", () => {
 	const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "gitlens-i18n-store-"));

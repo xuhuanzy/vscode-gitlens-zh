@@ -7,6 +7,7 @@ node_modules/
 .upstream/
 .work/
 artifacts/
+.scratch/
 
 # Derived localization reports
 i18n/reports/*.json

@@ -10,10 +10,13 @@ export interface SyntheticTextTemplateFragment {
 	readonly expressions: ReadonlyMap<string, string>;
 }
 
+export type SyntheticHtmlTemplateBinding = "attribute" | "property" | "boolean" | "event";
+
 export interface SyntheticHtmlTemplateSlotContext {
 	readonly kind: "text" | "attribute";
 	readonly tag?: string;
 	readonly attribute?: string;
+	readonly binding?: SyntheticHtmlTemplateBinding;
 }
 
 interface HtmlInsertionContext {
@@ -122,13 +125,25 @@ export function getSyntheticHtmlTemplateSlotContext(
 			const attribute = getPendingAttributeName(context.tagTail);
 			if (attribute == null) return undefined;
 
-			const normalizedAttribute = normalizePendingAttributeName(attribute);
-			if (normalizedAttribute == null) return undefined;
+			let normalizedAttribute = attribute;
+			let binding: SyntheticHtmlTemplateBinding = "attribute";
+			if (attribute.startsWith(".")) {
+				normalizedAttribute = attribute.slice(1);
+				binding = "property";
+			} else if (attribute.startsWith("?")) {
+				normalizedAttribute = attribute.slice(1);
+				binding = "boolean";
+			} else if (attribute.startsWith("@")) {
+				normalizedAttribute = attribute.slice(1);
+				binding = "event";
+			}
+			if (normalizedAttribute.length === 0) return undefined;
 
 			return {
 				kind: "attribute",
 				tag: getPendingTagName(context.tagTail),
 				attribute: normalizedAttribute,
+				binding: binding,
 			};
 		}
 
@@ -242,12 +257,6 @@ function getPendingAttributeName(tagTail: string): string | undefined {
 function getPendingTagName(tagTail: string): string | undefined {
 	const match = /^<\s*([A-Za-z0-9:_-]+)/u.exec(tagTail);
 	return match?.[1]?.toLowerCase();
-}
-
-function normalizePendingAttributeName(name: string): string | undefined {
-	if (name.startsWith("@")) return undefined;
-	if (name.startsWith(".") || name.startsWith("?")) return name.slice(1);
-	return name;
 }
 
 function pushTagTail(context: HtmlInsertionContext, char: string): void {

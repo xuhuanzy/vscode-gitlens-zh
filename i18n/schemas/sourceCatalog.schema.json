@@ -6,7 +6,7 @@
 	"required": ["$schema", "version", "domain", "occurrences"],
 	"properties": {
 		"$schema": { "type": "string" },
-		"version": { "const": 5 },
+		"version": { "const": 6 },
 		"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "webviewHost"] },
 		"occurrences": {
 			"type": "array",
@@ -69,12 +69,10 @@
 		"occurrence": {
 			"type": "object",
 			"additionalProperties": false,
-			"required": ["id", "scope", "anchor", "slot", "authorityId", "pattern", "reference"],
+			"required": ["id", "scope", "authorityId", "pattern", "reference"],
 			"properties": {
 				"id": { "type": "string" },
 				"scope": { "type": "string" },
-				"anchor": { "type": "string" },
-				"slot": { "type": "string" },
 				"authorityId": { "type": "string" },
 				"pattern": { "$ref": "./messagePattern.schema.json" },
 				"reference": { "$ref": "#/definitions/sourceReference" },

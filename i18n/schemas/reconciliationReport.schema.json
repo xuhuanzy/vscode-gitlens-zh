@@ -86,7 +86,6 @@
 			"properties": {
 				"occurrenceId": { "type": "string" },
 				"change": { "enum": ["added", "changed", "moved", "removed", "ambiguous"] },
-				"anchor": { "type": "string" },
 				"previousReference": { "$ref": "#/definitions/sourceReference" },
 				"currentReference": { "$ref": "#/definitions/sourceReference" },
 				"previousSourceHash": { "type": "string" },

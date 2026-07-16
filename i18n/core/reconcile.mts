@@ -29,7 +29,7 @@ export function reconcileCatalog(
 
 	return {
 		$schema: previousCatalog.$schema,
-		version: 5,
+		version: 6,
 		domain: options.catalogDomain ?? previousCatalog.domain,
 		occurrences: scopedOccurrences.sort((left, right) => left.id.localeCompare(right.id)),
 	};
@@ -54,7 +54,6 @@ export function createReconciliationReport(
 		if (previous == null) {
 			entries.push({
 				occurrenceId: occurrence.id,
-				anchor: occurrence.anchor,
 				change: "added",
 				currentReference: structuredClone(occurrence.reference),
 				currentSourceHash: createContentHash(occurrence.pattern.text),
@@ -68,7 +67,6 @@ export function createReconciliationReport(
 		if (previousSourceHash !== currentSourceHash) {
 			entries.push({
 				occurrenceId: occurrence.id,
-				anchor: occurrence.anchor,
 				change: "changed",
 				previousReference: structuredClone(previous.reference),
 				currentReference: structuredClone(occurrence.reference),
@@ -86,7 +84,6 @@ export function createReconciliationReport(
 		) {
 			entries.push({
 				occurrenceId: occurrence.id,
-				anchor: occurrence.anchor,
 				change: "moved",
 				previousReference: structuredClone(previous.reference),
 				currentReference: structuredClone(occurrence.reference),
@@ -102,7 +99,6 @@ export function createReconciliationReport(
 
 		entries.push({
 			occurrenceId: previous.id,
-			anchor: previous.anchor,
 			change: "removed",
 			previousReference: structuredClone(previous.reference),
 			previousSourceHash: createContentHash(previous.pattern.text),
@@ -113,7 +109,6 @@ export function createReconciliationReport(
 	for (const [index, issue] of issues.entries()) {
 		entries.push({
 			occurrenceId: issue.occurrenceId ?? `${options.domain}:issue:${index + 1}`,
-			anchor: issue.anchor,
 			change: "ambiguous",
 			currentReference: structuredClone(issue.reference),
 			output: structuredClone(issue.output),

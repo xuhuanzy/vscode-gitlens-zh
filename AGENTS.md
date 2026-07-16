@@ -23,3 +23,17 @@
 - 普通 `build`、`package`、`verify` 不得修改受 Git 跟踪的 i18n 文件。
 - overlay 只能写入 `.upstream/`，临时内容只能写入 `.work/`。
 - pnpm store 只能写入 `.work/pnpm-store`；store 被清理后，编排器必须同步重建失效的上游 `node_modules`。
+
+## Agent skills
+
+### Issue tracker
+
+临时 issues 与 PRD 使用 `.scratch/<feature>/` 下的本地 Markdown 文件管理。详见 `docs/agents/issue-tracker.md`。
+
+### Triage labels
+
+使用默认的五种状态词汇。详见 `docs/agents/triage-labels.md`。
+
+### Domain docs
+
+采用单上下文布局：根目录 `CONTEXT.md` 与 `docs/adr/`。详见 `docs/agents/domain.md`。

@@ -3,10 +3,11 @@ import * as ts from "typescript";
 import type { CatalogIssue, OutputReference, SourceOccurrence, SourceReference } from "../../core/model.mts";
 import {
 	createAuthorityId,
+	createContentHash,
 	createOccurrenceId,
+	createPatternFingerprint,
 	parseMessagePattern,
 	sanitizeKeySegment,
-	shortHash,
 } from "../../core/model.mts";
 
 export interface RuntimeDynamicSourceTarget {
@@ -78,13 +79,13 @@ export function extractRuntimeDynamicOccurrences(
 	for (const target of targets) {
 		const extraction = extractRuntimeDynamicMatches(target);
 		issues.push(...extraction.issues);
+		const ordinals = new Map<string, number>();
 
 		for (const match of extraction.matches) {
-			const occurrence = createOccurrence(target, match);
+			const occurrence = createOccurrence(target, match, ordinals);
 			if (seenIds.has(occurrence.id)) {
 				issues.push({
 					occurrenceId: occurrence.id,
-					anchor: occurrence.anchor,
 					reference: occurrence.reference,
 					output: occurrence.output,
 					reason: `duplicate runtime dynamic occurrence id: ${occurrence.id}`,
@@ -160,13 +161,7 @@ function addTemplateExpressionMatch(
 	const deferredReason = getDeferredTemplateExpressionReason(template.slotExpressions);
 	if (deferredReason != null) {
 		issues.push({
-			reference: createSourceReference(
-				target.file,
-				target.source,
-				node.getStart(sourceFile),
-				node.getEnd(),
-				"template",
-			),
+			reference: createSourceReference(target.file, "template"),
 			output: createRuntimeOutputReference(target.domain, `deferred.${target.group}.template`),
 			reason: `deferred ${target.domain}.${target.group}: ${deferredReason} in '${template.text}'`,
 		});
@@ -200,7 +195,7 @@ function addHtmlTitleMatches(
 	for (const match of findHtmlTitleMatches(raw)) {
 		const absoluteStart = start + match.start;
 		const absoluteEnd = start + match.end;
-		const reference = createSourceReference(target.file, target.source, absoluteStart, absoluteEnd, "html-title");
+		const reference = createSourceReference(target.file, "html-title");
 		if (match.text.includes("${")) {
 			issues.push({
 				reference: reference,
@@ -262,13 +257,7 @@ function addMarkdownTitleMatches(
 	for (const match of findMarkdownTitleMatches(raw)) {
 		const absoluteStart = start + match.start;
 		const absoluteEnd = start + match.end;
-		const reference = createSourceReference(
-			target.file,
-			target.source,
-			absoluteStart,
-			absoluteEnd,
-			"markdown-title",
-		);
+		const reference = createSourceReference(target.file, "markdown-title");
 		const template = createDynamicTemplateText(match.text);
 		if (match.text.includes("${") && template == null) {
 			issues.push({
@@ -309,13 +298,7 @@ function addMarkdownLabelMatches(
 	for (const match of findMarkdownLabelMatches(raw)) {
 		const absoluteStart = start + match.start;
 		const absoluteEnd = start + match.end;
-		const reference = createSourceReference(
-			target.file,
-			target.source,
-			absoluteStart,
-			absoluteEnd,
-			"markdown-label",
-		);
+		const reference = createSourceReference(target.file, "markdown-label");
 		const template = createDynamicTemplateText(match.text);
 		if (match.text.includes("${") && template == null) {
 			if (isSupportedMarkdownLabelRawText(match.text)) {
@@ -751,30 +734,33 @@ function getStringLiteralSlot(
 	return "text";
 }
 
-function createOccurrence(target: RuntimeDynamicSourceTarget, match: RuntimeDynamicMatch): SourceOccurrence {
+function createOccurrence(
+	target: RuntimeDynamicSourceTarget,
+	match: RuntimeDynamicMatch,
+	ordinals: Map<string, number>,
+): SourceOccurrence {
 	const pattern = parseMessagePattern(match.text);
-	const output = createRuntimeOutputReference(target.domain, createRuntimeOutputKey(target, match));
-	const anchor = `${target.domain}.${target.group}.${output.key}`;
+	const identityBase = [
+		target.domain,
+		target.group,
+		target.file,
+		match.kind,
+		match.slot,
+		createPatternFingerprint(pattern),
+	].join("\n");
+	const ordinal = (ordinals.get(identityBase) ?? 0) + 1;
+	ordinals.set(identityBase, ordinal);
+	const identity = createContentHash(`${identityBase}\n${ordinal}`);
+	const output = createRuntimeOutputReference(target.domain, `${sanitizeKeySegment(target.group)}.${identity}`);
 
 	return {
-		id: createOccurrenceId(target.domain, anchor, match.slot),
+		id: createOccurrenceId(target.domain, identity),
 		scope: `${target.domain}.${target.group}`,
-		anchor: anchor,
-		slot: match.slot,
 		authorityId: createAuthorityId(pattern),
 		pattern: pattern,
-		reference: createSourceReference(target.file, target.source, match.start, match.end, match.slot),
+		reference: createSourceReference(target.file, match.slot),
 		output: output,
 	};
-}
-
-function createRuntimeOutputKey(target: RuntimeDynamicSourceTarget, match: RuntimeDynamicMatch): string {
-	const context = sanitizeKeySegment(match.context).replaceAll(".", "-");
-	const slot = sanitizeKeySegment(match.slot);
-	const suffix = shortHash(
-		`${target.domain}:${target.group}:${target.file}:${match.context}:${match.slot}:${match.text}`,
-	);
-	return `${target.group}.${context}.${slot}.${suffix}`;
 }
 
 function createRuntimeOutputReference(bundle: string, key: string): OutputReference {
@@ -785,13 +771,7 @@ function createRuntimeOutputReference(bundle: string, key: string): OutputRefere
 	};
 }
 
-function createSourceReference(
-	file: string,
-	source: string,
-	startOffset: number,
-	endOffset: number,
-	attribute?: string,
-): SourceReference {
+function createSourceReference(file: string, attribute?: string): SourceReference {
 	return {
 		kind: "source",
 		file: file,

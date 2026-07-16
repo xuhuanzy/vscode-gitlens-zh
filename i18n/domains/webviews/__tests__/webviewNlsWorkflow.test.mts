@@ -71,14 +71,12 @@ test("preserves shared webview host entries during sync", () => {
 		const context = createWebviewsDomainContext(createTestLayerOptions(rootDir));
 		saveWebviewsCatalog(context, {
 			$schema: "../schemas/sourceCatalog.schema.json",
-			version: 5,
+			version: 6,
 			domain: "webviews",
 			occurrences: [
 				{
 					id: "webviewHost:webviewHost.registration.registration.string-13-11.title.123#title",
 					scope: "webviewHost.registration",
-					anchor: "webviewHost.registration.registration.string-13-11.title.123",
-					slot: "title",
 					authorityId: "message.webview-host-only",
 					pattern: {
 						kind: "literal",
@@ -552,8 +550,8 @@ test("runs the composer localized source workflow", () => {
 		expect(localizedCommitsPanel).toBeDefined();
 		expect(localizedCommitsPanel!).toContain("选择 AI 模型");
 		expect(localizedCommitsPanel!).toContain("未知模型");
-		expect(localizedCommitsPanel!).toContain("this.committing ? 'Committing...' : 'Create Commits'");
-		expect(localizedCommitsPanel!).not.toContain("正在提交...");
+		expect(localizedCommitsPanel!).toContain('this.committing ? "正在提交..." : "创建提交"');
+		expect(localizedCommitsPanel!).not.toContain("this.committing ? 'Committing...' : 'Create Commits'");
 		expect(localizedCommitsPanel!).not.toContain('${this.fileCount} ${this.fileCount === 1 ? "个文件" : "个文件"}');
 		expect(localizedCommitsPanel!).toContain("${this.fileCount} ${this.fileCount === 1 ? 'file' : 'files'}");
 		expect(localizedCommitsPanel!).toContain("提供额外指令有助于引导本次 AI 编排。");
@@ -570,8 +568,8 @@ test("runs the composer localized source workflow", () => {
 			"src/webviews/apps/plus/composer/components/commit-item.ts",
 		);
 		expect(localizedCommitItem).toBeDefined();
-		expect(localizedCommitItem!).toContain("isPlaceholder ? 'Draft commit (add a commit message)'");
-		expect(localizedCommitItem!).not.toContain("草稿提交（添加提交消息）");
+		expect(localizedCommitItem!).toContain('isPlaceholder ? "草稿提交（添加提交消息）" : this.message');
+		expect(localizedCommitItem!).not.toContain("isPlaceholder ? 'Draft commit (add a commit message)'");
 		expect(localizedCommitItem!).not.toContain('${this.fileCount} ${this.fileCount === 1 ? "个文件" : "个文件"}');
 		expect(localizedCommitItem!).toContain("${this.fileCount} ${this.fileCount === 1 ? 'file' : 'files'}");
 
@@ -584,11 +582,11 @@ test("runs the composer localized source workflow", () => {
 		expect(localizedCommitMessage!).toContain("输入提交消息...");
 		expect(localizedCommitMessage!).not.toContain("正在生成...");
 		expect(localizedCommitMessage!).not.toContain("使用 AI 生成提交消息");
-		expect(localizedCommitMessage!).not.toContain("重新生成提交消息");
-		expect(localizedCommitMessage!).not.toContain("生成提交消息");
+		expect(localizedCommitMessage!).toContain(
+			'this.explanation || this.aiGenerated ? "重新生成提交消息" : "生成提交消息"',
+		);
+		expect(localizedCommitMessage!).not.toContain("? 'Regenerate Message' : 'Generate Message'");
 		expect(localizedCommitMessage!).not.toContain("AI 功能已禁用");
-		expect(localizedCommitMessage!).toContain("Generate Message");
-		expect(localizedCommitMessage!).toContain("Regenerate Message");
 		expect(localizedCommitMessage!).toContain("Generate commit message with AI");
 	});
 });
