@@ -73,6 +73,11 @@ interface PlannedSiteInput {
 	readonly replacement: SourceReplacement;
 }
 
+interface SettingsCategoryDisplayContext {
+	readonly owner: string;
+	readonly target: Extract<DisplayRole, { readonly kind: "imperative" }>["target"];
+}
+
 export function analyzeWebviewSource(input: WebviewSourceInput): WebviewLocalizationPlan {
 	const sourceFile = ts.createSourceFile(
 		input.file,
@@ -104,6 +109,7 @@ export function analyzeWebviewSource(input: WebviewSourceInput): WebviewLocaliza
 			const site =
 				planLitDisplayExpression(node, sourceFile, input.file, issues) ??
 				planJsxDisplayExpression(node, sourceFile) ??
+				planSettingsGroupTypeLiteral(node, sourceFile) ??
 				planImperativeDisplay(node, sourceFile);
 			if (site != null) plannedSites.push(site);
 		}
@@ -140,6 +146,32 @@ export function analyzeWebviewSource(input: WebviewSourceInput): WebviewLocaliza
 		source: input.source,
 		sites: sites,
 		issues: issues,
+	};
+}
+
+function planSettingsGroupTypeLiteral(
+	node: ts.StringLiteralLike,
+	sourceFile: ts.SourceFile,
+): PlannedSiteInput | undefined {
+	if (!ts.isLiteralTypeNode(node.parent) || node.parent.literal !== node) return undefined;
+
+	let declaration: ts.Node = node.parent.parent;
+	while (ts.isUnionTypeNode(declaration) || ts.isParenthesizedTypeNode(declaration)) {
+		declaration = declaration.parent;
+	}
+	if (!ts.isTypeAliasDeclaration(declaration) || declaration.name.text !== "SettingsGroup") return undefined;
+	if (!isTranslatableLiteralText(node.text)) return undefined;
+
+	return {
+		owner: "SettingsGroup",
+		pattern: parseMessagePattern(node.text),
+		role: { kind: "imperative", target: "label" },
+		replacement: {
+			kind: "source",
+			start: node.getStart(sourceFile),
+			end: node.getEnd(),
+			format: "string-literal",
+		},
 	};
 }
 
@@ -199,18 +231,23 @@ function planImperativeDisplay(node: ts.StringLiteralLike, sourceFile: ts.Source
 		if (ts.isSourceFile(current)) break;
 	}
 
-	const target = getImperativeDisplayTarget(node);
+	const settingsCategoryContext = getSettingsCategoryDisplayContext(node, sourceFile);
+	const target = settingsCategoryContext?.target ?? getImperativeDisplayTarget(node);
 	const directDisplayValue =
 		(ts.isPropertyAssignment(node.parent) && node.parent.initializer === node) ||
 		(ts.isPropertyDeclaration(node.parent) && node.parent.initializer === node);
 	if (!directDisplayValue && !hasImperativeDisplayContextAncestor(node)) return undefined;
-	if (target == null || !isTranslatableLiteralText(node.text) || !looksLikeDisplayText(node.text, node)) {
+	if (
+		target == null ||
+		!isTranslatableLiteralText(node.text) ||
+		(settingsCategoryContext == null && !looksLikeDisplayText(node.text, node))
+	) {
 		return undefined;
 	}
 
 	const role: DisplayRole = { kind: "imperative", target: target };
 	return {
-		owner: getSemanticOwner(node, sourceFile),
+		owner: settingsCategoryContext?.owner ?? getSemanticOwner(node, sourceFile),
 		pattern: parseMessagePattern(node.text),
 		role: role,
 		replacement: {
@@ -220,6 +257,127 @@ function planImperativeDisplay(node: ts.StringLiteralLike, sourceFile: ts.Source
 			format: "string-literal",
 		},
 	};
+}
+
+function getSettingsCategoryDisplayContext(
+	node: ts.StringLiteralLike,
+	sourceFile: ts.SourceFile,
+): SettingsCategoryDisplayContext | undefined {
+	let displayProperty: string | undefined;
+	let categoriesVariable: ts.VariableDeclaration | undefined;
+	const objectPath: ts.ObjectLiteralExpression[] = [];
+	for (let child: ts.Node = node, current = node.parent; current != null; child = current, current = current.parent) {
+		if (displayProperty == null && ts.isPropertyAssignment(current) && current.initializer === child) {
+			displayProperty = getPropertyName(current.name);
+		}
+		if (ts.isObjectLiteralExpression(current)) objectPath.push(current);
+		if (ts.isVariableDeclaration(current)) {
+			if (
+				current.initializer != null &&
+				current.type != null &&
+				ts.isArrayTypeNode(current.type) &&
+				ts.isTypeReferenceNode(current.type.elementType) &&
+				ts.isIdentifier(current.type.elementType.typeName) &&
+				current.type.elementType.typeName.text === "SettingsCategory"
+			) {
+				categoriesVariable = current;
+			}
+			break;
+		}
+		if (ts.isSourceFile(current)) break;
+	}
+	if (categoriesVariable == null || displayProperty == null || !ts.isIdentifier(categoriesVariable.name)) {
+		return undefined;
+	}
+
+	let target: SettingsCategoryDisplayContext["target"];
+	switch (displayProperty) {
+		case "name":
+		case "group":
+		case "label":
+			target = "label";
+			break;
+		case "hint":
+		case "text":
+			target = "message";
+			break;
+		case "placeholder":
+			target = "placeholder";
+			break;
+		default:
+			return undefined;
+	}
+
+	// 描述符位置会调整, owner 必须跟随 category/control/option 的业务身份而不是数组 ordinal.
+	const owner = [categoriesVariable.name.text];
+	for (const object of objectPath.reverse()) {
+		const categoryId = getStaticSettingsPropertyValue(object, "id", sourceFile);
+		if (categoryId != null) {
+			owner.push(`category:${categoryId}`);
+			continue;
+		}
+
+		let collection: string | undefined;
+		if (ts.isPropertyAssignment(object.parent) && object.parent.initializer === object) {
+			collection = getPropertyName(object.parent.name);
+		} else if (
+			ts.isArrayLiteralExpression(object.parent) &&
+			ts.isPropertyAssignment(object.parent.parent) &&
+			object.parent.parent.initializer === object.parent
+		) {
+			collection = getPropertyName(object.parent.parent.name);
+		}
+		if (collection == null) continue;
+
+		const identity = [
+			"kind",
+			"key",
+			"type",
+			"path",
+			"value",
+			"valueOn",
+			"valueOff",
+			"visibleWhen",
+			"enabledWhen",
+			"command",
+			"defaultLookup",
+		]
+			.map((property) => {
+				const value = getStaticSettingsPropertyValue(object, property, sourceFile);
+				return value == null ? undefined : `${property}=${value}`;
+			})
+			.filter((value): value is string => value != null)
+			.join(",");
+		owner.push(`${collection}:${identity || "descriptor"}`);
+	}
+
+	return { owner: owner.join("/"), target: target };
+}
+
+function getStaticSettingsPropertyValue(
+	object: ts.ObjectLiteralExpression,
+	propertyName: string,
+	sourceFile: ts.SourceFile,
+): string | undefined {
+	const property = object.properties.find(
+		(candidate): candidate is ts.PropertyAssignment =>
+			ts.isPropertyAssignment(candidate) && getPropertyName(candidate.name) === propertyName,
+	);
+	if (property == null) return undefined;
+	const value = property.initializer;
+	if (ts.isStringLiteralLike(value) || ts.isNoSubstitutionTemplateLiteral(value)) return JSON.stringify(value.text);
+	if (ts.isNumericLiteral(value)) return value.text;
+	if (
+		value.kind === ts.SyntaxKind.TrueKeyword ||
+		value.kind === ts.SyntaxKind.FalseKeyword ||
+		value.kind === ts.SyntaxKind.NullKeyword
+	) {
+		return value.getText(sourceFile);
+	}
+	if (ts.isPrefixUnaryExpression(value) && ts.isNumericLiteral(value.operand)) {
+		return value.getText(sourceFile).replaceAll(" ", "");
+	}
+	return undefined;
 }
 
 function getImperativeDisplayTarget(

@@ -208,6 +208,103 @@ test("plans imperative display assignments and setAttribute calls", () => {
 	]);
 });
 
+test("plans declarative settings category display text including group values", () => {
+	const source = [
+		"import type { SettingsCategory } from '../model.js';",
+		"export const viewsCategories: SettingsCategory[] = [",
+		"\t{",
+		"\t\tid: 'search-compare-view',",
+		"\t\tsettingsSearch: 'gitlens.views.searchAndCompare or gitlens.views',",
+		"\t\tname: 'Search & Compare view',",
+		"\t\tgroup: 'Views',",
+		"\t\thint: 'Adds a Search & Compare view to search and explore commit histories',",
+		"\t\ticon: 'gl-search-view',",
+		"\t\tcontrols: [",
+		"\t\t\t{",
+		"\t\t\t\tkind: 'select',",
+		"\t\t\t\tkey: 'views.searchAndCompare.files.layout',",
+		"\t\t\t\tlabel: 'File layout',",
+		"\t\t\t\toptions: [",
+		"\t\t\t\t\t{ value: 'auto', label: 'automatically' },",
+		"\t\t\t\t\t{ value: 'list', label: 'as a list' },",
+		"\t\t\t\t],",
+		"\t\t\t},",
+		"\t\t\t{ kind: 'text', key: 'views.worktrees.defaultLocation', label: 'Location', placeholder: 'absolute path to put new worktrees into' },",
+		"\t\t],",
+		"\t},",
+		"];",
+		"const metadata = { name: 'internal-name', group: 'internal-group' };",
+		"",
+	].join("\n");
+
+	const plan = analyzeWebviewSource({
+		file: "src/webviews/apps/settings/categories/views.ts",
+		source: source,
+		syntax: "ts",
+		bundle: "settings",
+	});
+
+	expect(plan.sites.map((site) => site.pattern.text)).toEqual([
+		"Search & Compare view",
+		"Views",
+		"Adds a Search & Compare view to search and explore commit histories",
+		"File layout",
+		"automatically",
+		"as a list",
+		"Location",
+		"absolute path to put new worktrees into",
+	]);
+});
+
+test("plans SettingsGroup literal members for synchronized localization", () => {
+	const source = "export type SettingsGroup = 'Annotations' | 'Views' | 'General';\n";
+	const plan = analyzeWebviewSource({
+		file: "src/webviews/apps/settings/model.ts",
+		source: source,
+		syntax: "ts",
+		bundle: "settings",
+	});
+
+	expect(plan.sites.map((site) => site.pattern.text)).toEqual(["Annotations", "Views", "General"]);
+});
+
+test("keeps duplicate settings labels bound to their semantic descriptors after reordering", () => {
+	const control = (key: string) => `\t\t\t{ kind: 'check', key: '${key}', label: 'Show associated pull requests' },`;
+	const createSource = (keys: readonly string[]) =>
+		[
+			"import type { SettingsCategory } from '../model.js';",
+			"export const viewsCategories: SettingsCategory[] = [",
+			"\t{",
+			"\t\tid: 'search-compare-view',",
+			"\t\tname: 'Search & Compare view',",
+			"\t\tgroup: 'Views',",
+			"\t\ticon: 'gl-search-view',",
+			"\t\thint: 'Search and compare commits',",
+			"\t\tcontrols: [",
+			...keys.map(control),
+			"\t\t],",
+			"\t},",
+			"];",
+			"",
+		].join("\n");
+	const input = {
+		file: "src/webviews/apps/settings/categories/views.ts",
+		syntax: "ts" as const,
+		bundle: "settings",
+	};
+	const firstSource = createSource(["views.alpha", "views.beta"]);
+	const movedSource = createSource(["views.beta", "views.alpha"]);
+	const firstPlan = analyzeWebviewSource({ ...input, source: firstSource });
+	const movedPlan = analyzeWebviewSource({ ...input, source: movedSource });
+	const getDuplicateLabelIds = (plan: typeof firstPlan) =>
+		plan.sites.filter((site) => site.pattern.text === "Show associated pull requests").map((site) => site.id);
+	const firstIds = getDuplicateLabelIds(firstPlan);
+	const movedIds = getDuplicateLabelIds(movedPlan);
+
+	expect(firstIds).toHaveLength(2);
+	expect(firstIds).toEqual(movedIds.toReversed());
+});
+
 test("plans display text returned by variable-bound functions", () => {
 	const source = [
 		'const getLabel = () => { return "Show Details"; };',

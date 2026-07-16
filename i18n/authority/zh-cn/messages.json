@@ -3,7 +3,7 @@
 	"version": 2,
 	"kind": "messages",
 	"locale": "zh-cn",
-	"updatedAt": "2026-07-16T08:52:07.954Z",
+	"updatedAt": "2026-07-16T19:34:36.743Z",
 	"entries": [
 		{
 			"id": "message.000d1a29b2365349f8762064ef86edc1f548f435002395035bdc26f6c87754fc",
@@ -135,6 +135,12 @@
 			"kind": "literal",
 			"source": "GitLens — Git supercharged",
 			"translation": "GitLens — 强化 Git 能力"
+		},
+		{
+			"id": "message.014ac144204405c7e03ca2b2699cf96b58428000a1dd93b7d668800e016c4266",
+			"kind": "literal",
+			"source": "AI provider, model, GitKraken MCP, default coding agent, Claude Code hooks",
+			"translation": "AI 提供商、模型、GitKraken MCP、默认编码代理、Claude Code 钩子"
 		},
 		{
 			"id": "message.0158c9f09b8dc85c2e6d7744de53d1dead43dd3a054b297d8c2be86e921e99ff",
@@ -385,6 +391,14 @@
 				"slot1",
 				"slot2"
 			]
+		},
+		{
+			"id": "message.04797808ca6f3dd68fd0f3e00348b017efe6e3c8f04f32e50da5f43fa73e90f5",
+			"kind": "rich",
+			"source": "Adds an [Inspect view](command:gitlens.showCommitDetailsView) to see rich details for a commit",
+			"translation": "添加[检查视图](command:gitlens.showCommitDetailsView)，用于查看提交的丰富详情",
+			"format": "markdown",
+			"slots": []
 		},
 		{
 			"id": "message.0486b50e61764a53dcf56c45ac9b9cb024e599fdc1ea19a0b53c6ce3ae9dc60f",
@@ -1555,6 +1569,14 @@
 			"translation": "添加“复制远程文件 URL *”命令"
 		},
 		{
+			"id": "message.11c2f47818870a610d41686c8af86d5196861de35e572dbd0c028b0977785d69",
+			"kind": "rich",
+			"source": "Adds a [Commit Graph](command:gitlens.showGraph) to visualize, explore, and manage a Git repository",
+			"translation": "添加[提交图](command:gitlens.showGraph)，用于可视化、浏览和管理 Git 仓库",
+			"format": "markdown",
+			"slots": []
+		},
+		{
 			"id": "message.11d2268587612d5a4e800a577ae6571a16ab6bf8df1cf5a9508f8fcc0ccba2ec",
 			"kind": "template",
 			"source": "Every ${slot1} while in view",
@@ -1978,6 +2000,14 @@
 			"kind": "literal",
 			"source": "Hide Statistics",
 			"translation": "隐藏统计信息"
+		},
+		{
+			"id": "message.15b4c359492b63ff316ea85ab1f9928b74fe192073fe5c10dd5a6befa164422a",
+			"kind": "rich",
+			"source": "Adds a [Search & Compare view](command:gitlens.showSearchAndCompareView) to search and explore commit histories by message, author, files, id, etc, or visualize comparisons between branches, tags, commits, and more",
+			"translation": "添加[搜索与比较视图](command:gitlens.showSearchAndCompareView)，用于按消息、作者、文件、ID 等搜索和浏览提交历史，或直观比较分支、标签、提交等内容",
+			"format": "markdown",
+			"slots": []
 		},
 		{
 			"id": "message.15bad6f37b975c6279bed9274b2588231bd7f7a1517a51b89eebdcc62e802216",
@@ -4258,6 +4288,14 @@
 			"kind": "literal",
 			"source": "Group Repositories View",
 			"translation": "编组仓库视图"
+		},
+		{
+			"id": "message.2e3d753fc276fd20995f6ed1b28211129e2b8aa7a05180c9f2c015440bb522f0",
+			"kind": "rich",
+			"source": "Adds a [Remotes view](command:gitlens.showRemotesView) to visualize, explore, and manage Git remotes and remote branches",
+			"translation": "添加[远程视图](command:gitlens.showRemotesView)，用于可视化、浏览和管理 Git 远程及远程分支",
+			"format": "markdown",
+			"slots": []
 		},
 		{
 			"id": "message.2e73100052c031242686d44535102f4365bc88608bcc2fa10ab62ac6ea330c6a",
@@ -6688,6 +6726,12 @@
 			"translation": "启动台 - 将你的拉取请求组织为可执行的分组，帮助你聚焦工作并让团队保持畅通。"
 		},
 		{
+			"id": "message.49cbfe5fab8147ef5cc09c4e3afdf0d984021aa5e67795a43277867fc0b5bf7e",
+			"kind": "literal",
+			"source": "Files larger than the threshold will only be recomputed when saved. Also applies to inline blame annotations",
+			"translation": "大于阈值的文件只会在保存时重新计算。也适用于行内追溯注解"
+		},
+		{
 			"id": "message.49e56f4270edecf858aca6e3052b4e3a813718c1683129f5b697c18a21341b2e",
 			"kind": "literal",
 			"source": "Commit history is unavailable for virtual repositories",
@@ -6745,6 +6789,14 @@
 			"kind": "literal",
 			"source": "Enter",
 			"translation": "Enter"
+		},
+		{
+			"id": "message.4a935f1ed41416c0d08a23d3bb9a81ca1228add557d8ffe71ef501850f6c1e05",
+			"kind": "rich",
+			"source": "Adds a [Worktrees view](command:gitlens.showWorktreesView) to visualize, explore, and manage Git worktrees",
+			"translation": "添加[工作树视图](command:gitlens.showWorktreesView)，用于可视化、浏览和管理 Git 工作树",
+			"format": "markdown",
+			"slots": []
 		},
 		{
 			"id": "message.4abf690cc1beb36a0688e6d9854967db9f115863091680025c96cdbc19da2247",
@@ -7087,6 +7139,14 @@
 			"kind": "literal",
 			"source": "Toggle File Blame",
 			"translation": "切换文件追溯"
+		},
+		{
+			"id": "message.4e5b4aaf2231265479e63dad87e5a472e02acaaad324fba930f5f7f4969b8b07",
+			"kind": "rich",
+			"source": "Adds a [Repositories view](command:gitlens.showRepositoriesView), hidden by default, to visualize, explore, and manage Git repositories",
+			"translation": "添加默认隐藏的[仓库视图](command:gitlens.showRepositoriesView)，用于可视化、浏览和管理 Git 仓库",
+			"format": "markdown",
+			"slots": []
 		},
 		{
 			"id": "message.4e6229924a06d0a8e3cffdf803deff11335f48d7534932819015a1d8939f9f7a",
@@ -7490,6 +7550,14 @@
 			"kind": "literal",
 			"source": "Bottom",
 			"translation": "底部"
+		},
+		{
+			"id": "message.52c7511c9363a69b3140486d0dc2010e84929d7b92f9748458807aa9a7754176",
+			"kind": "rich",
+			"source": "Adds a [Contributors view](command:gitlens.showContributorsView), hidden by default, to visualize, navigate, and explore contributors",
+			"translation": "添加默认隐藏的[贡献者视图](command:gitlens.showContributorsView)，用于可视化、导航和浏览贡献者",
+			"format": "markdown",
+			"slots": []
 		},
 		{
 			"id": "message.52d72d7413c255b5444d664edad882ffc3b053a35e93a65e31928cd1772a7665",
@@ -8098,6 +8166,12 @@
 			"translation": "文件"
 		},
 		{
+			"id": "message.58b172b92dfdb44df33a5349f11712906cccd853a615a87ca0b0fa289ba41358",
+			"kind": "literal",
+			"source": "Connect hosting services like GitHub and issue trackers like Jira to track progress and take action on PRs and issues related to your branches",
+			"translation": "连接 GitHub 等代码托管服务和 Jira 等 Issue 跟踪器，以跟踪进度，并对与分支相关的 PR 和 Issue 执行操作"
+		},
+		{
 			"id": "message.58b62941f962c7bc99fb6a9487c3c8e9be83bbd2cd1838b1f2361b0211d52037",
 			"kind": "rich",
 			"source": "Deprecated. Use `gitlens.views.formats.commits.label` instead",
@@ -8504,6 +8578,12 @@
 			"kind": "literal",
 			"source": "Unable to detect conflicts",
 			"translation": "无法检测冲突"
+		},
+		{
+			"id": "message.5cb6b875f2b491397d90fa91284f20d8966c77faa195035ad838c5c4907b68c1",
+			"kind": "literal",
+			"source": "format for uncommitted changes",
+			"translation": "未提交更改的格式"
 		},
 		{
 			"id": "message.5cb88bab0d7685c62783a6f00f3ede92bcd73988e227d15af36ba30cf706ff4d",
@@ -9289,6 +9369,12 @@
 			]
 		},
 		{
+			"id": "message.65fb4c102098392cda65d099617b2371671f5761fad2ddf397688d8923bc0fd8",
+			"kind": "literal",
+			"source": "defaults to system short date format",
+			"translation": "默认为系统短日期格式"
+		},
+		{
 			"id": "message.660187b9c0c528e0453eb4f6063a60b5678c12cdd8c5c9da9c782d687984e054",
 			"kind": "literal",
 			"source": "Deprecated. Use the pre-release edition of GitLens instead",
@@ -9756,6 +9842,14 @@
 			"translation": "连接集成"
 		},
 		{
+			"id": "message.6a990e8dab54551c827092a2cbaf8dcc2cfd272b0fa9b5b9670347ed3f6c0f61",
+			"kind": "rich",
+			"source": "See the [Moment.js docs](https://momentjs.com/docs/#/displaying/format/) for supported formats",
+			"translation": "有关支持的格式，请参阅 [Moment.js 文档](https://momentjs.com/docs/#/displaying/format/)",
+			"format": "markdown",
+			"slots": []
+		},
+		{
 			"id": "message.6aa9c501650f04aecaeb797873e9c5ac016373c8f8183b3a7fe9d21060670f86",
 			"kind": "literal",
 			"source": "Default worktree location",
@@ -9766,6 +9860,12 @@
 			"kind": "literal",
 			"source": "Date & Times",
 			"translation": "日期与时间"
+		},
+		{
+			"id": "message.6ad2d999e32b5d762d44e46ba51f827e994e79e073b633866f0113b279b7e5f9",
+			"kind": "literal",
+			"source": "GitHub, GitHub Enterprise, GitLab, Azure DevOps, Bitbucket, Jira, Linear",
+			"translation": "GitHub、GitHub Enterprise、GitLab、Azure DevOps、Bitbucket、Jira、Linear"
 		},
 		{
 			"id": "message.6adb42f39228be8de0a0d5f0a30f5dbb0b5a3c0115ee8505c687d9d110b28853",
@@ -11035,6 +11135,12 @@
 			"translation": "打开设置界面"
 		},
 		{
+			"id": "message.780328d671dad5f5eddd10c0e95650ced23e5784d4ec2ba82a39ce5c85d57561",
+			"kind": "literal",
+			"source": "In-editor",
+			"translation": "编辑器内"
+		},
+		{
 			"id": "message.780b63f15325ae5ee10d5a7286e4a7e5ee322c657e38db373a2c6ed3c2b67c58",
 			"kind": "rich",
 			"source": "[Create Worktree...](command:gitlens.views.createWorktree)",
@@ -11535,6 +11641,12 @@
 			"kind": "literal",
 			"source": "AI (ᴘʀᴇᴠɪᴇᴡ)",
 			"translation": "AI (ᴘʀᴇᴠɪᴇᴡ)"
+		},
+		{
+			"id": "message.7dc876af91949853dd522d0c1018a78c2953672d10007f5e97a09f82d6199d8c",
+			"kind": "literal",
+			"source": "Annotations",
+			"translation": "注解"
 		},
 		{
 			"id": "message.7dd355e148f95c14379648602285041a956b3db6cff31046467b598231c36786",
@@ -12595,6 +12707,14 @@
 			"slots": []
 		},
 		{
+			"id": "message.8ac790aed8eb7ec36c7d6f610c7a744ef4673add56dfc872fe63226b2d7f6c55",
+			"kind": "rich",
+			"source": "Use \"system\" for the system locale, or a [locale language tag](https://en.wikipedia.org/wiki/IETF_language_tag), e.g. en-US",
+			"translation": "使用 `system` 表示系统区域设置，或使用[区域设置语言标签](https://en.wikipedia.org/wiki/IETF_language_tag)，例如 `en-US`",
+			"format": "markdown",
+			"slots": []
+		},
+		{
 			"id": "message.8ad2d56b7021657507a27d340b9d39570593d50fbd068c19f09fb89029c816bf",
 			"kind": "literal",
 			"source": "Older history loads dynamically as you scroll",
@@ -13633,6 +13753,12 @@
 			"translation": "自生成此计划以来，工作区更改已发生变化。"
 		},
 		{
+			"id": "message.973f4d74b428cfce9c078a76f91355dc811005e31299ad07dc9c0df53dd9d368",
+			"kind": "literal",
+			"source": "Smaller delays will provide a better experience but will have a greater performance impact. Also applies to inline blame annotations",
+			"translation": "较短的延迟可提供更好的体验，但会对性能产生更大影响。也适用于行内追溯注解"
+		},
+		{
 			"id": "message.97419292ee72f26ffbddc5f50dbdbda8467afd116c217a9382d5da8052253619",
 			"kind": "literal",
 			"source": "Open Changes with Common Base",
@@ -13982,6 +14108,14 @@
 			"kind": "literal",
 			"source": "Favorited Branches",
 			"translation": "收藏的分支"
+		},
+		{
+			"id": "message.9ab2c58e5b99aab55b2756c794f9db7abd46f392b1f8e7c7faafd1f32d1dea3c",
+			"kind": "rich",
+			"source": "Adds a [Stashes view](command:gitlens.showStashesView) to visualize, explore, and manage Git stashes",
+			"translation": "添加[贮藏视图](command:gitlens.showStashesView)，用于可视化、浏览和管理 Git 贮藏",
+			"format": "markdown",
+			"slots": []
 		},
 		{
 			"id": "message.9ab6b7fa75d9809f17259a157fe6edd88566263bec4421390e03230d3811eb72",
@@ -14954,6 +15088,14 @@
 			]
 		},
 		{
+			"id": "message.a55624be03d2d5a36ec8f6e18bef6ee1eb824bbf31b0d2ea036da649f6bd0c5f",
+			"kind": "rich",
+			"source": "Adds a [File History view](command:gitlens.showFileHistoryView) to visualize, navigate, and explore the revision history of the current file, a specified file or folder, or just the selected lines of the current file",
+			"translation": "添加[文件历史视图](command:gitlens.showFileHistoryView)，用于可视化、导航和浏览当前文件、指定文件或文件夹，或当前文件所选行的修订历史",
+			"format": "markdown",
+			"slots": []
+		},
+		{
 			"id": "message.a55f8b9c2f5890a7c475116296353376a59f9f278dddf739472466c5eb526dec",
 			"kind": "literal",
 			"source": "Share Staged Changes",
@@ -15220,6 +15362,14 @@
 			"kind": "literal",
 			"source": "Open All Changes (difftool)",
 			"translation": "打开所有更改（difftool）"
+		},
+		{
+			"id": "message.a85d5e19615772e955dc5aba4c9612d87371a5723969e4d2d449a0e3491413f9",
+			"kind": "rich",
+			"source": "Adds a [Tags view](command:gitlens.showTagsView) to visualize, explore, and manage Git tags",
+			"translation": "添加[标签视图](command:gitlens.showTagsView)，用于可视化、浏览和管理 Git 标签",
+			"format": "markdown",
+			"slots": []
 		},
 		{
 			"id": "message.a884285c53fa3b67098b361a05c4d388857e0f8896e19afd1a51c03807f503a3",
@@ -16943,6 +17093,14 @@
 			"translation": "开始变基（检测到冲突）"
 		},
 		{
+			"id": "message.bb9ae002ce981fb976b3cc2bc96e204450eb09d3750ea32bea118ba39f958c8d",
+			"kind": "rich",
+			"source": "Adds a [Branches view](command:gitlens.showBranchesView) to visualize, explore, and manage Git branches",
+			"translation": "添加[分支视图](command:gitlens.showBranchesView)，用于可视化、浏览和管理 Git 分支",
+			"format": "markdown",
+			"slots": []
+		},
+		{
 			"id": "message.bbae70d7232bd01cf2167d4a5bc31946af104d2761211bdd00ac2c0826883eea",
 			"kind": "literal",
 			"source": "Jump to Terminal Links",
@@ -17093,6 +17251,14 @@
 			"kind": "literal",
 			"source": "Launchpad:",
 			"translation": "启动台："
+		},
+		{
+			"id": "message.bdd973392f992f9717692087455f5244c6ede8bd2b9ab3cb2ca13f35f816a49f",
+			"kind": "rich",
+			"source": "Adds a [Commits view](command:gitlens.showCommitsView) to visualize, explore, and manage Git commits",
+			"translation": "添加[提交视图](command:gitlens.showCommitsView)，用于可视化、浏览和管理 Git 提交",
+			"format": "markdown",
+			"slots": []
 		},
 		{
 			"id": "message.be0ab0a3e8623781874859ed0b5901e394ad5488eb5a4b33afad086506fc4c59",
@@ -17716,6 +17882,12 @@
 			"translation": "二进制文件"
 		},
 		{
+			"id": "message.c4ff878f097fcd48771f36cca0ad5d42bb7ac4b9b77b765c3a576fbfd1086e22",
+			"kind": "literal",
+			"source": "Cloud Integrations",
+			"translation": "云集成"
+		},
+		{
 			"id": "message.c5088377884d9e5deec65e96b8bd93c799332924e022fcbfad3d6c70ecd90eba",
 			"kind": "literal",
 			"source": "Displays contributors for the selected file or folder",
@@ -18125,6 +18297,12 @@
 			"translation": "底部面板"
 		},
 		{
+			"id": "message.ca4fb119fe5051f3b7be946ab13f1a1d211d18ddc977114d8cc2e7cc5da7a0c3",
+			"kind": "literal",
+			"source": "Controls how repositories, branches, tags & contributors are sorted in views",
+			"translation": "控制视图中仓库、分支、标签和贡献者的排序方式"
+		},
+		{
 			"id": "message.ca5a0eb56891ed6f7623e3e0b0359a3594578284016ca21fc71a7623d3960bbc",
 			"kind": "literal",
 			"source": "No issues found. The changes look good!",
@@ -18317,6 +18495,12 @@
 			"kind": "literal",
 			"source": "keyboard shortcuts",
 			"translation": "键盘快捷方式"
+		},
+		{
+			"id": "message.cc42ebd80272c28572d814c4d4f12566157c48d4c21be01b06dde2b6d263dda9",
+			"kind": "literal",
+			"source": "Generate commit messages, explain changes, and power other AI features across GitLens",
+			"translation": "生成提交消息、解释更改，并为 GitLens 中的其他 AI 功能提供支持"
 		},
 		{
 			"id": "message.cc5d7f6ae270f885fb10905853fc8f2ffa9859fd28b0dad848645c757a15385f",
@@ -18761,6 +18945,12 @@
 			"translation": "有未保存更改后，暂停重新计算注解的时长为"
 		},
 		{
+			"id": "message.d21305ffbced6bf03964ea0026436a7fbfc3945b3177ab6f5dbb45d54223a56e",
+			"kind": "literal",
+			"source": "AI",
+			"translation": "AI"
+		},
+		{
 			"id": "message.d221c92fa6bcb7466ad1fbc07bd6d65af6ff96a2ffde64f4c95c87c55bdb6ae2",
 			"kind": "literal",
 			"source": "Git Create Branch...",
@@ -18777,6 +18967,14 @@
 			"kind": "literal",
 			"source": "Show Commit Graph View",
 			"translation": "显示提交图视图"
+		},
+		{
+			"id": "message.d2432d09b1afb858cc48434391ac44f09f7cf6aecb8b681432b68e945691e1ce",
+			"kind": "rich",
+			"source": "Adds a [Line History view](command:gitlens.showLineHistoryView), hidden by default, to visualize, navigate, and explore the revision history of the selected lines of current file",
+			"translation": "添加默认隐藏的[行历史视图](command:gitlens.showLineHistoryView)，用于可视化、导航和浏览当前文件所选行的修订历史",
+			"format": "markdown",
+			"slots": []
 		},
 		{
 			"id": "message.d247b7a7287df22c9e4aec7ab0002496c4bb61dda421fa24dbf7fd5dfcb9106c",
@@ -20064,6 +20262,12 @@
 			"translation": "将工作区与用户所选引用进行比较"
 		},
 		{
+			"id": "message.e2398319353861257326d897725693a90b838c88a4f88feabe24ee4b4b33bf08",
+			"kind": "literal",
+			"source": "Controls how dates and times are formatted and displayed throughout GitLens",
+			"translation": "控制 GitLens 中日期和时间的格式及显示方式"
+		},
+		{
 			"id": "message.e2511811522be380c08e60f202c11c53609210bf6e8d66af54084987327c7eb3",
 			"kind": "literal",
 			"source": "Added (incoming)",
@@ -21267,6 +21471,12 @@
 			"kind": "literal",
 			"source": "Switch to Commit...",
 			"translation": "切换到提交..."
+		},
+		{
+			"id": "message.f021e13529a81b6554a9e9f73daf75a017f51bbf4e4a53ee34f5715c4089e70e",
+			"kind": "literal",
+			"source": "Controls the keyboard shortcuts GitLens registers",
+			"translation": "控制 GitLens 注册的键盘快捷键"
 		},
 		{
 			"id": "message.f0479b6d42ceb4bb94d2a4327cdf2b49718c9d422b3eb4e14c54f371b414ab86",

@@ -3,21 +3,8 @@
 	"version": 2,
 	"kind": "overrides",
 	"locale": "zh-cn",
-	"updatedAt": "2026-04-24T18:05:11.563Z",
+	"updatedAt": "2026-07-16T19:33:56.055Z",
 	"entries": [
-		{
-			"selector": {
-				"kind": "occurrence",
-				"occurrenceId": "webviews:home:ce728cb731a814207e4824c035b9a1e39d19a5da885c0a7342680d008edbbabd"
-			},
-			"translationPattern": {
-				"kind": "template",
-				"text": "${slot1} 已阻塞（${slot3}）",
-				"slots": ["slot1", "slot3"]
-			},
-			"updatedAt": "2026-04-24T18:05:11.563Z",
-			"note": "Drops English agreement helper from Launchpad generated display text."
-		},
 		{
 			"selector": {
 				"kind": "occurrence",
@@ -34,6 +21,19 @@
 		{
 			"selector": {
 				"kind": "occurrence",
+				"occurrenceId": "webviews:home:ce728cb731a814207e4824c035b9a1e39d19a5da885c0a7342680d008edbbabd"
+			},
+			"translationPattern": {
+				"kind": "template",
+				"text": "${slot1} 已阻塞（${slot3}）",
+				"slots": ["slot1", "slot3"]
+			},
+			"updatedAt": "2026-04-24T18:05:11.563Z",
+			"note": "Drops English agreement helper from Launchpad generated display text."
+		},
+		{
+			"selector": {
+				"kind": "occurrence",
 				"occurrenceId": "webviews:home:e714e85ead5d11e3bdcc8cc3e267c4d958b36dfe7c60c01825938fada30f7539"
 			},
 			"translationPattern": {
@@ -43,6 +43,30 @@
 			},
 			"updatedAt": "2026-04-24T18:05:11.563Z",
 			"note": "Drops English agreement helper from Launchpad generated display text."
+		},
+		{
+			"selector": {
+				"kind": "occurrence",
+				"occurrenceId": "webviews:settings:65ad3887ee090a0c9c1d4ec4b18e27088fffc142a48c745a2edfee2f31213ece"
+			},
+			"translationPattern": {
+				"kind": "literal",
+				"text": "编辑"
+			},
+			"updatedAt": "2026-07-16T19:33:56.055Z",
+			"note": "Uses the noun form for the settings navigation group."
+		},
+		{
+			"selector": {
+				"kind": "occurrence",
+				"occurrenceId": "webviews:settings:76bf2f33bd80045ffb3fa2083cc9e7b03b95df92c988ee2834ef5a9858d8fdd4"
+			},
+			"translationPattern": {
+				"kind": "literal",
+				"text": "编辑"
+			},
+			"updatedAt": "2026-07-16T19:33:56.055Z",
+			"note": "Uses the noun form for the settings navigation group."
 		}
 	]
 }

@@ -59,6 +59,37 @@ test("applies different translations to identical text at different sites", () =
 	expect(localized.translatedCount).toBe(2);
 });
 
+test("localizes SettingsGroup type members and category values together", () => {
+	const source = [
+		"export type SettingsGroup = 'Views' | 'General';",
+		"interface SettingsCategory { group: SettingsGroup; }",
+		"export const settingsCategories: SettingsCategory[] = [",
+		"\t{ group: 'Views' },",
+		"\t{ group: 'General' },",
+		"];",
+		"",
+	].join("\n");
+	const plan = analyzeWebviewSource({
+		file: "src/webviews/apps/settings/model.ts",
+		source: source,
+		syntax: "ts",
+		bundle: "settings",
+	});
+	const translations = new Map(
+		plan.sites.map((site) => [
+			site.id,
+			{ kind: "literal" as const, text: site.pattern.text === "Views" ? "视图" : "常规" },
+		]),
+	);
+
+	const localized = applyWebviewTranslations(plan, translations);
+
+	expect(localized.contents).toContain('export type SettingsGroup = "视图" | "常规";');
+	expect(localized.contents).toContain('{ group: "视图" }');
+	expect(localized.contents).toContain('{ group: "常规" }');
+	expect(localized.translatedCount).toBe(4);
+});
+
 test("preserves a multiline JSX opening element after translating its last attribute", () => {
 	const source = [
 		"export function Action() {",
