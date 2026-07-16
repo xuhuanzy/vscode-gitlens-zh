@@ -111,7 +111,7 @@ test(
 		});
 
 		expect(calls).toEqual([
-			[`--config.store-dir=${path.join(config.workRoot, "pnpm-store")}`, "install", "--frozen-lockfile"],
+			["install", "--frozen-lockfile"],
 			["run", "build"],
 		]);
 		expect(fs.readFileSync(localizedFile, "utf8")).toBe("keep");

@@ -194,25 +194,22 @@ export function runUpstreamScript(
 	run("pnpm", ["run", script], config.upstreamRoot, "BUILD_FAILED");
 }
 
-/** 使用控制层管理的 pnpm store 安装上游依赖, 并清理已失效的 node_modules 链接. */
+/** 安装上游依赖, 并清理已失效的 node_modules 链接. */
 export function installUpstreamDependencies(
 	config: ResolvedLayerConfig,
 	run: CommandRunner = runInteractiveCommand,
 ): void {
-	const storeRoot = path.resolve(config.workRoot, "pnpm-store");
 	const nodeModulesRoot = path.resolve(config.upstreamRoot, "node_modules");
-	if (!isWithin(config.workRoot, storeRoot) || !isWithin(config.upstreamRoot, nodeModulesRoot)) {
-		throw new PipelineError("CONFIG_INVALID", "Dependency paths must remain inside managed project directories");
+	if (!isWithin(config.upstreamRoot, nodeModulesRoot)) {
+		throw new PipelineError("CONFIG_INVALID", "Dependency path must remain inside the managed upstream directory");
 	}
 
 	const webpackEntry = path.join(nodeModulesRoot, "webpack", "bin", "webpack.js");
-	if (fs.existsSync(nodeModulesRoot) && (!fs.existsSync(storeRoot) || !fs.existsSync(webpackEntry))) {
+	if (fs.existsSync(nodeModulesRoot) && !fs.existsSync(webpackEntry)) {
 		fs.rmSync(nodeModulesRoot, { recursive: true, force: true });
 	}
 
-	fs.mkdirSync(config.workRoot, { recursive: true });
-	const args = [`--config.store-dir=${storeRoot}`, "install", "--frozen-lockfile"];
-	run("pnpm", args, config.upstreamRoot, "DEPENDENCY_INSTALL_FAILED");
+	run("pnpm", ["install", "--frozen-lockfile"], config.upstreamRoot, "DEPENDENCY_INSTALL_FAILED");
 
 	if (!fs.existsSync(webpackEntry)) {
 		throw new PipelineError(
@@ -220,7 +217,6 @@ export function installUpstreamDependencies(
 			"Upstream webpack dependency is unavailable after installation",
 			{
 				missing: webpackEntry,
-				store: storeRoot,
 			},
 		);
 	}

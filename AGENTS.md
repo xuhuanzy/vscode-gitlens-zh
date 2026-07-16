@@ -8,7 +8,7 @@
 
 - `.upstream/`、`.work/` 与 `artifacts/` 是可再生目录，不得将其中内容作为长期真源提交。
 - i18n 持久数据只写入控制仓库的 `i18n/`；上游源码只从 `.upstream/` 读取。
-- 禁止在根目录下引入 `.pnpm-store` 文件夹, 项目已指定使用 `.work/pnpm-store`
+- 禁止在项目根目录下引入 `.pnpm-store`。
 
 ## 测试
 

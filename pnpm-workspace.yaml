@@ -4,4 +4,3 @@ minimumReleaseAgeExclude:
     - "@oxlint/binding-linux-x64-gnu@1.74.0"
     - "@oxlint/binding-linux-x64-musl@1.74.0"
     - oxlint@1.74.0
-storeDir: .work/pnpm-store
