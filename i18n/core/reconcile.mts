@@ -29,9 +29,8 @@ export function reconcileCatalog(
 
 	return {
 		$schema: previousCatalog.$schema,
-		version: 3,
+		version: 5,
 		domain: options.catalogDomain ?? previousCatalog.domain,
-		generatedAt: nowIso(),
 		occurrences: scopedOccurrences.sort((left, right) => left.id.localeCompare(right.id)),
 	};
 }

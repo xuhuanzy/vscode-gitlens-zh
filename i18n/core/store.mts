@@ -97,9 +97,8 @@ export function createEmptyCatalogFile(options: {
 }): SourceCatalogFile {
 	return {
 		$schema: options.schemaPath,
-		version: 3,
+		version: 5,
 		domain: options.domain,
-		generatedAt: new Date(0).toISOString(),
 		occurrences: [],
 	};
 }

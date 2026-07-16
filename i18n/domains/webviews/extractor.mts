@@ -299,7 +299,6 @@ function createOccurrence(target: RuntimeSourceTarget, match: MatchDefinition): 
 
 	return {
 		id: createOccurrenceId("webviews", anchor, slot),
-		domain: "webviews",
 		scope: `webviews.${target.bundle}.runtime`,
 		anchor: anchor,
 		slot: slot,
@@ -333,15 +332,9 @@ function createSourceReference(
 	endOffset: number,
 	attribute?: string,
 ): SourceReference {
-	const start = offsetToLineColumn(source, startOffset);
-	const end = offsetToLineColumn(source, Math.max(startOffset, endOffset));
-
 	return {
 		kind: "source",
 		file: file,
-		syntax: file.endsWith(".tsx") || file.endsWith(".jsx") ? "tsx" : "ts",
-		start: start,
-		end: end,
 		attribute: attribute,
 	};
 }
@@ -360,21 +353,6 @@ function createDeferredIssue(
 		),
 		reason: reason,
 	};
-}
-
-function offsetToLineColumn(text: string, offset: number): { readonly line: number; readonly column: number } {
-	let line = 1;
-	let column = 1;
-	for (let index = 0; index < offset; index++) {
-		if (text[index] === "\n") {
-			line++;
-			column = 1;
-		} else {
-			column++;
-		}
-	}
-
-	return { line: line, column: column };
 }
 
 /** 从 HTML 文档中提取可翻译文本与属性范围, 同时跳过受保护的结构子树. */

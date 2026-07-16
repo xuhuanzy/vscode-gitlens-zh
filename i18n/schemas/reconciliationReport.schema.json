@@ -27,15 +27,6 @@
 		}
 	},
 	"definitions": {
-		"position": {
-			"type": "object",
-			"additionalProperties": false,
-			"required": ["line", "column"],
-			"properties": {
-				"line": { "type": "integer", "minimum": 1 },
-				"column": { "type": "integer", "minimum": 1 }
-			}
-		},
 		"sourceReference": {
 			"anyOf": [
 				{
@@ -56,13 +47,10 @@
 				{
 					"type": "object",
 					"additionalProperties": false,
-					"required": ["kind", "file", "syntax", "start", "end"],
+					"required": ["kind", "file"],
 					"properties": {
 						"kind": { "const": "source" },
 						"file": { "type": "string" },
-						"syntax": { "type": "string" },
-						"start": { "$ref": "#/definitions/position" },
-						"end": { "$ref": "#/definitions/position" },
 						"attribute": { "type": "string" }
 					}
 				}

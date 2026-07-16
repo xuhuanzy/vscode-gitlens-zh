@@ -71,13 +71,11 @@ test("preserves shared webview host entries during sync", () => {
 		const context = createWebviewsDomainContext(createTestLayerOptions(rootDir));
 		saveWebviewsCatalog(context, {
 			$schema: "../schemas/sourceCatalog.schema.json",
-			version: 3,
+			version: 5,
 			domain: "webviews",
-			generatedAt: new Date(0).toISOString(),
 			occurrences: [
 				{
 					id: "webviewHost:webviewHost.registration.registration.string-13-11.title.123#title",
-					domain: "webviewHost",
 					scope: "webviewHost.registration",
 					anchor: "webviewHost.registration.registration.string-13-11.title.123",
 					slot: "title",
@@ -89,9 +87,6 @@ test("preserves shared webview host entries during sync", () => {
 					reference: {
 						kind: "source",
 						file: "src/webviews/home/registration.ts",
-						syntax: "ts",
-						start: { line: 13, column: 11 },
-						end: { line: 13, column: 17 },
 						attribute: "title",
 					},
 					output: {
@@ -1371,6 +1366,11 @@ test("preserves graph popover menu structure", () => {
 				"import { html } from 'lit';",
 				"export function renderGraphHeader(config, excludeRefs) {",
 				"\treturn html`",
+				'\t\t<gl-button tooltip=${config?.sidebar ? "Hide Side Bar" : "Show Side Bar"}></gl-button>',
+				"\t\t${(() => {",
+				'\t\t\tconst label = config?.details ? "Hide Details Panel" : "Show Details Panel";',
+				"\t\t\treturn html`<gl-button tooltip=${label}></gl-button>`;",
+				"\t\t})()}",
 				"\t\t<gl-popover>",
 				'\t\t\t<gl-tooltip slot="anchor"><span slot="content">Minimap Options</span></gl-tooltip>',
 				'\t\t\t<div slot="content">',
@@ -1413,6 +1413,10 @@ test("preserves graph popover menu structure", () => {
 		syncWebviewsI18n(createTestLayerOptions(rootDir));
 		const context = createWebviewsDomainContext(createTestLayerOptions(rootDir));
 		approveTranslations(context, {
+			"Hide Side Bar": "隐藏侧边栏",
+			"Show Side Bar": "显示侧边栏",
+			"Hide Details Panel": "隐藏详情面板",
+			"Show Details Panel": "显示详情面板",
 			"Minimap Options": "迷你地图选项",
 			Minimap: "迷你地图",
 			Commits: "提交数",
@@ -1428,6 +1432,8 @@ test("preserves graph popover menu structure", () => {
 
 		const localizedGraphHeader = loadGeneratedSource(context, "src/webviews/apps/plus/graph/graph-header.ts");
 		expect(localizedGraphHeader).toBeDefined();
+		expect(localizedGraphHeader!).toContain('config?.sidebar ? "隐藏侧边栏" : "显示侧边栏"');
+		expect(localizedGraphHeader!).toContain('config?.details ? "隐藏详情面板" : "显示详情面板"');
 		expect(localizedGraphHeader!).toMatch(/<menu-label>迷你地图<\/menu-label>/u);
 		expect(localizedGraphHeader!).toMatch(
 			/<gl-radio name="minimap-datatype" value="commits">\s*提交数\s*<\/gl-radio>/u,

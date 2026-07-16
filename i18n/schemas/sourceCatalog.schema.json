@@ -3,12 +3,11 @@
 	"title": "Source Catalog",
 	"type": "object",
 	"additionalProperties": false,
-	"required": ["$schema", "version", "domain", "generatedAt", "occurrences"],
+	"required": ["$schema", "version", "domain", "occurrences"],
 	"properties": {
 		"$schema": { "type": "string" },
-		"version": { "const": 3 },
+		"version": { "const": 5 },
 		"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "webviewHost"] },
-		"generatedAt": { "type": "string", "format": "date-time" },
 		"occurrences": {
 			"type": "array",
 			"items": { "$ref": "#/definitions/occurrence" }
@@ -35,26 +34,14 @@
 				{
 					"type": "object",
 					"additionalProperties": false,
-					"required": ["kind", "file", "syntax", "start", "end"],
+					"required": ["kind", "file"],
 					"properties": {
 						"kind": { "const": "source" },
 						"file": { "type": "string" },
-						"syntax": { "type": "string" },
-						"start": { "$ref": "#/definitions/position" },
-						"end": { "$ref": "#/definitions/position" },
 						"attribute": { "type": "string" }
 					}
 				}
 			]
-		},
-		"position": {
-			"type": "object",
-			"additionalProperties": false,
-			"required": ["line", "column"],
-			"properties": {
-				"line": { "type": "integer", "minimum": 1 },
-				"column": { "type": "integer", "minimum": 1 }
-			}
 		},
 		"outputReference": {
 			"anyOf": [
@@ -82,10 +69,9 @@
 		"occurrence": {
 			"type": "object",
 			"additionalProperties": false,
-			"required": ["id", "domain", "scope", "anchor", "slot", "authorityId", "pattern", "reference"],
+			"required": ["id", "scope", "anchor", "slot", "authorityId", "pattern", "reference"],
 			"properties": {
 				"id": { "type": "string" },
-				"domain": { "enum": ["manifest", "webviews", "quickpicks", "formatter", "webviewHost"] },
 				"scope": { "type": "string" },
 				"anchor": { "type": "string" },
 				"slot": { "type": "string" },

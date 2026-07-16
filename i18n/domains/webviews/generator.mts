@@ -13,7 +13,11 @@ import {
 	type HtmlNode,
 } from "./html.mts";
 import { extractHtmlMatches } from "./extractor.mts";
-import { buildSyntheticHtmlTemplateFragment, buildSyntheticTextTemplateFragment } from "./template.mts";
+import {
+	buildSyntheticHtmlTemplateFragment,
+	buildSyntheticTextTemplateFragment,
+	getSyntheticHtmlTemplateSlotContext,
+} from "./template.mts";
 import { createDisplayContextAnalyzer, isLiteralUnionCallArgument } from "./displayContext.mts";
 
 interface GeneratedLocalizedHtmlFragment {
@@ -184,7 +188,9 @@ export function generateLocalizedSourceFile(
 
 		if (
 			(ts.isStringLiteralLike(node) || ts.isTemplateExpression(node)) &&
-			!hasHtmlTemplateAncestor(node, sourceFile)
+			(!hasHtmlTemplateAncestor(node, sourceFile) ||
+				hasImperativeDisplayContextAncestor(node, sourceFile) ||
+				hasTranslatableHtmlAttributeAncestor(node))
 		) {
 			const localized = localizeImperativeDisplayNode(
 				node,
@@ -214,6 +220,32 @@ export function generateLocalizedSourceFile(
 		translatedCount: translatedCount,
 		unresolvedCount: unresolvedCount,
 	};
+}
+
+function hasTranslatableHtmlAttributeAncestor(node: ts.Node): boolean {
+	for (let child: ts.Node = node, current = node.parent; current != null; child = current, current = current.parent) {
+		if (!ts.isTemplateSpan(current) || current.expression !== child) continue;
+
+		const template = current.parent;
+		const taggedTemplate = template.parent;
+		if (
+			!ts.isTaggedTemplateExpression(taggedTemplate) ||
+			!isHtmlTemplateTag(taggedTemplate.tag, taggedTemplate.getSourceFile())
+		) {
+			return false;
+		}
+
+		const slotIndex = template.templateSpans.indexOf(current);
+		const slotContext = slotIndex === -1 ? undefined : getSyntheticHtmlTemplateSlotContext(template, slotIndex);
+		if (slotContext?.kind !== "attribute") return false;
+
+		let staticPrefix = template.head.text;
+		for (let index = 0; index < slotIndex; index++) staticPrefix += template.templateSpans[index].literal.text;
+		const attribute = /(?:^|\s)([^\s=]+)\s*=\s*$/u.exec(staticPrefix)?.[1];
+		return attribute === "tooltip" || attribute === "aria-label";
+	}
+
+	return false;
 }
 
 function localizeHtmlFragment(

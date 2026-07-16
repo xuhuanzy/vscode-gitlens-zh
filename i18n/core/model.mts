@@ -62,15 +62,6 @@ export type SourceReference =
 	| {
 			readonly kind: "source";
 			readonly file: string;
-			readonly syntax: string;
-			readonly start: {
-				readonly line: number;
-				readonly column: number;
-			};
-			readonly end: {
-				readonly line: number;
-				readonly column: number;
-			};
 			readonly attribute?: string;
 	  };
 
@@ -87,7 +78,6 @@ export type OutputReference =
 
 export interface SourceOccurrence {
 	readonly id: string;
-	readonly domain: I18nDomain;
 	readonly scope: string;
 	readonly anchor: string;
 	readonly slot: string;
@@ -121,9 +111,8 @@ export interface CatalogReconciliationEntry {
 
 export interface SourceCatalogFile {
 	readonly $schema: string;
-	readonly version: 3;
+	readonly version: 5;
 	readonly domain: I18nDomain;
-	readonly generatedAt: string;
 	readonly occurrences: SourceOccurrence[];
 }
 

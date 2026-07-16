@@ -101,13 +101,11 @@ test("stores webview host entries with webviews files", () => {
 			JSON.stringify(
 				{
 					$schema: "../schemas/sourceCatalog.schema.json",
-					version: 3,
+					version: 5,
 					domain: "webviews",
-					generatedAt: new Date(0).toISOString(),
 					occurrences: [
 						{
 							id: "webviews:webviews.home.home.lit-template-1-root.text.123#text",
-							domain: "webviews",
 							scope: "webviews.home",
 							anchor: "webviews.home.home.lit-template-1-root.text.123",
 							slot: "text",
@@ -119,9 +117,6 @@ test("stores webview host entries with webviews files", () => {
 							reference: {
 								kind: "source",
 								file: "src/webviews/apps/home/home.ts",
-								syntax: "ts",
-								start: { line: 1, column: 1 },
-								end: { line: 1, column: 13 },
 							},
 							output: {
 								kind: "runtime-key",

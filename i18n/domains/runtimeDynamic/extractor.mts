@@ -758,7 +758,6 @@ function createOccurrence(target: RuntimeDynamicSourceTarget, match: RuntimeDyna
 
 	return {
 		id: createOccurrenceId(target.domain, anchor, match.slot),
-		domain: target.domain,
 		scope: `${target.domain}.${target.group}`,
 		anchor: anchor,
 		slot: match.slot,
@@ -796,26 +795,8 @@ function createSourceReference(
 	return {
 		kind: "source",
 		file: file,
-		syntax: file.endsWith(".tsx") ? "tsx" : "ts",
-		start: offsetToLineColumn(source, startOffset),
-		end: offsetToLineColumn(source, endOffset),
 		attribute: attribute,
 	};
-}
-
-function offsetToLineColumn(text: string, offset: number): { readonly line: number; readonly column: number } {
-	let line = 1;
-	let column = 1;
-	for (let index = 0; index < offset; index++) {
-		if (text[index] === "\n") {
-			line++;
-			column = 1;
-		} else {
-			column++;
-		}
-	}
-
-	return { line: line, column: column };
 }
 
 function isImportOrExportSpecifier(node: ts.Node): boolean {

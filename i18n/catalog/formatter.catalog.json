@@ -1,12 +1,10 @@
 {
 	"$schema": "../schemas/sourceCatalog.schema.json",
-	"version": 3,
+	"version": 5,
 	"domain": "formatter",
-	"generatedAt": "2026-07-15T21:14:00.409Z",
 	"occurrences": [
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.html-title-795-17.html-title.6c6d54369b#html-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.html-title-795-17.html-title.6c6d54369b",
 			"slot": "html-title",
@@ -18,15 +16,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 795,
-					"column": 17
-				},
-				"end": {
-					"line": 795,
-					"column": 39
-				},
 				"attribute": "html-title"
 			},
 			"output": {
@@ -37,7 +26,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-label-538-42.markdown-label.7796a01aaa#markdown-label",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-label-538-42.markdown-label.7796a01aaa",
 			"slot": "markdown-label",
@@ -49,15 +37,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 538,
-					"column": 42
-				},
-				"end": {
-					"line": 538,
-					"column": 49
-				},
 				"attribute": "markdown-label"
 			},
 			"output": {
@@ -68,7 +47,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-label-602-41.markdown-label.bc46466a37#markdown-label",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-label-602-41.markdown-label.bc46466a37",
 			"slot": "markdown-label",
@@ -80,15 +58,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 602,
-					"column": 41
-				},
-				"end": {
-					"line": 602,
-					"column": 48
-				},
 				"attribute": "markdown-label"
 			},
 			"output": {
@@ -99,7 +68,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-label-640-39.markdown-label.c106f2edac#markdown-label",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-label-640-39.markdown-label.c106f2edac",
 			"slot": "markdown-label",
@@ -115,15 +83,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 640,
-					"column": 39
-				},
-				"end": {
-					"line": 642,
-					"column": 6
-				},
 				"attribute": "markdown-label"
 			},
 			"output": {
@@ -134,7 +93,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-503-10.markdown-title.272f432b51#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-503-10.markdown-title.272f432b51",
 			"slot": "markdown-title",
@@ -146,15 +104,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 503,
-					"column": 10
-				},
-				"end": {
-					"line": 503,
-					"column": 32
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -165,7 +114,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-521-10.markdown-title.19fd32cf12#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-521-10.markdown-title.19fd32cf12",
 			"slot": "markdown-title",
@@ -177,15 +125,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 521,
-					"column": 10
-				},
-				"end": {
-					"line": 521,
-					"column": 45
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -196,7 +135,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-528-9.markdown-title.bb96ad7427#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-528-9.markdown-title.bb96ad7427",
 			"slot": "markdown-title",
@@ -208,15 +146,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 528,
-					"column": 9
-				},
-				"end": {
-					"line": 528,
-					"column": 40
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -227,7 +156,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-542-10.markdown-title.293bfdff93#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-542-10.markdown-title.293bfdff93",
 			"slot": "markdown-title",
@@ -239,15 +167,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 542,
-					"column": 10
-				},
-				"end": {
-					"line": 542,
-					"column": 25
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -258,7 +177,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-554-7.markdown-title.f7f3940b56#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-554-7.markdown-title.f7f3940b56",
 			"slot": "markdown-title",
@@ -270,15 +188,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 554,
-					"column": 7
-				},
-				"end": {
-					"line": 554,
-					"column": 15
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -289,7 +198,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-560-7.markdown-title.a9509a2dd4#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-560-7.markdown-title.a9509a2dd4",
 			"slot": "markdown-title",
@@ -301,15 +209,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 560,
-					"column": 7
-				},
-				"end": {
-					"line": 560,
-					"column": 42
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -320,7 +219,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-574-8.markdown-title.28308acfb4#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-574-8.markdown-title.28308acfb4",
 			"slot": "markdown-title",
@@ -332,15 +230,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 574,
-					"column": 8
-				},
-				"end": {
-					"line": 574,
-					"column": 39
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -351,7 +240,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-580-7.markdown-title.7f1270de87#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-580-7.markdown-title.7f1270de87",
 			"slot": "markdown-title",
@@ -363,15 +251,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 580,
-					"column": 7
-				},
-				"end": {
-					"line": 580,
-					"column": 25
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -382,7 +261,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-587-8.markdown-title.d332831049#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-587-8.markdown-title.d332831049",
 			"slot": "markdown-title",
@@ -394,15 +272,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 587,
-					"column": 8
-				},
-				"end": {
-					"line": 587,
-					"column": 28
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -413,7 +282,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-598-8.markdown-title.54ede58908#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-598-8.markdown-title.54ede58908",
 			"slot": "markdown-title",
@@ -428,15 +296,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 598,
-					"column": 8
-				},
-				"end": {
-					"line": 598,
-					"column": 74
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -447,7 +306,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-609-9.markdown-title.dc386bdd98#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-609-9.markdown-title.dc386bdd98",
 			"slot": "markdown-title",
@@ -459,15 +317,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 609,
-					"column": 9
-				},
-				"end": {
-					"line": 609,
-					"column": 24
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -478,7 +327,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-630-9.markdown-title.c669f1a4bf#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-630-9.markdown-title.c669f1a4bf",
 			"slot": "markdown-title",
@@ -490,15 +338,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 630,
-					"column": 9
-				},
-				"end": {
-					"line": 630,
-					"column": 77
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -509,7 +348,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-642-94.markdown-title.bfc6e39d4b#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-642-94.markdown-title.bfc6e39d4b",
 			"slot": "markdown-title",
@@ -524,15 +362,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 642,
-					"column": 94
-				},
-				"end": {
-					"line": 644,
-					"column": 85
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -543,7 +372,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-665-8.markdown-title.d0f36676fc#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-665-8.markdown-title.d0f36676fc",
 			"slot": "markdown-title",
@@ -555,15 +383,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 665,
-					"column": 8
-				},
-				"end": {
-					"line": 665,
-					"column": 25
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -574,7 +393,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-676-7.markdown-title.efe6e88076#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-676-7.markdown-title.efe6e88076",
 			"slot": "markdown-title",
@@ -586,15 +404,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 676,
-					"column": 7
-				},
-				"end": {
-					"line": 676,
-					"column": 24
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -605,7 +414,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-788-13.markdown-title.8042fc8f68#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-788-13.markdown-title.8042fc8f68",
 			"slot": "markdown-title",
@@ -617,15 +425,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 788,
-					"column": 13
-				},
-				"end": {
-					"line": 788,
-					"column": 35
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -636,7 +435,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-921-84.markdown-title.7012f8b951#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-921-84.markdown-title.7012f8b951",
 			"slot": "markdown-title",
@@ -652,15 +450,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 921,
-					"column": 84
-				},
-				"end": {
-					"line": 923,
-					"column": 31
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -671,7 +460,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.markdown-title-942-106.markdown-title.928dbe1c38#markdown-title",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.markdown-title-942-106.markdown-title.928dbe1c38",
 			"slot": "markdown-title",
@@ -683,15 +471,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 942,
-					"column": 106
-				},
-				"end": {
-					"line": 942,
-					"column": 174
-				},
 				"attribute": "markdown-title"
 			},
 			"output": {
@@ -702,7 +481,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.string-281-29.formatAuthor-argument-1.dc9184064f#formatAuthor-argument-1",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.string-281-29.formatAuthor-argument-1.dc9184064f",
 			"slot": "formatAuthor-argument-1",
@@ -714,15 +492,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 281,
-					"column": 29
-				},
-				"end": {
-					"line": 281,
-					"column": 34
-				},
 				"attribute": "formatAuthor-argument-1"
 			},
 			"output": {
@@ -733,7 +502,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.string-292-29.formatAuthor-argument-1.2b2db2202e#formatAuthor-argument-1",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.string-292-29.formatAuthor-argument-1.2b2db2202e",
 			"slot": "formatAuthor-argument-1",
@@ -745,15 +513,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 292,
-					"column": 29
-				},
-				"end": {
-					"line": 292,
-					"column": 34
-				},
 				"attribute": "formatAuthor-argument-1"
 			},
 			"output": {
@@ -764,7 +523,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.string-384-17.statusText.623c771821#statusText",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.string-384-17.statusText.623c771821",
 			"slot": "statusText",
@@ -776,15 +534,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 384,
-					"column": 17
-				},
-				"end": {
-					"line": 384,
-					"column": 26
-				},
 				"attribute": "statusText"
 			},
 			"output": {
@@ -795,7 +544,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.string-773-65.working.4f4ad71053#working",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.string-773-65.working.4f4ad71053",
 			"slot": "working",
@@ -807,15 +555,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 773,
-					"column": 65
-				},
-				"end": {
-					"line": 773,
-					"column": 79
-				},
 				"attribute": "working"
 			},
 			"output": {
@@ -826,7 +565,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.string-981-19.tooltip.e43e6792fe#tooltip",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.string-981-19.tooltip.e43e6792fe",
 			"slot": "tooltip",
@@ -838,15 +576,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 981,
-					"column": 19
-				},
-				"end": {
-					"line": 981,
-					"column": 72
-				},
 				"attribute": "tooltip"
 			},
 			"output": {
@@ -857,7 +586,6 @@
 		},
 		{
 			"id": "formatter:formatter.commitFormatter.commitFormatter.template-816-18.message.4411cf40fc#message",
-			"domain": "formatter",
 			"scope": "formatter.commitFormatter",
 			"anchor": "formatter.commitFormatter.commitFormatter.template-816-18.message.4411cf40fc",
 			"slot": "message",
@@ -872,15 +600,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/git/formatters/commitFormatter.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 816,
-					"column": 18
-				},
-				"end": {
-					"line": 816,
-					"column": 87
-				},
 				"attribute": "message"
 			},
 			"output": {

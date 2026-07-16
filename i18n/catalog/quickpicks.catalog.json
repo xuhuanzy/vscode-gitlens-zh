@@ -1,12 +1,10 @@
 {
 	"$schema": "../schemas/sourceCatalog.schema.json",
-	"version": 3,
+	"version": 5,
 	"domain": "quickpicks",
-	"generatedAt": "2026-07-15T21:14:00.453Z",
 	"occurrences": [
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.string-160-15.label.3de75d8fe8#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.gitReset",
 			"anchor": "quickpicks.gitReset.gitReset.string-160-15.label.3de75d8fe8",
 			"slot": "label",
@@ -18,15 +16,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/git/reset.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 160,
-					"column": 15
-				},
-				"end": {
-					"line": 160,
-					"column": 19
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -37,7 +26,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.string-207-19.description.e459e91843#description",
-			"domain": "quickpicks",
 			"scope": "quickpicks.gitReset",
 			"anchor": "quickpicks.gitReset.gitReset.string-207-19.description.e459e91843",
 			"slot": "description",
@@ -49,15 +37,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/git/reset.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 207,
-					"column": 19
-				},
-				"end": {
-					"line": 207,
-					"column": 75
-				},
 				"attribute": "description"
 			},
 			"output": {
@@ -68,7 +47,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.string-214-19.description.e4d00e3ef3#description",
-			"domain": "quickpicks",
 			"scope": "quickpicks.gitReset",
 			"anchor": "quickpicks.gitReset.gitReset.string-214-19.description.e4d00e3ef3",
 			"slot": "description",
@@ -80,15 +58,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/git/reset.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 214,
-					"column": 19
-				},
-				"end": {
-					"line": 214,
-					"column": 78
-				},
 				"attribute": "description"
 			},
 			"output": {
@@ -99,7 +68,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.string-222-7.description.c60fecf7c1#description",
-			"domain": "quickpicks",
 			"scope": "quickpicks.gitReset",
 			"anchor": "quickpicks.gitReset.gitReset.string-222-7.description.c60fecf7c1",
 			"slot": "description",
@@ -111,15 +79,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/git/reset.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 222,
-					"column": 7
-				},
-				"end": {
-					"line": 222,
-					"column": 114
-				},
 				"attribute": "description"
 			},
 			"output": {
@@ -130,7 +89,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.string-229-19.description.248ba0e7b2#description",
-			"domain": "quickpicks",
 			"scope": "quickpicks.gitReset",
 			"anchor": "quickpicks.gitReset.gitReset.string-229-19.description.248ba0e7b2",
 			"slot": "description",
@@ -142,15 +100,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/git/reset.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 229,
-					"column": 19
-				},
-				"end": {
-					"line": 229,
-					"column": 66
-				},
 				"attribute": "description"
 			},
 			"output": {
@@ -161,7 +110,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.string-61-38.label.c168238c9f#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.gitReset",
 			"anchor": "quickpicks.gitReset.gitReset.string-61-38.label.c168238c9f",
 			"slot": "label",
@@ -173,15 +121,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/git/reset.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 61,
-					"column": 38
-				},
-				"end": {
-					"line": 61,
-					"column": 45
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -192,7 +131,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.string-61-62.description.3227bd4e42#description",
-			"domain": "quickpicks",
 			"scope": "quickpicks.gitReset",
 			"anchor": "quickpicks.gitReset.gitReset.string-61-62.description.3227bd4e42",
 			"slot": "description",
@@ -204,15 +142,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/git/reset.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 61,
-					"column": 62
-				},
-				"end": {
-					"line": 61,
-					"column": 111
-				},
 				"attribute": "description"
 			},
 			"output": {
@@ -223,7 +152,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.template-161-16.detail.b0e8f124c0#detail",
-			"domain": "quickpicks",
 			"scope": "quickpicks.gitReset",
 			"anchor": "quickpicks.gitReset.gitReset.template-161-16.detail.b0e8f124c0",
 			"slot": "detail",
@@ -238,15 +166,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/git/reset.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 161,
-					"column": 16
-				},
-				"end": {
-					"line": 161,
-					"column": 60
-				},
 				"attribute": "detail"
 			},
 			"output": {
@@ -257,7 +176,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.template-203-23.appendReposToTitle-argument-1.e344608abc#appendReposToTitle-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.gitReset",
 			"anchor": "quickpicks.gitReset.gitReset.template-203-23.appendReposToTitle-argument-1.e344608abc",
 			"slot": "appendReposToTitle-argument-1",
@@ -272,15 +190,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/git/reset.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 203,
-					"column": 23
-				},
-				"end": {
-					"line": 203,
-					"column": 49
-				},
 				"attribute": "appendReposToTitle-argument-1"
 			},
 			"output": {
@@ -291,7 +200,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.template-208-14.detail.5d802d267b#detail",
-			"domain": "quickpicks",
 			"scope": "quickpicks.gitReset",
 			"anchor": "quickpicks.gitReset.gitReset.template-208-14.detail.5d802d267b",
 			"slot": "detail",
@@ -307,15 +215,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/git/reset.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 208,
-					"column": 14
-				},
-				"end": {
-					"line": 210,
-					"column": 9
-				},
 				"attribute": "detail"
 			},
 			"output": {
@@ -326,7 +225,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.template-213-13.label.82bd6fde9e#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.gitReset",
 			"anchor": "quickpicks.gitReset.gitReset.template-213-13.label.82bd6fde9e",
 			"slot": "label",
@@ -341,15 +239,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/git/reset.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 213,
-					"column": 13
-				},
-				"end": {
-					"line": 213,
-					"column": 33
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -360,7 +249,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.template-215-14.detail.ddae112139#detail",
-			"domain": "quickpicks",
 			"scope": "quickpicks.gitReset",
 			"anchor": "quickpicks.gitReset.gitReset.template-215-14.detail.ddae112139",
 			"slot": "detail",
@@ -376,15 +264,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/git/reset.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 215,
-					"column": 14
-				},
-				"end": {
-					"line": 217,
-					"column": 9
-				},
 				"attribute": "detail"
 			},
 			"output": {
@@ -395,7 +274,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.template-220-13.label.b123c4ec61#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.gitReset",
 			"anchor": "quickpicks.gitReset.gitReset.template-220-13.label.b123c4ec61",
 			"slot": "label",
@@ -410,15 +288,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/git/reset.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 220,
-					"column": 13
-				},
-				"end": {
-					"line": 220,
-					"column": 38
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -429,7 +298,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.template-223-14.detail.1f77173635#detail",
-			"domain": "quickpicks",
 			"scope": "quickpicks.gitReset",
 			"anchor": "quickpicks.gitReset.gitReset.template-223-14.detail.1f77173635",
 			"slot": "detail",
@@ -445,15 +313,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/git/reset.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 223,
-					"column": 14
-				},
-				"end": {
-					"line": 225,
-					"column": 9
-				},
 				"attribute": "detail"
 			},
 			"output": {
@@ -464,7 +323,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.template-228-13.label.81d137b9ca#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.gitReset",
 			"anchor": "quickpicks.gitReset.gitReset.template-228-13.label.81d137b9ca",
 			"slot": "label",
@@ -479,15 +337,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/git/reset.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 228,
-					"column": 13
-				},
-				"end": {
-					"line": 228,
-					"column": 33
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -498,7 +347,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.gitReset.gitReset.template-230-14.detail.ad0dc2e4c5#detail",
-			"domain": "quickpicks",
 			"scope": "quickpicks.gitReset",
 			"anchor": "quickpicks.gitReset.gitReset.template-230-14.detail.ad0dc2e4c5",
 			"slot": "detail",
@@ -514,15 +362,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/git/reset.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 230,
-					"column": 14
-				},
-				"end": {
-					"line": 232,
-					"column": 9
-				},
 				"attribute": "detail"
 			},
 			"output": {
@@ -533,7 +372,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-162-9.label.988c82f963#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-162-9.label.988c82f963",
 			"slot": "label",
@@ -545,15 +383,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 162,
-					"column": 9
-				},
-				"end": {
-					"line": 162,
-					"column": 28
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -564,7 +393,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-173-9.label.d230ee4895#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-173-9.label.d230ee4895",
 			"slot": "label",
@@ -576,15 +404,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 173,
-					"column": 9
-				},
-				"end": {
-					"line": 173,
-					"column": 36
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -595,7 +414,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-183-9.label.021c13b720#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-183-9.label.021c13b720",
 			"slot": "label",
@@ -607,15 +425,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 183,
-					"column": 9
-				},
-				"end": {
-					"line": 183,
-					"column": 19
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -626,7 +435,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-192-38.showInformationMessage-argument-1.d5a5448b9a#showInformationMessage-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-192-38.showInformationMessage-argument-1.d5a5448b9a",
 			"slot": "showInformationMessage-argument-1",
@@ -638,15 +446,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 192,
-					"column": 38
-				},
-				"end": {
-					"line": 192,
-					"column": 74
-				},
 				"attribute": "showInformationMessage-argument-1"
 			},
 			"output": {
@@ -657,7 +456,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-198-9.label.2ef8912cb2#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-198-9.label.2ef8912cb2",
 			"slot": "label",
@@ -669,15 +467,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 198,
-					"column": 9
-				},
-				"end": {
-					"line": 198,
-					"column": 23
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -688,7 +477,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-215-9.label.151108c6f3#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-215-9.label.151108c6f3",
 			"slot": "label",
@@ -700,15 +488,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 215,
-					"column": 9
-				},
-				"end": {
-					"line": 215,
-					"column": 27
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -719,7 +498,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-225-9.label.84694df175#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-225-9.label.84694df175",
 			"slot": "label",
@@ -731,15 +509,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 225,
-					"column": 9
-				},
-				"end": {
-					"line": 225,
-					"column": 38
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -750,7 +519,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-235-9.label.40ff649065#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-235-9.label.40ff649065",
 			"slot": "label",
@@ -762,15 +530,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 235,
-					"column": 9
-				},
-				"end": {
-					"line": 235,
-					"column": 45
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -781,7 +540,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-248-9.label.802fae2a20#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-248-9.label.802fae2a20",
 			"slot": "label",
@@ -793,15 +551,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 248,
-					"column": 9
-				},
-				"end": {
-					"line": 248,
-					"column": 23
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -812,7 +561,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-261-9.label.3115a97e55#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-261-9.label.3115a97e55",
 			"slot": "label",
@@ -824,15 +572,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 261,
-					"column": 9
-				},
-				"end": {
-					"line": 261,
-					"column": 34
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -843,7 +582,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-272-11.label.233a8b3505#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-272-11.label.233a8b3505",
 			"slot": "label",
@@ -855,15 +593,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/gitWizard.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 272,
-					"column": 11
-				},
-				"end": {
-					"line": 272,
-					"column": 25
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -874,7 +603,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-274-9.label.51e0b42de8#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-274-9.label.51e0b42de8",
 			"slot": "label",
@@ -886,15 +614,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 274,
-					"column": 9
-				},
-				"end": {
-					"line": 274,
-					"column": 41
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -905,7 +624,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-284-9.label.1710d9809c#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-284-9.label.1710d9809c",
 			"slot": "label",
@@ -917,15 +635,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 284,
-					"column": 9
-				},
-				"end": {
-					"line": 284,
-					"column": 33
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -936,7 +645,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-294-9.label.a20e182022#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-294-9.label.a20e182022",
 			"slot": "label",
@@ -948,15 +656,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 294,
-					"column": 9
-				},
-				"end": {
-					"line": 294,
-					"column": 51
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -967,7 +666,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-304-9.label.93c5a342bf#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-304-9.label.93c5a342bf",
 			"slot": "label",
@@ -979,15 +677,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 304,
-					"column": 9
-				},
-				"end": {
-					"line": 304,
-					"column": 33
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -998,7 +687,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-314-9.label.4decb5c355#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-314-9.label.4decb5c355",
 			"slot": "label",
@@ -1010,15 +698,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 314,
-					"column": 9
-				},
-				"end": {
-					"line": 314,
-					"column": 31
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1029,7 +708,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-327-9.label.d6f8080768#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-327-9.label.d6f8080768",
 			"slot": "label",
@@ -1041,15 +719,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 327,
-					"column": 9
-				},
-				"end": {
-					"line": 327,
-					"column": 26
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1060,7 +729,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-337-9.label.8cfc70b9ca#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-337-9.label.8cfc70b9ca",
 			"slot": "label",
@@ -1072,15 +740,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 337,
-					"column": 9
-				},
-				"end": {
-					"line": 337,
-					"column": 21
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1091,7 +750,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-350-9.label.8ae89f4494#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-350-9.label.8ae89f4494",
 			"slot": "label",
@@ -1103,15 +761,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 350,
-					"column": 9
-				},
-				"end": {
-					"line": 350,
-					"column": 20
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1122,7 +771,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-352-17.description.139af7e29b#description",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-352-17.description.139af7e29b",
 			"slot": "description",
@@ -1134,15 +782,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/gitWizard.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 352,
-					"column": 17
-				},
-				"end": {
-					"line": 352,
-					"column": 25
-				},
 				"attribute": "description"
 			},
 			"output": {
@@ -1153,7 +792,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-360-9.label.db5ad9125d#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-360-9.label.db5ad9125d",
 			"slot": "label",
@@ -1165,15 +803,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 360,
-					"column": 9
-				},
-				"end": {
-					"line": 360,
-					"column": 33
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1184,7 +813,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-373-9.label.fe34ea4536#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-373-9.label.fe34ea4536",
 			"slot": "label",
@@ -1196,15 +824,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 373,
-					"column": 9
-				},
-				"end": {
-					"line": 373,
-					"column": 32
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1215,7 +834,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-386-9.label.8398414354#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-386-9.label.8398414354",
 			"slot": "label",
@@ -1227,15 +845,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 386,
-					"column": 9
-				},
-				"end": {
-					"line": 386,
-					"column": 24
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1246,7 +855,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-400-11.label.dc4e6e3cc5#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-400-11.label.dc4e6e3cc5",
 			"slot": "label",
@@ -1258,15 +866,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 400,
-					"column": 11
-				},
-				"end": {
-					"line": 400,
-					"column": 20
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1277,7 +876,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-401-17.description.b6dee2bebd#description",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-401-17.description.b6dee2bebd",
 			"slot": "description",
@@ -1289,15 +887,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 401,
-					"column": 17
-				},
-				"end": {
-					"line": 401,
-					"column": 31
-				},
 				"attribute": "description"
 			},
 			"output": {
@@ -1308,7 +897,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-416-18.fallback.cfea29e7bf#fallback",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-416-18.fallback.cfea29e7bf",
 			"slot": "fallback",
@@ -1320,15 +908,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 416,
-					"column": 18
-				},
-				"end": {
-					"line": 416,
-					"column": 42
-				},
 				"attribute": "fallback"
 			},
 			"output": {
@@ -1339,7 +918,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-426-18.fallback.ad190177bf#fallback",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-426-18.fallback.ad190177bf",
 			"slot": "fallback",
@@ -1351,15 +929,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 426,
-					"column": 18
-				},
-				"end": {
-					"line": 426,
-					"column": 56
-				},
 				"attribute": "fallback"
 			},
 			"output": {
@@ -1370,7 +939,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-463-17.description.e1dfb21525#description",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-463-17.description.e1dfb21525",
 			"slot": "description",
@@ -1382,15 +950,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/gitWizard.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 463,
-					"column": 17
-				},
-				"end": {
-					"line": 463,
-					"column": 22
-				},
 				"attribute": "description"
 			},
 			"output": {
@@ -1401,7 +960,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-50-13.label.d4b643b054#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-50-13.label.d4b643b054",
 			"slot": "label",
@@ -1413,15 +971,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/directive.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 50,
-					"column": 13
-				},
-				"end": {
-					"line": 50,
-					"column": 19
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1432,7 +981,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-53-13.label.805e311bba#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-53-13.label.805e311bba",
 			"slot": "label",
@@ -1444,15 +992,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/directive.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 53,
-					"column": 13
-				},
-				"end": {
-					"line": 53,
-					"column": 21
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1463,7 +1002,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-56-13.label.1cdcdedce3#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-56-13.label.1cdcdedce3",
 			"slot": "label",
@@ -1475,15 +1013,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/directive.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 56,
-					"column": 13
-				},
-				"end": {
-					"line": 56,
-					"column": 24
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1494,7 +1023,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-59-13.label.85c120aca6#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-59-13.label.85c120aca6",
 			"slot": "label",
@@ -1506,15 +1034,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/directive.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 59,
-					"column": 13
-				},
-				"end": {
-					"line": 59,
-					"column": 24
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1525,7 +1044,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-62-13.label.9a22524007#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-62-13.label.9a22524007",
 			"slot": "label",
@@ -1537,15 +1055,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/directive.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 62,
-					"column": 13
-				},
-				"end": {
-					"line": 62,
-					"column": 20
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1556,7 +1065,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-66-13.label.266dcd9f4b#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-66-13.label.266dcd9f4b",
 			"slot": "label",
@@ -1568,15 +1076,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/directive.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 66,
-					"column": 13
-				},
-				"end": {
-					"line": 66,
-					"column": 22
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1587,7 +1086,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-69-13.label.6496657276#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-69-13.label.6496657276",
 			"slot": "label",
@@ -1599,15 +1097,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/directive.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 69,
-					"column": 13
-				},
-				"end": {
-					"line": 69,
-					"column": 30
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1618,7 +1107,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-71-18.description.ddf026c7f6#description",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-71-18.description.ddf026c7f6",
 			"slot": "description",
@@ -1630,15 +1118,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/gitWizard.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 71,
-					"column": 18
-				},
-				"end": {
-					"line": 71,
-					"column": 34
-				},
 				"attribute": "description"
 			},
 			"output": {
@@ -1649,7 +1128,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-73-18.description.76281e0992#description",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-73-18.description.76281e0992",
 			"slot": "description",
@@ -1661,15 +1139,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/gitWizard.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 73,
-					"column": 18
-				},
-				"end": {
-					"line": 73,
-					"column": 26
-				},
 				"attribute": "description"
 			},
 			"output": {
@@ -1680,7 +1149,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-75-16.empty.994ede6245#empty",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-75-16.empty.994ede6245",
 			"slot": "empty",
@@ -1692,15 +1160,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 75,
-					"column": 16
-				},
-				"end": {
-					"line": 75,
-					"column": 34
-				},
 				"attribute": "empty"
 			},
 			"output": {
@@ -1711,7 +1170,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-77-13.label.10c11147d3#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-77-13.label.10c11147d3",
 			"slot": "label",
@@ -1723,15 +1181,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/directive.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 77,
-					"column": 13
-				},
-				"end": {
-					"line": 77,
-					"column": 27
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1742,7 +1191,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-77-18.description.5803d46809#description",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-77-18.description.5803d46809",
 			"slot": "description",
@@ -1754,15 +1202,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/gitWizard.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 77,
-					"column": 18
-				},
-				"end": {
-					"line": 77,
-					"column": 33
-				},
 				"attribute": "description"
 			},
 			"output": {
@@ -1773,7 +1212,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-78-14.detail.fa0af77b04#detail",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-78-14.detail.fa0af77b04",
 			"slot": "detail",
@@ -1785,15 +1223,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/directive.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 78,
-					"column": 14
-				},
-				"end": {
-					"line": 78,
-					"column": 66
-				},
 				"attribute": "detail"
 			},
 			"output": {
@@ -1804,7 +1233,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-80-17.description.74ca617983#description",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-80-17.description.74ca617983",
 			"slot": "description",
@@ -1816,15 +1244,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/gitWizard.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 80,
-					"column": 17
-				},
-				"end": {
-					"line": 80,
-					"column": 33
-				},
 				"attribute": "description"
 			},
 			"output": {
@@ -1835,7 +1254,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-81-13.label.e55574d3ad#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-81-13.label.e55574d3ad",
 			"slot": "label",
@@ -1847,15 +1265,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/directive.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 81,
-					"column": 13
-				},
-				"end": {
-					"line": 81,
-					"column": 29
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1866,7 +1275,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-83-22.description.2e8ddec7fb#description",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-83-22.description.2e8ddec7fb",
 			"slot": "description",
@@ -1878,15 +1286,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/directive.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 83,
-					"column": 22
-				},
-				"end": {
-					"line": 83,
-					"column": 87
-				},
 				"attribute": "description"
 			},
 			"output": {
@@ -1897,7 +1296,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-85-15.detail.dadee6033a#detail",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-85-15.detail.dadee6033a",
 			"slot": "detail",
@@ -1909,15 +1307,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/directive.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 85,
-					"column": 15
-				},
-				"end": {
-					"line": 85,
-					"column": 73
-				},
 				"attribute": "detail"
 			},
 			"output": {
@@ -1928,7 +1317,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-90-13.label.5a8044d49a#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-90-13.label.5a8044d49a",
 			"slot": "label",
@@ -1940,15 +1328,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/directive.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 90,
-					"column": 13
-				},
-				"end": {
-					"line": 90,
-					"column": 27
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1959,7 +1338,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-94-13.label.64ebc9b39d#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-94-13.label.64ebc9b39d",
 			"slot": "label",
@@ -1971,15 +1349,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/directive.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 94,
-					"column": 13
-				},
-				"end": {
-					"line": 94,
-					"column": 31
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -1990,7 +1359,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-98-13.label.b040933314#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-98-13.label.b040933314",
 			"slot": "label",
@@ -2002,15 +1370,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/directive.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 98,
-					"column": 13
-				},
-				"end": {
-					"line": 98,
-					"column": 31
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -2021,7 +1380,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.string-99-19.description.55f54a02b5#description",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.string-99-19.description.55f54a02b5",
 			"slot": "description",
@@ -2033,15 +1391,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/directive.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 99,
-					"column": 19
-				},
-				"end": {
-					"line": 99,
-					"column": 54
-				},
 				"attribute": "description"
 			},
 			"output": {
@@ -2052,7 +1401,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.template-145-4.label.38c246def4#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.template-145-4.label.38c246def4",
 			"slot": "label",
@@ -2068,15 +1416,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 145,
-					"column": 4
-				},
-				"end": {
-					"line": 147,
-					"column": 6
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -2087,7 +1426,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.template-208-4.showInformationMessage-argument-1.deba9a162a#showInformationMessage-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.template-208-4.showInformationMessage-argument-1.deba9a162a",
 			"slot": "showInformationMessage-argument-1",
@@ -2102,15 +1440,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 208,
-					"column": 4
-				},
-				"end": {
-					"line": 208,
-					"column": 83
-				},
 				"attribute": "showInformationMessage-argument-1"
 			},
 			"output": {
@@ -2121,7 +1450,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.template-310-11.label.3e11537d06#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.template-310-11.label.3e11537d06",
 			"slot": "label",
@@ -2136,15 +1464,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/gitWizard.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 310,
-					"column": 11
-				},
-				"end": {
-					"line": 310,
-					"column": 33
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -2155,7 +1474,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.items.items.template-323-10.label.8cd2e27e50#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.items",
 			"anchor": "quickpicks.items.items.template-323-10.label.8cd2e27e50",
 			"slot": "label",
@@ -2170,15 +1488,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/items/gitWizard.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 323,
-					"column": 10
-				},
-				"end": {
-					"line": 323,
-					"column": 33
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -2189,7 +1498,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-401-29.createQuickPickSeparator-argument-1.f46035b5ab#createQuickPickSeparator-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-401-29.createQuickPickSeparator-argument-1.f46035b5ab",
 			"slot": "createQuickPickSeparator-argument-1",
@@ -2201,15 +1509,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 401,
-					"column": 29
-				},
-				"end": {
-					"line": 401,
-					"column": 36
-				},
 				"attribute": "createQuickPickSeparator-argument-1"
 			},
 			"output": {
@@ -2220,7 +1519,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-505-29.createQuickPickSeparator-argument-1.84cb102f96#createQuickPickSeparator-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-505-29.createQuickPickSeparator-argument-1.84cb102f96",
 			"slot": "createQuickPickSeparator-argument-1",
@@ -2232,15 +1530,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 505,
-					"column": 29
-				},
-				"end": {
-					"line": 505,
-					"column": 38
-				},
 				"attribute": "createQuickPickSeparator-argument-1"
 			},
 			"output": {
@@ -2251,7 +1540,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-506-31.GitWizardQuickPickItem-argument-1.64fe037bf1#GitWizardQuickPickItem-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-506-31.GitWizardQuickPickItem-argument-1.64fe037bf1",
 			"slot": "GitWizardQuickPickItem-argument-1",
@@ -2263,15 +1551,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 506,
-					"column": 31
-				},
-				"end": {
-					"line": 506,
-					"column": 47
-				},
 				"attribute": "GitWizardQuickPickItem-argument-1"
 			},
 			"output": {
@@ -2282,7 +1561,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-514-31.GitWizardQuickPickItem-argument-1.690085d7fe#GitWizardQuickPickItem-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-514-31.GitWizardQuickPickItem-argument-1.690085d7fe",
 			"slot": "GitWizardQuickPickItem-argument-1",
@@ -2294,15 +1572,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 514,
-					"column": 31
-				},
-				"end": {
-					"line": 514,
-					"column": 48
-				},
 				"attribute": "GitWizardQuickPickItem-argument-1"
 			},
 			"output": {
@@ -2313,7 +1582,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-522-31.GitWizardQuickPickItem-argument-1.1b59f928cf#GitWizardQuickPickItem-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-522-31.GitWizardQuickPickItem-argument-1.1b59f928cf",
 			"slot": "GitWizardQuickPickItem-argument-1",
@@ -2325,15 +1593,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 522,
-					"column": 31
-				},
-				"end": {
-					"line": 522,
-					"column": 46
-				},
 				"attribute": "GitWizardQuickPickItem-argument-1"
 			},
 			"output": {
@@ -2344,7 +1603,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-540-68.fallback.083051979e#fallback",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-540-68.fallback.083051979e",
 			"slot": "fallback",
@@ -2356,15 +1614,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 540,
-					"column": 68
-				},
-				"end": {
-					"line": 540,
-					"column": 76
-				},
 				"attribute": "fallback"
 			},
 			"output": {
@@ -2375,7 +1624,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-552-39.createQuickPickSeparator-argument-1.98cb743db3#createQuickPickSeparator-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-552-39.createQuickPickSeparator-argument-1.98cb743db3",
 			"slot": "createQuickPickSeparator-argument-1",
@@ -2387,15 +1635,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 552,
-					"column": 39
-				},
-				"end": {
-					"line": 552,
-					"column": 48
-				},
 				"attribute": "createQuickPickSeparator-argument-1"
 			},
 			"output": {
@@ -2406,7 +1645,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-573-33.GitWizardQuickPickItem-argument-1.311c8128c5#GitWizardQuickPickItem-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-573-33.GitWizardQuickPickItem-argument-1.311c8128c5",
 			"slot": "GitWizardQuickPickItem-argument-1",
@@ -2418,15 +1656,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 573,
-					"column": 33
-				},
-				"end": {
-					"line": 573,
-					"column": 52
-				},
 				"attribute": "GitWizardQuickPickItem-argument-1"
 			},
 			"output": {
@@ -2437,7 +1666,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-584-32.GitWizardQuickPickItem-argument-1.4b3785d778#GitWizardQuickPickItem-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-584-32.GitWizardQuickPickItem-argument-1.4b3785d778",
 			"slot": "GitWizardQuickPickItem-argument-1",
@@ -2449,15 +1677,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 584,
-					"column": 32
-				},
-				"end": {
-					"line": 584,
-					"column": 50
-				},
 				"attribute": "GitWizardQuickPickItem-argument-1"
 			},
 			"output": {
@@ -2468,7 +1687,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-612-32.GitWizardQuickPickItem-argument-1.a52a7747f8#GitWizardQuickPickItem-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-612-32.GitWizardQuickPickItem-argument-1.a52a7747f8",
 			"slot": "GitWizardQuickPickItem-argument-1",
@@ -2480,15 +1698,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 612,
-					"column": 32
-				},
-				"end": {
-					"line": 612,
-					"column": 55
-				},
 				"attribute": "GitWizardQuickPickItem-argument-1"
 			},
 			"output": {
@@ -2499,7 +1708,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-630-31.GitWizardQuickPickItem-argument-1.342820d63e#GitWizardQuickPickItem-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-630-31.GitWizardQuickPickItem-argument-1.342820d63e",
 			"slot": "GitWizardQuickPickItem-argument-1",
@@ -2511,15 +1719,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 630,
-					"column": 31
-				},
-				"end": {
-					"line": 630,
-					"column": 52
-				},
 				"attribute": "GitWizardQuickPickItem-argument-1"
 			},
 			"output": {
@@ -2530,7 +1729,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-639-31.GitWizardQuickPickItem-argument-1.4a0158d7cf#GitWizardQuickPickItem-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-639-31.GitWizardQuickPickItem-argument-1.4a0158d7cf",
 			"slot": "GitWizardQuickPickItem-argument-1",
@@ -2542,15 +1740,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 639,
-					"column": 31
-				},
-				"end": {
-					"line": 639,
-					"column": 59
-				},
 				"attribute": "GitWizardQuickPickItem-argument-1"
 			},
 			"output": {
@@ -2561,7 +1750,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-647-31.GitWizardQuickPickItem-argument-1.6227a96a86#GitWizardQuickPickItem-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-647-31.GitWizardQuickPickItem-argument-1.6227a96a86",
 			"slot": "GitWizardQuickPickItem-argument-1",
@@ -2573,15 +1761,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 647,
-					"column": 31
-				},
-				"end": {
-					"line": 647,
-					"column": 56
-				},
 				"attribute": "GitWizardQuickPickItem-argument-1"
 			},
 			"output": {
@@ -2592,7 +1771,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-656-29.createQuickPickSeparator-argument-1.b167b73789#createQuickPickSeparator-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-656-29.createQuickPickSeparator-argument-1.b167b73789",
 			"slot": "createQuickPickSeparator-argument-1",
@@ -2604,15 +1782,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 656,
-					"column": 29
-				},
-				"end": {
-					"line": 656,
-					"column": 35
-				},
 				"attribute": "createQuickPickSeparator-argument-1"
 			},
 			"output": {
@@ -2623,7 +1792,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-663-28.createQuickPickSeparator-argument-1.ab6b174d01#createQuickPickSeparator-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-663-28.createQuickPickSeparator-argument-1.ab6b174d01",
 			"slot": "createQuickPickSeparator-argument-1",
@@ -2635,15 +1803,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 663,
-					"column": 28
-				},
-				"end": {
-					"line": 663,
-					"column": 34
-				},
 				"attribute": "createQuickPickSeparator-argument-1"
 			},
 			"output": {
@@ -2654,7 +1813,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-673-28.createQuickPickSeparator-argument-1.d7812b586a#createQuickPickSeparator-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-673-28.createQuickPickSeparator-argument-1.d7812b586a",
 			"slot": "createQuickPickSeparator-argument-1",
@@ -2666,15 +1824,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 673,
-					"column": 28
-				},
-				"end": {
-					"line": 673,
-					"column": 37
-				},
 				"attribute": "createQuickPickSeparator-argument-1"
 			},
 			"output": {
@@ -2685,7 +1834,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-685-28.createQuickPickSeparator-argument-1.e5b800043d#createQuickPickSeparator-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-685-28.createQuickPickSeparator-argument-1.e5b800043d",
 			"slot": "createQuickPickSeparator-argument-1",
@@ -2697,15 +1845,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 685,
-					"column": 28
-				},
-				"end": {
-					"line": 685,
-					"column": 36
-				},
 				"attribute": "createQuickPickSeparator-argument-1"
 			},
 			"output": {
@@ -2716,7 +1855,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-701-10.hint.4293896758#hint",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-701-10.hint.4293896758",
 			"slot": "hint",
@@ -2728,15 +1866,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 701,
-					"column": 10
-				},
-				"end": {
-					"line": 701,
-					"column": 42
-				},
 				"attribute": "hint"
 			},
 			"output": {
@@ -2747,7 +1876,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-726-29.createQuickPickSeparator-argument-1.b310ffe51b#createQuickPickSeparator-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-726-29.createQuickPickSeparator-argument-1.b310ffe51b",
 			"slot": "createQuickPickSeparator-argument-1",
@@ -2759,15 +1887,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 726,
-					"column": 29
-				},
-				"end": {
-					"line": 726,
-					"column": 38
-				},
 				"attribute": "createQuickPickSeparator-argument-1"
 			},
 			"output": {
@@ -2778,7 +1897,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-738-68.fallback.b7c00138fb#fallback",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-738-68.fallback.b7c00138fb",
 			"slot": "fallback",
@@ -2790,15 +1908,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 738,
-					"column": 68
-				},
-				"end": {
-					"line": 738,
-					"column": 76
-				},
 				"attribute": "fallback"
 			},
 			"output": {
@@ -2809,7 +1918,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-762-29.createQuickPickSeparator-argument-1.a768e69e56#createQuickPickSeparator-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-762-29.createQuickPickSeparator-argument-1.a768e69e56",
 			"slot": "createQuickPickSeparator-argument-1",
@@ -2821,15 +1929,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 762,
-					"column": 29
-				},
-				"end": {
-					"line": 762,
-					"column": 38
-				},
 				"attribute": "createQuickPickSeparator-argument-1"
 			},
 			"output": {
@@ -2840,7 +1939,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-765-29.createQuickPickSeparator-argument-1.42a8525445#createQuickPickSeparator-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-765-29.createQuickPickSeparator-argument-1.42a8525445",
 			"slot": "createQuickPickSeparator-argument-1",
@@ -2852,15 +1950,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 765,
-					"column": 29
-				},
-				"end": {
-					"line": 765,
-					"column": 35
-				},
 				"attribute": "createQuickPickSeparator-argument-1"
 			},
 			"output": {
@@ -2871,7 +1960,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-772-28.createQuickPickSeparator-argument-1.8e84ecd280#createQuickPickSeparator-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-772-28.createQuickPickSeparator-argument-1.8e84ecd280",
 			"slot": "createQuickPickSeparator-argument-1",
@@ -2883,15 +1971,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 772,
-					"column": 28
-				},
-				"end": {
-					"line": 772,
-					"column": 34
-				},
 				"attribute": "createQuickPickSeparator-argument-1"
 			},
 			"output": {
@@ -2902,7 +1981,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-785-28.createQuickPickSeparator-argument-1.f7dc5d966e#createQuickPickSeparator-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-785-28.createQuickPickSeparator-argument-1.f7dc5d966e",
 			"slot": "createQuickPickSeparator-argument-1",
@@ -2914,15 +1992,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 785,
-					"column": 28
-				},
-				"end": {
-					"line": 785,
-					"column": 37
-				},
 				"attribute": "createQuickPickSeparator-argument-1"
 			},
 			"output": {
@@ -2933,7 +2002,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-791-28.createQuickPickSeparator-argument-1.97ecda264f#createQuickPickSeparator-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-791-28.createQuickPickSeparator-argument-1.97ecda264f",
 			"slot": "createQuickPickSeparator-argument-1",
@@ -2945,15 +2013,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 791,
-					"column": 28
-				},
-				"end": {
-					"line": 791,
-					"column": 36
-				},
 				"attribute": "createQuickPickSeparator-argument-1"
 			},
 			"output": {
@@ -2964,7 +2023,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.string-805-69.hint.c2e78fcfb9#hint",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.string-805-69.hint.c2e78fcfb9",
 			"slot": "hint",
@@ -2976,15 +2034,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 805,
-					"column": 69
-				},
-				"end": {
-					"line": 805,
-					"column": 101
-				},
 				"attribute": "hint"
 			},
 			"output": {
@@ -2995,7 +2044,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.template-399-11.hint.7a57dce989#hint",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.template-399-11.hint.7a57dce989",
 			"slot": "hint",
@@ -3010,15 +2058,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 399,
-					"column": 11
-				},
-				"end": {
-					"line": 399,
-					"column": 92
-				},
 				"attribute": "hint"
 			},
 			"output": {
@@ -3029,7 +2068,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.template-591-32.GitWizardQuickPickItem-argument-1.bef173621b#GitWizardQuickPickItem-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.template-591-32.GitWizardQuickPickItem-argument-1.bef173621b",
 			"slot": "GitWizardQuickPickItem-argument-1",
@@ -3044,15 +2082,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 591,
-					"column": 32
-				},
-				"end": {
-					"line": 591,
-					"column": 88
-				},
 				"attribute": "GitWizardQuickPickItem-argument-1"
 			},
 			"output": {
@@ -3063,7 +2092,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.template-598-32.GitWizardQuickPickItem-argument-1.236e40fb81#GitWizardQuickPickItem-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.template-598-32.GitWizardQuickPickItem-argument-1.236e40fb81",
 			"slot": "GitWizardQuickPickItem-argument-1",
@@ -3078,15 +2106,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 598,
-					"column": 32
-				},
-				"end": {
-					"line": 598,
-					"column": 97
-				},
 				"attribute": "GitWizardQuickPickItem-argument-1"
 			},
 			"output": {
@@ -3097,7 +2116,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.quickWizardCommits.quickWizardCommits.template-623-31.GitWizardQuickPickItem-argument-1.7d3478cfc5#GitWizardQuickPickItem-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.quickWizardCommits",
 			"anchor": "quickpicks.quickWizardCommits.quickWizardCommits.template-623-31.GitWizardQuickPickItem-argument-1.7d3478cfc5",
 			"slot": "GitWizardQuickPickItem-argument-1",
@@ -3112,15 +2130,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/commands/quick-wizard/steps/commits.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 623,
-					"column": 31
-				},
-				"end": {
-					"line": 623,
-					"column": 90
-				},
 				"attribute": "GitWizardQuickPickItem-argument-1"
 			},
 			"output": {
@@ -3131,7 +2140,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.remoteProviderPicker.remoteProviderPicker.string-155-86.label.eb6c1ffe47#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.remoteProviderPicker",
 			"anchor": "quickpicks.remoteProviderPicker.remoteProviderPicker.string-155-86.label.eb6c1ffe47",
 			"slot": "label",
@@ -3143,15 +2151,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/remoteProviderPicker.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 155,
-					"column": 86
-				},
-				"end": {
-					"line": 155,
-					"column": 94
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -3162,7 +2161,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.remoteProviderPicker.remoteProviderPicker.string-210-38.showInformationMessage-argument-1.aed0d98581#showInformationMessage-argument-1",
-			"domain": "quickpicks",
 			"scope": "quickpicks.remoteProviderPicker",
 			"anchor": "quickpicks.remoteProviderPicker.remoteProviderPicker.string-210-38.showInformationMessage-argument-1.aed0d98581",
 			"slot": "showInformationMessage-argument-1",
@@ -3174,15 +2172,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/remoteProviderPicker.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 210,
-					"column": 38
-				},
-				"end": {
-					"line": 210,
-					"column": 67
-				},
 				"attribute": "showInformationMessage-argument-1"
 			},
 			"output": {
@@ -3193,7 +2182,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.remoteProviderPicker.remoteProviderPicker.string-33-18.label.696bbf11a2#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.remoteProviderPicker",
 			"anchor": "quickpicks.remoteProviderPicker.remoteProviderPicker.string-33-18.label.696bbf11a2",
 			"slot": "label",
@@ -3205,15 +2193,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/remoteProviderPicker.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 33,
-					"column": 18
-				},
-				"end": {
-					"line": 33,
-					"column": 68
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -3224,7 +2203,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.remoteProviderPicker.remoteProviderPicker.template-149-13.label.c46168a220#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.remoteProviderPicker",
 			"anchor": "quickpicks.remoteProviderPicker.remoteProviderPicker.template-149-13.label.c46168a220",
 			"slot": "label",
@@ -3239,15 +2217,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/remoteProviderPicker.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 149,
-					"column": 13
-				},
-				"end": {
-					"line": 149,
-					"column": 47
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -3258,7 +2227,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.remoteProviderPicker.remoteProviderPicker.template-150-14.detail.38ec425235#detail",
-			"domain": "quickpicks",
 			"scope": "quickpicks.remoteProviderPicker",
 			"anchor": "quickpicks.remoteProviderPicker.remoteProviderPicker.template-150-14.detail.38ec425235",
 			"slot": "detail",
@@ -3273,15 +2241,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/remoteProviderPicker.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 150,
-					"column": 14
-				},
-				"end": {
-					"line": 150,
-					"column": 103
-				},
 				"attribute": "detail"
 			},
 			"output": {
@@ -3292,7 +2251,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.remoteProviderPicker.remoteProviderPicker.template-202-17.label.143648bd7f#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.remoteProviderPicker",
 			"anchor": "quickpicks.remoteProviderPicker.remoteProviderPicker.template-202-17.label.143648bd7f",
 			"slot": "label",
@@ -3309,15 +2267,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/remoteProviderPicker.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 202,
-					"column": 17
-				},
-				"end": {
-					"line": 204,
-					"column": 58
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -3328,7 +2277,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.remoteProviderPicker.remoteProviderPicker.template-223-4.label.7f24a896a6#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.remoteProviderPicker",
 			"anchor": "quickpicks.remoteProviderPicker.remoteProviderPicker.template-223-4.label.7f24a896a6",
 			"slot": "label",
@@ -3344,15 +2292,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/remoteProviderPicker.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 223,
-					"column": 4
-				},
-				"end": {
-					"line": 227,
-					"column": 6
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -3363,7 +2302,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.remoteProviderPicker.remoteProviderPicker.template-51-11.label.f0c0bcec04#label",
-			"domain": "quickpicks",
 			"scope": "quickpicks.remoteProviderPicker",
 			"anchor": "quickpicks.remoteProviderPicker.remoteProviderPicker.template-51-11.label.f0c0bcec04",
 			"slot": "label",
@@ -3378,15 +2316,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "src/quickpicks/remoteProviderPicker.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 51,
-					"column": 11
-				},
-				"end": {
-					"line": 51,
-					"column": 44
-				},
 				"attribute": "label"
 			},
 			"output": {
@@ -3397,7 +2326,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.remoteUtils.remoteUtils.string-122-11.getNameFromRemoteResource-return.fd026fa637#getNameFromRemoteResource-return",
-			"domain": "quickpicks",
 			"scope": "quickpicks.remoteUtils",
 			"anchor": "quickpicks.remoteUtils.remoteUtils.string-122-11.getNameFromRemoteResource-return.fd026fa637",
 			"slot": "getNameFromRemoteResource-return",
@@ -3409,15 +2337,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "packages/git/src/utils/remote.utils.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 122,
-					"column": 11
-				},
-				"end": {
-					"line": 122,
-					"column": 19
-				},
 				"attribute": "getNameFromRemoteResource-return"
 			},
 			"output": {
@@ -3428,7 +2347,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.remoteUtils.remoteUtils.string-124-11.getNameFromRemoteResource-return.f634514fde#getNameFromRemoteResource-return",
-			"domain": "quickpicks",
 			"scope": "quickpicks.remoteUtils",
 			"anchor": "quickpicks.remoteUtils.remoteUtils.string-124-11.getNameFromRemoteResource-return.f634514fde",
 			"slot": "getNameFromRemoteResource-return",
@@ -3440,15 +2358,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "packages/git/src/utils/remote.utils.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 124,
-					"column": 11
-				},
-				"end": {
-					"line": 124,
-					"column": 21
-				},
 				"attribute": "getNameFromRemoteResource-return"
 			},
 			"output": {
@@ -3459,7 +2368,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.remoteUtils.remoteUtils.string-126-11.getNameFromRemoteResource-return.f2a6e0a0b1#getNameFromRemoteResource-return",
-			"domain": "quickpicks",
 			"scope": "quickpicks.remoteUtils",
 			"anchor": "quickpicks.remoteUtils.remoteUtils.string-126-11.getNameFromRemoteResource-return.f2a6e0a0b1",
 			"slot": "getNameFromRemoteResource-return",
@@ -3471,15 +2379,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "packages/git/src/utils/remote.utils.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 126,
-					"column": 11
-				},
-				"end": {
-					"line": 126,
-					"column": 19
-				},
 				"attribute": "getNameFromRemoteResource-return"
 			},
 			"output": {
@@ -3490,7 +2389,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.remoteUtils.remoteUtils.string-128-11.getNameFromRemoteResource-return.32bd874eda#getNameFromRemoteResource-return",
-			"domain": "quickpicks",
 			"scope": "quickpicks.remoteUtils",
 			"anchor": "quickpicks.remoteUtils.remoteUtils.string-128-11.getNameFromRemoteResource-return.32bd874eda",
 			"slot": "getNameFromRemoteResource-return",
@@ -3502,15 +2400,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "packages/git/src/utils/remote.utils.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 128,
-					"column": 11
-				},
-				"end": {
-					"line": 128,
-					"column": 23
-				},
 				"attribute": "getNameFromRemoteResource-return"
 			},
 			"output": {
@@ -3521,7 +2410,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.remoteUtils.remoteUtils.string-130-11.getNameFromRemoteResource-return.a0c4fe7442#getNameFromRemoteResource-return",
-			"domain": "quickpicks",
 			"scope": "quickpicks.remoteUtils",
 			"anchor": "quickpicks.remoteUtils.remoteUtils.string-130-11.getNameFromRemoteResource-return.a0c4fe7442",
 			"slot": "getNameFromRemoteResource-return",
@@ -3533,15 +2421,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "packages/git/src/utils/remote.utils.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 130,
-					"column": 11
-				},
-				"end": {
-					"line": 130,
-					"column": 32
-				},
 				"attribute": "getNameFromRemoteResource-return"
 			},
 			"output": {
@@ -3552,7 +2431,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.remoteUtils.remoteUtils.string-132-11.getNameFromRemoteResource-return.0a0812c2de#getNameFromRemoteResource-return",
-			"domain": "quickpicks",
 			"scope": "quickpicks.remoteUtils",
 			"anchor": "quickpicks.remoteUtils.remoteUtils.string-132-11.getNameFromRemoteResource-return.0a0812c2de",
 			"slot": "getNameFromRemoteResource-return",
@@ -3564,15 +2442,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "packages/git/src/utils/remote.utils.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 132,
-					"column": 11
-				},
-				"end": {
-					"line": 132,
-					"column": 17
-				},
 				"attribute": "getNameFromRemoteResource-return"
 			},
 			"output": {
@@ -3583,7 +2452,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.remoteUtils.remoteUtils.string-134-11.getNameFromRemoteResource-return.3bdc1477fa#getNameFromRemoteResource-return",
-			"domain": "quickpicks",
 			"scope": "quickpicks.remoteUtils",
 			"anchor": "quickpicks.remoteUtils.remoteUtils.string-134-11.getNameFromRemoteResource-return.3bdc1477fa",
 			"slot": "getNameFromRemoteResource-return",
@@ -3595,15 +2463,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "packages/git/src/utils/remote.utils.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 134,
-					"column": 11
-				},
-				"end": {
-					"line": 134,
-					"column": 23
-				},
 				"attribute": "getNameFromRemoteResource-return"
 			},
 			"output": {
@@ -3614,7 +2473,6 @@
 		},
 		{
 			"id": "quickpicks:quickpicks.remoteUtils.remoteUtils.string-136-11.getNameFromRemoteResource-return.95a4710fe7#getNameFromRemoteResource-return",
-			"domain": "quickpicks",
 			"scope": "quickpicks.remoteUtils",
 			"anchor": "quickpicks.remoteUtils.remoteUtils.string-136-11.getNameFromRemoteResource-return.95a4710fe7",
 			"slot": "getNameFromRemoteResource-return",
@@ -3626,15 +2484,6 @@
 			"reference": {
 				"kind": "source",
 				"file": "packages/git/src/utils/remote.utils.ts",
-				"syntax": "ts",
-				"start": {
-					"line": 136,
-					"column": 11
-				},
-				"end": {
-					"line": 136,
-					"column": 17
-				},
 				"attribute": "getNameFromRemoteResource-return"
 			},
 			"output": {

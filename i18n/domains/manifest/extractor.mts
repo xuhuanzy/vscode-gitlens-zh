@@ -386,7 +386,6 @@ function createOccurrence(input: OccurrenceInput): SourceOccurrence {
 	const pattern = parseMessagePattern(input.sourceText);
 	return {
 		id: createOccurrenceId("manifest", input.anchor, input.slot),
-		domain: "manifest",
 		scope: input.scope,
 		anchor: input.anchor,
 		slot: input.slot,

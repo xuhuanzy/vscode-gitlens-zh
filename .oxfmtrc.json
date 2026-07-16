@@ -1,6 +1,6 @@
 {
 	"$schema": "./node_modules/oxfmt/configuration_schema.json",
-	"ignorePatterns": ["i18n/catalog/**", "i18n/authority/zh-cn/messages.json"],
+	"ignorePatterns": ["i18n/catalog/**", "i18n/authority/zh-cn/messages.json", ".agents/**"],
 	"printWidth": 120,
 	"tabWidth": 4,
 	"useTabs": true

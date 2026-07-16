@@ -30,10 +30,10 @@ export function generateLocalizedRuntimeDynamicSourceFile(
 	const relevantOccurrences = new Map<string, SourceOccurrence>();
 	for (const occurrence of occurrences) {
 		if (
-			occurrence.domain !== target.domain ||
 			occurrence.reference.kind !== "source" ||
 			occurrence.reference.file !== target.file ||
-			occurrence.output == null
+			occurrence.output?.kind !== "runtime-key" ||
+			occurrence.output.bundle !== target.domain
 		) {
 			continue;
 		}
