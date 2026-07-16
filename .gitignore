@@ -1,29 +1,12 @@
-# Dependencies and tool caches
 node_modules/
-.turbo/
-.cache/
 
-# Reproducible work trees and outputs
 .upstream/
 .work/
 artifacts/
 .scratch/
 
-# Derived localization reports
-i18n/reports/*.json
-
-# Test and coverage output
-coverage/
-test-results/
-
-# Editor and OS files
-.DS_Store
-Thumbs.db
-*.swp
+# tmp
+i18n/reports
 
 # Logs
 *.log
-pnpm-debug.log*
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
