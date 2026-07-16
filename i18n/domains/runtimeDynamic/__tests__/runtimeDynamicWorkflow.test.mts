@@ -11,6 +11,7 @@ import {
 } from "../../../core/store.mts";
 import { createRuntimeDynamicDomainContext } from "../context.mts";
 import { extractRuntimeDynamicMatches, extractRuntimeDynamicOccurrences } from "../extractor.mts";
+import { loadRuntimeDynamicSourceTargets } from "../targets.mts";
 import {
 	createPendingReport,
 	generateRuntimeDynamicLocalizedOutputs,
@@ -231,6 +232,23 @@ test("extracts low-level QuickPick strings", () => {
 	});
 });
 
+test("includes Git push and pull commands in QuickPick targets", () => {
+	withTempRoot("gitlens-runtime-quickpicks-git-transfer-", (rootDir) => {
+		writeFile(rootDir, "src/commands/git/push.ts", "export const item = { label: 'Push' };\n");
+		writeFile(rootDir, "src/commands/git/pull.ts", "export const item = { label: 'Pull' };\n");
+
+		const context = createRuntimeDynamicDomainContext("quickpicks", createTestLayerOptions(rootDir));
+		const targets = loadRuntimeDynamicSourceTargets(context);
+
+		expect(targets).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({ group: "gitPush", file: "src/commands/git/push.ts" }),
+				expect.objectContaining({ group: "gitPull", file: "src/commands/git/pull.ts" }),
+			]),
+		);
+	});
+});
+
 test("localizes QuickPick template labels with placeholders", () => {
 	withTempRoot("gitlens-runtime-quickpicks-template-", (rootDir) => {
 		writeFile(
@@ -272,6 +290,23 @@ test("localizes QuickPick template labels with placeholders", () => {
 		const localized = loadLocalizedRuntimeDynamicSource(context, "src/quickpicks/remoteProviderPicker.ts");
 		expect(localized).toBeDefined();
 		expect(localized!).toContain("const label = `复制 ${providerName} 的${resourceName}链接`;");
+	});
+});
+
+test("localizes QuickPick placeholder properties", () => {
+	withTempRoot("gitlens-runtime-quickpicks-placeholder-", (rootDir) => {
+		writeFile(
+			rootDir,
+			"src/quickpicks/remoteProviderPicker.ts",
+			["export function createStep() {", "\treturn { placeholder: 'Choose a remote' };", "}", ""].join("\n"),
+		);
+
+		const result = syncRuntimeDynamicI18n({ ...createTestLayerOptions(rootDir), domain: "quickpicks" });
+		expect(result.occurrenceCount).toBe(1);
+
+		const context = createRuntimeDynamicDomainContext("quickpicks", createTestLayerOptions(rootDir));
+		const workset = loadRuntimeDynamicWorkset(context);
+		expect(workset.entries.some((entry) => entry.source === "Choose a remote")).toBe(true);
 	});
 });
 

@@ -46,6 +46,14 @@ const targetsByDomain: Record<RuntimeDynamicDomain, readonly TargetDefinition[]>
 			group: "gitReset",
 			files: ["src/commands/git/reset.ts"],
 		},
+		{
+			group: "gitPush",
+			files: ["src/commands/git/push.ts"],
+		},
+		{
+			group: "gitPull",
+			files: ["src/commands/git/pull.ts"],
+		},
 	],
 	webviewHost: [
 		{

@@ -3,7 +3,7 @@
 	"version": 2,
 	"kind": "messages",
 	"locale": "zh-cn",
-	"updatedAt": "2026-07-16T08:13:52.711Z",
+	"updatedAt": "2026-07-16T08:52:07.954Z",
 	"entries": [
 		{
 			"id": "message.000d1a29b2365349f8762064ef86edc1f548f435002395035bdc26f6c87754fc",
@@ -1512,6 +1512,12 @@
 			"translation": "添加“贮藏所有更改”命令"
 		},
 		{
+			"id": "message.11768e404bdeb0d0c77764a1fd15020975f1b4720397205bc9313db669855888",
+			"kind": "literal",
+			"source": "Cannot push a remote branch",
+			"translation": "无法推送远程分支"
+		},
+		{
 			"id": "message.117cb088f66aac6cfe2fefd2e6b05db64a6099651b831282137959188970dc1e",
 			"kind": "literal",
 			"source": "Added (Both)",
@@ -2540,6 +2546,12 @@
 				"slot1",
 				"slot2"
 			]
+		},
+		{
+			"id": "message.1cb7cc5ef5f1707f123f6615b55680ac8fa64d953aa4be5b54dedf3297049c20",
+			"kind": "literal",
+			"source": "fetches and integrates changes from a remote into the current branch",
+			"translation": "从远程获取更改并集成到当前分支"
 		},
 		{
 			"id": "message.1cbf6dbe0ee1e979ac3407dddb1cbbd767299a574b19813005c67a52d30fe85a",
@@ -3791,6 +3803,12 @@
 			"translation": "指定是否以紧凑显示密度显示 _云工作区_ 视图"
 		},
 		{
+			"id": "message.28bd7ff8d9baca5b4d22480334cee7710f64f8cb8f10241e4bfbb205c017eda7",
+			"kind": "literal",
+			"source": "Nothing to push; No commits found to push",
+			"translation": "无内容可推送；未找到可推送的提交"
+		},
+		{
 			"id": "message.28c6ba40bb41a924b82416a00c0ffe9a2cd4637fff780b38f88b82884d3b277b",
 			"kind": "literal",
 			"source": "Specifies whether to show the upstream status of the current branch for each repository in the _Cloud Workspaces_ view",
@@ -4330,6 +4348,16 @@
 			]
 		},
 		{
+			"id": "message.2f9f370f844370987be62e5ede03306363871a312c729b913feb6a3a17e628b2",
+			"kind": "template",
+			"source": "${slot1} in ${slot2}",
+			"translation": "${slot2} 中的 ${slot1}",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
+		},
+		{
 			"id": "message.2fc4971c643d99ab29fac2a3d75496759e6cce35a6eded27c0e1975b64a13c9c",
 			"kind": "literal",
 			"source": "Generate Changelog (Preview)...",
@@ -4469,6 +4497,12 @@
 			"translation": "根据 `#gitlens.views.stashes.files.threshold#` 的值以及各嵌套层级中的文件数量，在 `tree` 或 `list` 之间自动切换文件显示方式",
 			"format": "markdown",
 			"slots": []
+		},
+		{
+			"id": "message.31a4f373113957735e3fa9b3934e0cb37942dd97e53939cf34e18df09ce5d6e0",
+			"kind": "literal",
+			"source": "--rebase",
+			"translation": "--rebase"
 		},
 		{
 			"id": "message.31ac4d51d7a7c8ce2992f5a985f4344c1f1f812ea0bfcc71904e181be153945c",
@@ -8151,6 +8185,15 @@
 			]
 		},
 		{
+			"id": "message.5939adf4c1abfa5560f679aa1bf53871f23c1e2579e422e8c7d2ac571b8708be",
+			"kind": "template",
+			"source": "Will push ${slot1} repos",
+			"translation": "将推送 ${slot1} 个仓库",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.593fef3d7325bec8c301580488fd6f36d93743d101e6f6cca665d0a313e33fa5",
 			"kind": "literal",
 			"source": "Base Reference Branch (the target or baseline for the comparison)",
@@ -8984,6 +9027,15 @@
 			"translation": "再免费使用 14 天。"
 		},
 		{
+			"id": "message.62e3d97287bb2245749a1dbc87a94abcc9a51d9ee06a908457515a817707d1fd",
+			"kind": "template",
+			"source": "--force${slot1}",
+			"translation": "--force${slot1}",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.62e880bca9b33549db8a4bdc309874c7a3a46754c6dbaace11296a0eb7903e69",
 			"kind": "literal",
 			"source": "Prefer showing the Commit Graph in the editor area",
@@ -9018,6 +9070,12 @@
 			"kind": "literal",
 			"source": "The branch will be updated with the new commit structure.",
 			"translation": "该分支将使用新的提交结构进行更新。"
+		},
+		{
+			"id": "message.63ac669906dff3a6c6b48a39ba609391fc391942c8c536e69263db871e84cc60",
+			"kind": "literal",
+			"source": "Cannot publish; No remotes found",
+			"translation": "无法发布；未找到远程仓库"
 		},
 		{
 			"id": "message.63be5d211e0cf838fc7920b5b0d6f7e872d0cf0c99c3b7225f7fc4ca48ed255f",
@@ -9411,6 +9469,15 @@
 			"kind": "literal",
 			"source": "Group Search & Compare View",
 			"translation": "编组搜索与比较视图"
+		},
+		{
+			"id": "message.67b2c2cd7a89a4575c5dfa0df7336dc7a6a85bef3e39f77454528c28b8a34bce",
+			"kind": "template",
+			"source": "${slot1} with Rebase",
+			"translation": "${slot1}并变基",
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.67b94ab294fe53fa175ff9bfae610b2f87f4553824fa1d2fdad33ee0004875f4",
@@ -10187,6 +10254,12 @@
 			"translation": "提交消息"
 		},
 		{
+			"id": "message.707bd8dd04cdf064cc499c642250f73aff3470949935f069d9d81cd1aaa05e25",
+			"kind": "literal",
+			"source": "pushes changes from the current branch to a remote",
+			"translation": "从当前分支将更改推送到远程"
+		},
+		{
 			"id": "message.707f31a0a3f38567fcef9bf271aa4815f00ae94913d010e4c4db854eb3916f6b",
 			"kind": "literal",
 			"source": "Issue",
@@ -10580,6 +10653,12 @@
 			"kind": "literal",
 			"source": "Remotes View",
 			"translation": "远程视图"
+		},
+		{
+			"id": "message.74370d92337a5246b2883734e70609ccbea6d4263f77c047781f8fa0b67b302d",
+			"kind": "literal",
+			"source": "Cannot pull a branch until it has been published",
+			"translation": "分支发布后才能拉取"
 		},
 		{
 			"id": "message.749fda12625ae002edcf13092f42864b6a5243ccd100990e5e7c2d8cb01d66ef",
@@ -11126,6 +11205,17 @@
 			"kind": "literal",
 			"source": "Start Work on an Issue…",
 			"translation": "开始处理 Issue…"
+		},
+		{
+			"id": "message.797ccf6d349a8daacb9cf8ef30bce2c7f8f09396b0573b9ca3770d50655e9c2e",
+			"kind": "template",
+			"source": "Will publish ${slot1}${slot2} to ${slot3}",
+			"translation": "将发布 ${slot1}${slot2} 到 ${slot3}",
+			"slots": [
+				"slot1",
+				"slot2",
+				"slot3"
+			]
 		},
 		{
 			"id": "message.798418325407a69f26e3b9a5aa1a17fc9b1dce668fee6cb57d4c7dfc2a359c5b",
@@ -12293,6 +12383,15 @@
 			"translation": "存在工作区更改（未提交）"
 		},
 		{
+			"id": "message.88c0b2f906493dfe94da80ce43b68f081523fe40c611b14b942f8996227f8901",
+			"kind": "template",
+			"source": "Nothing to push; No commits ahead of ${slot1}",
+			"translation": "无内容可推送；没有领先于 ${slot1} 的提交",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.88e056130dc9e8d568e5f1dc5ebe688245e886cda33a1e43670b6e8c79c32745",
 			"kind": "rich",
 			"source": "GitLens groups many related views—Commits, Branches, Stashes, etc—here for easier view management.\n\n[Continue](command:gitlens.views.scm.grouped.welcome.dismiss)\n\nUse the tabs above to navigate, or detach the views you want to keep separated. You can regroup them anytime using the 'x' in the view header.",
@@ -12535,6 +12634,12 @@
 			"slots": [
 				"slot1"
 			]
+		},
+		{
+			"id": "message.8b45d3a1705e1683ade6fdd98ef793a322095eec52253c9ccd61ecd3456ef1f9",
+			"kind": "literal",
+			"source": "Confirm Publish",
+			"translation": "确认发布"
 		},
 		{
 			"id": "message.8b4ba480944410b583007eecaf4244503f3d225cbe088ce097e778be0695ac5e",
@@ -13058,6 +13163,15 @@
 			"kind": "literal",
 			"source": "gitlens.heatmap",
 			"translation": "gitlens.heatmap"
+		},
+		{
+			"id": "message.91ef0c4230b54f9d6dffc3d4ff436a8b2da4549c81d2e3c65f7d005353f6e621",
+			"kind": "template",
+			"source": "Cancel ${slot1}",
+			"translation": "取消${slot1}",
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.91fdcb316e2ff317a8a50afd56f659509c0c0ed2fbee21beedeb5fa5a1b377ba",
@@ -13666,6 +13780,16 @@
 			"kind": "literal",
 			"source": "Specifies the active GitLens mode alignment in the status bar",
 			"translation": "指定状态栏中活动 GitLens 模式的对齐方式"
+		},
+		{
+			"id": "message.990671e24fb4be8b1925af08a30a6f5260eac6cd6faf7b62ab13ff3f666d503f",
+			"kind": "template",
+			"source": "Will publish ${slot1} to ${slot2}",
+			"translation": "将 ${slot1} 发布到 ${slot2}",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.991d8027f37d2661fd812db8c1af6ad819857fd134ff5f7b2c6a8421f4564ef1",
@@ -14821,6 +14945,15 @@
 			]
 		},
 		{
+			"id": "message.a5474717a969afe43cd4759ed8d49d25aa7aa25a3d722ef2eaefef48c4270382",
+			"kind": "template",
+			"source": "Will pull and rebase${slot1}",
+			"translation": "将拉取并变基${slot1}",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.a55f8b9c2f5890a7c475116296353376a59f9f278dddf739472466c5eb526dec",
 			"kind": "literal",
 			"source": "Share Staged Changes",
@@ -15087,6 +15220,16 @@
 			"kind": "literal",
 			"source": "Open All Changes (difftool)",
 			"translation": "打开所有更改（difftool）"
+		},
+		{
+			"id": "message.a884285c53fa3b67098b361a05c4d388857e0f8896e19afd1a51c03807f503a3",
+			"kind": "template",
+			"source": "Will force push${slot1} ${slot2} repos",
+			"translation": "将强制推送${slot1} ${slot2} 个仓库",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.a88817842d3d33e72a1c351ca20e4266e731f06ec24bc9613f42e21d8c7b7235",
@@ -15860,6 +16003,21 @@
 			"kind": "literal",
 			"source": "Eric Amodio, 3 minutes ago",
 			"translation": "Eric Amodio，3 分钟前"
+		},
+		{
+			"id": "message.b0fb43dabd020b099f9fb9368a70f679026148ea3656c5ab31702165ae67855e",
+			"kind": "literal",
+			"source": "No commits found to push",
+			"translation": "没有可推送的提交"
+		},
+		{
+			"id": "message.b109f2a7cdb35776387e0326271a131080c52359748d901e4f80bc16856f31d9",
+			"kind": "template",
+			"source": "Will pull ${slot1} repos by rebasing",
+			"translation": "将通过变基拉取 ${slot1} 个仓库",
+			"slots": [
+				"slot1"
+			]
 		},
 		{
 			"id": "message.b13036a14d663a2b2ac8909505b37216c69b26aacf80d9663405d01b27f34b79",
@@ -19278,6 +19436,15 @@
 			"translation": "2 分钟"
 		},
 		{
+			"id": "message.da330e93245cc4f02b1a0be9fe5430cdd39e5ad5f8353d860384bf977f77f6cb",
+			"kind": "template",
+			"source": "Will pull${slot1}",
+			"translation": "将拉取${slot1}",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.da58057583cc6068ad93afaa8ba0476cc27f36203d15997845c8afb614fedbe8",
 			"kind": "literal",
 			"source": "Resolve Conflicts in Commit Graph",
@@ -19495,6 +19662,12 @@
 			"translation": "已弃用。此设置已重命名为 gitlens.gitCommands.search.showResultsInSideBar"
 		},
 		{
+			"id": "message.dc8cd2f73e8ea0abf4c6b01b8bafa1a60544eb9803bb67c122ae662752e53cdd",
+			"kind": "literal",
+			"source": "Cannot pull a remote branch",
+			"translation": "无法拉取远程分支"
+		},
+		{
 			"id": "message.dcb24c359e791257ab29f562d0f9a467d72138b1d6d72c2c82ecac3822c2fda3",
 			"kind": "literal",
 			"source": "After unsaved changes, don't recompute annotations on files with more than",
@@ -19687,6 +19860,12 @@
 			"translation": "指定在 _提交详情_ 视图中，何时根据某一嵌套层级中的文件数量在 `tree` 或 `list` 之间切换文件显示方式。仅当 `#gitlens.views.commitDetails.files.layout#` 设置为 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
+		},
+		{
+			"id": "message.deb3b4dab40eeeb9d76182673f83b702bee27fc6bacab73625fb52513c827508",
+			"kind": "literal",
+			"source": "No remotes found",
+			"translation": "未找到远程仓库"
 		},
 		{
 			"id": "message.deea603183e8c19fe17f7d43e747be1d7b706fbf4e0e4f546012953f812f9b7a",
@@ -21000,6 +21179,15 @@
 			"translation": "前进"
 		},
 		{
+			"id": "message.eedcbd09c3ce1b3e89442c988e732b1d568e53f329f91636b6b444682f7f1ec7",
+			"kind": "template",
+			"source": "Will push${slot1}",
+			"translation": "将推送${slot1}",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.ef0240dd989e6431f7e7820f58058ebc29ceae495d66b51af40436a3ded77f4a",
 			"kind": "rich",
 			"source": "Specifies the base color of the file heatmap annotations when the most recent change is older (cold) than the `#gitlens.heatmap.ageThreshold#` value",
@@ -21440,6 +21628,15 @@
 			"translation": "添加到源代码管理条目工具栏"
 		},
 		{
+			"id": "message.f39a3d69553fee2653fcc870ecaf789c74e3be4bc545362f8317cbb4dfeef000",
+			"kind": "template",
+			"source": "Will pull ${slot1} repos",
+			"translation": "将拉取 ${slot1} 个仓库",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.f3c0f9a6e6f953b9968abf7abf31d13fe31021e137e6c1b094e20945bc9f4ac4",
 			"kind": "literal",
 			"source": "Toggle annotations",
@@ -21835,6 +22032,16 @@
 			"kind": "literal",
 			"source": "Git Revert...",
 			"translation": "Git 回退..."
+		},
+		{
+			"id": "message.f840289594f8d7eb28dc0ffd0b5834ce3934a79c5bea3bc292203dad64f00636",
+			"kind": "template",
+			"source": "Force ${slot1}${slot2}",
+			"translation": "强制${slot1}${slot2}",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.f861af7f0b76fb5179cffb37ae7ea78a6e314c998560b01657644e37417e0603",

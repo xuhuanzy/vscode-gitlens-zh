@@ -4,6 +4,47 @@
 	"domain": "quickpicks",
 	"occurrences": [
 		{
+			"id": "quickpicks:029ed3b77d9587b86f0e413cb558f66428a29fc2439b745beb059bc1d26c3f7c",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.91ef0c4230b54f9d6dffc3d4ff436a8b2da4549c81d2e3c65f7d005353f6e621",
+			"pattern": {
+				"kind": "template",
+				"text": "Cancel ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.029ed3b77d9587b86f0e413cb558f66428a29fc2439b745beb059bc1d26c3f7c"
+			}
+		},
+		{
+			"id": "quickpicks:02b1156664722e6e1c0e224f004a494d8cf6899cee721388508ade008fe106f8",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.63ac669906dff3a6c6b48a39ba609391fc391942c8c536e69263db871e84cc60",
+			"pattern": {
+				"kind": "literal",
+				"text": "Cannot publish; No remotes found"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "placeholder"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.02b1156664722e6e1c0e224f004a494d8cf6899cee721388508ade008fe106f8"
+			}
+		},
+		{
 			"id": "quickpicks:07e49ee004aba5973862982e9abf65e91b95409a19e96392416bd0e8bf127c41",
 			"scope": "quickpicks.quickWizardCommits",
 			"authorityId": "message.6b2dfa678c1e8628d4fe084f7d8dfd0ea958a5a9da675d0e1d5825c5347ea22b",
@@ -20,6 +61,25 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "quickWizardCommits.07e49ee004aba5973862982e9abf65e91b95409a19e96392416bd0e8bf127c41"
+			}
+		},
+		{
+			"id": "quickpicks:0c5d1c826055a4c813b84609bafecd2946ce045ea04ecb7e57857eb3475fba0a",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.8b45d3a1705e1683ade6fdd98ef793a322095eec52253c9ccd61ecd3456ef1f9",
+			"pattern": {
+				"kind": "literal",
+				"text": "Confirm Publish"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "placeholder"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.0c5d1c826055a4c813b84609bafecd2946ce045ea04ecb7e57857eb3475fba0a"
 			}
 		},
 		{
@@ -80,6 +140,25 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "items.10567e72ee174ffab0ba00f440189cacd636593d07cd149c186b7d8da8440f4e"
+			}
+		},
+		{
+			"id": "quickpicks:12c7acf90dea43a46eb0f8d33e42ffc49454e068826a5f7ce3d36d373c38b283",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.63ac669906dff3a6c6b48a39ba609391fc391942c8c536e69263db871e84cc60",
+			"pattern": {
+				"kind": "literal",
+				"text": "Cannot publish; No remotes found"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "placeholder"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.12c7acf90dea43a46eb0f8d33e42ffc49454e068826a5f7ce3d36d373c38b283"
 			}
 		},
 		{
@@ -159,6 +238,28 @@
 			}
 		},
 		{
+			"id": "quickpicks:1703a76d2397b54fd38ca70e2502d0c98667f28fe9ebf380d98f672c93e8ca4a",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.88c0b2f906493dfe94da80ce43b68f081523fe40c611b14b942f8996227f8901",
+			"pattern": {
+				"kind": "template",
+				"text": "Nothing to push; No commits ahead of ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "placeholder"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.1703a76d2397b54fd38ca70e2502d0c98667f28fe9ebf380d98f672c93e8ca4a"
+			}
+		},
+		{
 			"id": "quickpicks:172253560522756d7df7a4a405f5184276cc652dc737d83a6af156207b2659fd",
 			"scope": "quickpicks.gitReset",
 			"authorityId": "message.538c039218e0a0b3e13b7eba3388e9723f8d93beba4a317b95832bd7a6961669",
@@ -178,6 +279,152 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "gitReset.172253560522756d7df7a4a405f5184276cc652dc737d83a6af156207b2659fd"
+			}
+		},
+		{
+			"id": "quickpicks:1dfa971b78b63dea3c1a5b14c2932bacc642b386d489770fc41e2f07febdedd5",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.b0fb43dabd020b099f9fb9368a70f679026148ea3656c5ab31702165ae67855e",
+			"pattern": {
+				"kind": "literal",
+				"text": "No commits found to push"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.1dfa971b78b63dea3c1a5b14c2932bacc642b386d489770fc41e2f07febdedd5"
+			}
+		},
+		{
+			"id": "quickpicks:219e389453f72c4bfd62ec5d1cd90abd7b75974c9111405119b673df7cbe31d0",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.3821cdbb3d9fb8431e626e6d22e84e95f72cf933972b17e8546b36e33b7527cf",
+			"pattern": {
+				"kind": "literal",
+				"text": "Push"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.219e389453f72c4bfd62ec5d1cd90abd7b75974c9111405119b673df7cbe31d0"
+			}
+		},
+		{
+			"id": "quickpicks:22ff37bcd7710f282a245e41b2fbac9ae1c22145f009575ca07968edd6cf9e41",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.a5474717a969afe43cd4759ed8d49d25aa7aa25a3d722ef2eaefef48c4270382",
+			"pattern": {
+				"kind": "template",
+				"text": "Will pull and rebase${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.22ff37bcd7710f282a245e41b2fbac9ae1c22145f009575ca07968edd6cf9e41"
+			}
+		},
+		{
+			"id": "quickpicks:254345462b132a28721e1407d6da8d12c6b6db85d5dfe22afbf311855406b754",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.62e3d97287bb2245749a1dbc87a94abcc9a51d9ee06a908457515a817707d1fd",
+			"pattern": {
+				"kind": "template",
+				"text": "--force${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "description"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.254345462b132a28721e1407d6da8d12c6b6db85d5dfe22afbf311855406b754"
+			}
+		},
+		{
+			"id": "quickpicks:27aacbf42b262d69f4a55c70e862795113148c342ce742032fc781c5cd215f6e",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.91ef0c4230b54f9d6dffc3d4ff436a8b2da4549c81d2e3c65f7d005353f6e621",
+			"pattern": {
+				"kind": "template",
+				"text": "Cancel ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.27aacbf42b262d69f4a55c70e862795113148c342ce742032fc781c5cd215f6e"
+			}
+		},
+		{
+			"id": "quickpicks:2867f932d0a8d282ce925eddbc8e86d22b635c543ff6b520ab20756d306e74ba",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.bc7251ed4282282b14413d88f873b3ae4f82575ab72520c35f102d2ec047fd64",
+			"pattern": {
+				"kind": "template",
+				"text": "Publish ${slot1} to ${slot2}",
+				"slots": [
+					"slot1",
+					"slot2"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.2867f932d0a8d282ce925eddbc8e86d22b635c543ff6b520ab20756d306e74ba"
+			}
+		},
+		{
+			"id": "quickpicks:293bd2496608cd4b1f967283c8b2546bdb9a7efb0ce7a9f5027b0ef9b4c4d704",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.31a4f373113957735e3fa9b3934e0cb37942dd97e53939cf34e18df09ce5d6e0",
+			"pattern": {
+				"kind": "literal",
+				"text": "--rebase"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "description"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.293bd2496608cd4b1f967283c8b2546bdb9a7efb0ce7a9f5027b0ef9b4c4d704"
 			}
 		},
 		{
@@ -219,6 +466,25 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "items.2d4c71c529780e421e73f5c49596b3d49a90ca24b759cf21c8ac502d349a35b9"
+			}
+		},
+		{
+			"id": "quickpicks:2e21dae08423047b21c28c9ada8f04b0db3efa30dc72d0ab90eac06424a479cd",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.1cb7cc5ef5f1707f123f6615b55680ac8fa64d953aa4be5b54dedf3297049c20",
+			"pattern": {
+				"kind": "literal",
+				"text": "fetches and integrates changes from a remote into the current branch"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "description"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.2e21dae08423047b21c28c9ada8f04b0db3efa30dc72d0ab90eac06424a479cd"
 			}
 		},
 		{
@@ -279,6 +545,29 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "quickWizardCommits.32f7bdef301cbe6a050ca9c823f213cf8b7f8e44c07154025efa2cfb520791cc"
+			}
+		},
+		{
+			"id": "quickpicks:33e673e8d0b2d5c7ca20827292f785e874460f35423edc6c003a0f65b964bc73",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.f840289594f8d7eb28dc0ffd0b5834ce3934a79c5bea3bc292203dad64f00636",
+			"pattern": {
+				"kind": "template",
+				"text": "Force ${slot1}${slot2}",
+				"slots": [
+					"slot1",
+					"slot2"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.33e673e8d0b2d5c7ca20827292f785e874460f35423edc6c003a0f65b964bc73"
 			}
 		},
 		{
@@ -419,6 +708,48 @@
 			}
 		},
 		{
+			"id": "quickpicks:3bbcd0e057d5e27dbc8f4a5ce0dc31654a14fcf010306073b7db69f179b92d0a",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.990671e24fb4be8b1925af08a30a6f5260eac6cd6faf7b62ab13ff3f666d503f",
+			"pattern": {
+				"kind": "template",
+				"text": "Will publish ${slot1} to ${slot2}",
+				"slots": [
+					"slot1",
+					"slot2"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.3bbcd0e057d5e27dbc8f4a5ce0dc31654a14fcf010306073b7db69f179b92d0a"
+			}
+		},
+		{
+			"id": "quickpicks:3c284183aa6bf03f1a2e2fb9c84429721e3e52622c53bd383066fa788ebd9180",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.6220f762d079085406dfd7c66c3dc1f73f58ff83e3fdb17fde6e91eb17b7bad4",
+			"pattern": {
+				"kind": "literal",
+				"text": "OK"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.3c284183aa6bf03f1a2e2fb9c84429721e3e52622c53bd383066fa788ebd9180"
+			}
+		},
+		{
 			"id": "quickpicks:3c6f8d95e021ba0c7ec2c8830f5dab87932ed97cc35293b2148fab75a684b91a",
 			"scope": "quickpicks.quickWizardCommits",
 			"authorityId": "message.69ef238a6d99bb4a36feb5bd8857b1f8e7385c91ec85f352354c8d2c3f2115b5",
@@ -517,6 +848,28 @@
 			}
 		},
 		{
+			"id": "quickpicks:3ec3e1fbc1765bf0da0beb5123ec9d1a081aa2949dd6279f11b5ccaa81142d8d",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.eedcbd09c3ce1b3e89442c988e732b1d568e53f329f91636b6b444682f7f1ec7",
+			"pattern": {
+				"kind": "template",
+				"text": "Will push${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.3ec3e1fbc1765bf0da0beb5123ec9d1a081aa2949dd6279f11b5ccaa81142d8d"
+			}
+		},
+		{
 			"id": "quickpicks:412ac462896e956c10022680a2ff85ec9a698669651c3cbed5366776b80b0f06",
 			"scope": "quickpicks.remoteUtils",
 			"authorityId": "message.a60cfa62b16c3017f6969916129de93a44ff4c827d1a5e058596e5db5d3f44ca",
@@ -533,6 +886,28 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "remoteUtils.412ac462896e956c10022680a2ff85ec9a698669651c3cbed5366776b80b0f06"
+			}
+		},
+		{
+			"id": "quickpicks:47b39bd3c133dcb4362bbf47835dfb96cb06c63886d7bc2574ff5f0da9da7277",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.91ef0c4230b54f9d6dffc3d4ff436a8b2da4549c81d2e3c65f7d005353f6e621",
+			"pattern": {
+				"kind": "template",
+				"text": "Cancel ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.47b39bd3c133dcb4362bbf47835dfb96cb06c63886d7bc2574ff5f0da9da7277"
 			}
 		},
 		{
@@ -555,6 +930,25 @@
 			}
 		},
 		{
+			"id": "quickpicks:4b4016565ccb9926af8150437f847a0d6c10bff6f8f802af1d74d788351c93b3",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.8b45d3a1705e1683ade6fdd98ef793a322095eec52253c9ccd61ecd3456ef1f9",
+			"pattern": {
+				"kind": "literal",
+				"text": "Confirm Publish"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "placeholder"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.4b4016565ccb9926af8150437f847a0d6c10bff6f8f802af1d74d788351c93b3"
+			}
+		},
+		{
 			"id": "quickpicks:4c904c42ca5fab2e58d3c9d9150c4f33dcb08ec32f1abca58e78857e0f04ad26",
 			"scope": "quickpicks.gitReset",
 			"authorityId": "message.6ee43997b4c068c70881b52d26bc4d79ed63423d145597ef037f4b2a8b302482",
@@ -574,6 +968,28 @@
 			}
 		},
 		{
+			"id": "quickpicks:4d2038f24e91bf27c8f04169a03004fc8e518d95109cc84aaf9344bd7d062ac5",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.9872a52c94c1a27becc36b1ee3897f63ece32b70a480be81704816132a625f49",
+			"pattern": {
+				"kind": "template",
+				"text": "Confirm ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "appendReposToTitle-argument-1"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.4d2038f24e91bf27c8f04169a03004fc8e518d95109cc84aaf9344bd7d062ac5"
+			}
+		},
+		{
 			"id": "quickpicks:4dbc0a0a67bf581c932c6d819856115cee01babd51ecbdc2df44d26d90150f7d",
 			"scope": "quickpicks.quickWizardCommits",
 			"authorityId": "message.afd092bd9ff754346958ac2e25088a901110c0ec9cd3acc1442e184b16cbedd7",
@@ -590,6 +1006,28 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "quickWizardCommits.4dbc0a0a67bf581c932c6d819856115cee01babd51ecbdc2df44d26d90150f7d"
+			}
+		},
+		{
+			"id": "quickpicks:52a329aee41e10f33fdc3ce5c1849b6d63416c9a6b2830400830752fe5fa8929",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.9872a52c94c1a27becc36b1ee3897f63ece32b70a480be81704816132a625f49",
+			"pattern": {
+				"kind": "template",
+				"text": "Confirm ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "appendReposToTitle-argument-1"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.52a329aee41e10f33fdc3ce5c1849b6d63416c9a6b2830400830752fe5fa8929"
 			}
 		},
 		{
@@ -695,6 +1133,28 @@
 			}
 		},
 		{
+			"id": "quickpicks:5e4981b777ed47054181b819f49c4ef8366c2a089f1ed20a6ffdb3f807616f6e",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.c98af3f93537965ebf8f0617af26b23057f23f66a759087887e684d4c69fba20",
+			"pattern": {
+				"kind": "template",
+				"text": "No commits ahead of ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.5e4981b777ed47054181b819f49c4ef8366c2a089f1ed20a6ffdb3f807616f6e"
+			}
+		},
+		{
 			"id": "quickpicks:6017fc97a09b7d32f8ccfaa66f547baaa811c94839497064ee235d685b6385e3",
 			"scope": "quickpicks.items",
 			"authorityId": "message.810c364e70ec99551d10d61638af2b05eb86af97adbc17fe31d682ac850e5b3e",
@@ -714,6 +1174,28 @@
 			}
 		},
 		{
+			"id": "quickpicks:6213dc883e6f6ef6db108d5557c077fafa20670cb054eabbcb15f83034af7666",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.67b2c2cd7a89a4575c5dfa0df7336dc7a6a85bef3e39f77454528c28b8a34bce",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} with Rebase",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.6213dc883e6f6ef6db108d5557c077fafa20670cb054eabbcb15f83034af7666"
+			}
+		},
+		{
 			"id": "quickpicks:62516196cf10b43c8bf75d7080730b8045e416222567959866e74257337d0aa3",
 			"scope": "quickpicks.items",
 			"authorityId": "message.955f136fa361fa44fb04e7dbb45294e4dd03feb8cd9378c2a2ed83d606bf3cd8",
@@ -730,6 +1212,25 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "items.62516196cf10b43c8bf75d7080730b8045e416222567959866e74257337d0aa3"
+			}
+		},
+		{
+			"id": "quickpicks:649d005a41f27a46cbf6068d220adb2f1e0d592c9a88a790b5e2cdc6c7fcc1e5",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.deb3b4dab40eeeb9d76182673f83b702bee27fc6bacab73625fb52513c827508",
+			"pattern": {
+				"kind": "literal",
+				"text": "No remotes found"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.649d005a41f27a46cbf6068d220adb2f1e0d592c9a88a790b5e2cdc6c7fcc1e5"
 			}
 		},
 		{
@@ -790,6 +1291,28 @@
 			}
 		},
 		{
+			"id": "quickpicks:6a10d6eda4eaa687414dc6ce9934b83c4b5b9f571b1708392912590e2c263de2",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.62e3d97287bb2245749a1dbc87a94abcc9a51d9ee06a908457515a817707d1fd",
+			"pattern": {
+				"kind": "template",
+				"text": "--force${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "description"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.6a10d6eda4eaa687414dc6ce9934b83c4b5b9f571b1708392912590e2c263de2"
+			}
+		},
+		{
 			"id": "quickpicks:6a54bdd4446ae810361f40392f6adbea748165c26e627bdacb2fa854bf00db62",
 			"scope": "quickpicks.items",
 			"authorityId": "message.4471c1182cd780e2b2cedc38d81c9286df18653ff93f34b537253c9c3c407296",
@@ -806,6 +1329,29 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "items.6a54bdd4446ae810361f40392f6adbea748165c26e627bdacb2fa854bf00db62"
+			}
+		},
+		{
+			"id": "quickpicks:6a7350c76fdc5e0fdfe57e695088e6203c61484a30390c9a0687730d60a8a6e8",
+			"scope": "quickpicks.quickWizardCommits",
+			"authorityId": "message.2f9f370f844370987be62e5ede03306363871a312c729b913feb6a3a17e628b2",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} in ${slot2}",
+				"slots": [
+					"slot1",
+					"slot2"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/quick-wizard/steps/commits.ts",
+				"attribute": "placeholder"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "quickWizardCommits.6a7350c76fdc5e0fdfe57e695088e6203c61484a30390c9a0687730d60a8a6e8"
 			}
 		},
 		{
@@ -882,6 +1428,25 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "items.72c5e7a8a342494cd2ff5e4630959a332de56f046213c0ee5b6988a0397360b9"
+			}
+		},
+		{
+			"id": "quickpicks:72eea3a33eae567559a809e8514be31d52a793415ba5a3ad5498cf4ab71a239d",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.8b45d3a1705e1683ade6fdd98ef793a322095eec52253c9ccd61ecd3456ef1f9",
+			"pattern": {
+				"kind": "literal",
+				"text": "Confirm Publish"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "appendReposToTitle-argument-1"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.72eea3a33eae567559a809e8514be31d52a793415ba5a3ad5498cf4ab71a239d"
 			}
 		},
 		{
@@ -1063,6 +1628,28 @@
 			}
 		},
 		{
+			"id": "quickpicks:7d8d5e42a1c6e9ae8129d87bfe71f71cda33dac2d249e4595b80b7bccf0c00e1",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.5939adf4c1abfa5560f679aa1bf53871f23c1e2579e422e8c7d2ac571b8708be",
+			"pattern": {
+				"kind": "template",
+				"text": "Will push ${slot1} repos",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.7d8d5e42a1c6e9ae8129d87bfe71f71cda33dac2d249e4595b80b7bccf0c00e1"
+			}
+		},
+		{
 			"id": "quickpicks:7e11ae55b8e35fda16d391c61cbebfdb82bae99824e3198436e22780783ab59f",
 			"scope": "quickpicks.items",
 			"authorityId": "message.8aedd87459c253cba9acca1570af5009fc3f94a1033c7240820c63d39b34cb7d",
@@ -1079,6 +1666,28 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "items.7e11ae55b8e35fda16d391c61cbebfdb82bae99824e3198436e22780783ab59f"
+			}
+		},
+		{
+			"id": "quickpicks:7eee0f51317fa32007fe9f6831aa74a97ce52b77cda930b81990fa33df6bb636",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.da330e93245cc4f02b1a0be9fe5430cdd39e5ad5f8353d860384bf977f77f6cb",
+			"pattern": {
+				"kind": "template",
+				"text": "Will pull${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.7eee0f51317fa32007fe9f6831aa74a97ce52b77cda930b81990fa33df6bb636"
 			}
 		},
 		{
@@ -1101,6 +1710,25 @@
 			}
 		},
 		{
+			"id": "quickpicks:7f9d6fd0def7a2a13bfaa2d4d7e6fda53cdcb41676ecdcd68cbc98270b8778ba",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.6220f762d079085406dfd7c66c3dc1f73f58ff83e3fdb17fde6e91eb17b7bad4",
+			"pattern": {
+				"kind": "literal",
+				"text": "OK"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.7f9d6fd0def7a2a13bfaa2d4d7e6fda53cdcb41676ecdcd68cbc98270b8778ba"
+			}
+		},
+		{
 			"id": "quickpicks:803852a88a3ba16adaad374908c8227babd025d7219d7e9dc8ef5b94e2ce7e16",
 			"scope": "quickpicks.remoteProviderPicker",
 			"authorityId": "message.f99951e2363080dcc092117c68ec7ff376d17afb081d8635ddc57b70ffd5373f",
@@ -1120,6 +1748,25 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "remoteProviderPicker.803852a88a3ba16adaad374908c8227babd025d7219d7e9dc8ef5b94e2ce7e16"
+			}
+		},
+		{
+			"id": "quickpicks:8071247f9ad77e0c71d78cd23a9b16ea3c5389531cf3e6f75464e1f8719e89a7",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.11768e404bdeb0d0c77764a1fd15020975f1b4720397205bc9313db669855888",
+			"pattern": {
+				"kind": "literal",
+				"text": "Cannot push a remote branch"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.8071247f9ad77e0c71d78cd23a9b16ea3c5389531cf3e6f75464e1f8719e89a7"
 			}
 		},
 		{
@@ -1158,6 +1805,25 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "gitReset.80c99ff329b7591fde34f4e0c21b4f7d2e6e13a5865b0cea3728ff0d1affd19a"
+			}
+		},
+		{
+			"id": "quickpicks:82a0b8f71bf1930bf6695437ec5e31f810fceeae4c18d396d74b4e4c9526183d",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.c05ec69b4101f5a7648cc45c782c49377abdebd71c9866fb5dce963555b84934",
+			"pattern": {
+				"kind": "literal",
+				"text": "Pull"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.82a0b8f71bf1930bf6695437ec5e31f810fceeae4c18d396d74b4e4c9526183d"
 			}
 		},
 		{
@@ -1203,6 +1869,25 @@
 			}
 		},
 		{
+			"id": "quickpicks:856de1bb7ebd7facfdc4a9dca1258cc5f1eb95b6fa84c035527af17415353d36",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.770344636056494dc8aeae7ec61f4f49de383222ceb050e5ec2e20b35fd6dc7f",
+			"pattern": {
+				"kind": "literal",
+				"text": "Publish"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "appendReposToTitle-argument-1"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.856de1bb7ebd7facfdc4a9dca1258cc5f1eb95b6fa84c035527af17415353d36"
+			}
+		},
+		{
 			"id": "quickpicks:87c1d993a9d23966a04bbebbdc4f17b7cee7fe06ff1f56f094c6dc8eb7d95c89",
 			"scope": "quickpicks.remoteProviderPicker",
 			"authorityId": "message.5025222334898239115ab6f52d6679fb4fda1491db8b8ffa23e747938ef6a80b",
@@ -1219,6 +1904,72 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "remoteProviderPicker.87c1d993a9d23966a04bbebbdc4f17b7cee7fe06ff1f56f094c6dc8eb7d95c89"
+			}
+		},
+		{
+			"id": "quickpicks:8b08f41b3cc42aebeeabd59a52530f70e639fd6985e8acc2dca7594d3f5acdf3",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.9872a52c94c1a27becc36b1ee3897f63ece32b70a480be81704816132a625f49",
+			"pattern": {
+				"kind": "template",
+				"text": "Confirm ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "appendReposToTitle-argument-1"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.8b08f41b3cc42aebeeabd59a52530f70e639fd6985e8acc2dca7594d3f5acdf3"
+			}
+		},
+		{
+			"id": "quickpicks:8b70d81ad1e229eacf19bc5cd1247bbb3f2a78b87b05e4382930072dcfb49cc8",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.9872a52c94c1a27becc36b1ee3897f63ece32b70a480be81704816132a625f49",
+			"pattern": {
+				"kind": "template",
+				"text": "Confirm ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "appendReposToTitle-argument-1"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.8b70d81ad1e229eacf19bc5cd1247bbb3f2a78b87b05e4382930072dcfb49cc8"
+			}
+		},
+		{
+			"id": "quickpicks:8bc3daacf22b4186de1f365b97476ef75b2322cdb255d5240ac84b93f928ce1a",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.9872a52c94c1a27becc36b1ee3897f63ece32b70a480be81704816132a625f49",
+			"pattern": {
+				"kind": "template",
+				"text": "Confirm ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "appendReposToTitle-argument-1"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.8bc3daacf22b4186de1f365b97476ef75b2322cdb255d5240ac84b93f928ce1a"
 			}
 		},
 		{
@@ -1241,6 +1992,47 @@
 			}
 		},
 		{
+			"id": "quickpicks:907f3e55ecbed9e20a3b9503ec89929e03d238c3c8992e615575e769914ef54f",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.6220f762d079085406dfd7c66c3dc1f73f58ff83e3fdb17fde6e91eb17b7bad4",
+			"pattern": {
+				"kind": "literal",
+				"text": "OK"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.907f3e55ecbed9e20a3b9503ec89929e03d238c3c8992e615575e769914ef54f"
+			}
+		},
+		{
+			"id": "quickpicks:91a97ff0e2611ee776f256a10a857fd9ba45bbd10fb619c43eec83a7d74d06f6",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.9872a52c94c1a27becc36b1ee3897f63ece32b70a480be81704816132a625f49",
+			"pattern": {
+				"kind": "template",
+				"text": "Confirm ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "appendReposToTitle-argument-1"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.91a97ff0e2611ee776f256a10a857fd9ba45bbd10fb619c43eec83a7d74d06f6"
+			}
+		},
+		{
 			"id": "quickpicks:91e6ce1d26a705278ea1b9300755241d6c4683a07b6d800b7b2290bf73a65f46",
 			"scope": "quickpicks.quickWizardCommits",
 			"authorityId": "message.31b5cc4e98b2a5715621f682191b1218a4f831d26013c196e5ae931affe5c444",
@@ -1257,6 +2049,25 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "quickWizardCommits.91e6ce1d26a705278ea1b9300755241d6c4683a07b6d800b7b2290bf73a65f46"
+			}
+		},
+		{
+			"id": "quickpicks:92d70b9e18660336752955738ff7d75c22ce553acf13c8eb5d0ee5644ed1d282",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.11768e404bdeb0d0c77764a1fd15020975f1b4720397205bc9313db669855888",
+			"pattern": {
+				"kind": "literal",
+				"text": "Cannot push a remote branch"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "placeholder"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.92d70b9e18660336752955738ff7d75c22ce553acf13c8eb5d0ee5644ed1d282"
 			}
 		},
 		{
@@ -1396,6 +2207,89 @@
 			}
 		},
 		{
+			"id": "quickpicks:9d0af65e315ae06d96b76b50c70c853b56ab7af3c517d2e14b027c0d0b626841",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.31a4f373113957735e3fa9b3934e0cb37942dd97e53939cf34e18df09ce5d6e0",
+			"pattern": {
+				"kind": "literal",
+				"text": "--rebase"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "description"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.9d0af65e315ae06d96b76b50c70c853b56ab7af3c517d2e14b027c0d0b626841"
+			}
+		},
+		{
+			"id": "quickpicks:9dc7d3ba30d20dc5c27c8e6dd355e0f6439d1e7d1c9783830fd446ee8de97471",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.f840289594f8d7eb28dc0ffd0b5834ce3934a79c5bea3bc292203dad64f00636",
+			"pattern": {
+				"kind": "template",
+				"text": "Force ${slot1}${slot2}",
+				"slots": [
+					"slot1",
+					"slot2"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.9dc7d3ba30d20dc5c27c8e6dd355e0f6439d1e7d1c9783830fd446ee8de97471"
+			}
+		},
+		{
+			"id": "quickpicks:9e9bcc21c8493d2d27c8d635ada18731b674f3fbd55919b6d607ace28ce66038",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.770344636056494dc8aeae7ec61f4f49de383222ceb050e5ec2e20b35fd6dc7f",
+			"pattern": {
+				"kind": "literal",
+				"text": "Publish"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "appendReposToTitle-argument-1"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.9e9bcc21c8493d2d27c8d635ada18731b674f3fbd55919b6d607ace28ce66038"
+			}
+		},
+		{
+			"id": "quickpicks:9fac3382ccab7b5cf431ebe11399244e7ea8c4e7480ad306f410450f0d718a39",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.62e3d97287bb2245749a1dbc87a94abcc9a51d9ee06a908457515a817707d1fd",
+			"pattern": {
+				"kind": "template",
+				"text": "--force${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "description"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.9fac3382ccab7b5cf431ebe11399244e7ea8c4e7480ad306f410450f0d718a39"
+			}
+		},
+		{
 			"id": "quickpicks:a5a50ee7bf53c1e2981880d8a5ec7ac5cc14174372482d6800310eea998a5c6d",
 			"scope": "quickpicks.items",
 			"authorityId": "message.39aea4365526a4aa1037ef3f35c882a50326fdd6e6d733d7a5d7c9a385c44eb7",
@@ -1434,6 +2328,52 @@
 			}
 		},
 		{
+			"id": "quickpicks:a66ce4159e54a76c2ba15b5626b62e8d42064fbb4a42869fc759732155f5523b",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.9872a52c94c1a27becc36b1ee3897f63ece32b70a480be81704816132a625f49",
+			"pattern": {
+				"kind": "template",
+				"text": "Confirm ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "appendReposToTitle-argument-1"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.a66ce4159e54a76c2ba15b5626b62e8d42064fbb4a42869fc759732155f5523b"
+			}
+		},
+		{
+			"id": "quickpicks:a8255fb14e899c29b3b1fda3a8ad0767f70cd94173b1103e4bccda9fd1ee719c",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.797ccf6d349a8daacb9cf8ef30bce2c7f8f09396b0573b9ca3770d50655e9c2e",
+			"pattern": {
+				"kind": "template",
+				"text": "Will publish ${slot1}${slot2} to ${slot3}",
+				"slots": [
+					"slot1",
+					"slot2",
+					"slot3"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.a8255fb14e899c29b3b1fda3a8ad0767f70cd94173b1103e4bccda9fd1ee719c"
+			}
+		},
+		{
 			"id": "quickpicks:a95baf8b7d79f9f22ab83650d5656ad1f71879f7b950bce2e4d99374a5aec36c",
 			"scope": "quickpicks.quickWizardCommits",
 			"authorityId": "message.6b2dfa678c1e8628d4fe084f7d8dfd0ea958a5a9da675d0e1d5825c5347ea22b",
@@ -1450,6 +2390,73 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "quickWizardCommits.a95baf8b7d79f9f22ab83650d5656ad1f71879f7b950bce2e4d99374a5aec36c"
+			}
+		},
+		{
+			"id": "quickpicks:a9ba06acd9fb825de4cba09bf4e82d65a706598f673a456bf017274910d08fbf",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.9872a52c94c1a27becc36b1ee3897f63ece32b70a480be81704816132a625f49",
+			"pattern": {
+				"kind": "template",
+				"text": "Confirm ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "appendReposToTitle-argument-1"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.a9ba06acd9fb825de4cba09bf4e82d65a706598f673a456bf017274910d08fbf"
+			}
+		},
+		{
+			"id": "quickpicks:aa8dac463bd8d03c58ba5c736bc35893d39f0ef6f0eb255b0d64c9f583cbccd9",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.b109f2a7cdb35776387e0326271a131080c52359748d901e4f80bc16856f31d9",
+			"pattern": {
+				"kind": "template",
+				"text": "Will pull ${slot1} repos by rebasing",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.aa8dac463bd8d03c58ba5c736bc35893d39f0ef6f0eb255b0d64c9f583cbccd9"
+			}
+		},
+		{
+			"id": "quickpicks:aabf1f04bdf87f3919af6d9900000ac5483f49cad207905d9ad91e4505c9e59f",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.a884285c53fa3b67098b361a05c4d388857e0f8896e19afd1a51c03807f503a3",
+			"pattern": {
+				"kind": "template",
+				"text": "Will force push${slot1} ${slot2} repos",
+				"slots": [
+					"slot1",
+					"slot2"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.aabf1f04bdf87f3919af6d9900000ac5483f49cad207905d9ad91e4505c9e59f"
 			}
 		},
 		{
@@ -1594,6 +2601,28 @@
 			}
 		},
 		{
+			"id": "quickpicks:b76311bdb532680f9da5488d53b5e155f9312c1ade5a1d32879392f2187e40e6",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.9872a52c94c1a27becc36b1ee3897f63ece32b70a480be81704816132a625f49",
+			"pattern": {
+				"kind": "template",
+				"text": "Confirm ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "appendReposToTitle-argument-1"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.b76311bdb532680f9da5488d53b5e155f9312c1ade5a1d32879392f2187e40e6"
+			}
+		},
+		{
 			"id": "quickpicks:b85c1c79d9162e6eacca8905144b00863b068625ac9ef3bbc7b9dea664f44bfe",
 			"scope": "quickpicks.quickWizardCommits",
 			"authorityId": "message.ce2f3843f9677771b01c37616ec8c172cef32c8d489195e2ac0158cbbf53008d",
@@ -1613,6 +2642,25 @@
 			}
 		},
 		{
+			"id": "quickpicks:baaf42be9e8c19e6db78728dee01898962df6c2d2d7a2a205a56c12454b883d1",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.6220f762d079085406dfd7c66c3dc1f73f58ff83e3fdb17fde6e91eb17b7bad4",
+			"pattern": {
+				"kind": "literal",
+				"text": "OK"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.baaf42be9e8c19e6db78728dee01898962df6c2d2d7a2a205a56c12454b883d1"
+			}
+		},
+		{
 			"id": "quickpicks:baf3578614d65f506d0d4019b4c9de2ea38c91a3c60a9731af55194d2fcbee50",
 			"scope": "quickpicks.quickWizardCommits",
 			"authorityId": "message.d0d4c23ba6fc34898f6c00665949cb4e0449e9a4f66b178fc05b8c55130a74c8",
@@ -1629,6 +2677,47 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "quickWizardCommits.baf3578614d65f506d0d4019b4c9de2ea38c91a3c60a9731af55194d2fcbee50"
+			}
+		},
+		{
+			"id": "quickpicks:bb33351e1fcfcf3b3e3d2d28032896c434904076ea346c692cad7cfc42c6419a",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.8b45d3a1705e1683ade6fdd98ef793a322095eec52253c9ccd61ecd3456ef1f9",
+			"pattern": {
+				"kind": "literal",
+				"text": "Confirm Publish"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "appendReposToTitle-argument-1"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.bb33351e1fcfcf3b3e3d2d28032896c434904076ea346c692cad7cfc42c6419a"
+			}
+		},
+		{
+			"id": "quickpicks:bc543d4570840f00f7cbf805c45372a604c965692a517d8b6489aa41707ead09",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.f39a3d69553fee2653fcc870ecaf789c74e3be4bc545362f8317cbb4dfeef000",
+			"pattern": {
+				"kind": "template",
+				"text": "Will pull ${slot1} repos",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.bc543d4570840f00f7cbf805c45372a604c965692a517d8b6489aa41707ead09"
 			}
 		},
 		{
@@ -1769,6 +2858,29 @@
 			}
 		},
 		{
+			"id": "quickpicks:ccacad08f590d1a95e7f97743cea44fd15fd60114bc7fb18849d9726cd11cc5e",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.f840289594f8d7eb28dc0ffd0b5834ce3934a79c5bea3bc292203dad64f00636",
+			"pattern": {
+				"kind": "template",
+				"text": "Force ${slot1}${slot2}",
+				"slots": [
+					"slot1",
+					"slot2"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.ccacad08f590d1a95e7f97743cea44fd15fd60114bc7fb18849d9726cd11cc5e"
+			}
+		},
+		{
 			"id": "quickpicks:cfb8e9763077ce907a86a1c6574090e37da0a170d4b1b22402e17b9ebf9a3358",
 			"scope": "quickpicks.gitReset",
 			"authorityId": "message.5cb88bab0d7685c62783a6f00f3ede92bcd73988e227d15af36ba30cf706ff4d",
@@ -1788,6 +2900,25 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "gitReset.cfb8e9763077ce907a86a1c6574090e37da0a170d4b1b22402e17b9ebf9a3358"
+			}
+		},
+		{
+			"id": "quickpicks:d01701220ee28ae7a1a7d1c91fe587468ead71e3ad1ba18a697ac777bd219efc",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.6220f762d079085406dfd7c66c3dc1f73f58ff83e3fdb17fde6e91eb17b7bad4",
+			"pattern": {
+				"kind": "literal",
+				"text": "OK"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.d01701220ee28ae7a1a7d1c91fe587468ead71e3ad1ba18a697ac777bd219efc"
 			}
 		},
 		{
@@ -1848,6 +2979,28 @@
 			}
 		},
 		{
+			"id": "quickpicks:d52640b574d29800df35bcb1866007451c43637dbf2eb874141e137adbd2ad04",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.91ef0c4230b54f9d6dffc3d4ff436a8b2da4549c81d2e3c65f7d005353f6e621",
+			"pattern": {
+				"kind": "template",
+				"text": "Cancel ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.d52640b574d29800df35bcb1866007451c43637dbf2eb874141e137adbd2ad04"
+			}
+		},
+		{
 			"id": "quickpicks:d75fe647a2d2afd3dd10255f0c341cf63e5da1838e1b32157f01660f421f13f3",
 			"scope": "quickpicks.items",
 			"authorityId": "message.7886383d9dd6c400922fac7492041cccea49e074dbc3339d265e396c8ac1b2e1",
@@ -1886,6 +3039,25 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "items.d76015730883c4a50288bd6fabfd1f0d70c57820568b43b33e98c895bb9fdc93"
+			}
+		},
+		{
+			"id": "quickpicks:d8a16f868b95dac6b85c521753be8c1f9ff0b96aa316dc47474bfcc41ec94e3d",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.74370d92337a5246b2883734e70609ccbea6d4263f77c047781f8fa0b67b302d",
+			"pattern": {
+				"kind": "literal",
+				"text": "Cannot pull a branch until it has been published"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.d8a16f868b95dac6b85c521753be8c1f9ff0b96aa316dc47474bfcc41ec94e3d"
 			}
 		},
 		{
@@ -2048,6 +3220,25 @@
 			}
 		},
 		{
+			"id": "quickpicks:ea29ff726a5a91bfb695ff7407d01c3c609a310b9e97aaccbd931e808250c6e4",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.28bd7ff8d9baca5b4d22480334cee7710f64f8cb8f10241e4bfbb205c017eda7",
+			"pattern": {
+				"kind": "literal",
+				"text": "Nothing to push; No commits found to push"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "placeholder"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.ea29ff726a5a91bfb695ff7407d01c3c609a310b9e97aaccbd931e808250c6e4"
+			}
+		},
+		{
 			"id": "quickpicks:ecb27363eb8faf7b55e1a198979ef4c0883da6080cf8ba88991f24ff1b1509ce",
 			"scope": "quickpicks.remoteProviderPicker",
 			"authorityId": "message.5ecc50c15c30d1c262bc2074d0a66d3b7cb6c20d1fb42cc8e27b6adca856e881",
@@ -2124,6 +3315,25 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "items.ee0c8867c07853a65f053db824bb13551c3dbd4741120b87774f58ffccebaa89"
+			}
+		},
+		{
+			"id": "quickpicks:f0cd8378d681d92d9145e13e14c15d6e616305418127322890e2dbe2a55a18c7",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.707bd8dd04cdf064cc499c642250f73aff3470949935f069d9d81cd1aaa05e25",
+			"pattern": {
+				"kind": "literal",
+				"text": "pushes changes from the current branch to a remote"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "description"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.f0cd8378d681d92d9145e13e14c15d6e616305418127322890e2dbe2a55a18c7"
 			}
 		},
 		{
@@ -2206,6 +3416,44 @@
 			}
 		},
 		{
+			"id": "quickpicks:f7f7792c37c4c90410fe53904f2345ee62b3b603c4ca33380bc762bc4f29e219",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.dc8cd2f73e8ea0abf4c6b01b8bafa1a60544eb9803bb67c122ae662752e53cdd",
+			"pattern": {
+				"kind": "literal",
+				"text": "Cannot pull a remote branch"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.f7f7792c37c4c90410fe53904f2345ee62b3b603c4ca33380bc762bc4f29e219"
+			}
+		},
+		{
+			"id": "quickpicks:f84eb3cd925c4c43e312c8663f6f6f5a83e4cd39ff72535ca7f77f0b4ed40b6a",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.deb3b4dab40eeeb9d76182673f83b702bee27fc6bacab73625fb52513c827508",
+			"pattern": {
+				"kind": "literal",
+				"text": "No remotes found"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "detail"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.f84eb3cd925c4c43e312c8663f6f6f5a83e4cd39ff72535ca7f77f0b4ed40b6a"
+			}
+		},
+		{
 			"id": "quickpicks:f910c3759a6378e7ce5fecbc87fcb5d583897adce666481ace527526cb417bfa",
 			"scope": "quickpicks.items",
 			"authorityId": "message.2bd513f210c3d987a5444f23a0b66b917081ed8d57caab49eb28fa601d89cedf",
@@ -2241,6 +3489,51 @@
 				"kind": "runtime-key",
 				"bundle": "quickpicks",
 				"key": "items.f915530ea996af0c5da5c2a292b7c8d1115b66c0b9d9cb85c21b0cdc09c4571c"
+			}
+		},
+		{
+			"id": "quickpicks:fa4827aa3e576cb9dad35a19084da99cd670c6a8d28616b33c5a79f3e183bd35",
+			"scope": "quickpicks.gitPull",
+			"authorityId": "message.67b2c2cd7a89a4575c5dfa0df7336dc7a6a85bef3e39f77454528c28b8a34bce",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} with Rebase",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/pull.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPull.fa4827aa3e576cb9dad35a19084da99cd670c6a8d28616b33c5a79f3e183bd35"
+			}
+		},
+		{
+			"id": "quickpicks:fae174be52be2e559bdcb58009e96ea7d7813f4ad6d52f215e7e41bb613f55b1",
+			"scope": "quickpicks.gitPush",
+			"authorityId": "message.bc7251ed4282282b14413d88f873b3ae4f82575ab72520c35f102d2ec047fd64",
+			"pattern": {
+				"kind": "template",
+				"text": "Publish ${slot1} to ${slot2}",
+				"slots": [
+					"slot1",
+					"slot2"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/commands/git/push.ts",
+				"attribute": "label"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "quickpicks",
+				"key": "gitPush.fae174be52be2e559bdcb58009e96ea7d7813f4ad6d52f215e7e41bb613f55b1"
 			}
 		},
 		{

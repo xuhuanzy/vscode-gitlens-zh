@@ -46,6 +46,7 @@ const uiPropertyNames = new Set([
 	"hint",
 	"label",
 	"message",
+	"placeholder",
 	"statusText",
 	"title",
 	"tooltip",
