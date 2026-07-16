@@ -12,7 +12,7 @@ const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "upstream-tests-"));
 
 afterAll(() => fs.rmSync(fixtureRoot, { recursive: true, force: true }));
 
-test("prepare creates a managed depth-one checkout from a local tagged repository", () => {
+test("prepare creates a managed depth-one checkout from a local tagged repository", { tags: "upstream" }, () => {
 	const controlRoot = path.join(fixtureRoot, "managed-checkout");
 	const repository = createBareTaggedRepository(path.join(fixtureRoot, "remote"));
 	writeLayerConfig(controlRoot, repository.url, repository.commit);
@@ -48,7 +48,7 @@ test("prepare creates a managed depth-one checkout from a local tagged repositor
 	expect(refreshed.builtCommit).toBe(repository.commit);
 });
 
-test("prepare reuses a locally available locked tag without contacting the remote", () => {
+test("prepare reuses a locally available locked tag without contacting the remote", { tags: "upstream" }, () => {
 	const controlRoot = path.join(fixtureRoot, "local-revision");
 	const repository = createBareTaggedRepository(path.join(fixtureRoot, "local-revision-remote"));
 	writeLayerConfig(controlRoot, repository.url, repository.commit);
@@ -71,7 +71,7 @@ test("prepare reuses a locally available locked tag without contacting the remot
 	expect(prepared.builtCommit).toBe(nextCommit);
 });
 
-test("prepare fetches the locked tag when the local git repository does not contain it", () => {
+test("prepare fetches the locked tag when the local git repository does not contain it", { tags: "upstream" }, () => {
 	const controlRoot = path.join(fixtureRoot, "fetched-revision");
 	const repository = createBareTaggedRepository(path.join(fixtureRoot, "fetched-revision-remote"));
 	writeLayerConfig(controlRoot, repository.url, repository.commit);
@@ -88,31 +88,35 @@ test("prepare fetches the locked tag when the local git repository does not cont
 	expect(runGit(config.upstreamRoot, ["rev-parse", "refs/tags/18.3.0^{commit}"]).trim()).toBe(nextCommit);
 });
 
-test("upstream scripts run against the current managed tree without resetting localized changes", () => {
-	const controlRoot = path.join(fixtureRoot, "upstream-scripts");
-	const repository = createBareTaggedRepository(path.join(fixtureRoot, "script-remote"));
-	writeLayerConfig(controlRoot, repository.url, repository.commit);
-	const config = loadLayerConfig(controlRoot);
-	prepareUpstream(config);
-	const localizedFile = path.join(config.upstreamRoot, "localized.txt");
-	fs.writeFileSync(localizedFile, "keep", "utf8");
-	const calls: string[][] = [];
+test(
+	"upstream scripts run against the current managed tree without resetting localized changes",
+	{ tags: "upstream" },
+	() => {
+		const controlRoot = path.join(fixtureRoot, "upstream-scripts");
+		const repository = createBareTaggedRepository(path.join(fixtureRoot, "script-remote"));
+		writeLayerConfig(controlRoot, repository.url, repository.commit);
+		const config = loadLayerConfig(controlRoot);
+		prepareUpstream(config);
+		const localizedFile = path.join(config.upstreamRoot, "localized.txt");
+		fs.writeFileSync(localizedFile, "keep", "utf8");
+		const calls: string[][] = [];
 
-	runUpstreamScript(config, "build", (_command, args) => {
-		calls.push([...args]);
-		if (args.includes("install")) {
-			const webpackEntry = path.join(config.upstreamRoot, "node_modules", "webpack", "bin", "webpack.js");
-			fs.mkdirSync(path.dirname(webpackEntry), { recursive: true });
-			fs.writeFileSync(webpackEntry, "", "utf8");
-		}
-	});
+		runUpstreamScript(config, "build", (_command, args) => {
+			calls.push([...args]);
+			if (args.includes("install")) {
+				const webpackEntry = path.join(config.upstreamRoot, "node_modules", "webpack", "bin", "webpack.js");
+				fs.mkdirSync(path.dirname(webpackEntry), { recursive: true });
+				fs.writeFileSync(webpackEntry, "", "utf8");
+			}
+		});
 
-	expect(calls).toEqual([
-		[`--config.store-dir=${path.join(config.workRoot, "pnpm-store")}`, "install", "--frozen-lockfile"],
-		["run", "build"],
-	]);
-	expect(fs.readFileSync(localizedFile, "utf8")).toBe("keep");
-});
+		expect(calls).toEqual([
+			[`--config.store-dir=${path.join(config.workRoot, "pnpm-store")}`, "install", "--frozen-lockfile"],
+			["run", "build"],
+		]);
+		expect(fs.readFileSync(localizedFile, "utf8")).toBe("keep");
+	},
+);
 
 interface RepositoryFixture {
 	readonly url: string;
