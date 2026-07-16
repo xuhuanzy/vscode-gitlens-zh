@@ -73,7 +73,7 @@ export async function execute(args: readonly string[], root = controlRoot): Prom
 			}
 		case "i18n":
 			if (controllerArgs.length !== 2) {
-				throw new PipelineError("CONFIG_INVALID", "Usage: glzh i18n sync|report|promote");
+				throw new PipelineError("CONFIG_INVALID", "Usage: glzh i18n sync|report|promote|overlay");
 			}
 			switch (action) {
 				case "sync":
@@ -83,8 +83,18 @@ export async function execute(args: readonly string[], root = controlRoot): Prom
 					return reportI18n(config);
 				case "promote":
 					return promoteI18n(config);
+				case "overlay": {
+					const prepared = prepareLocalizedUpstream(config);
+					const manifest = applyLocalizedManifest(config);
+					return {
+						upstream: config.upstream.commit,
+						overlay: prepared.overlay,
+						manifest: manifest,
+						mode: "overlay",
+					};
+				}
 				default:
-					throw new PipelineError("CONFIG_INVALID", "Usage: glzh i18n sync|report|promote");
+					throw new PipelineError("CONFIG_INVALID", "Usage: glzh i18n sync|report|promote|overlay");
 			}
 		case "build": {
 			if (controllerArgs.length !== 1) {

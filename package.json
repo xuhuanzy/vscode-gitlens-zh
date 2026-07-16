@@ -12,7 +12,8 @@
 		"lint": "oxlint .",
 		"lint:fix": "oxlint --fix .",
 		"check": "tsc",
-		"test": "vitest run"
+		"test": "vitest run",
+		"test:quick": "vitest run --exclude scripts/__tests__/upstream.test.mts"
 	},
 	"devDependencies": {
 		"@types/node": "22.15.21",

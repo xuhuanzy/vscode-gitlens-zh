@@ -111,6 +111,20 @@ test("report and promote no longer reset upstream when they only consume control
 	expect(overlay.promote).toHaveBeenCalledOnce();
 });
 
+test("i18n overlay applies localized sources and manifest without running an upstream build", async () => {
+	const root = path.join(fixtureRoot, "i18n-overlay");
+	writeControlFixture(root, "v18.3.0", "2d76f8e4364be4c1877bd37d201561126e8c01fb");
+	const i18nBefore = readI18nSnapshot(root);
+
+	await expect(execute(["i18n", "overlay"], root)).resolves.toMatchObject({ mode: "overlay" });
+	expect(upstream.prepare).toHaveBeenCalledOnce();
+	expect(overlay.generate).toHaveBeenCalledOnce();
+	expect(overlay.applyManifest).toHaveBeenCalledOnce();
+	expect(upstream.runScript).not.toHaveBeenCalled();
+	expect(upstream.markFullBuildComplete).not.toHaveBeenCalled();
+	expect(readI18nSnapshot(root)).toEqual(i18nBefore);
+});
+
 test("package uses the complete production bundle before creating the localized VSIX", async () => {
 	const root = path.join(fixtureRoot, "package");
 	fs.mkdirSync(path.join(root, ".upstream"), { recursive: true });

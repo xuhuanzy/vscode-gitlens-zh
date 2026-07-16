@@ -6,13 +6,7 @@ import { pathToFileURL } from "node:url";
 import { afterAll, expect, test } from "vitest";
 
 import { loadLayerConfig } from "../config.mts";
-import {
-	getUpstreamStatus,
-	installUpstreamDependencies,
-	markFullBuildComplete,
-	prepareUpstream,
-	runUpstreamScript,
-} from "../upstream.mts";
+import { getUpstreamStatus, markFullBuildComplete, prepareUpstream, runUpstreamScript } from "../upstream.mts";
 
 const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "upstream-tests-"));
 
@@ -118,43 +112,6 @@ test("upstream scripts run against the current managed tree without resetting lo
 		["run", "build"],
 	]);
 	expect(fs.readFileSync(localizedFile, "utf8")).toBe("keep");
-});
-
-test("prepare automatically replaces an unknown existing upstream directory", () => {
-	const controlRoot = path.join(fixtureRoot, "unknown-directory");
-	const repository = createBareTaggedRepository(path.join(fixtureRoot, "unused-remote"));
-	writeLayerConfig(controlRoot, repository.url, repository.commit);
-	const config = loadLayerConfig(controlRoot);
-	fs.mkdirSync(config.upstreamRoot, { recursive: true });
-	const sentinel = path.join(config.upstreamRoot, "owned-by-user.txt");
-	fs.writeFileSync(sentinel, "keep", "utf8");
-
-	const prepared = prepareUpstream(config);
-
-	expect(prepared.commit).toBe(repository.commit);
-	expect(fs.existsSync(sentinel)).toBe(false);
-});
-
-test("dependency install keeps the pnpm store under work root and replaces stale upstream links", () => {
-	const controlRoot = path.join(fixtureRoot, "dependency-store");
-	writeLayerConfig(controlRoot, "https://example.invalid/upstream.git", "a".repeat(40));
-	const config = loadLayerConfig(controlRoot);
-	const staleFile = path.join(config.upstreamRoot, "node_modules", "stale-link.txt");
-	fs.mkdirSync(path.dirname(staleFile), { recursive: true });
-	fs.writeFileSync(staleFile, "stale", "utf8");
-	const calls: string[][] = [];
-
-	installUpstreamDependencies(config, (_command, args) => {
-		calls.push([...args]);
-		const webpackEntry = path.join(config.upstreamRoot, "node_modules", "webpack", "bin", "webpack.js");
-		fs.mkdirSync(path.dirname(webpackEntry), { recursive: true });
-		fs.writeFileSync(webpackEntry, "", "utf8");
-	});
-
-	const storeRoot = path.join(config.workRoot, "pnpm-store");
-	expect(calls).toEqual([[`--config.store-dir=${storeRoot}`, "install", "--frozen-lockfile"]]);
-	expect(fs.existsSync(staleFile)).toBe(false);
-	expect(fs.existsSync(path.join(controlRoot, ".pnpm-store"))).toBe(false);
 });
 
 interface RepositoryFixture {

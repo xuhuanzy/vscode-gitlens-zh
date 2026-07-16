@@ -33,10 +33,13 @@ pnpm glzh upstream build:quick
 pnpm glzh i18n sync
 pnpm glzh i18n report
 pnpm glzh i18n promote
+pnpm glzh i18n overlay
 pnpm build
 pnpm package
 pnpm check
 pnpm test
+pnpm test:quick
+pnpm test:full
 pnpm lint
 pnpm lint:fix
 pnpm format
@@ -47,9 +50,12 @@ pnpm format:check
 - `glzh upstream build`：在当前 `.upstream/` 上执行上游完整 development build。
 - `glzh upstream build:quick`：在当前 `.upstream/` 上执行上游 quick development build。
 - `glzh i18n sync`：从锁定上游显式刷新 catalog/workset；普通构建不会改写翻译真源。
+- `glzh i18n overlay`：快速准备上游并应用源码与 manifest overlay，但不执行上游构建。
 - `build`：构建中文 Gitlens。
 - `package`：生成中文 VSIX 到 `artifacts/`。
 - `check`：检查控制仓库 TypeScript。
+- `test`：运行完整测试。
+- `test:quick`：运行默认快速测试。
 - `lint` / `lint:fix`：使用 Oxlint 检查控制仓库脚本与 i18n 代码，或应用安全自动修复。
 - `format` / `format:check`：使用 Oxfmt 写入格式化结果或只检查格式。
 
