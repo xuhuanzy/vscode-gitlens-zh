@@ -5,6 +5,12 @@
 > [!WARNING]
 > 不对翻译精确性负责，目前 99% 翻译由 AI 根据上下文翻译与自校对。
 
+## 示例
+
+![GitLens 中文界面示例 1](resource/display%201.png)
+
+![GitLens 中文界面示例 2](resource/display%202.png)
+
 ## 目录
 
 ```text
