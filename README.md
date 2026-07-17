@@ -1,6 +1,6 @@
 # GitLens 中文
 
-GitLens 中文分支，使用可重放覆盖层的方式处理 Gitlens 源码生成中文版 Gitlens。
+[GitLens](https://github.com/gitkraken/vscode-gitlens) 中文分支，使用可重放覆盖层的方式处理 GitLens 源码并生成中文版 GitLens。
 
 > [!WARNING]
 > 不对翻译精确性负责，目前 99% 翻译由 AI 根据上下文翻译与自校对。
@@ -72,3 +72,9 @@ pnpm format:check
 
 编辑 `i18n/authority/` 或工作流产生的待翻译数据，随后运行 `i18n report`、`check` 与 `build`。
 构建生成物仅存在于 `.work/`、`.upstream/` 和 `artifacts/`，不应提交。
+
+## 引用与鸣谢
+
+本项目引用了 [gitkraken/vscode-gitlens](https://github.com/gitkraken/vscode-gitlens) 的源码与项目内容，并在其基础上进行中文本地化。
+
+感谢 GitKraken 与 GitLens 的所有贡献者开发和维护 GitLens。
