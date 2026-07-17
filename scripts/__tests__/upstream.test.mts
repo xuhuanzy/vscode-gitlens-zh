@@ -11,7 +11,7 @@ import {
 	getUpstreamStatus,
 	markFullBuildComplete,
 	prepareUpstream,
-	runUpstreamScript,
+	runUpstreamScripts,
 } from "../upstream.mts";
 
 const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "upstream-tests-"));
@@ -94,35 +94,32 @@ test("prepare fetches the locked tag when the local git repository does not cont
 	expect(runGit(config.upstreamRoot, ["rev-parse", "refs/tags/18.3.0^{commit}"]).trim()).toBe(nextCommit);
 });
 
-test(
-	"upstream scripts run against the current managed tree without resetting localized changes",
-	{ tags: "upstream" },
-	() => {
-		const controlRoot = path.join(fixtureRoot, "upstream-scripts");
-		const repository = createBareTaggedRepository(path.join(fixtureRoot, "script-remote"));
-		writeLayerConfig(controlRoot, repository.url, repository.commit);
-		const config = loadLayerConfig(controlRoot);
-		prepareUpstream(config);
-		const localizedFile = path.join(config.upstreamRoot, "localized.txt");
-		fs.writeFileSync(localizedFile, "keep", "utf8");
-		const calls: string[][] = [];
+test("upstream scripts install once and run in order without resetting localized changes", { tags: "upstream" }, () => {
+	const controlRoot = path.join(fixtureRoot, "upstream-scripts");
+	const repository = createBareTaggedRepository(path.join(fixtureRoot, "script-remote"));
+	writeLayerConfig(controlRoot, repository.url, repository.commit);
+	const config = loadLayerConfig(controlRoot);
+	prepareUpstream(config);
+	const localizedFile = path.join(config.upstreamRoot, "localized.txt");
+	fs.writeFileSync(localizedFile, "keep", "utf8");
+	const calls: string[][] = [];
 
-		runUpstreamScript(config, "build", (_command, args) => {
-			calls.push([...args]);
-			if (args.includes("install")) {
-				const webpackEntry = path.join(config.upstreamRoot, "node_modules", "webpack", "bin", "webpack.js");
-				fs.mkdirSync(path.dirname(webpackEntry), { recursive: true });
-				fs.writeFileSync(webpackEntry, "", "utf8");
-			}
-		});
+	runUpstreamScripts(config, ["fmt", "build"], (_command, args) => {
+		calls.push([...args]);
+		if (args.includes("install")) {
+			const webpackEntry = path.join(config.upstreamRoot, "node_modules", "webpack", "bin", "webpack.js");
+			fs.mkdirSync(path.dirname(webpackEntry), { recursive: true });
+			fs.writeFileSync(webpackEntry, "", "utf8");
+		}
+	});
 
-		expect(calls).toEqual([
-			["install", "--frozen-lockfile"],
-			["run", "build"],
-		]);
-		expect(fs.readFileSync(localizedFile, "utf8")).toBe("keep");
-	},
-);
+	expect(calls).toEqual([
+		["install", "--frozen-lockfile"],
+		["run", "fmt"],
+		["run", "build"],
+	]);
+	expect(fs.readFileSync(localizedFile, "utf8")).toBe("keep");
+});
 
 test("configured patches can be enabled or disabled", { tags: "upstream" }, () => {
 	const controlRoot = path.join(fixtureRoot, "configured-patches");

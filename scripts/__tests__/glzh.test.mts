@@ -10,7 +10,7 @@ const upstream = vi.hoisted(() => ({
 	markFullBuildComplete: vi.fn<(config: unknown) => void>(),
 	prepare: vi.fn<(config: unknown, options?: { readonly requireFullBuild?: boolean }) => unknown>(),
 	runInteractive: vi.fn<(command: string, args: readonly string[], cwd: string, errorCode: string) => void>(),
-	runScript: vi.fn<(config: unknown, script: string) => void>(),
+	runScripts: vi.fn<(config: unknown, scripts: readonly string[]) => void>(),
 }));
 const overlay = vi.hoisted(() => ({
 	applyManifest: vi.fn<(config: unknown) => unknown>(),
@@ -26,7 +26,7 @@ vi.mock("../upstream.mts", () => ({
 	markFullBuildComplete: upstream.markFullBuildComplete,
 	prepareUpstream: upstream.prepare,
 	runInteractiveCommand: upstream.runInteractive,
-	runUpstreamScript: upstream.runScript,
+	runUpstreamScripts: upstream.runScripts,
 }));
 vi.mock("../overlay.mts", () => ({
 	applyLocalizedManifest: overlay.applyManifest,
@@ -52,7 +52,7 @@ beforeEach(() => {
 
 test("upstream exposes explicit full and quick builds without replaying localization", async () => {
 	await expect(execute(["upstream", "build"])).resolves.toMatchObject({ script: "build" });
-	expect(upstream.runScript).toHaveBeenLastCalledWith(expect.any(Object), "build");
+	expect(upstream.runScripts).toHaveBeenLastCalledWith(expect.any(Object), ["build"]);
 	expect(upstream.markFullBuildComplete).toHaveBeenCalledOnce();
 	expect(upstream.prepare).not.toHaveBeenCalled();
 	expect(overlay.generate).not.toHaveBeenCalled();
@@ -61,7 +61,7 @@ test("upstream exposes explicit full and quick builds without replaying localiza
 	await expect(execute(["upstream", "build:quick"])).resolves.toMatchObject({
 		script: "build:quick",
 	});
-	expect(upstream.runScript).toHaveBeenLastCalledWith(expect.any(Object), "build:quick");
+	expect(upstream.runScripts).toHaveBeenLastCalledWith(expect.any(Object), ["build:quick"]);
 	expect(upstream.markFullBuildComplete).not.toHaveBeenCalled();
 	expect(overlay.generate).not.toHaveBeenCalled();
 });
@@ -80,7 +80,7 @@ test("build performs a full build when the managed build state requires it", asy
 	expect(upstream.prepare).toHaveBeenCalledOnce();
 	expect(upstream.applyPatches).toHaveBeenCalledOnce();
 	expect(overlay.generate).toHaveBeenCalledOnce();
-	expect(upstream.runScript).toHaveBeenCalledWith(expect.any(Object), "build");
+	expect(upstream.runScripts).toHaveBeenCalledWith(expect.any(Object), ["build"]);
 	expect(upstream.markFullBuildComplete).toHaveBeenCalledOnce();
 	expect(overlay.applyManifest).toHaveBeenCalledOnce();
 	expect(overlay.sync).not.toHaveBeenCalled();
@@ -102,7 +102,7 @@ test("build uses a quick build when prepare reports that a full build is not req
 	});
 
 	await expect(execute(["build"], root)).resolves.toMatchObject({ mode: "quick" });
-	expect(upstream.runScript).toHaveBeenCalledWith(expect.any(Object), "build:quick");
+	expect(upstream.runScripts).toHaveBeenCalledWith(expect.any(Object), ["build:quick"]);
 	expect(upstream.markFullBuildComplete).not.toHaveBeenCalled();
 });
 
@@ -127,12 +127,12 @@ test("i18n overlay applies localized sources and manifest without running an ups
 	expect(upstream.prepare).toHaveBeenCalledOnce();
 	expect(overlay.generate).toHaveBeenCalledOnce();
 	expect(overlay.applyManifest).toHaveBeenCalledOnce();
-	expect(upstream.runScript).not.toHaveBeenCalled();
+	expect(upstream.runScripts).not.toHaveBeenCalled();
 	expect(upstream.markFullBuildComplete).not.toHaveBeenCalled();
 	expect(readI18nSnapshot(root)).toEqual(i18nBefore);
 });
 
-test("package uses the complete production bundle before creating the localized VSIX", async () => {
+test("package formats the localized sources before creating the production VSIX", async () => {
 	const root = path.join(fixtureRoot, "package");
 	fs.mkdirSync(path.join(root, ".upstream"), { recursive: true });
 	writeControlFixture(root, "18.3.0", "0123456789abcdef0123456789abcdef01234567");
@@ -146,8 +146,8 @@ test("package uses the complete production bundle before creating the localized 
 	await expect(execute(["package", "--", "--pre-release"], root)).resolves.toMatchObject({
 		artifact: path.join(root, "artifacts", "gitlens-18.3.0-zh-cn.vsix"),
 	});
-	expect(upstream.runScript).toHaveBeenCalledWith(expect.any(Object), "bundle");
-	expect(upstream.runScript).not.toHaveBeenCalledWith(expect.any(Object), "bundle:quick");
+	expect(upstream.runScripts).toHaveBeenCalledWith(expect.any(Object), ["fmt", "bundle"]);
+	expect(upstream.runScripts).not.toHaveBeenCalledWith(expect.any(Object), ["bundle:quick"]);
 	expect(overlay.sync).not.toHaveBeenCalled();
 	expect(overlay.promote).not.toHaveBeenCalled();
 	expect(overlay.report).not.toHaveBeenCalled();

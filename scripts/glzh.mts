@@ -16,7 +16,7 @@ import {
 	markFullBuildComplete,
 	prepareUpstream,
 	runInteractiveCommand,
-	runUpstreamScript,
+	runUpstreamScripts,
 } from "./upstream.mts";
 
 const controlRoot = path.resolve(import.meta.dirname, "..");
@@ -66,7 +66,7 @@ export async function execute(args: readonly string[], root = controlRoot): Prom
 					return prepareUpstream(config, { requireFullBuild: true });
 				case "build":
 				case "build:quick":
-					runUpstreamScript(config, action);
+					runUpstreamScripts(config, [action]);
 					if (action === "build") markFullBuildComplete(config);
 					return { upstream: config.upstream.commit, script: action };
 				default:
@@ -105,7 +105,7 @@ export async function execute(args: readonly string[], root = controlRoot): Prom
 			}
 			const prepared = prepareLocalizedUpstream(config);
 			const requiresFullBuild = prepared.status.requiresFullBuild;
-			runUpstreamScript(config, requiresFullBuild ? "build" : "build:quick");
+			runUpstreamScripts(config, [requiresFullBuild ? "build" : "build:quick"]);
 			if (requiresFullBuild) markFullBuildComplete(config);
 			const manifest = applyLocalizedManifest(config);
 			return {
@@ -138,7 +138,7 @@ function prepareLocalizedUpstream(config: ReturnType<typeof loadLayerConfig>) {
 
 function packageExtension(config: ReturnType<typeof loadLayerConfig>, passthrough: readonly string[]): unknown {
 	const prepared = prepareLocalizedUpstream(config);
-	runUpstreamScript(config, "bundle");
+	runUpstreamScripts(config, ["fmt", "bundle"]);
 	const manifest = applyLocalizedManifest(config);
 	fs.mkdirSync(config.artifactsRoot, { recursive: true });
 	const packageJson = JSON.parse(fs.readFileSync(path.join(config.upstreamRoot, "package.json"), "utf8")) as {

@@ -18,7 +18,7 @@ export interface UpstreamStatus {
 	readonly requiresFullBuild: boolean;
 }
 
-export type UpstreamScript = "build" | "build:quick" | "bundle";
+export type UpstreamScript = "build" | "build:quick" | "fmt" | "bundle";
 
 interface ManagedMetadata {
 	readonly tag: string;
@@ -186,10 +186,10 @@ function writeManagedMetadata(config: ResolvedLayerConfig, requiresFullBuild: bo
 	);
 }
 
-/** 在当前已准备的上游树中安装依赖并执行上游脚本, 不重置工作树或应用本地化覆盖层. */
-export function runUpstreamScript(
+/** 在当前已准备的上游树中安装依赖并按顺序执行上游脚本, 不重置工作树或应用本地化覆盖层. */
+export function runUpstreamScripts(
 	config: ResolvedLayerConfig,
-	script: UpstreamScript,
+	scripts: readonly UpstreamScript[],
 	run: CommandRunner = runInteractiveCommand,
 ): void {
 	const status = getUpstreamStatus(config);
@@ -208,7 +208,9 @@ export function runUpstreamScript(
 	}
 
 	installUpstreamDependencies(config, run);
-	run("pnpm", ["run", script], config.upstreamRoot, "BUILD_FAILED");
+	for (const script of scripts) {
+		run("pnpm", ["run", script], config.upstreamRoot, "BUILD_FAILED");
+	}
 }
 
 /** 安装上游依赖, 并清理已失效的 node_modules 链接. */
