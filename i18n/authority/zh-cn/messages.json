@@ -3,7 +3,7 @@
 	"version": 2,
 	"kind": "messages",
 	"locale": "zh-cn",
-	"updatedAt": "2026-07-16T21:49:56.091Z",
+	"updatedAt": "2026-07-17T06:09:05.876Z",
 	"entries": [
 		{
 			"id": "message.000d1a29b2365349f8762064ef86edc1f548f435002395035bdc26f6c87754fc",
@@ -44,7 +44,7 @@
 			"id": "message.0064d1d6c06264bc7e3f9ad04f1976c9629191f80ef8d21b96200cf27c1cd674",
 			"kind": "literal",
 			"source": "Show Stashes",
-			"translation": "显示贮藏"
+			"translation": "显示储藏"
 		},
 		{
 			"id": "message.0077ff483e62624aa8ccb72f308732820b438eb7db7356514bd4c7d804c4ed1e",
@@ -80,7 +80,7 @@
 			"id": "message.00ee94ff2c6a3e99cb9a4779b5ebc8beff352d2c42f0b3b1bec60646184331da",
 			"kind": "literal",
 			"source": "Specifies whether to lookup additional details about automatically link external resources in commit messages. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否查询提交消息中自动链接的外部资源的附加详情。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否查询提交消息中自动链接的外部资源的附加详情。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.00f1abe2387cd608f9109d39384ca3bf34300f3ec16147267a011c32a8b5a897",
@@ -161,7 +161,7 @@
 			"id": "message.018d535fda08d405c043e3567fc830a2e239ff85739b239ab150fd9485c7a372",
 			"kind": "literal",
 			"source": "Drop hunks here to create new commit",
-			"translation": "将代码块拖到此处以创建新提交"
+			"translation": "将补丁块拖到此处以创建新提交"
 		},
 		{
 			"id": "message.0192616ac38884375ea5d6464e7580673610ed6c8e3c4180beb4dfaf2cb9cf28",
@@ -185,7 +185,7 @@
 			"id": "message.01af62f62be5c10e3c7204413e7fbb196b40fd8a2fdfdd382e4d02e142b05061",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Patch Details_ view",
-			"translation": "指定是否在 _补丁详情_ 视图中显示头像图像而不是提交（或状态）图标"
+			"translation": "指定是否在 _补丁详情_ 视图中显示头像而不是提交（或状态）图标"
 		},
 		{
 			"id": "message.01ba7a7d1ee6223e6be9b3e28ef4700a038ecf281853646c8f94ce240cf38304",
@@ -222,7 +222,7 @@
 			"id": "message.0204fc9a5ed89e95a1f8266751c04ccb896e165afdcf41fb5c62e9fd4a61e587",
 			"kind": "literal",
 			"source": "Specifies whether to show relative date markers (_Less than a week ago_, _Over a week ago_, _Over a month ago_, etc) on revision (commit) histories in the views",
-			"translation": "指定是否在视图中的修订（提交）历史上显示相对日期标记（如 _一周内_、_一周以上_、_一个月以上_ 等）"
+			"translation": "指定是否在视图中的版本（提交）历史上显示相对日期标记（如 _一周内_、_一周以上_、_一个月以上_ 等）"
 		},
 		{
 			"id": "message.02461869213cf305c23520bd6189fbf71bd2b07ae6690188be6602668b3fb656",
@@ -240,7 +240,7 @@
 			"id": "message.024f36ba51b625530cc20debd598134d7aceb8a3f880904d581eaa252663c5d0",
 			"kind": "template",
 			"source": "Your current branch ${slot1} has ${slot2} been merged into its merge target ${slot3}.",
-			"translation": "你当前的分支 ${slot1} ${slot2}被合并到其合并目标 ${slot3}。",
+			"translation": "当前分支 ${slot1} ${slot2}被合并到其合并目标 ${slot3}。",
 			"slots": [
 				"slot1",
 				"slot2",
@@ -251,7 +251,7 @@
 			"id": "message.0279864c72f7a744baf9f260ab0957d6daf04e27dd247a3a05b611d095510455",
 			"kind": "literal",
 			"source": "Open Changes with",
-			"translation": "打开更改的方式"
+			"translation": "打开与…的更改"
 		},
 		{
 			"id": "message.029e48a6827b13f890d172a382dc7561f6ab69c21f5ccdd07e3600bf39cfe3c1",
@@ -332,7 +332,7 @@
 			"id": "message.038bd0df57b857d50b1fe3a0f51ce4a2c2822e8ee31751e204715412b81fb8d3",
 			"kind": "literal",
 			"source": "Specifies the limit on the how many commits can be queried for statistics in the _Visual File History_, because of rate limits. Only applies to virtual workspaces.",
-			"translation": "指定在 _可视文件历史_ 中可查询统计信息的提交数量上限，这是因为存在速率限制。仅适用于虚拟工作区。"
+			"translation": "指定在 _可视文件历史_ 中可查询统计信息的提交数量上限，因存在速率限制。仅适用于虚拟工作区。"
 		},
 		{
 			"id": "message.0392a7556acd5fb7ab0ee96eb3f7bad8d01e4cb3361dce54d51e5916f8cce941",
@@ -344,7 +344,7 @@
 			"id": "message.03a5bf02f494ef8bd5665ea9dc7c2aff835ab55b2b632ed3a48d989bc96c0632",
 			"kind": "literal",
 			"source": "Open File at Revision from Remote",
-			"translation": "从远程打开该修订中的文件"
+			"translation": "从远程打开该版本的文件"
 		},
 		{
 			"id": "message.03a632a4c3dd85724503a89a69f2b4cd8fbd60d3eec738fe1b0946b9d424fd6f",
@@ -396,7 +396,7 @@
 			"id": "message.04797808ca6f3dd68fd0f3e00348b017efe6e3c8f04f32e50da5f43fa73e90f5",
 			"kind": "rich",
 			"source": "Adds an [Inspect view](command:gitlens.showCommitDetailsView) to see rich details for a commit",
-			"translation": "添加[检查视图](command:gitlens.showCommitDetailsView)，用于查看提交的丰富详情",
+			"translation": "添加[详情视图](command:gitlens.showCommitDetailsView)，用于查看提交的丰富详情",
 			"format": "markdown",
 			"slots": []
 		},
@@ -527,7 +527,7 @@
 			"id": "message.063a0319a8b4bcef2b288b9db4bbf48e4c6dafe99179b74ffe8c690662e4ce3e",
 			"kind": "rich",
 			"source": "GitLens groups many related views—Commits, Branches, Stashes, etc—here for easier view management.\n\n[Continue](command:gitlens.views.scm.grouped.welcome.dismiss)\n\nPrefer them separate? [Restore views to previous locations](command:gitlens.views.scm.grouped.welcome.restore)\n\nUse the tabs above to navigate, or detach the views you want to keep separated. You can regroup them anytime using the 'x' in the view header.",
-			"translation": "GitLens 会在这里将许多相关视图（提交、分支、贮藏等）分组，以便更轻松地管理视图。\n\n[继续](command:gitlens.views.scm.grouped.welcome.dismiss)\n\n更喜欢分开展示？[将视图恢复到先前的位置](command:gitlens.views.scm.grouped.welcome.restore)\n\n使用上方标签页进行导航，或分离你想保持独立的视图。你可以随时使用视图标题中的 “x” 重新编组它们。",
+			"translation": "GitLens 会在这里将许多相关视图（提交、分支、储藏等）分组，从而更轻松地管理视图。\n\n[继续](command:gitlens.views.scm.grouped.welcome.dismiss)\n\n更喜欢分开展示？[将视图恢复到先前的位置](command:gitlens.views.scm.grouped.welcome.restore)\n\n使用上方标签页进行导航，或分离你想保持独立的视图。可以随时使用视图标题中的 “x” 重新编组它们。",
 			"format": "markdown",
 			"slots": []
 		},
@@ -535,7 +535,7 @@
 			"id": "message.0643b7bb06a73c9cfee9ce58160e2243041b203c912a09c3357f7fa058e8b770",
 			"kind": "literal",
 			"source": "Specifies whether to delay loading commit file details until required. This can improve performance when opening repositories with large histories, but causes more incremental Git calls",
-			"translation": "指定是否延迟到需要时再加载提交文件详情。这可以提升打开大型历史仓库时的性能，但会带来更多渐进式 Git 调用"
+			"translation": "指定是否延迟到需要时再加载提交文件详情。这可提升打开大历史仓库时的性能，但会增加增量 Git 调用"
 		},
 		{
 			"id": "message.066246fcb420587de1734acd283a5f12243295bb2fe018d8d178467889988fea",
@@ -840,7 +840,7 @@
 			"id": "message.0909f5ab6502769bc6e5d0fc906b13857ccf0c2ac04c5945336a06c836e022bd",
 			"kind": "rich",
 			"source": "Specifies the format of stashes in the views. See [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens) in the GitLens docs",
-			"translation": "指定视图中贮藏的格式。请参阅 GitLens 文档中的 [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens)",
+			"translation": "指定视图中储藏的格式。请参阅 GitLens 文档中的 [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens)",
 			"format": "markdown",
 			"slots": []
 		},
@@ -914,7 +914,7 @@
 			"id": "message.09e1b6420efc4af3cf203d948f9957d7e0501112eb124fda9e31a95a704cc1ac",
 			"kind": "literal",
 			"source": "Explain Working Changes (Preview)...",
-			"translation": "解释工作区更改（预览）..."
+			"translation": "解释工作更改（预览）..."
 		},
 		{
 			"id": "message.09f78e64fb34c6fc061d029cccad02dced0cfeb55e12b410e646edeefa4d465a",
@@ -959,7 +959,7 @@
 			"id": "message.0a3c60e4c469753a5f18cd04d7e1927ec2b323306a59bb428d5c20e044ad7bfd",
 			"kind": "literal",
 			"source": "Your Pro trial has ended. Please upgrade for full access to Launchpad and other Pro features.",
-			"translation": "你的 Pro 试用已结束。请升级以完整访问启动台和其他 Pro 功能。"
+			"translation": "你的 Pro 试用已结束。升级以完整访问启动台和其他 Pro 功能。"
 		},
 		{
 			"id": "message.0a42844b138761b052410661d46c6d022b9321ac4e1384a820ddd8cb48329d44",
@@ -1280,13 +1280,13 @@
 			"id": "message.0de596e75a311e59dbfa83aad54de6f016125e50782682bc9313b70d27c5e13f",
 			"kind": "literal",
 			"source": "Pop Stash",
-			"translation": "弹出贮藏"
+			"translation": "弹出储藏"
 		},
 		{
 			"id": "message.0e2e008ad62d9d69d2078761881a6aa3b70f4f3f1dead07407a394821a0b9af8",
 			"kind": "literal",
 			"source": "Shows the Inspect",
-			"translation": "显示检查"
+			"translation": "显示详情"
 		},
 		{
 			"id": "message.0e590c6ae8ddbbd1f70e1755051b90ea69041ddbecd55f0254727ea367a06820",
@@ -1419,7 +1419,7 @@
 			"id": "message.0fc20a5474c9df1c05b8e0c600fea738a06b2b6906d3907ad19a139a17d3633a",
 			"kind": "literal",
 			"source": "Apply Stash",
-			"translation": "应用贮藏"
+			"translation": "应用储藏"
 		},
 		{
 			"id": "message.0fd04cdecf92a827faf6018215776bc8a0d6738dbefba467228b6e10519c08df",
@@ -1431,7 +1431,7 @@
 			"id": "message.0fd36dfc37d17adaa312aee9885256154fcedac7a05714d4ce8aa5f967e6bcb6",
 			"kind": "template",
 			"source": "You're using ${slot1} edition. Track code changes and see who made them with features like in-editor blame annotations, hovers, CodeLens, and more—completely free.",
-			"translation": "你当前使用的是 ${slot1} 版本。借助编辑器内追溯注解、悬停提示、CodeLens 等功能来跟踪代码更改并查看修改者，而且完全免费。",
+			"translation": "当前为 ${slot1} 版本。借助编辑器内追溯注解、悬停提示、CodeLens 等功能来跟踪代码更改并查看修改者，而且完全免费。",
 			"slots": [
 				"slot1"
 			]
@@ -1529,7 +1529,7 @@
 			"id": "message.1175708ea044ae6ba24d9e109a235a1d49a21ff97406c6befbec6887dac4adf0",
 			"kind": "literal",
 			"source": "Add a Stash All Changes command",
-			"translation": "添加“贮藏所有更改”命令"
+			"translation": "添加“储藏所有更改”命令"
 		},
 		{
 			"id": "message.11768e404bdeb0d0c77764a1fd15020975f1b4720397205bc9313db669855888",
@@ -1547,7 +1547,7 @@
 			"id": "message.119dc2ea5e6f378dda00007b7d1bd41c6883bd32534936737d7561668eff3798",
 			"kind": "literal",
 			"source": "Clear Author Filter",
-			"translation": "清除作者过滤器"
+			"translation": "清除作者筛选"
 		},
 		{
 			"id": "message.119e9dd0f0651d42601e4501ae25e38c7b6bc087a7575dded95bda6f78bd5327",
@@ -1613,7 +1613,7 @@
 			"id": "message.11ed73291b735343a62b7a43828fe93d5bba8887025234ed6ea6baffd1fe4355",
 			"kind": "literal",
 			"source": "Specifies whether to provide a _recent change_ CodeLens, showing the author and date of the most recent commit for the file or code block",
-			"translation": "指定是否提供 _recent change_ CodeLens，用于显示文件或代码块最近一次提交的作者和日期"
+			"translation": "指定是否提供 _最近更改_ CodeLens，用于显示文件或代码块最近一次提交的作者和日期"
 		},
 		{
 			"id": "message.11edab69f8c1088666299c8f88779c099e51965d2858177c338356ebe0371b4d",
@@ -1766,7 +1766,7 @@
 			"id": "message.1374778d453d847366dd35e506bd73fdd052325c8fb04787cb943140a7c738a1",
 			"kind": "literal",
 			"source": "Copy Link to File at Revision...",
-			"translation": "复制修订中文件的链接..."
+			"translation": "复制该版本文件的链接..."
 		},
 		{
 			"id": "message.137d042a989b3428f7aec5478910827dc9493d51df3bbbac35fce39f581f18a6",
@@ -1953,7 +1953,7 @@
 			"id": "message.152aef272556ff5d4ae6bb2d18007ca877c47ed418bded9a79fc004578242673",
 			"kind": "template",
 			"source": "Showing ${slot1} of ${slot2} files\nClick to show all files",
-			"translation": "正在显示 ${slot2} 个文件中的 ${slot1} 个\\n点击显示全部文件",
+			"translation": "正在显示 ${slot2} 个文件中的 ${slot1} 个\n点击显示全部文件",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -1969,7 +1969,7 @@
 			"id": "message.154198154c91a98c2f9d0e3aa7fe8b8063b58662d421dd0132e39586c5872565",
 			"kind": "literal",
 			"source": "Open All Changes with Common Base",
-			"translation": "打开与共同基点比较的所有更改"
+			"translation": "打开与共同基点的所有更改"
 		},
 		{
 			"id": "message.154c21b9f617dd6075486322d93e82ad95aa125bdd389b84e70ffe69943e5754",
@@ -1997,7 +1997,7 @@
 			"id": "message.15863f0f8747b0f534d2017511834ee1cc892817b914f86eaef55803e8c0e4ee",
 			"kind": "rich",
 			"source": "This setting is deprecated. Use the **GitLens: Enable Debug Logging** and **GitLens: Disable Debug Logging** commands, or the **Developer: Set Log Level...** command to control logging.",
-			"translation": "此设置已弃用。请改用 **GitLens: Enable Debug Logging** 和 **GitLens: Disable Debug Logging** 命令，或使用 **Developer: Set Log Level...** 命令来控制日志记录。",
+			"translation": "此设置已弃用。改用 **GitLens: Enable Debug Logging** 和 **GitLens: Disable Debug Logging** 命令，或使用 **Developer: Set Log Level...** 命令来控制日志记录。",
 			"format": "markdown",
 			"slots": []
 		},
@@ -2031,7 +2031,7 @@
 			"id": "message.15e5723d8ae7e36df96f0255cdba3b451dc3428bb63d2526cf13d12b5a87eb68",
 			"kind": "rich",
 			"source": "Thanks for installing GitLens and trying out GitLens Pro.\n\nYou're using **GitLens Community** edition.\nTrack code changes and see who made them with features like in-editor blame annotations, hovers, CodeLens, and more—completely free.\n\n**Unlock more powerful tools — Try GitLens Pro again** free for another 14 days.\n\n[Reactivate GitLens Pro Trial](command:gitlens.walkthrough.plus.reactivate)\n\nWith GitLens Pro, you can accelerate PR reviews, visualize code history in-depth, and enhance collaboration across your team. It's the perfect upgrade to streamline your VS Code workflow.",
-			"translation": "感谢你安装 GitLens 并试用 GitLens Pro。\n\n你当前使用的是 **GitLens Community** 版本。\n借助编辑器内追溯注解、悬停、CodeLens 等功能来跟踪代码更改并查看修改者，而且完全免费。\n\n**解锁更强大的工具 - 再次免费试用 GitLens Pro 14 天**\n\n[重新激活 GitLens Pro 试用](command:gitlens.walkthrough.plus.reactivate)\n\n通过 GitLens Pro，你可以加速拉取请求审查、更深入地可视化代码历史，并增强团队协作。它是精简 VS Code 工作流的理想升级。",
+			"translation": "感谢你安装 GitLens 并试用 GitLens Pro。\n\n当前为 **GitLens Community** 版本。\n借助编辑器内追溯注解、悬停、CodeLens 等功能来跟踪代码更改并查看修改者，而且完全免费。\n\n**解锁更强大的工具 - 再次免费试用 GitLens Pro 14 天**\n\n[重新激活 GitLens Pro 试用](command:gitlens.walkthrough.plus.reactivate)\n\n通过 GitLens Pro，可以加速拉取请求审查、更深入地可视化代码历史，并增强团队协作。它是精简 VS Code 工作流的理想升级。",
 			"format": "markdown",
 			"slots": []
 		},
@@ -2119,7 +2119,7 @@
 			"id": "message.169cf6345d33067d5733dfea5841c09e5c3a8e9b103dd78176348311f8e65278",
 			"kind": "literal",
 			"source": "Specifies how the _Stashes_ view will display file icons",
-			"translation": "指定 _贮藏_ 视图如何显示文件图标"
+			"translation": "指定 _储藏_ 视图如何显示文件图标"
 		},
 		{
 			"id": "message.169df88c335b318ce025bc8ced4a7d2f5af9097e5f5d1974ec89edd3a62077d9",
@@ -2182,7 +2182,7 @@
 			"id": "message.170ef796ceb65aeb3a947c4136888c914d2892fa6dd2f34dd4e9ad99924e4e1c",
 			"kind": "literal",
 			"source": "(Experimental) Specifies the preferred layout of for _Cloud Patches_",
-			"translation": "（实验性）指定 _Cloud Patches_ 的首选布局"
+			"translation": "（实验性）指定 _云补丁_ 的首选布局"
 		},
 		{
 			"id": "message.1713c72f3e8ab72be26afff04317736e46c35aa1226d734eadd85caa7e0ea217",
@@ -2206,7 +2206,7 @@
 			"id": "message.174fe6a76cda43b8410fe5a17d779b4c0e4d23db23e249e1febd41f65c605b1e",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Pull Request_ view",
-			"translation": "指定是否在 _拉取请求_ 视图中显示头像图像而不是提交（或状态）图标"
+			"translation": "指定是否在 _拉取请求_ 视图中显示头像而不是提交（或状态）图标"
 		},
 		{
 			"id": "message.175a9fe6d9813a483cb7817a092114d578c11d2d02250800072945162a4ab286",
@@ -2287,7 +2287,7 @@
 			"id": "message.18d25be1c8d2dc43343e084ff39250e2c1a063848e7703eba934fbdb56f462f4",
 			"kind": "literal",
 			"source": "Auto-fetch handled by VS Code Git",
-			"translation": "自动 fetch 由 VS Code Git 处理"
+			"translation": "自动获取由 VS Code Git 处理"
 		},
 		{
 			"id": "message.190633ffc25ab714795fc353c299ca9d4c430fa4e0248eb4cfa720099af455f7",
@@ -2305,7 +2305,7 @@
 			"id": "message.196116b8157cf21169e420f27d67937a72b2c249c4ef20874a813b1c09b304db",
 			"kind": "literal",
 			"source": "Specifies whether to show stashes in the _Commits_ view",
-			"translation": "指定是否在 _提交_ 视图中显示贮藏"
+			"translation": "指定是否在 _提交_ 视图中显示储藏"
 		},
 		{
 			"id": "message.19d1c2ead600e254fadb5afa93be5fe098d5d52c8739b7b41bf1f2c63caa3a0b",
@@ -2317,7 +2317,7 @@
 			"id": "message.19f0884881c3ae47ee7a75f1c26da4d08b1604498525688e96c43a11feb5d065",
 			"kind": "rich",
 			"source": "Specifies whether to auto-fetch the repository while the _Commit Graph_ is in view. The interval is controlled by the built-in `#git.autofetchPeriod#` setting. If `#git.autofetch#` is enabled, VS Code handles auto-fetching and this setting has no effect.",
-			"translation": "指定当 _提交图_ 可见时是否自动 fetch 仓库。间隔由内置 `#git.autofetchPeriod#` 设置控制。如果启用了 `#git.autofetch#`，VS Code 会处理自动 fetch，此设置不会生效。",
+			"translation": "指定当 _提交图_ 可见时是否自动获取仓库。间隔由内置 `#git.autofetchPeriod#` 设置控制。如果启用了 `#git.autofetch#`，VS Code 会处理自动获取，此设置不会生效。",
 			"format": "markdown",
 			"slots": []
 		},
@@ -2373,7 +2373,7 @@
 			"id": "message.1a8ce446f0da559de2e066be483760ca1d236307cd3c9bd83cbf4f58f481adf6",
 			"kind": "rich",
 			"source": "Specifies the description format of stashes in the views. See [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens) in the GitLens docs",
-			"translation": "指定视图中贮藏描述的格式。请参阅 GitLens 文档中的 [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens)",
+			"translation": "指定视图中储藏描述的格式。请参阅 GitLens 文档中的 [_Commit Tokens_](https://github.com/gitkraken/vscode-gitlens/wiki/Custom-Formatting#commit-tokens)",
 			"format": "markdown",
 			"slots": []
 		},
@@ -2390,13 +2390,13 @@
 			"id": "message.1aab36fe82ae722594b44f8558422baadd85b10650df9531e52f2b1652b74e55",
 			"kind": "literal",
 			"source": "Use autolinks to linkify external references, like Jira issues or Zendesk tickets, in commit messages.",
-			"translation": "使用自动链接在提交消息中将 Jira issues 或 Zendesk tickets 等外部引用转换为链接。"
+			"translation": "使用自动链接在提交消息中将 Jira 或 Zendesk 工单等外部引用转换为链接。"
 		},
 		{
 			"id": "message.1ab107a735d4bffb459d13230956d11764377ebcb7cd5b0091bc34ed505bb53f",
 			"kind": "literal",
 			"source": "Specifies whether to automatically refresh the _Repositories_ view when the repository or the file system changes",
-			"translation": "指定在仓库或文件系统发生变化时是否自动刷新 _Repositories_ 视图"
+			"translation": "指定在仓库或文件系统发生变化时是否自动刷新 _仓库_ 视图"
 		},
 		{
 			"id": "message.1ac93ad66ad0b621e3b76ea7e12941d6a5518fb86c93608fc6a78344d3c5f14b",
@@ -2471,13 +2471,13 @@
 			"id": "message.1b66222c5565e3b8781fa940dfcd713b555372242d3ae5488f714125c4176a13",
 			"kind": "literal",
 			"source": "Fetch from",
-			"translation": "从以下位置获取"
+			"translation": "获取自"
 		},
 		{
 			"id": "message.1b688d12e9f532da86cfeab6187048b344f05801dc329ee1f657d077c2123d0f",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of status icons in the _File History_ view",
-			"translation": "指定是否在 _文件历史_ 视图中显示头像图像而不是状态图标"
+			"translation": "指定是否在 _文件历史_ 视图中显示头像而不是状态图标"
 		},
 		{
 			"id": "message.1b9189f84225bb8696a6675187b30b39c65789cf05192501735ad8d77758d040",
@@ -2489,7 +2489,7 @@
 			"id": "message.1ba3c576ec72a699f7140ec80ff275b3265ffeb6ae9dc608a9fc021d1fe9457c",
 			"kind": "literal",
 			"source": "Detection may be stale. Rebase plan was modified after conflict check.",
-			"translation": "创建新分支"
+			"translation": "检测结果可能已过期。冲突检查后变基计划已被修改。"
 		},
 		{
 			"id": "message.1bfe7b3ef6168b17191bcd3160eb608289f273586d11accb92c72c87356994f4",
@@ -2507,7 +2507,7 @@
 			"id": "message.1c089355a6844b5c4e66c571e690263f703f565a6347f6d246acc86b0f4cb75d",
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with commits in the _File History_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _文件历史_ 视图中显示与提交关联的拉取请求（如果有）。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _文件历史_ 视图中显示与提交关联的拉取请求（如果有）。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.1c0fabee677f86a08ffa4bacdd0f8c6957a553449d41ccb29a03da0f0ca68b7e",
@@ -2535,7 +2535,7 @@
 			"id": "message.1c32f01894374def7b77b19b5924c62efafcf0c3284b4c66f4f698b0325c473c",
 			"kind": "rich",
 			"source": "Deprecated. Use `#gitlens.views.formats.files.description#` instead",
-			"translation": "已弃用。请改用 `#gitlens.views.formats.files.description#`",
+			"translation": "已弃用。改用 `#gitlens.views.formats.files.description#`",
 			"format": "markdown",
 			"slots": []
 		},
@@ -2555,7 +2555,7 @@
 			"id": "message.1c49873a21e84c5666e32ccf69efee90b4a5975f5400c29b04bd0d49e3c602a6",
 			"kind": "rich",
 			"source": "Navigate complex repositories with a searchable, color-coded commit timeline. Instantly understand branch relationships, authorship patterns, and commit sequences.\n\nSelect multiple commits to batch operations like cherry-picking or generate AI changelogs with a single command.\n\n[Discover your Commit Graph](command:gitlens.walkthrough.showGraph)",
-			"translation": "通过可搜索、带颜色编码的提交时间线导航复杂仓库，立即理解分支关系、作者模式和提交序列。\n\n你可以选择多个提交来批量执行如 cherry-pick 之类的操作，或通过一条命令生成 AI 更改日志。\n\n[探索你的提交图](command:gitlens.walkthrough.showGraph)",
+			"translation": "通过可搜索、带颜色编码的提交时间线导航复杂仓库，立即理解分支关系、作者模式和提交序列。\n\n选择多个提交可批量执行拣选等操作，或用一条命令生成 AI 变更日志。\n\n[探索你的提交图](command:gitlens.walkthrough.showGraph)",
 			"format": "markdown",
 			"slots": []
 		},
@@ -2563,7 +2563,7 @@
 			"id": "message.1c5be8361bf21928c04f433514c8ebe3237322b500aecf361aab59ad2091bb7c",
 			"kind": "literal",
 			"source": "As a GitLens Pro user, you have access to powerful tools that accelerate PR reviews, provide deeper code history visualizations, and streamline collaboration across your team.",
-			"translation": "作为 GitLens Pro 用户，你可以使用强大的工具来加速 PR 审查、获得更深入的代码历史可视化，并简化团队协作。"
+			"translation": "作为 GitLens Pro 用户，可以使用强大的工具来加速 PR 审查、获得更深入的代码历史可视化，并简化团队协作。"
 		},
 		{
 			"id": "message.1c9d3342a19f8b383469a2421354a588c625a63927b16106242c2ff5c9a901d9",
@@ -2692,7 +2692,7 @@
 			"id": "message.1d83246bb2a7282043d1f01c27d1340eb79c451e129cbbb889230312b7d197b6",
 			"kind": "literal",
 			"source": "Specifies whether to query for associated pull requests. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否查询关联的拉取请求。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否查询关联的拉取请求。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.1da636c8c1359e32d98f3189a2fa18b67152139e7f39752d30ca2f708b05bf8a",
@@ -2749,7 +2749,7 @@
 			"id": "message.1df4d5a0db5a3c7025a45204007fd827e1cac7c701e559c661735006bc974485",
 			"kind": "literal",
 			"source": "No working changes",
-			"translation": "无工作树更改"
+			"translation": "无工作更改"
 		},
 		{
 			"id": "message.1df5479cfb87688a52718990dd485e2ac377630624a0e0b44b1f084542e3c824",
@@ -2802,7 +2802,7 @@
 			"id": "message.1e568606f6f583521eb66afc0711deea922518501cafb84a7ab45c1c8c47de6c",
 			"kind": "literal",
 			"source": "Open File at Revision...",
-			"translation": "打开修订中的文件..."
+			"translation": "打开该版本的文件..."
 		},
 		{
 			"id": "message.1e5c71abdd13646e4effa577bbfa6cf320f7ac3eae6f1cb3715f241f95720d14",
@@ -2835,13 +2835,13 @@
 			"id": "message.1eb8c7bf6c0619c709a6d38be829ad5870b317b4081c9e22a4b4c87fde88ae24",
 			"kind": "literal",
 			"source": "Specifies whether to automatically reveal repositories in the _Repositories_ view when opening files",
-			"translation": "指定在打开文件时是否在 _Repositories_ 视图中自动定位对应仓库"
+			"translation": "指定在打开文件时是否在 _仓库_ 视图中自动定位对应仓库"
 		},
 		{
 			"id": "message.1ec6adcab97e6ad818f66ef8d31ddb88f1841728c1d12b2fbcf97d0f5b72802a",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Commits_ view",
-			"translation": "指定是否在 _提交_ 视图中显示头像图像而不是提交（或状态）图标"
+			"translation": "指定是否在 _提交_ 视图中显示头像而不是提交（或状态）图标"
 		},
 		{
 			"id": "message.1eda528f58b5e2fa5c9ebc3f7b4f3610822e8d4161dcf4a1096b7b303912acae",
@@ -2853,7 +2853,7 @@
 			"id": "message.1edb59c70333e7749e670605c1b617723b0b8b071c8f799fe5cc70aa0d644ac7",
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with commits in the _Remotes_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _远程_ 视图中显示与提交关联的拉取请求（如果有）。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _远程_ 视图中显示与提交关联的拉取请求（如果有）。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.1ee54a1249209f79790124409b5646ecbf8bfd55a3863366f5aafb67842e55ac",
@@ -2865,7 +2865,7 @@
 			"id": "message.1ee962653259c6e346f8758f8ee0ef8544549001bcf356506ebf846a655c5d79",
 			"kind": "literal",
 			"source": "Configure autolinks to linkify external references, like Jira or Zendesk tickets, in commit messages.",
-			"translation": "配置自动链接，以便在提交消息中将 Jira 或 Zendesk 工单等外部引用转换为链接。"
+			"translation": "配置自动链接，在提交消息中将 Jira 或 Zendesk 工单等外部引用转换为链接。"
 		},
 		{
 			"id": "message.1ef9e1882572c8650beab2e369ed6d374a0298a3c1f6dbf53c67ec202dec51ea",
@@ -2895,7 +2895,7 @@
 			"id": "message.1f736ce6d4538b2c292cb84fc459699e31645cc593125ea548c45fc3619b919e",
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with commits in the _Contributors_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _贡献者_ 视图中显示与提交关联的拉取请求（如果有）。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _贡献者_ 视图中显示与提交关联的拉取请求（如果有）。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.1f816022cb1fa90656f57ef42a3f4dcd6e1d8bbea3d2ebca93cd7e3205e280b3",
@@ -2928,7 +2928,7 @@
 			"id": "message.1fc276974b1a9b0e15074af17ea6370007b4d0f3ff8bf81dbdd0abda6c3ff7c8",
 			"kind": "literal",
 			"source": "Specifies whether to query for pull requests associated with the worktree branch and commits in the _Worktrees_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _工作树_ 视图中查询与工作树分支和提交关联的拉取请求。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _工作树_ 视图中查询与工作树分支和提交关联的拉取请求。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.1fc2e600b9af315f61e2979281ebfdf40b90986b13a724251ca99c39c29e79e4",
@@ -2978,7 +2978,7 @@
 			"id": "message.202da1c59d685a4e67c6fae981d4851a36da668e2d078d96913e9020b6a01656",
 			"kind": "rich",
 			"source": "Specifies when to switch between displaying files as a `tree` or `list` based on the number of files in a nesting level in the _Stashes_ view. Only applies when `#gitlens.views.stashes.files.layout#` is set to `auto`",
-			"translation": "指定在 _贮藏_ 视图中，何时根据某一嵌套层级中的文件数量在 `tree` 或 `list` 之间切换文件显示方式。仅当 `#gitlens.views.stashes.files.layout#` 设置为 `auto` 时适用",
+			"translation": "指定在 _储藏_ 视图中，何时根据某一嵌套层级中的文件数量在 `tree` 或 `list` 之间切换文件显示方式。仅当 `#gitlens.views.stashes.files.layout#` 设置为 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -3010,7 +3010,7 @@
 			"id": "message.206f1ac621fefc385df78e0ec3880a5f7878fe38c47993d1d9596128d6667d81",
 			"kind": "rich",
 			"source": "Sorts working changes by the `scm.defaultViewSortKey` setting",
-			"translation": "按 `scm.defaultViewSortKey` 设置对工作树更改排序",
+			"translation": "按 `scm.defaultViewSortKey` 设置对工作更改排序",
 			"format": "markdown",
 			"slots": []
 		},
@@ -3036,7 +3036,7 @@
 			"id": "message.2093411406b5cf5df7dc44ad3e4774cf96d7dcbe4a8be6ab38919afb1bb3e9db",
 			"kind": "literal",
 			"source": "Open File at Revision",
-			"translation": "打开修订中的文件"
+			"translation": "打开该版本的文件"
 		},
 		{
 			"id": "message.20f7bb75f02678b92a01438439f170b442e724605dd5d0458cb75971115abe54",
@@ -3097,7 +3097,7 @@
 			"id": "message.21a8a085a79e003d66b0c1afcf71bccc9ed702c0033cec2c0e2211c8d95bcdd4",
 			"kind": "literal",
 			"source": "Filter to a specific branch or tag (solo), or compare ranges to see unique commits",
-			"translation": "筛选到特定分支或标签（单个），或比较范围以查看唯一提交"
+			"translation": "筛选到特定分支或标签（单独），或比较范围以查看唯一提交"
 		},
 		{
 			"id": "message.21d008ae4627a4f37c6c3f5dc1fe846b83dcb2de9fe1ba5bc9594ec56d724af3",
@@ -3187,7 +3187,7 @@
 			"id": "message.22edca845cc42ada36d0cb46041c8cf69ade739e717059d513410167b5abf380",
 			"kind": "literal",
 			"source": "Rich details for commits and stashes are shown as you navigate:",
-			"translation": "导航时将显示提交和贮藏的详细信息："
+			"translation": "导航时将显示提交和储藏的详细信息："
 		},
 		{
 			"id": "message.230e1e1fe2761e62794543c61b2be909f26ebe37f86d304cb382926b00438737",
@@ -3259,13 +3259,13 @@
 			"id": "message.239b8cd7728daa18892757ae5e5c7cf9738e2aad0da26c9db1b4b3a25b06297a",
 			"kind": "literal",
 			"source": "Specifies whether to include working tree file status for each repository in the _Repositories_ view",
-			"translation": "指定是否在 _仓库_ 视图中包含每个仓库的工作区文件状态"
+			"translation": "指定是否在 _仓库_ 视图中包含每个仓库的工作树文件状态"
 		},
 		{
 			"id": "message.23a71ff96746ab0783351cc474fde9c7aac377e1f34d00e21cb5bf545a1f10c8",
 			"kind": "rich",
 			"source": "Deprecated. Use `gitlens.views.formats.commits.description` instead",
-			"translation": "已弃用。请改用 `gitlens.views.formats.commits.description`",
+			"translation": "已弃用。改用 `gitlens.views.formats.commits.description`",
 			"format": "markdown",
 			"slots": []
 		},
@@ -3279,7 +3279,7 @@
 			"id": "message.23ecdba7b446ab875c160b90f901d851414395f58d07d8429a711f832ca79b9f",
 			"kind": "template",
 			"source": "Your current branch ${slot1} is up to date with its merge target ${slot2}.",
-			"translation": "你当前的分支 ${slot1} 与其合并目标 ${slot2} 保持最新。",
+			"translation": "当前分支 ${slot1} 与其合并目标 ${slot2} 保持最新。",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -3436,7 +3436,7 @@
 			"id": "message.255be6da68980639ef2626e029b4a22ffa6899d10f96149974033ed2babca640",
 			"kind": "template",
 			"source": "${slot1} deleted",
-			"translation": "${slot1}已删除",
+			"translation": "${slot1} 已删除",
 			"slots": [
 				"slot1"
 			]
@@ -3522,7 +3522,7 @@
 			"id": "message.266c7d68474727779c605877e165f635efb05918aa5823b43540072a8e9ed637",
 			"kind": "literal",
 			"source": "Specifies whether to show a comparison of the current branch or the working tree with a user-selected reference (branch, tag, etc) in the _Commits_ view",
-			"translation": "指定是否在 _提交_ 视图中显示当前分支或工作区与用户所选引用（分支、标签等）的比较"
+			"translation": "指定是否在 _提交_ 视图中显示当前分支或工作树与用户所选引用（分支、标签等）的比较"
 		},
 		{
 			"id": "message.2678a14d9b23a7cc61293a304a27fa86741c48f0c9cffb07281655e5cc9d1088",
@@ -3596,7 +3596,7 @@
 			"id": "message.26c3672968f41f78630723b04331f3352f967c677cfb979309ccd17221edb807",
 			"kind": "template",
 			"source": "You can also ${slot1} to search every GitLens setting.",
-			"translation": "你也可以${slot1}来搜索所有 GitLens 设置。",
+			"translation": "你也可以 ${slot1} 来搜索所有 GitLens 设置。",
 			"slots": [
 				"slot1"
 			]
@@ -3605,13 +3605,13 @@
 			"id": "message.26ca50f3af33589552d19c2b89ba16fd35dc370ec6f236ac066379ce1964a8c5",
 			"kind": "literal",
 			"source": "Git Pop Stash...",
-			"translation": "Git 弹出贮藏..."
+			"translation": "Git 弹出储藏..."
 		},
 		{
 			"id": "message.26cb21b0aa1063afb808fafe3ebf89c55f8dead0e690c1632f125c2f11e57508",
 			"kind": "literal",
 			"source": "Detach Stashes View",
-			"translation": "分离贮藏视图"
+			"translation": "分离储藏视图"
 		},
 		{
 			"id": "message.26e02fddbc9a9907c3201e3a82748346c257c7b63946389985dd61d4f4588938",
@@ -3623,7 +3623,7 @@
 			"id": "message.26e0e9ce9233021b76466c24d8111ab360419445701dd098702fcc62b57346f2",
 			"kind": "literal",
 			"source": "Working changes",
-			"translation": "工作区更改"
+			"translation": "工作更改"
 		},
 		{
 			"id": "message.26e822be66a6eff6081216ed44900ccc23c54fe20b5daa2582b508d4d5cdcd75",
@@ -3687,7 +3687,7 @@
 			"id": "message.2723c8592f8f2ca030d083dc6dc96b95408ac840bf44a4117e6256b0b14285b3",
 			"kind": "literal",
 			"source": "Fetch All",
-			"translation": "全部抓取"
+			"translation": "全部获取"
 		},
 		{
 			"id": "message.27477adb834a3649aa91f1fc22083d8e593762be190760efd5abb85756c5555a",
@@ -3747,7 +3747,7 @@
 			"id": "message.27ba891bd1188b859741666056d75e9fe2353e30ae68bb47a0a78ad8d3ea8411",
 			"kind": "template",
 			"source": "Working Changes (${slot1})",
-			"translation": "工作区更改（${slot1}）",
+			"translation": "工作更改（${slot1}）",
 			"slots": [
 				"slot1"
 			]
@@ -3830,7 +3830,7 @@
 			"id": "message.28b5e44761bc385db28ea44b20b3a1b6112531b964119590b63c8a4677d5051e",
 			"kind": "literal",
 			"source": "Hide Remote Branch",
-			"translation": "隐藏远程 分支"
+			"translation": "隐藏远程分支"
 		},
 		{
 			"id": "message.28b87180b9bddc9a72a910bd6dd0e0cf51020c3c66b42b68b6310a207194b407",
@@ -3899,7 +3899,7 @@
 			"id": "message.297b287dfad59b16171b00d238c3e5dc4ea53a91a9211453c93178ac1e7f71bc",
 			"kind": "literal",
 			"source": "No merge base — commit history unavailable.",
-			"translation": "没有合并基准 - 无法获取提交历史。"
+			"translation": "没有合并基准 — 提交历史不可用。"
 		},
 		{
 			"id": "message.297caca40308bbefa07b2bac0ea2863cefcdeb55eef378228de0c223f38dcc94",
@@ -3947,7 +3947,7 @@
 			"id": "message.29d5faf0c3b43ab84807d1675c4080138fd9d4d9bf873fb0175496bea04a8d75",
 			"kind": "literal",
 			"source": "Opens editors beside the Visual File History when it is the active editor; otherwise opens in the active editor group",
-			"translation": "当 Visual File History 是活动编辑器时，在其旁边打开编辑器；否则在活动编辑器组中打开"
+			"translation": "当可视文件历史是活动编辑器时，在其旁边打开编辑器；否则在活动编辑器组中打开"
 		},
 		{
 			"id": "message.29d83df584285962ce26c99ad79e492ff31d4110474de1382e2a1645260d4db3",
@@ -4043,7 +4043,7 @@
 			"id": "message.2a89bec71fc0c5d47f50954b2107d056c3070339d0bef6c890e5070d2fd67049",
 			"kind": "literal",
 			"source": "To get the most out of your GitLens Pro experience, complete the walkthrough and visit our Help Center for in-depth guides.",
-			"translation": "为了充分发挥 GitLens Pro 的价值，请完成此引导并访问我们的帮助中心以获取深入指南。"
+			"translation": "完成引导并访问帮助中心获取深入指南，充分使用 GitLens Pro。"
 		},
 		{
 			"id": "message.2a8d0d68ddf728e321e0dd7fa0cdf2ae7a410340276bd33bf2e7c883f484c301",
@@ -4055,7 +4055,7 @@
 			"id": "message.2aaab03dc698ff98ab1a23b1399f2c823cedc65907ae12aa58399b5f3e805fe2",
 			"kind": "template",
 			"source": "${slot1} Jump to Working Changes",
-			"translation": "${slot1} 跳转到工作区更改",
+			"translation": "${slot1} 跳转到工作更改",
 			"slots": [
 				"slot1"
 			]
@@ -4118,7 +4118,7 @@
 			"id": "message.2bd55754ffb6985ff8787eb6505958bfd3c207ce4ca9f76f031b72f1693acc71",
 			"kind": "literal",
 			"source": "Git Drop Stash...",
-			"translation": "Git 丢弃贮藏..."
+			"translation": "Git 丢弃储藏..."
 		},
 		{
 			"id": "message.2be2be81d44c3a048a2ac19f6691e1e6960b581a7d08790ebf8aa75f8401f6c9",
@@ -4148,7 +4148,7 @@
 			"id": "message.2c35001f6a312600dcb3be1bee323a58bba6b41dcfbf672137ff8bfe3ef70771",
 			"kind": "literal",
 			"source": "Share as Cloud Patch...",
-			"translation": "作为云补丁共享..."
+			"translation": "共享为云补丁..."
 		},
 		{
 			"id": "message.2c421ccb6da89dc620f118a71b2c2bb42794e9115d1e945cd53a4741078a135d",
@@ -4187,7 +4187,7 @@
 			"id": "message.2c88ce351da63807eba0c58c4935c81db069c3a1057428236e5f9f45c148cedd",
 			"kind": "literal",
 			"source": "Specifies which editor group the _Interactive Rebase Editor_ opens in when it is automatically reopened on a paused rebase",
-			"translation": "指定在暂停的变基中自动重新打开 _交互式变基编辑器_ 时，它应打开在哪个编辑器组中"
+			"translation": "指定在暂停的变基中自动重新打开 _交互式变基编辑器_ 时，应打开到哪个编辑器组"
 		},
 		{
 			"id": "message.2c93600a78dfc412ab200afc6180c3095fa30fd0ee8459e4ed80aef7a610f894",
@@ -4211,7 +4211,7 @@
 			"id": "message.2ce5be005b0cabf414282062cfef093e4d48e9a6d2150a4ad5089f54bbf2ebcd",
 			"kind": "literal",
 			"source": "Showing commits per day",
-			"translation": "在迷你地图中显示每天的提交次数"
+			"translation": "正在按天显示提交"
 		},
 		{
 			"id": "message.2cfae239683a8492e60fe13366e744a933ed6fc759494a27a824ea46368706aa",
@@ -4405,7 +4405,7 @@
 			"id": "message.2fc4971c643d99ab29fac2a3d75496759e6cce35a6eded27c0e1975b64a13c9c",
 			"kind": "literal",
 			"source": "Generate Changelog (Preview)...",
-			"translation": "生成更改日志（预览）..."
+			"translation": "生成变更日志（预览）..."
 		},
 		{
 			"id": "message.2fd210c1e1ca23eaf1e8bd724b608708d74fe641a05b5c504fc507fb1f3a329e",
@@ -4456,7 +4456,7 @@
 			"id": "message.3080fe0e95f3864be4a82a40bb6913da6dd438d2f3e36f517c6c6f49a8058587",
 			"kind": "template",
 			"source": "For more options, open the ${slot1} and search for ${slot2}",
-			"translation": "如需更多选项，请打开 ${slot1} 并搜索 ${slot2}",
+			"translation": "更多选项可打开 ${slot1} 并搜索 ${slot2}",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -4472,7 +4472,7 @@
 			"id": "message.309e09be84cca37c24d4eb8b9cdb119bd0fe533ccff451b23911dcbcdef49bb4",
 			"kind": "template",
 			"source": "Stage changes above to ${slot1} ${slot2}",
-			"translation": "暂存上方更改以${slot1} ${slot2}",
+			"translation": "暂存上方更改以 ${slot1} ${slot2}",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -4580,13 +4580,13 @@
 			"id": "message.31c2238f2cae0cd96402b32a5835390d7ecbe0c09d302e549c92312652e6c70b",
 			"kind": "literal",
 			"source": "Open in Worktrees View",
-			"translation": "在 Worktrees 视图中打开"
+			"translation": "在工作树视图中打开"
 		},
 		{
 			"id": "message.31d08b0b5fa7a14c06a3348cbe73e3bd024d59284e002c5ea1b1a35ca3ed57bf",
 			"kind": "rich",
 			"source": "Deprecated. Use `gitlens.views.formats.files.description` instead",
-			"translation": "已弃用。请改用 `gitlens.views.formats.files.description`",
+			"translation": "已弃用。改用 `gitlens.views.formats.files.description`",
 			"format": "markdown",
 			"slots": []
 		},
@@ -4600,7 +4600,7 @@
 			"id": "message.31f05d94df34e775e0380df7918f66ed877d71a48a95831a65560061e9835fe1",
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with the current branch in the _Commits_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _提交_ 视图中显示与当前分支关联的拉取请求（如果有）。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _提交_ 视图中显示与当前分支关联的拉取请求（如果有）。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.320d08caba37c1a0b3dcf8eefb8f256dd682ff991fa9b50859940c880c0784c6",
@@ -4651,7 +4651,7 @@
 			"id": "message.326b157a4ed183c04f9e384ffc4c9d0a7a24e3beaacc3c2065f13838b66d8354",
 			"kind": "literal",
 			"source": "Group Stashes View",
-			"translation": "编组贮藏视图"
+			"translation": "编组储藏视图"
 		},
 		{
 			"id": "message.32b9430c20eb2f0c6d62115c94f93c78dabe30e5e485085205702a0629a1fda9",
@@ -4686,7 +4686,7 @@
 			"id": "message.32ed159861e69efd38ffac68ead6910ce59b477ebae9589511794efeccc63466",
 			"kind": "template",
 			"source": "?disabled= ${slot1} href= ${slot2} appearance=\"secondary\" density=\"compact\" > ${slot3} Publish (push) ${slot4} to ${slot5}",
-			"translation": "?disabled= ${slot1} href= ${slot2} appearance=\"secondary\" density=\"compact\" > ${slot3}将 ${slot4} 发布（push）到 ${slot5}",
+			"translation": "?disabled= ${slot1} href= ${slot2} appearance=\"secondary\" density=\"compact\" > ${slot3} 将 ${slot4} 发布（push）到 ${slot5}",
 			"slots": [
 				"slot1",
 				"slot2",
@@ -4755,19 +4755,19 @@
 			"id": "message.339d19493a9aba0e849095bc0768747b6ab3b28a41b9ef0b89a3c5e3051bfc9d",
 			"kind": "literal",
 			"source": "Specifies whether to query for pull requests associated with the current branch and commits in the _Commits_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _提交_ 视图中查询与当前分支和提交关联的拉取请求。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _提交_ 视图中查询与当前分支和提交关联的拉取请求。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.33a4c54504dd88d6401fcdedb66c370d389418d6e1eabb2f1be1ec98f4d031c8",
 			"kind": "literal",
 			"source": "Open Changes with Next Revision",
-			"translation": "打开与下一个修订比较的更改"
+			"translation": "打开与下一版本的更改"
 		},
 		{
 			"id": "message.33ac9c5d3e742dd3be3be0123dc2de1f819aac259c1e32b7c3551ef9bea5f59f",
 			"kind": "literal",
 			"source": "Specifies whether to query for pull requests associated with commits in the _Search & Compare_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _搜索与比较_ 视图中查询与提交关联的拉取请求。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _搜索与比较_ 视图中查询与提交关联的拉取请求。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.33c3c52fa1d306354d62852a5dea48dd16f3f1130da3697620cc0b9101ba8156",
@@ -4929,7 +4929,7 @@
 			"id": "message.35594b26fe34ebfe4fc182841d06a104cd01c24a20e7fdb5a6dd8981b776355e",
 			"kind": "literal",
 			"source": "This result is hidden or unable to be shown on the Commit Graph",
-			"translation": "此结果已隐藏或无法在 Commit Graph 中显示"
+			"translation": "此结果已隐藏或无法在提交图中显示"
 		},
 		{
 			"id": "message.3583412fb58c8c445c9d144f4ef1cf6f788064883376f9ba8c9bce225083f046",
@@ -5004,7 +5004,7 @@
 			"id": "message.3632a54259327aa7f1c558a5e3246683ad42d8e64ad3f953b632e1df8f115005",
 			"kind": "literal",
 			"source": "Show Account view",
-			"translation": "显示帐户视图"
+			"translation": "显示账户视图"
 		},
 		{
 			"id": "message.366c72bff1ba33a8f8b13c742c1c25800f740c4823cbd99636dc05e58b256d80",
@@ -5146,19 +5146,19 @@
 			"id": "message.37f5057902323be7ac23d39114c78946d5b42c4214f354d828fdf07ed7e07257",
 			"kind": "literal",
 			"source": "Hide Remote Branches",
-			"translation": "隐藏远程 分支"
+			"translation": "隐藏远程分支"
 		},
 		{
 			"id": "message.37f5d0e1708c6ecd3a198acf16ec7f27943ad55ed3a8530e5df98dc8b9af2611",
 			"kind": "literal",
 			"source": "Please select changes to apply",
-			"translation": "请选择要应用的更改"
+			"translation": "选择要应用的更改"
 		},
 		{
 			"id": "message.37f681708a9efcf33675050c4d300072924dd6eb94dc65edde63a4911ca1e3b7",
 			"kind": "literal",
 			"source": "Compares the current line commit with the working tree",
-			"translation": "将当前行提交与工作区进行比较"
+			"translation": "将当前行提交与工作树进行比较"
 		},
 		{
 			"id": "message.38170b74e3a6c0c023cbbf0d4794ce370942d01f7d092bc12339ecb9b199bc47",
@@ -5295,7 +5295,7 @@
 			"id": "message.39608c9bf027f4af2e86138eb8f3ecb21b309f7cf7b8bce46794c57145f6fcf4",
 			"kind": "rich",
 			"source": "Deprecated. Use `gitlens.views.formats.files.label` instead",
-			"translation": "已弃用。请改用 `gitlens.views.formats.files.label`",
+			"translation": "已弃用。改用 `gitlens.views.formats.files.label`",
 			"format": "markdown",
 			"slots": []
 		},
@@ -5327,7 +5327,7 @@
 			"id": "message.39b35a4e4f1ca08931f510a76cfeedf02a8a6bd4b054a17728ed42db130944de",
 			"kind": "template",
 			"source": "GitLens won't bind any keyboard shortcuts. Configure your own via the ${slot1} editor",
-			"translation": "GitLens 不会绑定任何键盘快捷方式。请通过 ${slot1} 编辑器自行配置",
+			"translation": "GitLens 不会绑定任何键盘快捷方式。通过 ${slot1} 编辑器自行配置",
 			"slots": [
 				"slot1"
 			]
@@ -5348,7 +5348,7 @@
 			"id": "message.3a1abddc9b1a77794d6e36962bc3b8574a1f79d37a807e800d6afcb6bd2a6b2d",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Cloud Workspaces_ view",
-			"translation": "指定是否在 _云工作区_ 视图中显示头像图像而不是提交（或状态）图标"
+			"translation": "指定是否在 _云工作区_ 视图中显示头像而不是提交（或状态）图标"
 		},
 		{
 			"id": "message.3a296c38708b4ae9d7ed7891e8947768e14f422b69f47408962ce18d7ff90a9b",
@@ -5372,7 +5372,7 @@
 			"id": "message.3a46a0c4369cd535abc35aa92cd935617f73eb2be8d6395dd35d61a0c32ae5ab",
 			"kind": "template",
 			"source": "${slot1} need your input",
-			"translation": "${slot1} 需要你提供信息",
+			"translation": "${slot1} 需要你反馈",
 			"slots": [
 				"slot1"
 			]
@@ -5399,13 +5399,13 @@
 			"id": "message.3a827e43006951baea1a6404519f4fa9d0d29f437945fff7874f1e20ef7d37f5",
 			"kind": "literal",
 			"source": "Bare worktree",
-			"translation": "裸工作树"
+			"translation": "纯工作树"
 		},
 		{
 			"id": "message.3a8ef55d6b407564344a289440b5c2b524075dc51052cf2eef013d6c83357b80",
 			"kind": "literal",
 			"source": "Check your inbox for a verification link, then refresh once you've verified.",
-			"translation": "请在收件箱中查看验证链接，完成验证后刷新。"
+			"translation": "在收件箱中查看验证链接，完成验证后刷新。"
 		},
 		{
 			"id": "message.3a9e740495d6f08077c3d20133b2145f1ef3c7390186c17c01663d51150e5265",
@@ -5432,13 +5432,13 @@
 			"id": "message.3acccd28ea54078cfc6ab5d3c38c2d011d957c71a36f415bb9f5fe403d5b7397",
 			"kind": "literal",
 			"source": "Run 'Review Files' first",
-			"translation": "请先运行“审阅文件”"
+			"translation": "先运行“审阅文件”"
 		},
 		{
 			"id": "message.3ada3138362cbd2585b2629d835b19e4eb6dbe95b6b1796ad90ba26bf4a3285d",
 			"kind": "literal",
 			"source": "Git Stash List...",
-			"translation": "Git 贮藏列表..."
+			"translation": "Git 储藏列表..."
 		},
 		{
 			"id": "message.3b18fda63da60400706eff773a55c62a83a975ea9c6c154f7f13d9178af8d2cb",
@@ -5456,7 +5456,7 @@
 			"id": "message.3b32e033a0b5b499342bc8e42945b3b7f2b832a8423a5bdb15f718b8d2850295",
 			"kind": "literal",
 			"source": "Stashes (5)",
-			"translation": "贮藏 (5)"
+			"translation": "储藏 (5)"
 		},
 		{
 			"id": "message.3b451ad63923af7afb19ef14e4d0d066616ee65bde9b7bdb480c1d5cc6c8d96d",
@@ -5474,7 +5474,7 @@
 			"id": "message.3ba70e7280e56fe8493712dc6d6dfd11ab6abf20c844655ea5d58126b47009b1",
 			"kind": "rich",
 			"source": "Compare a <branch, tag, or ref> with another <branch, tag, or ref>\n\n[Compare References...](command:gitlens.views.searchAndCompare.selectForCompare)",
-			"translation": "将一个<branch、tag 或 ref>与另一个<branch、tag 或 ref>进行比较\n\n[比较引用...](command:gitlens.views.searchAndCompare.selectForCompare)",
+			"translation": "将一个 <分支、标签或引用> 与另一个 <分支、标签或引用> 比较\n\n[比较引用...](command:gitlens.views.searchAndCompare.selectForCompare)",
 			"format": "markdown",
 			"slots": []
 		},
@@ -5589,7 +5589,7 @@
 			"id": "message.3ce4a69a9a8e9b545d9c02ecb4140d36124a499d5287ffd49120942d83a7b9db",
 			"kind": "rich",
 			"source": "Deprecated. Use `gitlens.views.formats.stashes.label` instead",
-			"translation": "已弃用。请改用 `gitlens.views.formats.stashes.label`",
+			"translation": "已弃用。改用 `gitlens.views.formats.stashes.label`",
 			"format": "markdown",
 			"slots": []
 		},
@@ -5609,7 +5609,7 @@
 			"id": "message.3d63b4d4556b32bebaa7654ff88732d34147d18ff7771e2186c286d73f6b1dd6",
 			"kind": "literal",
 			"source": "Open Changes with Working File (Worktree)",
-			"translation": "打开与工作树文件的更改比较"
+			"translation": "打开与工作文件的更改（工作树）"
 		},
 		{
 			"id": "message.3d69049865ff0fe73abc3fbb461b9bc3a23faab446e51eb7ea08044b428ee7da",
@@ -5648,7 +5648,7 @@
 			"id": "message.3dc4927f20c2d34521aa14dabe90322481328292283d9d24efcb31e4a999074e",
 			"kind": "literal",
 			"source": "Specifies whether to query for pull requests associated with branches and commits in the _Contributors_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _贡献者_ 视图中查询与分支和提交关联的拉取请求。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _贡献者_ 视图中查询与分支和提交关联的拉取请求。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.3dce509ee35f7dd8b16904c173c60b3179810e834e6b90e84756181c6f29aef2",
@@ -5674,7 +5674,7 @@
 			"id": "message.3dea557c4b8902751811ae550871c99d6084362a1821dc3164ceaa81f96bf5b0",
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, explore, and manage Git stashes",
-			"translation": "添加一个 ${slot1}，用于可视化、浏览和管理 Git 贮藏",
+			"translation": "添加一个 ${slot1}，用于可视化、浏览和管理 Git 储藏",
 			"slots": [
 				"slot1"
 			]
@@ -5722,7 +5722,7 @@
 			"id": "message.3e4e408f008fd0b30a1a9c2ae3cfe5458ea5d9fbfb7aa83786382423238b7047",
 			"kind": "template",
 			"source": "Resolve ${slot1} ${slot2} with AI. You'll be able to review each resolution before applying.",
-			"translation": "使用 AI 解决 ${slot1} ${slot2}。应用前你可以审阅每个解决方案。",
+			"translation": "使用 AI 解决 ${slot1} ${slot2}。应用前可以审阅每个解决方案。",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -5778,7 +5778,7 @@
 			"id": "message.3edb5da13134d5c3b89ae16d2ab1cf25cb468f1a56630b1b32d09d2bd94cc020",
 			"kind": "literal",
 			"source": "more rows when scrolling",
-			"translation": "行"
+			"translation": "滚动时更多行"
 		},
 		{
 			"id": "message.3edc9a1a07589302eae35ad31046b2b796eed526bb82a2ba79a04a75b5106781",
@@ -5823,7 +5823,7 @@
 			"id": "message.3f825d1c19982e716c2caaaa749aa58841bcfeae547f9964b10f9c7b961e2038",
 			"kind": "literal",
 			"source": "Start scrolling at",
-			"translation": "开始滚动时距离边缘"
+			"translation": "开始滚动位置"
 		},
 		{
 			"id": "message.3f86a9517b16a6559e0f396c4df58131f54b95adfdf6b55f37649ea46c3668e3",
@@ -5852,7 +5852,7 @@
 			"id": "message.3fd959958cdadbc7db9c76da339f0a6bd6773550d143c08fd4d9e4e434a8623d",
 			"kind": "literal",
 			"source": "Hide Stash Markers",
-			"translation": "隐藏贮藏标记"
+			"translation": "隐藏储藏标记"
 		},
 		{
 			"id": "message.3fd9a177319fe94730ea81ac57be33beb890c681232f9aae55205e480e4b342b",
@@ -6048,7 +6048,7 @@
 			"id": "message.41e81dd29904c7354de5a3a55e42eb02f9800c55287f2b1d9ec9bc8f1a34d1e9",
 			"kind": "literal",
 			"source": "Needs your input",
-			"translation": "需要你提供信息"
+			"translation": "需要你反馈"
 		},
 		{
 			"id": "message.41e9dd2f4cd685ae87d5d042b7da90252b8a185ff3addf39b7ccaaada33367f0",
@@ -6139,7 +6139,7 @@
 			"id": "message.42cda70e850651b427f289ab5c18f810b826d8bee33d201307e564b5ddf2be5f",
 			"kind": "literal",
 			"source": "Add revision history navigation commands",
-			"translation": "添加修订历史导航命令"
+			"translation": "添加版本历史导航命令"
 		},
 		{
 			"id": "message.42d51130bb2291cc0a1bdce04ad2d4882f4b34ea5e512f53074aaa4ec8d12115",
@@ -6208,7 +6208,7 @@
 			"id": "message.438b10f165ca9005b50b7c9ec1f455ce64f1cccf737b394defdabc3bbc18c160",
 			"kind": "literal",
 			"source": "as a list",
-			"translation": "以列表显示"
+			"translation": "列表"
 		},
 		{
 			"id": "message.438cbe10f6f2fa72afdc2f4c01bfcb0c3a00dce8995cbc0458f37eb23da35584",
@@ -6256,13 +6256,13 @@
 			"id": "message.447b369cea1e5ada9bc5212ea16a1f30859c467cd0e7e7ac26326a6b1a6a81ba",
 			"kind": "literal",
 			"source": "The working changes view of the details panel is your workflow guide. Selecting on a working changes row surfaces the next action that keeps the loop moving: respond to an awaiting agent, push, open a PR, resolve a conflict, finish the rebase. Nothing in flight? The integrated Launchpad points you to the next PR or issue worth picking up.",
-			"translation": "详情面板中的工作区更改视图是你的工作流指南。选择工作区更改行会显示推动流程继续的下一步操作：响应等待中的代理、push、打开 PR、解决冲突或完成变基。当前没有进行中的事项？集成的启动台会指向下一个值得处理的 PR 或 Issue。"
+			"translation": "详情面板中的工作更改视图是你的工作流指南。选择工作更改行会显示推动流程继续的下一步操作：响应等待中的代理、推送、打开 PR、解决冲突或完成变基。当前没有进行中的事项？集成的启动台会指向下一个值得处理的 PR 或 Issue。"
 		},
 		{
 			"id": "message.4495f129e92f231c019698e5ab5b53827cdf3afd9469ccb36043bd0661357d96",
 			"kind": "literal",
 			"source": "Working changes have changed since this review was generated.",
-			"translation": "自生成此审阅以来，工作区更改已发生变化。"
+			"translation": "自生成此审阅以来，工作更改已发生变化。"
 		},
 		{
 			"id": "message.44a2ec4cf2012078d4a79df72ad3a7082e8664eb41c5b70dd968fd9bc443d57e",
@@ -6280,13 +6280,13 @@
 			"id": "message.44fd75f9461ed155b4ff5e636302d360aade1ef03a261b78dc7113261af11b6c",
 			"kind": "literal",
 			"source": "Stash All Changes...",
-			"translation": "贮藏所有更改..."
+			"translation": "储藏所有更改..."
 		},
 		{
 			"id": "message.4500b9fb9365956714f253fa10cbca570670c60eaf76f40551df614381f15cf8",
 			"kind": "literal",
 			"source": "Pro features that do not require an account",
-			"translation": "不需要帐户的 Pro 功能"
+			"translation": "不需要账户的 Pro 功能"
 		},
 		{
 			"id": "message.4501ddbc5b9003badaa8c04e17dfac81dac42155dc1a9bdf686c699788b56f48",
@@ -6301,7 +6301,7 @@
 			"id": "message.450f37ae9c96db59b27ffe1dc2cbe69036e3973d4e233f42c98e1a20fe937cf9",
 			"kind": "literal",
 			"source": "Specifies whether to show the experimental incoming activity for each repository in the _Cloud Workspaces_ view",
-			"translation": "指定是否在 _云工作区_ 视图中显示每个仓库的实验性的传入活动"
+			"translation": "指定是否在 _云工作区_ 视图中显示每个仓库的实验性传入活动"
 		},
 		{
 			"id": "message.453d1b38c64b12868360c5704dd83afddef53175e6388d7dc639db9681835527",
@@ -6365,7 +6365,7 @@
 			"id": "message.45bd2565f53f5fcfb2e8fe5823bef236d0e3d4d0c712941f5859ad445e0f2629",
 			"kind": "literal",
 			"source": "Copy Working Changes to Worktree...",
-			"translation": "将工作区更改复制到工作树..."
+			"translation": "将工作更改复制到工作树..."
 		},
 		{
 			"id": "message.45c646ab2a724e1fc327cbd76e5533dbfe0eadc84cee193021190e0303b968c5",
@@ -6405,13 +6405,13 @@
 			"id": "message.460aa2224fa8a7f3957cef5f0dc826338c62e7d745cac982233d2cd52a47356a",
 			"kind": "literal",
 			"source": "Specifies the command to be executed when an _authors_ CodeLens is clicked",
-			"translation": "指定点击_authors_ CodeLens时执行的命令"
+			"translation": "指定点击 _作者_ CodeLens 时执行的命令"
 		},
 		{
 			"id": "message.46385e099d5af595e86545a2291ef1b29f0fca79c7975311e86caf2571618fb5",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Search & Compare_ view",
-			"translation": "指定是否在 _搜索与比较_ 视图中显示头像图像而不是提交（或状态）图标"
+			"translation": "指定是否在 _搜索与比较_ 视图中显示头像而不是提交（或状态）图标"
 		},
 		{
 			"id": "message.4638b837cb8b3c3f84cb46e4c845807b9f3529a4ba50b62fc6400c3de2cd5aea",
@@ -6466,13 +6466,13 @@
 			"id": "message.4697b7cdd54219cd6b10a7f7dc68a4d8dfff07be01af43afd5b7914463211f98",
 			"kind": "literal",
 			"source": "Let AI organize your changes into well-formed commits with clear messages and descriptions that help reviewers.",
-			"translation": "让 AI 将你的更改整理为结构良好的提交，并生成清晰、有助于审查的消息和描述。"
+			"translation": "让 AI 将你的更改整理为结构良好的提交，并生成清晰、有助于审查的提交消息和描述。"
 		},
 		{
 			"id": "message.469a0de47384615ccb46d2998faea385023f89fa68e6c18f34290efd09701355",
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with commits in the _Cloud Workspaces_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _云工作区_ 视图中显示与提交关联的拉取请求（如果有）。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _云工作区_ 视图中显示与提交关联的拉取请求（如果有）。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.46baafe78a949fb06263e47fb6c77a472af79a870bd81882b3f3158e2b423f3b",
@@ -6490,13 +6490,13 @@
 			"id": "message.46e70146604c3d450299dc03e417088a834a1a0b1bc12c67ac565dcec6b8615a",
 			"kind": "literal",
 			"source": "Keep everything at your fingertips with Launchpad & Worktrees.",
-			"translation": "借助启动台和 Worktrees，将一切尽在掌握。"
+			"translation": "借助启动台与工作树，让一切尽在掌握。"
 		},
 		{
 			"id": "message.46fbf8fa40c765a5429134a257ade70c237b5d1596febc1f98b233b60399286d",
 			"kind": "literal",
 			"source": "Compare Working Tree with...",
-			"translation": "将工作区与...比较"
+			"translation": "将工作树与…比较"
 		},
 		{
 			"id": "message.4702faf391e3660cbb6becb8acabd3c3d30002573522c6a973a180bd702404f1",
@@ -6672,7 +6672,7 @@
 			"id": "message.49200520679bed29d538374ea006c50cb110892e92fd02a032ed81a877e8cb5a",
 			"kind": "literal",
 			"source": "Use the GitLens: Toggle Zen Mode command to toggle Zen mode",
-			"translation": "使用 GitLens：“切换禅模式”命令来切换禅模式"
+			"translation": "使用 GitLens：“切换禅模式”命令切换禅模式"
 		},
 		{
 			"id": "message.49253aa687e00b67868a27043afb4b872fa6820fa4be815c710efb808d19869a",
@@ -6724,7 +6724,7 @@
 			"id": "message.49b1dc516e568e6f91151c4c7809cfba44f5174769f63fe9999b28410e1fe642",
 			"kind": "literal",
 			"source": "Never shows the _Commit Details_ view automatically",
-			"translation": "绝不自动显示 _提交详情_ 视图"
+			"translation": "从不自动显示 _提交详情_ 视图"
 		},
 		{
 			"id": "message.49bd16c05f96c4b8ecbe48dbd7a489e7cefc9e8165a41f54066ebed1c8ed1891",
@@ -6739,7 +6739,7 @@
 			"id": "message.49cb3882bf6b2306b3bee74e4c2b3369587b812ec1213d4cfabcc8d430f7f7b3",
 			"kind": "literal",
 			"source": "Launchpad — organizes your pull requests into actionable groups to help you focus and keep your team unblocked.",
-			"translation": "启动台 - 将你的拉取请求组织为可执行的分组，帮助你聚焦工作并让团队保持畅通。"
+			"translation": "启动台 — 将拉取请求整理为可操作的分组，帮助你保持专注并避免阻塞团队。"
 		},
 		{
 			"id": "message.49cbfe5fab8147ef5cc09c4e3afdf0d984021aa5e67795a43277867fc0b5bf7e",
@@ -6880,7 +6880,7 @@
 			"id": "message.4bb220862e23c0f6149c2052d13fcda2d076e1777a0113e4f991a660bc2b3a03",
 			"kind": "literal",
 			"source": "Stash Unstaged Changes...",
-			"translation": "贮藏未暂存更改..."
+			"translation": "储藏未暂存更改..."
 		},
 		{
 			"id": "message.4bbc3efd5c025b9ca43b348a63b5168afc9b7deab4496f09622519924ccddeb3",
@@ -6892,7 +6892,7 @@
 			"id": "message.4bf42f5a82e467695f7d76da08b11362af9fc47546b99d80e5e4e87a541e64c0",
 			"kind": "template",
 			"source": "For more options, open the ${slot1} and search for ${slot2} or ${slot3}",
-			"translation": "如需更多选项，请打开 ${slot1} 并搜索 ${slot2} 或 ${slot3}",
+			"translation": "如需更多选项，打开 ${slot1} 并搜索 ${slot2} 或 ${slot3}",
 			"slots": [
 				"slot1",
 				"slot2",
@@ -6944,7 +6944,7 @@
 			"id": "message.4c3f99f1384e7d6314176a6891ea3077f8646ec5ac674c2b104179ba8f8e4e07",
 			"kind": "literal",
 			"source": "View previous file revisions",
-			"translation": "查看之前的文件修订"
+			"translation": "查看之前的文件版本"
 		},
 		{
 			"id": "message.4c6d883e9a6f52aa1fe04461527fa433e7ba1394fd0b8a7e89f07b220ba9b03f",
@@ -7038,7 +7038,7 @@
 			"id": "message.4d1d2a5b295350e36e89b990ed8028a9a11824eefc3ac20f1c6e267e54f7c905",
 			"kind": "literal",
 			"source": "Specifies whether to show associated issues on branches in the _Commit Graph_. Requires a connection to a supported issue service (e.g. GitHub)",
-			"translation": "指定是否在 _提交图_ 中显示分支上的关联 Issue。需要连接到受支持的 Issue 服务（例如 GitHub）"
+			"translation": "指定是否在 _提交图_ 中显示分支上的关联 Issue。需要连接到受支持的 Issue 服务（如 GitHub）"
 		},
 		{
 			"id": "message.4d5809f51d20ca126dcb352fae07023ba5bc3ac988702beb948dc4f47598c493",
@@ -7056,7 +7056,7 @@
 			"id": "message.4d7a2a0b9965c46388c9d69b8e58721a8377e3bf54384b77c8941c63e25637ff",
 			"kind": "template",
 			"source": "${slot1} in comparison ${slot2}${slot3}",
-			"translation": "${slot1} 位于比较 ${slot2}${slot3} 中",
+			"translation": "比较 ${slot2}${slot3} 中的 ${slot1}",
 			"slots": [
 				"slot1",
 				"slot2",
@@ -7215,7 +7215,7 @@
 			"id": "message.4f0f55a4e125b902f6952927763058f04a6cd1bdc6f28105ee04000070a5677b",
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with the worktree branch in the _Worktrees_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _工作树_ 视图中显示与工作树分支关联的拉取请求（如果有）。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _工作树_ 视图中显示与工作树分支关联的拉取请求（如果有）。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.4f2640df1d187088ae3a0df01c86728047124a1b0557b38b87cd6bfd4920cf1a",
@@ -7302,7 +7302,7 @@
 			"id": "message.4fe796e2d7df4c4394f82dde7d5ea74c93f3e99e4af412467fda5555576af07b",
 			"kind": "literal",
 			"source": "Open Changes with Revision...",
-			"translation": "打开与指定修订比较的更改..."
+			"translation": "打开与指定版本的更改..."
 		},
 		{
 			"id": "message.501024d04724ac7c7a272c3734d97cb4f71d1f3712d7fa4596d3d3096521573c",
@@ -7320,7 +7320,7 @@
 			"id": "message.504f835abe89258e20c9f000ba697d1ec4743cb7db15eebf0487f4e51264518f",
 			"kind": "literal",
 			"source": "Stash label format",
-			"translation": "贮藏标签格式"
+			"translation": "储藏标签格式"
 		},
 		{
 			"id": "message.5081277b6144960373786c5346610b9a31777df2834c44cd25d561ef8743e56e",
@@ -7445,13 +7445,13 @@
 			"id": "message.518c37b72a3eeec10f2398383905a08782172b76e855d91bb888a1535a8b75f5",
 			"kind": "literal",
 			"source": "opens changes with the previous revision",
-			"translation": "打开与上一个版本的更改对比"
+			"translation": "打开与上一版本的更改"
 		},
 		{
 			"id": "message.519e834a96494f798e9f6430271bc51b5c6bde1b0791214dcd030402ddc62980",
 			"kind": "literal",
 			"source": "Specifies the string to be shown in place of both the _recent change_ and _authors_ CodeLens when there are unsaved changes",
-			"translation": "指定在存在未保存更改时，用于替代 _recent change_ 和 _authors_ CodeLens 显示的字符串"
+			"translation": "指定在存在未保存更改时，用于替换 _最近更改_ 和 _作者_ CodeLens 显示的字符串"
 		},
 		{
 			"id": "message.51a0ff2a7e49b433f3292b96bd81ee1524b73e08427f087b9444bac997b305cd",
@@ -7529,7 +7529,7 @@
 			"id": "message.523f1aef1cbfd29387c1b03fcc2a15ea68d3a9c431cf17949e5ceaa624dcb373",
 			"kind": "literal",
 			"source": "Unpin this Commit Restores Automatic Following",
-			"translation": "取消固定此提交 恢复自动跟随"
+			"translation": "取消固定此提交，恢复自动跟随"
 		},
 		{
 			"id": "message.52692a00295e14805095660c9e1d09ac811415462572340f03710c4f95b278f7",
@@ -7541,7 +7541,7 @@
 			"id": "message.528e90e6b47f33b59cb8e82f0db3555b3e6a6c61e5fcde2210e45a4892de1d2d",
 			"kind": "literal",
 			"source": "Specifies whether to try to collapse the opened worktrees into a single (common) repository in the views when possible",
-			"translation": "指定在可能时是否尝试将已打开的工作树折叠为视图中的单个（公共）仓库"
+			"translation": "指定在可能时是否尝试将已打开的工作树折叠为视图中的单个（共用）仓库"
 		},
 		{
 			"id": "message.528f2a39671ef4cab796a1e0d6c03ad784d25c4941bb29c638e2dcf774a5e26b",
@@ -7617,7 +7617,7 @@
 			"id": "message.532b75947bc2ab6ac82f47f374dae2c320b256a22bef8aa3909459d6851e8914",
 			"kind": "template",
 			"source": "Your current branch ${slot1} is ${slot2} behind its merge target ${slot3}.",
-			"translation": "你当前的分支 ${slot1} 比其合并目标 ${slot3} 落后 ${slot2}。",
+			"translation": "当前分支 ${slot1} 比其合并目标 ${slot3} 落后 ${slot2}。",
 			"slots": [
 				"slot1",
 				"slot2",
@@ -7628,19 +7628,19 @@
 			"id": "message.53358b0eaa2d5c7e51b7481bb682fd981d20988a4a70011e23e8067d95162888",
 			"kind": "literal",
 			"source": "Open Directory Compare (difftool) with...",
-			"translation": "打开与...的目录比较（difftool）"
+			"translation": "使用 difftool 与…比较目录"
 		},
 		{
 			"id": "message.534ca44ca48234193a0d663d630acf6378699519eb046537b7eb72121bc2f20f",
 			"kind": "literal",
 			"source": "Show Remote Branches",
-			"translation": "显示远程 分支"
+			"translation": "显示远程分支"
 		},
 		{
 			"id": "message.53666f308d1e3284f34e9bb0e0eca1893f745ad6569812eefc11b6891f313fc5",
 			"kind": "literal",
 			"source": "Specifies whether to query for pull requests associated with each branch and commits in the _Branches_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _分支_ 视图中查询与每个分支和提交关联的拉取请求。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _分支_ 视图中查询与每个分支和提交关联的拉取请求。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.5370e46b63872b95c41f45bd19be14a8ae9d717a0b62069af4ae93b8211dade1",
@@ -7727,7 +7727,7 @@
 			"id": "message.5425698b20cd41f376a7a3600e1267d2d8b67885970975d1f5435ea65e97c31d",
 			"kind": "literal",
 			"source": "Specifies whether to include working tree file status for each repository in the _Cloud Workspaces_ view",
-			"translation": "指定是否在 _云工作区_ 视图中包含每个仓库的工作区文件状态"
+			"translation": "指定是否在 _云工作区_ 视图中包含每个仓库的工作树文件状态"
 		},
 		{
 			"id": "message.54402ccda663905c5fdcb8de070694d4f553e53840f2e41e25ab8a2fe8ef645e",
@@ -7739,13 +7739,13 @@
 			"id": "message.54477369443226be4458d66bad6fa7eb596a364dc479aaf9d42e22d64970c3fd",
 			"kind": "literal",
 			"source": "Open File at Revision from...",
-			"translation": "从...打开修订中的文件"
+			"translation": "从...打开该版本的文件"
 		},
 		{
 			"id": "message.5463553c483053e6641eda28be7e097faf36855222be611005705e75e48a1627",
 			"kind": "literal",
 			"source": "Sort by Last Fetched",
-			"translation": "按Last Fetched排序"
+			"translation": "按上次获取时间排序"
 		},
 		{
 			"id": "message.546fda17a79c03c2bfab367de651627e6e23e4bb21eb16ff3a4d232de14272d5",
@@ -7769,7 +7769,7 @@
 			"id": "message.54b302714d5d7c20dd7300dfc33447dce2a643c572f4a91b58c5ca99081d0489",
 			"kind": "literal",
 			"source": "Clear Filter",
-			"translation": "清除过滤器"
+			"translation": "清除筛选"
 		},
 		{
 			"id": "message.54ce0d9564c6bb16d1af22a750c3cbc657644d66349d41a3fe98c01651d2bd22",
@@ -7787,7 +7787,7 @@
 			"id": "message.54ef52dd1e3e93eab0c23543723fb7f55f3ce562070d1907edc7ab8dfca3573d",
 			"kind": "literal",
 			"source": "Hide Stashes View",
-			"translation": "隐藏贮藏视图"
+			"translation": "隐藏储藏视图"
 		},
 		{
 			"id": "message.54f7b1a4d2f5f0e92b5baf921f59d40426a082ae1d11ae0bccbe63dccf4caf55",
@@ -7820,7 +7820,7 @@
 			"id": "message.554351d54eaae67d7e248f0a61c556c7382d151f64776ec71c443dfa06adf248",
 			"kind": "literal",
 			"source": "Please close this tab and try again",
-			"translation": "请关闭此标签页后重试"
+			"translation": "关闭此标签页后重试"
 		},
 		{
 			"id": "message.556aadaa8faff3cc22d80c84f8e5839f15458301187b4922953ea9de8d6a0243",
@@ -7927,7 +7927,7 @@
 			"id": "message.56190c3bb9d48b099de861959d9b222a31693162ee9421152f1b9974c6d9d754",
 			"kind": "literal",
 			"source": "Please upgrade for full access to all GitLens Pro features:",
-			"translation": "请升级以完整访问所有 GitLens Pro 功能："
+			"translation": "升级以完整访问所有 GitLens Pro 功能："
 		},
 		{
 			"id": "message.562c40f53dd3ad36239e66cd20e583dbe1beb6777f374f11cf0892620b0ff910",
@@ -8007,7 +8007,7 @@
 			"id": "message.571e21f35a8ab736432d267e50f2dc43995a22d9d86305a9dec2a0254ac27a9d",
 			"kind": "rich",
 			"source": "[Worktrees](https://help.gitkraken.com/gitlens/side-bar/#worktrees-view-pro) ᴾᴿᴼ — minimize context switching by working on multiple branches simultaneously.",
-			"translation": "[工作树](https://help.gitkraken.com/gitlens/side-bar/#worktrees-view-pro) ᴾᴿᴼ - 允许你同时处理多个分支，从而减少上下文切换。",
+			"translation": "[工作树](https://help.gitkraken.com/gitlens/side-bar/#worktrees-view-pro) ᴾᴿᴼ — 同时在多个分支上工作，减少上下文切换。",
 			"format": "markdown",
 			"slots": []
 		},
@@ -8048,7 +8048,7 @@
 			"id": "message.579d4d217d45c8a9294cc6abe301701c4287e8609823ad3ab3b29f35c5b05c60",
 			"kind": "literal",
 			"source": "Create New Branch from",
-			"translation": "从以下位置创建新分支"
+			"translation": "从…创建新分支"
 		},
 		{
 			"id": "message.57af677b782c7b49084d142088ec4ad6d8f6c497535e46e7daf85e3a8bd8bcdc",
@@ -8066,7 +8066,7 @@
 			"id": "message.57c04c18506887ebbd489a565493bc91807a8851f637586de538da80f9e05a58",
 			"kind": "literal",
 			"source": ">Start Work on an Issue",
-			"translation": ">开始处理一个 Issue"
+			"translation": ">开始处理 Issue"
 		},
 		{
 			"id": "message.57cd957cf31e39d3bc97e6e508272ca3b6a1fde414f7ceb09a50a8f5f31dd7b8",
@@ -8123,7 +8123,7 @@
 			"id": "message.58350cceab790b82ce6c78f0cd18fa4c8ca8d8c5c6f738a7c8d0795ab62d7c13",
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with commits in the _Worktrees_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _工作树_ 视图中显示与提交关联的拉取请求（如果有）。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _工作树_ 视图中显示与提交关联的拉取请求（如果有）。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.583ca316ad0edc4cf16c2add6a3d506b4a6532d695d1f76be4ac31f0a52c4eaf",
@@ -8150,7 +8150,7 @@
 			"id": "message.5860a8dc60cc1b7a3ec8e567d2dddc437b1f5defc4c6ecd3f2fc03bd5ce800e0",
 			"kind": "template",
 			"source": "Use the ${slot1} command to toggle Zen mode",
-			"translation": "使用 ${slot1} 命令来切换禅模式",
+			"translation": "使用 ${slot1} 命令切换禅模式",
 			"slots": [
 				"slot1"
 			]
@@ -8230,7 +8230,7 @@
 			"id": "message.5908f7ca0955ff3f10566a926bd143d92dd64dcc38db34c0cbc667ea6c4d22f7",
 			"kind": "template",
 			"source": "Your current branch ${slot1} has ${slot2} been merged into its merge target's local branch ${slot3}.",
-			"translation": "你当前的分支 ${slot1} ${slot2}已被合并到其合并目标的本地分支 ${slot3}。",
+			"translation": "当前分支 ${slot1} ${slot2}已被合并到其合并目标的本地分支 ${slot3}。",
 			"slots": [
 				"slot1",
 				"slot2",
@@ -8348,7 +8348,7 @@
 			"id": "message.5a895b21461ec85d1d563ae9fc8e2b4b5cfae6a4ff3905d91fed540b50164bad",
 			"kind": "literal",
 			"source": "Stash Changes...",
-			"translation": "贮藏更改..."
+			"translation": "储藏更改..."
 		},
 		{
 			"id": "message.5a96107867e236458dd40ae1623357d4d294897f78086c102e611ec3fd6bc818",
@@ -8374,7 +8374,7 @@
 			"id": "message.5ab20358d432552b0e8deb28ee3d2e40b21bf5d2611eaa0e5017508645f34b1a",
 			"kind": "template",
 			"source": "${slot1} to see and manage your parallel agent work from GitLens.",
-			"translation": "${slot1} 以便从 GitLens 查看和管理你的并行代理工作。",
+			"translation": "${slot1}，从 GitLens 查看并管理并行代理工作。",
 			"slots": [
 				"slot1"
 			]
@@ -8427,7 +8427,7 @@
 			"id": "message.5b0665fe673fbc4c4e3d00203d962106b071e4d643964e9ea0d3d4fc4342ac77",
 			"kind": "literal",
 			"source": "Open Folder Changes with Revision...",
-			"translation": "打开与指定修订比较的文件夹更改..."
+			"translation": "打开与指定版本的文件夹更改..."
 		},
 		{
 			"id": "message.5b15b0da3a8a9c23a551d8e227a3ca18b8ad3dd8808c117dea3ae721f9c1653c",
@@ -8486,7 +8486,7 @@
 			"id": "message.5bcf0a44bd170bd52e645d311387fb6f8df4e1146a5c5892bcc6f94ee74f6b4b",
 			"kind": "literal",
 			"source": "View Files as Auto",
-			"translation": "以自动显示文件"
+			"translation": "自动显示文件"
 		},
 		{
 			"id": "message.5bd531cf056694c31bb624ccc3c2f564a362863827b42b2b7bac3ad680a119c9",
@@ -8530,13 +8530,13 @@
 			"id": "message.5c1a032236aa02b0e00007f9451a65ca7132232d73b2cab99c90978ed8573026",
 			"kind": "literal",
 			"source": "Add an Open Changes with submenu",
-			"translation": "添加“打开更改方式”子菜单"
+			"translation": "添加“打开与…的更改”子菜单"
 		},
 		{
 			"id": "message.5c1eabb7de309a3878e89138972b9207501d2688b951ba07f24ba51dd3394dd4",
 			"kind": "literal",
 			"source": "Inspect View",
-			"translation": "检查视图"
+			"translation": "详情视图"
 		},
 		{
 			"id": "message.5c3076e6dafcceee2099f2bbc9c47ddee6aab418ad8854d5b189fdee3600e316",
@@ -8559,7 +8559,7 @@
 			"id": "message.5c485d4e8488241eb05da84ddc4b83132023bb75c5e468253a8a875d934b9555",
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with commits in the _Branches_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _分支_ 视图中显示与提交关联的拉取请求（如果有）。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _分支_ 视图中显示与提交关联的拉取请求（如果有）。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.5c52094b903e57e1e10be4e27f753a7ca788495a8d9898870c08635c2add9259",
@@ -8571,7 +8571,7 @@
 			"id": "message.5c71231f9789da0979314d0877ddedeb0862b5ebb5a21566f3075617b1c4dcbd",
 			"kind": "literal",
 			"source": "Git Copy Working Changes to Worktree...",
-			"translation": "Git 将工作区更改复制到工作树..."
+			"translation": "Git 将工作更改复制到工作树..."
 		},
 		{
 			"id": "message.5c8730c3057afff98bce777d0a14ed0d3422fb3e8e249f241bc1bee8b09a2d6c",
@@ -8583,7 +8583,7 @@
 			"id": "message.5c9f0434a963d7d82f66733ff1d412bdff3bd35a93f0c62b62ec8d58a2419f21",
 			"kind": "template",
 			"source": "${slot1} dismissed finding ${slot2}",
-			"translation": "${slot1} 已忽略发现 ${slot2}",
+			"translation": "${slot1} 已忽略问题 ${slot2}",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -8631,13 +8631,13 @@
 			"id": "message.5cf01187c4397e3579aebe8b87c882b54d58606e6628721235882027b85296a3",
 			"kind": "literal",
 			"source": " other ",
-			"translation": " other "
+			"translation": " 其他 "
 		},
 		{
 			"id": "message.5d47dd648a0bda0070f62f5bbdd6cf777b044e7483c6c61f3134fb772a379188",
 			"kind": "literal",
 			"source": "To use GitLens, open a folder containing a git repository or clone from a URL from the Explorer.",
-			"translation": "要使用 GitLens，请打开一个包含 git 仓库的文件夹，或在资源管理器中通过 URL 克隆仓库。"
+			"translation": "要使用 GitLens，打开包含 git 仓库的文件夹，或在资源管理器中通过 URL 克隆。"
 		},
 		{
 			"id": "message.5d530949c16d23bf520cd72a414bbea19947e159dfad18d6465daf7c25557da0",
@@ -8787,7 +8787,7 @@
 			"id": "message.5ed5b5cc746e0e40b6508364fb1b00840029beaaaf0ba2e8f83bdcc98c977971",
 			"kind": "literal",
 			"source": "Specifies whether to show the stashes for each repository in the _Cloud Workspaces_ view",
-			"translation": "指定是否在 _云工作区_ 视图中显示每个仓库的贮藏"
+			"translation": "指定是否在 _云工作区_ 视图中显示每个仓库的储藏"
 		},
 		{
 			"id": "message.5ed654e326576837f4a51466116eab3b6f7d268816fd49e16eddf8aecc31736b",
@@ -8826,13 +8826,13 @@
 			"id": "message.5f5073173cbe7e9c247535b81e419ec47037737498b5368e5b02472f9d51d79b",
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with branches in the _Repositories_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _仓库_ 视图中显示与分支关联的拉取请求（如果有）。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _仓库_ 视图中显示与分支关联的拉取请求（如果有）。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.5f84fb47d4b54c0e0f9ed29f6bba224bd091de24a3bd26e716d19ae31bd6bd82",
 			"kind": "literal",
 			"source": "Pull from",
-			"translation": "从以下位置拉取"
+			"translation": "拉取自"
 		},
 		{
 			"id": "message.5f8c7672d765d412b98f17c0bf0072bac625d04538d27cd3e80f31192d71a026",
@@ -8876,7 +8876,7 @@
 			"id": "message.5feed46740e495deef6a927fa6c7880e4af5f3d18e2c611e72404a98cc011264",
 			"kind": "literal",
 			"source": "Directory Compare Working Tree to Here",
-			"translation": "将工作区与此处进行目录比较"
+			"translation": "将工作树与此处进行目录比较"
 		},
 		{
 			"id": "message.602eac881dff71b59d8a2c7323471a7cd6eb831a8a0ea5948a247537761d2c77",
@@ -8888,7 +8888,7 @@
 			"id": "message.6030bae9f02de408276107f7995d32f4b3b4dfbda3aa68d0153e36104c7a50ed",
 			"kind": "literal",
 			"source": "Hide Stashes on Branches",
-			"translation": "隐藏分支上的贮藏"
+			"translation": "隐藏分支上的储藏"
 		},
 		{
 			"id": "message.60324479763e5540747f551c727085d336ec3344af469a846b3b7de5e3c3b76a",
@@ -8970,7 +8970,7 @@
 			"id": "message.60dc5643cef3b4e3acb54c14aae76b55fd60522cd04e4196e31734899d5b0b13",
 			"kind": "literal",
 			"source": "Specifies whether to show a _Contributors_ section on comparison results in the views",
-			"translation": "指定是否在视图中的比较结果上显示 _Contributors_ 分区"
+			"translation": "指定是否在视图中的比较结果上显示 _贡献者_ 分区"
 		},
 		{
 			"id": "message.6103a661540c5b1c1c34021909bd6949e696cc846620025fa31ef8e5c71db231",
@@ -9024,7 +9024,7 @@
 			"id": "message.61a3161ca60e5cab4aaaa5401791e5514c4230aa337c2598936ee34f43153225",
 			"kind": "literal",
 			"source": "Filter commits to only show stashes",
-			"translation": "筛选提交，仅显示贮藏"
+			"translation": "筛选提交，仅显示储藏"
 		},
 		{
 			"id": "message.61a4280374c55d28c2deb4506b9d418a2506bdecd8c6add64b53bfad75560c00",
@@ -9087,7 +9087,7 @@
 			"id": "message.624c16c6068412435e5de97edc27047b12c4530bff6bc3bd86c06e938cc18408",
 			"kind": "literal",
 			"source": "Graph Filters",
-			"translation": "图表筛选"
+			"translation": "图筛选"
 		},
 		{
 			"id": "message.62719663b58b46ff0dc02e79c2b237eabc7c94dd4acb42a6c7891fbf55950872",
@@ -9153,7 +9153,7 @@
 			"id": "message.63670d3c1a15af294e6189176a7eaa05ab0e3e946045cc606e87b7daf469bea5",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Cloud Patches_ view",
-			"translation": "指定是否在 _云补丁_ 视图中显示头像图像而不是提交（或状态）图标"
+			"translation": "指定是否在 _云补丁_ 视图中显示头像而不是提交（或状态）图标"
 		},
 		{
 			"id": "message.637278916d0eef28301f78eec130ac27acc270351084ff5cefd86f9f2c73250d",
@@ -9215,7 +9215,7 @@
 			"id": "message.6448973dcb17337b935432322e7840287e440395f1b4c80c723bf32234b8d600",
 			"kind": "literal",
 			"source": " (always on without regular expressions)",
-			"translation": "（无需正则表达式时始终启用）"
+			"translation": "（不使用正则时始终开启）"
 		},
 		{
 			"id": "message.6459a740a5f0ccd77ee1f22baf67322dd156463ee79d0335a715b5aa3af16e0d",
@@ -9233,7 +9233,7 @@
 			"id": "message.645d938ac216aada4dba5bbd5de4d862a7352dc5f35e8eb028d7cfe32144c795",
 			"kind": "literal",
 			"source": "Open Files at Revision",
-			"translation": "打开修订中的文件"
+			"translation": "打开该版本的文件"
 		},
 		{
 			"id": "message.6467d0723c8964a86627b2664a3bfa5ec6843b950c16f42282f7a5f8207c680c",
@@ -9338,7 +9338,7 @@
 			"id": "message.6561d54e8c9742c2fc1d4ee2013020e034ca41da42f167cf272c6970ca6b78b0",
 			"kind": "template",
 			"source": "stashes in the ${slot1}",
-			"translation": "${slot1} 中的贮藏",
+			"translation": "${slot1} 中的储藏",
 			"slots": [
 				"slot1"
 			]
@@ -9437,7 +9437,7 @@
 			"id": "message.6662e54f5616da58d3af4f13f60c90f7556d9dab6fedc1b5c25bd8365d915e92",
 			"kind": "literal",
 			"source": "Requires a connection to a supported issue service (e.g. GitHub)",
-			"translation": "需要连接到受支持的 Issue 服务（例如 GitHub）"
+			"translation": "需要连接到受支持的 Issue 服务（如 GitHub）"
 		},
 		{
 			"id": "message.667200dbabd1be0055f01423318b1ff0aea78fca3447122dfc8e5ce581b36388",
@@ -9511,7 +9511,7 @@
 			"id": "message.670e1265fb263b023c2e6af71dca972b3ba8326d1a0e3be4fe41d1b2b507f1b4",
 			"kind": "literal",
 			"source": "Working changes details",
-			"translation": "工作区更改详情"
+			"translation": "工作更改详情"
 		},
 		{
 			"id": "message.670f8f2164cda007d4a17fb858a269fc05a03967d24cd2d09008a7547f6b7208",
@@ -9576,7 +9576,7 @@
 			"id": "message.67b2c2cd7a89a4575c5dfa0df7336dc7a6a85bef3e39f77454528c28b8a34bce",
 			"kind": "template",
 			"source": "${slot1} with Rebase",
-			"translation": "${slot1}并变基",
+			"translation": "${slot1} 并变基",
 			"slots": [
 				"slot1"
 			]
@@ -9597,7 +9597,7 @@
 			"id": "message.67c4fa44d8dc95338f9f8bb8e79f50651f98ad4021cc0a9560a4218e7aa30ba2",
 			"kind": "literal",
 			"source": "Specifies whether to provide information about the Pull Request (if any) that introduced the commit in the inline blame annotation. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在行内追溯注解中提供引入该提交的拉取请求（如果有）信息。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在行内追溯注解中提供引入该提交的拉取请求（如果有）信息。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.67e84317b584f778b9bb4e2982016dc8c7b6955fea327873b101d5d9d7ffbbe9",
@@ -9629,7 +9629,7 @@
 			"id": "message.6833e4f8f959baceee16c4c76d1c6c088fc59a62b1c58139c2ab6a7ac4fa3742",
 			"kind": "literal",
 			"source": "Shows an Inspect quick pick menu",
-			"translation": "显示检查快速选择菜单"
+			"translation": "显示详情快速选择菜单"
 		},
 		{
 			"id": "message.68416247ff7ed1cd496605e349cd4719246448dd5f26cdf038472df7ba783782",
@@ -9641,7 +9641,7 @@
 			"id": "message.685a2f3d0425503fcbd3514a4d4caffae451b77ac3a47f57e334bb6ceff12482",
 			"kind": "literal",
 			"source": "Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.685db76c97865ea4c3a95721a5d05a9441346ad88db724cbd2e28231783c76af",
@@ -9655,7 +9655,7 @@
 			"id": "message.685f4a9658912a327d5cc46655fa12b1d78f4b4b55506179d6c91a7729f26993",
 			"kind": "literal",
 			"source": "⚠ Worktrees are not supported by your version of Git. Please upgrade to a more recent version.",
-			"translation": "⚠ 你的 Git 版本不支持工作树。请升级到较新的版本。"
+			"translation": "⚠ 你的 Git 版本不支持工作树。升级到较新版本。"
 		},
 		{
 			"id": "message.686048c1a7c98fcfd41d83c680b0cee777712be87755db4ee081cdb119b1d9c6",
@@ -9687,7 +9687,7 @@
 			"id": "message.687493645b8a1d9ced0aa471f8253ebc3c122ec44602497e0e73d65515e42551",
 			"kind": "literal",
 			"source": "Select multiple commits to batch operations like cherry-picking or generate AI changelogs with a single command.",
-			"translation": "你可以选择多个提交来批量执行如 cherry-pick 之类的操作，或通过一条命令生成 AI 更改日志。"
+			"translation": "选择多个提交可批量执行拣选等操作，或用一条命令生成 AI 变更日志。"
 		},
 		{
 			"id": "message.68a16a1bf637e38456c8bc350ab20942e9beb628cbab15a2d3cd1cf4544e9456",
@@ -9762,13 +9762,13 @@
 			"id": "message.69a96f032a621c06910c1aac4390614e3896097abf19cb528fb3e9d29c2e2711",
 			"kind": "literal",
 			"source": "Compare to/from HEAD",
-			"translation": "与/从 HEAD 比较"
+			"translation": "相对 HEAD 比较"
 		},
 		{
 			"id": "message.69ad8ff4c4e103886e8d6d286487c625adb44b8e87d9c4374fbc3d1b3502d415",
 			"kind": "literal",
 			"source": "opens the file revision on the remote service (when available)",
-			"translation": "在远程服务上打开该文件修订（如果可用）"
+			"translation": "在远程服务上打开该文件版本（如果可用）"
 		},
 		{
 			"id": "message.69ae7a269146deb07d0b917f80bae430199d5e836e950711b83b10ccda7a4854",
@@ -9786,7 +9786,7 @@
 			"id": "message.69c7a365831f487d667b7eec28f1fddb977b55a1b7431ec0602300715cfadb34",
 			"kind": "literal",
 			"source": "Specifies the command to be executed when a _recent change_ CodeLens is clicked",
-			"translation": "指定点击_recent change_ CodeLens时执行的命令"
+			"translation": "指定点击 _最近更改_ CodeLens 时执行的命令"
 		},
 		{
 			"id": "message.69e7048e5e344e491e09ee8769dd42170c3e932fc9f8bc6f2e8ad1e2abdf1721",
@@ -9837,7 +9837,7 @@
 			"id": "message.6a4344f5df72923e9f27086230be078bccc18f9bda1eda7d5f73f17c9f9ac903",
 			"kind": "literal",
 			"source": "Show Revision Commit",
-			"translation": "显示修订提交"
+			"translation": "显示版本提交"
 		},
 		{
 			"id": "message.6a47dd80876ae8cb4f9eb175bfbd4fb5ae09001823f5761cfaa7b056795fdc7f",
@@ -9849,7 +9849,7 @@
 			"id": "message.6a6efaa8c2448b2acf5b4efee8309b28cab07551835c56e9b8354c9d60bec053",
 			"kind": "literal",
 			"source": "Filter by commit type — view only stashes or branch & tag tips",
-			"translation": "按提交类型筛选，仅查看贮藏或分支与标签提示"
+			"translation": "按提交类型筛选 — 仅查看储藏，或分支与标签 tip"
 		},
 		{
 			"id": "message.6a87606b248212d836c9c17f02213c7990f39251c170652abd61fe66f8177215",
@@ -9909,7 +9909,7 @@
 			"id": "message.6b128d91da2de3525ac19f9f67e9f2da702e18b6dc647c4affcfee60777edbaf",
 			"kind": "literal",
 			"source": "Fix minimap sparkline",
-			"translation": "修复迷你图折线图"
+			"translation": "修复迷你地图折线图"
 		},
 		{
 			"id": "message.6b172eb3feccbe6a74964595f589c2278a0b19c00313aa2c31bb09eb246c4175",
@@ -9933,7 +9933,7 @@
 			"id": "message.6b4027f041732aa85da5efd2dff879b5809b821c8f6035a15c406874ff213d5c",
 			"kind": "literal",
 			"source": "Show Inspect view",
-			"translation": "显示检查视图"
+			"translation": "显示详情视图"
 		},
 		{
 			"id": "message.6b5904c62b3f72d8f44fee03a6b614db288e4b1a3ce50b5bd33b4cdcd27ead07",
@@ -9993,7 +9993,7 @@
 			"id": "message.6bb6c4bd12934ced5b22390b1bfbe370b5f5cdbe046ee8693fdcef43cf9d818d",
 			"kind": "literal",
 			"source": "Compare Working Tree to Common Base",
-			"translation": "将工作区与共同基点比较"
+			"translation": "将工作树与共同基点比较"
 		},
 		{
 			"id": "message.6bba81d58b4d6c38911fae84729584664df2ba979b566406428035528614aa46",
@@ -10023,7 +10023,7 @@
 			"id": "message.6c57d85a60aae2fc72afdb9ee669c54cba3dc1082cf6cad73c708bfb95c150f8",
 			"kind": "rich",
 			"source": "Specifies the VS Code provided model to use for GitLens' AI features, formatted as `provider:model`",
-			"translation": "指定用于 GitLens AI 功能的 VS Code 提供模型，格式为 `provider:model`",
+			"translation": "指定用于 GitLens AI 功能的 VS Code 提供的模型，格式为 `provider:model`",
 			"format": "markdown",
 			"slots": []
 		},
@@ -10057,7 +10057,7 @@
 			"id": "message.6c9df7fedd274098ddc94293f5d7b3d54d7ac346b3d15b6c1e0130258b18ac4d",
 			"kind": "literal",
 			"source": "Explain Stash Changes (Preview)...",
-			"translation": "解释贮藏更改（预览）..."
+			"translation": "解释储藏更改（预览）..."
 		},
 		{
 			"id": "message.6cbf6613272c1d70f48f57ab3179a34e65a11f62266e8821d8d2f88a2884e5be",
@@ -10105,7 +10105,7 @@
 			"id": "message.6d730ab1e6e4601fda850544dbababd9c454baaf2c5f6292e437ae77e0397373",
 			"kind": "literal",
 			"source": "Never open the new worktree",
-			"translation": "绝不打开新工作树"
+			"translation": "从不打开新工作树"
 		},
 		{
 			"id": "message.6d81b67ea3575ea18e4b0158bf49d7e62680b37a9cb2904e9528f300daa6ed8c",
@@ -10127,7 +10127,7 @@
 			"id": "message.6d9879ef3833b2d0980c63ed1e452d96af60c9df6bb652443eea83a87b6fc7a1",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of status icons in the _Line History_ view",
-			"translation": "指定是否在 _行历史_ 视图中显示头像图像而不是状态图标"
+			"translation": "指定是否在 _行历史_ 视图中显示头像而不是状态图标"
 		},
 		{
 			"id": "message.6db6d0d85c4244a19afc134f18743d0c36881b484542b329904c780dbe5d89c6",
@@ -10167,7 +10167,7 @@
 			"id": "message.6e116828aec39ae6dc70b0282bad8e8fef096e7a2c0db02a629457ea31eaf8ad",
 			"kind": "rich",
 			"source": "Keep everything at your fingertips with Launchpad & Worktrees.\n\n**- Launchpad:** view and manage all your PRs and branches from one hub\n\n**- Worktrees:** code, test, and review on multiple branches in parallel\n\n**- Integrations:** connect PRs and issues from GitHub, GitLab, Jira, Azure DevOps & more\n\nStay in flow, ship faster, and never lose track of what matters.\n\n[Open Launchpad](command:gitlens.walkthrough.showLaunchpad)",
-			"translation": "借助启动台和 Worktrees，将一切尽在掌握。\n\n**- 启动台：** 在一个中心查看并管理所有 PR 和分支\n\n**- Worktrees：** 在多个分支上并行编码、测试和审查\n\n**- 集成：** 连接来自 GitHub、GitLab、Jira、Azure DevOps 等平台的 PR 和 Issue\n\n保持专注，更快交付，且绝不遗漏重要事项。\n\n[打开启动台](command:gitlens.walkthrough.showLaunchpad)",
+			"translation": "借助启动台与工作树，让一切尽在掌握。\n\n**- 启动台：** 在一个中心查看并管理所有 PR 和分支\n\n**- 工作树：** 在多个分支上并行编码、测试和审查\n\n**- 集成：** 连接来自 GitHub、GitLab、Jira、Azure DevOps 等平台的 PR 和 Issue\n\n保持专注，更快交付，且绝不遗漏重要事项。\n\n[打开启动台](command:gitlens.walkthrough.showLaunchpad)",
 			"format": "markdown",
 			"slots": []
 		},
@@ -10493,7 +10493,7 @@
 			"id": "message.71958e1c95def6a8eb9f989953772a692e04386351f2546d4db51c5b656c6c39",
 			"kind": "rich",
 			"source": "The Community Edition lets you:\n\n- View blame annotations and commit details inline\n- Explore file revision history for any repo\n\nUpgrade to **GitLens Pro** (Free 14-Day Trial) to access everything above plus advanced visualization, collaboration, and built-in AI tools that work right inside VS Code.\n\n$(sparkle) Pro gives you full access to:\n\n**- Commit Graph:** visualize every branch and commit relationship\n**- Visual File History:** see how a file has evolved with a graph of what changed and when\n**- Launchpad & Worktrees:** manage PRs and branches in one hub\n**- GitKraken AI: ** writes commits, PRs & changelogs for you.\n\n[Get Started with GitLens Pro](command:gitlens.walkthrough.plus.signUp)\n\nor [sign in](command:gitlens.walkthrough.plus.login)",
-			"translation": "Community 版本可让你：\n\n- 直接在编辑器中查看追溯注解和提交详情\n- 探索任意仓库的文件修订历史\n\n升级到 **GitLens Pro**（免费试用 14 天），即可在上述功能之外，获得可直接在 VS Code 中使用的高级可视化、协作能力和内置 AI 工具。\n\n$(sparkle) Pro 将让你完整访问：\n\n**- 提交图：** 可视化每个分支与提交之间的关系\n**- 可视文件历史：** 通过图表查看文件何时、如何演进\n**- 启动台和 Worktrees：** 在一个中心管理 PR 和分支\n**- GitKraken AI：** 为你编写提交、PR 和更改日志\n\n[开始使用 GitLens Pro](command:gitlens.walkthrough.plus.signUp)\n\n或[登录](command:gitlens.walkthrough.plus.login)",
+			"translation": "Community 版本可让你：\n\n- 直接在编辑器中查看追溯注解和提交详情\n- 探索任意仓库的文件版本历史\n\n升级到 **GitLens Pro**（免费试用 14 天），即可在上述功能之外，获得可直接在 VS Code 中使用的高级可视化、协作能力和内置 AI 工具。\n\n$(sparkle) Pro 将让你完整访问：\n\n**- 提交图：** 可视化每个分支与提交之间的关系\n**- 可视文件历史：** 通过图表查看文件何时、如何演进\n**- 启动台与工作树：** 在一个中心管理 PR 和分支\n**- GitKraken AI：** 为你编写提交、PR 和变更日志\n\n[开始使用 GitLens Pro](command:gitlens.walkthrough.plus.signUp)\n\n或[登录](command:gitlens.walkthrough.plus.login)",
 			"format": "markdown",
 			"slots": []
 		},
@@ -10513,7 +10513,7 @@
 			"id": "message.71ae4a4ae2e4f783e436097593a9bbe942896eb5aa4411b63d5c2f0425b94b4c",
 			"kind": "rich",
 			"source": "Specifies the GitKraken AI provided model to use for GitLens' AI features, formatted as `provider:model`",
-			"translation": "指定用于 GitLens AI 功能的 GitKraken AI 提供模型，格式为 `provider:model`",
+			"translation": "指定用于 GitLens AI 功能的 GitKraken AI 提供的模型，格式为 `provider:model`",
 			"format": "markdown",
 			"slots": []
 		},
@@ -10566,7 +10566,7 @@
 			"id": "message.7236c4c46208468b72be5d6d9e504a0428ce5e5bc9ea6b8f3d4d0d4d032380eb",
 			"kind": "literal",
 			"source": "Drop hunks here to unassign",
-			"translation": "将代码块拖到此处以取消分配"
+			"translation": "将补丁块拖到此处以取消分配"
 		},
 		{
 			"id": "message.724da23e10ee0b9725e84800e9c1df35a1b14682f1be0e393b028971b79634db",
@@ -10581,7 +10581,7 @@
 			"id": "message.725e53b8e9563b600176e6e1ca377bb22262df7046b4751c6152478b82c0c45e",
 			"kind": "literal",
 			"source": "Open Git Auto-fetch Settings",
-			"translation": "打开 Git 自动 fetch 设置"
+			"translation": "打开 Git 自动获取设置"
 		},
 		{
 			"id": "message.726321efa3a064fcd3a36899a211333ea510ab90ec463c21d7a63412d633ed06",
@@ -10881,7 +10881,7 @@
 			"id": "message.759a60e41254cedcda0b915a7a311fd6bb573fb53abae92f74bff5d9f635fc69",
 			"kind": "template",
 			"source": "class=\"launchpad-action launchpad-action--blocked\"> ${slot1} ${slot2} blocked (${slot3})",
-			"translation": "class=\"launchpad-action launchpad-action--blocked\"> ${slot1} ${slot2} 已阻塞（${slot3}）",
+			"translation": "class=\"launchpad-action launchpad-action--blocked\"> ${slot1} 已阻塞（${slot3}）",
 			"slots": [
 				"slot1",
 				"slot2",
@@ -10898,7 +10898,7 @@
 			"id": "message.75cf507353fa579127cc5aedbe0a1f5bd3b83bfc252e926f970566118bebf082",
 			"kind": "literal",
 			"source": "Specifies the timeout (in seconds) for Git commands. Use 0 to disable the timeout. Some long-running operations like merge, rebase, and revert always have the timeout disabled",
-			"translation": "指定 Git 命令的超时时间（秒）。使用 0 表示禁用超时。某些长时间运行的操作（如 merge、变基和 revert）始终禁用超时"
+			"translation": "指定 Git 命令的超时时间（秒）。使用 0 表示禁用超时。某些长时间运行的操作（如合并、变基和还原）始终禁用超时"
 		},
 		{
 			"id": "message.75d03375b3eb59c91e49e7cbf4e9719302de193e17a316699a613c225441af96",
@@ -10946,7 +10946,7 @@
 			"id": "message.7657e66177b1ce73452db7263a83f73076f21813351c7428b87e3e035eedc667",
 			"kind": "template",
 			"source": "${slot1} ${slot2} your review",
-			"translation": "${slot1} ${slot2} 需要你审查",
+			"translation": "${slot1} 需要你审查",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -10962,13 +10962,13 @@
 			"id": "message.766c79acdf5e342aa1006bd26ffd1cc912933ca6bf8644bf32bf03f158f767c2",
 			"kind": "literal",
 			"source": "Follow up — e.g. \"Also check for error handling\"",
-			"translation": "后续处理 - 例如“也检查一下错误处理”"
+			"translation": "后续 — 例如「也检查一下错误处理」"
 		},
 		{
 			"id": "message.766eb6a3cf5318a0f3322d94a68d904d28d0a1958de2cd84df63ca2786ffcf7d",
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with commits in the _Commits_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _提交_ 视图中显示与提交关联的拉取请求（如果有）。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _提交_ 视图中显示与提交关联的拉取请求（如果有）。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.76a0b7fcabc6eab91cacd3d264f12760812c5bcb3e09cc6727577d1407ad4dbf",
@@ -11035,7 +11035,7 @@
 			"id": "message.771ec181e873b0b948063bc15c7f123339063032b665104ad5e99c8e5221d6c8",
 			"kind": "literal",
 			"source": "Jump to Stashes view settings",
-			"translation": "跳转到贮藏视图设置"
+			"translation": "跳转到储藏视图设置"
 		},
 		{
 			"id": "message.772e8950f346e726f7057dec8c43b08d13964e2a09e27c0ada9b696e906f0837",
@@ -11047,7 +11047,7 @@
 			"id": "message.773d409437d66f6fa3548f73fc0c1037c583e7fa9320d76d794b1d3fcf5fd94c",
 			"kind": "template",
 			"source": "Open ${slot1} on ${slot2}",
-			"translation": "在 ${slot2} 上打开${slot1}",
+			"translation": "在 ${slot2} 上打开 ${slot1}",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -11063,7 +11063,7 @@
 			"id": "message.774b1f082f4d6c83f6795fb5b593d8c9c929902177db4a10a9beef03c6cb0015",
 			"kind": "template",
 			"source": "Add ${slot1} to the URL so the reference value is linked.",
-			"translation": "将 ${slot1} 添加到 URL，以便为引用值生成链接。",
+			"translation": "将 ${slot1} 添加到 URL，以链接引用值。",
 			"slots": [
 				"slot1"
 			]
@@ -11142,7 +11142,7 @@
 			"id": "message.77c69a146c2b70699f59e1fe5b565d96e3e3d9dd1a8d5762c1057036dcfa4ec9",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Branches_ view",
-			"translation": "指定是否在 _分支_ 视图中显示头像图像而不是提交（或状态）图标"
+			"translation": "指定是否在 _分支_ 视图中显示头像而不是提交（或状态）图标"
 		},
 		{
 			"id": "message.77ce2b9c1f9306d8157c996d75400bf1f6ac45dc282f9b53017a55e04e79a202",
@@ -11174,7 +11174,7 @@
 			"id": "message.784882fc87075bed13e4000939c4f2c0a7399180218e89752a2f7cf24643c7eb",
 			"kind": "literal",
 			"source": "Specifies whether to provide information about the Pull Request (if any) that introduced the commit in the status bar. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在状态栏中提供引入该提交的拉取请求（如果有）信息。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在状态栏中提供引入该提交的拉取请求（如果有）信息。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.784c0ddfae09279af56f89f95c8cfa895a92c636c2898088635d2316dc67037a",
@@ -11248,7 +11248,7 @@
 			"id": "message.78aba0b310ecf19772b61d677e4df6e3b973608a00cadbaaa3366e01e2773b6f",
 			"kind": "template",
 			"source": "Search matched ${slot1} of ${slot2} files\nClick to highlight matching files",
-			"translation": "搜索匹配了 ${slot2} 个文件中的 ${slot1} 个\\n点击高亮匹配文件",
+			"translation": "已匹配 ${slot2} 个文件中的 ${slot1} 个\n点击高亮匹配文件",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -11397,7 +11397,7 @@
 			"id": "message.7a3927b6bffa13542191090f729dc8151efa393c1ef1208931a6a1773aba70d4",
 			"kind": "template",
 			"source": "Publish Branch Publish (push) ${slot1} to ${slot2}",
-			"translation": "发布分支 发布（push）${slot1} 到 ${slot2}",
+			"translation": "发布分支 · 将 ${slot1} 发布（push）到 ${slot2}",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -11407,7 +11407,7 @@
 			"id": "message.7a59b54b7c71719d75b3742aaffa48afe15c2e18a651d92fca7d312f9bc9d2ed",
 			"kind": "template",
 			"source": "<a href=\"${slot1}\">Configure autolinks</a> to linkify external references, like Jira or Zendesk tickets, in commit messages.",
-			"translation": "在提交消息中，将 Jira 或 Zendesk 工单等外部引用自动链接化，请<a href=\"${slot1}\">配置自动链接</a>。",
+			"translation": "<a href=\"${slot1}\">配置自动链接</a>，以在提交消息中将 Jira 或 Zendesk 工单等外部引用链接化。",
 			"slots": [
 				"slot1"
 			]
@@ -11463,7 +11463,7 @@
 			"id": "message.7b8d86b0ab95f580241edbbffd9e14348e175ffaf45893575f49fe71b8999e22",
 			"kind": "template",
 			"source": "For advanced customizations, refer to the ${slot1} and edit your ${slot2}",
-			"translation": "如需高级自定义，请参阅 ${slot1} 并编辑你的 ${slot2}",
+			"translation": "高级自定义请参阅 ${slot1} 并编辑 ${slot2}",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -11542,7 +11542,7 @@
 			"id": "message.7c777f3ba896e7a88778b7401f61f42ea31976c5c81b364e59e45ab053355a34",
 			"kind": "template",
 			"source": "${slot1} left",
-			"translation": "${slot1}",
+			"translation": "${slot1} 剩余",
 			"slots": [
 				"slot1"
 			]
@@ -11629,7 +11629,7 @@
 			"id": "message.7d5f42fcc14a6fc9275508d59c6a91939311396ae8d4f8fe3d17d6092301ff09",
 			"kind": "literal",
 			"source": "Open Changes with Branch or Tag...",
-			"translation": "打开与分支或标签比较的更改..."
+			"translation": "打开与分支或标签的更改..."
 		},
 		{
 			"id": "message.7d7e048f4db9d5f641ab8e3b5ba5e7b762b0840ac7134582b2fe49ddb285d9d3",
@@ -11683,7 +11683,7 @@
 			"id": "message.7dec54cce8ecdf816583257d16c7ff82cdf5ce296a84166afc1645e46815b19f",
 			"kind": "literal",
 			"source": "Specifies whether to show the stashes for each repository in the _Repositories_ view",
-			"translation": "指定是否在 _仓库_ 视图中显示每个仓库的贮藏"
+			"translation": "指定是否在 _仓库_ 视图中显示每个仓库的储藏"
 		},
 		{
 			"id": "message.7dfb902c09f0cebb32560777062a5ad1b527ed28db5d794aae80e4608e594bd5",
@@ -11822,7 +11822,7 @@
 			"id": "message.7fa3234adb53374a4dced17c63c72c97da75da60c7fc74f2d408bbd3f0576b08",
 			"kind": "template",
 			"source": "Will safely hard reset ${slot1} to ${slot2}",
-			"translation": "将以安全方式将 ${slot1} 硬重置到 ${slot2}",
+			"translation": "安全地将 ${slot1} 硬重置到 ${slot2}",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -11878,7 +11878,7 @@
 			"id": "message.804ec611e35672ad465dcf3b303b9a97ed8b309440fcb83e02112595051ebdae",
 			"kind": "literal",
 			"source": "Specifies whether to enable the preview of _Cloud Patches_, which allow you to privately and securely share code with specific teammates and other developers",
-			"translation": "指定是否启用 _Cloud Patches_ 预览版；该功能允许你以私密且安全的方式与特定队友和其他开发者共享代码"
+			"translation": "指定是否启用 _云补丁_ 预览；该功能允许你以私密且安全的方式与特定队友和其他开发者共享代码"
 		},
 		{
 			"id": "message.806030a5ffe293188e58d7e7945263b2836b150b2f45f5170f335cc9e014a08e",
@@ -11917,7 +11917,7 @@
 			"id": "message.80b8e0cba97cb0c823bc1959d2347f216552818f1c8a2e9dc0b5be9ffff450a8",
 			"kind": "literal",
 			"source": "Git Rename Stash...",
-			"translation": "Git 重命名贮藏..."
+			"translation": "Git 重命名储藏..."
 		},
 		{
 			"id": "message.80bbbc33677326dd1bcb9c5a168cbe3f87b21d3e1bb3ab139c7a9a76c4f4cc0d",
@@ -11977,7 +11977,7 @@
 			"id": "message.819d9d3b75e904e34c2ea5d711d4d19b8dbabe24a7fa497ac17022199f10f902",
 			"kind": "literal",
 			"source": "Specifies custom instructions to provide to the AI provider when generating a stash message",
-			"translation": "指定在生成贮藏消息时提供给 AI 提供商的自定义指令"
+			"translation": "指定在生成储藏消息时提供给 AI 提供商的自定义指令"
 		},
 		{
 			"id": "message.819ec8f433d38ca257066157ef11b6bdb84e9428b0398d82ba4ce03e65f53628",
@@ -12025,13 +12025,13 @@
 			"id": "message.824dd168e6437551e8bf113ec76365160f1ac5d0664c1071351978c2698f9fbd",
 			"kind": "literal",
 			"source": "Has working changes",
-			"translation": "存在工作区更改"
+			"translation": "存在工作更改"
 		},
 		{
 			"id": "message.82570415b9f78c4a6dd83e972870bb94df9c2fda24501df490d35ebe694cbe11",
 			"kind": "literal",
 			"source": "Specifies the size of the avatar images in hovers",
-			"translation": "指定悬停提示中头像图像的大小"
+			"translation": "指定悬停提示中头像的大小"
 		},
 		{
 			"id": "message.8261e4602f1a07d31721d165f6764b292144f280e6b4a5fbb4bcb8e4cee93c88",
@@ -12121,13 +12121,13 @@
 			"id": "message.830399a4d58b4864bf378234dba9ee1a4e7a1a22848b0280967046e04cec4e87",
 			"kind": "literal",
 			"source": "Drop Stash...",
-			"translation": "丢弃贮藏..."
+			"translation": "丢弃储藏..."
 		},
 		{
 			"id": "message.832fd557986c79fe9afccdce707ebfe31e4aaf3dd6aefea68cb67bfda9123da3",
 			"kind": "literal",
 			"source": "Compose working changes into logical Commits",
-			"translation": "将工作区更改编排为合乎逻辑的提交"
+			"translation": "将工作更改编排为合乎逻辑的提交"
 		},
 		{
 			"id": "message.836bef0039f29f5e2bf0a9114d312c8c95a955195e1004e705deaf4588abe011",
@@ -12191,13 +12191,13 @@
 			"id": "message.847a8fc6e323fcc483436cfaccf7d76cc82029d829246beba3c8e6da4bbc8cb4",
 			"kind": "literal",
 			"source": "Apply / Pop a Stash...",
-			"translation": "应用 / 弹出贮藏..."
+			"translation": "应用 / 弹出储藏..."
 		},
 		{
 			"id": "message.849493727abdcd488c1e003aeb9380c6313240ba9c3574e2c1c6e2dc1201695b",
 			"kind": "literal",
 			"source": "Apply Stash...",
-			"translation": "应用贮藏..."
+			"translation": "应用储藏..."
 		},
 		{
 			"id": "message.84b391d79daff559f97a9c61d2474d1b393bc9f4548baab1d52f52aa11aa82aa",
@@ -12215,7 +12215,7 @@
 			"id": "message.84c98b161e0f5484731df57b4de496929c3256bfeaae29b85d8701f1c56ec635",
 			"kind": "literal",
 			"source": "Every active agent session shows up alongside your work. See a status pill for each session on the branch cards in the Home view and Graph sidebar, or see associated agents in the details panel when viewing working changes. See what needs attention. Hover for the full picture. Take action &mdash; resume, respond, switch &mdash; straight from the status. No more rotating through terminal tabs or chat panes to figure out which agent needs you.",
-			"translation": "每个活动代理会话都会与你的工作并排显示。在 Home 视图和图侧边栏的分支卡片上查看每个会话的状态标记，或在查看工作区更改时在详情面板中查看关联代理。了解哪些事项需要关注。悬停即可看到完整情况。可直接从状态执行操作 &mdash; 继续、响应、切换。无需再在终端标签页或聊天窗格之间来回切换，只为弄清哪个代理需要你。"
+			"translation": "每个活动代理会话都会与你的工作并排显示。在 Home 视图和图侧边栏的分支卡片上查看每个会话的状态标记，或在查看工作更改时在详情面板中查看关联代理。了解哪些事项需要关注。悬停即可看到完整情况。可直接从状态执行操作 &mdash; 继续、响应、切换。无需再在终端标签页或聊天窗格之间来回切换，只为弄清哪个代理需要你。"
 		},
 		{
 			"id": "message.84d06ee01ec393d3c38b72c417a7bedbb7dd2312214fe6cd9f60976dab791dfd",
@@ -12307,13 +12307,13 @@
 			"id": "message.85f0abf07316eff2d5ed3b08c5e46286e32080329b520d87526494e8c15945d0",
 			"kind": "literal",
 			"source": "Review and Compose Working Changes",
-			"translation": "审查并编排工作区更改"
+			"translation": "审阅并编排工作更改"
 		},
 		{
 			"id": "message.860f0759d7d0123418f30e5eefcf1c7bfa787253feb0d0cdc55607151d8be9d7",
 			"kind": "literal",
 			"source": "Stash Staged Changes...",
-			"translation": "贮藏已暂存更改..."
+			"translation": "储藏已暂存更改..."
 		},
 		{
 			"id": "message.86104d579dd2570613b57e1f264c71180275687cd826277530ede2ea6172416e",
@@ -12325,7 +12325,7 @@
 			"id": "message.8619af48a035a94ff028a5df0e634ae391bdee9f05211e50233099217aa4e36e",
 			"kind": "literal",
 			"source": "Specifies whether to show stashes in the _Branches_ view",
-			"translation": "指定是否在 _分支_ 视图中显示贮藏"
+			"translation": "指定是否在 _分支_ 视图中显示储藏"
 		},
 		{
 			"id": "message.861a5a4651ab6f47b098d82f9ff1118f9586868715e7a9fad11f0df92c249ccd",
@@ -12381,7 +12381,7 @@
 			"id": "message.86a1be553cccdaf1db0eeccc2aa9e6c11432938155e7222ba48b7a061ab7b081",
 			"kind": "literal",
 			"source": "Make some working directory changes and Reload or come back to this view to see how it works.",
-			"translation": "进行一些工作目录更改，然后重新加载或返回此视图以查看其工作方式。"
+			"translation": "进行一些工作树更改，然后重新加载或返回此视图以查看其工作方式。"
 		},
 		{
 			"id": "message.86d2fa007d22b2d69c919e53764e370a2790e951cf7af10d661ff3e6370a4915",
@@ -12393,7 +12393,7 @@
 			"id": "message.86d4d6fde5208b30cbfb9269db8ebda994eb02719ea17e7b4f90f4c21155d355",
 			"kind": "template",
 			"source": "${slot1} Configure Claude to send status updates to GitLens so you can see and manage your parallel agent work. ${slot2} &middot; ${slot3} &middot; ${slot4}",
-			"translation": "${slot1} 配置 Claude 将状态更新发送到 GitLens，以便你查看和管理并行代理工作。${slot2} &middot; ${slot3} &middot; ${slot4}",
+			"translation": "${slot1} 配置 Claude 将状态更新发送到 GitLens，以查看和管理并行代理工作。${slot2} &middot; ${slot3} &middot; ${slot4}",
 			"slots": [
 				"slot1",
 				"slot2",
@@ -12452,7 +12452,7 @@
 			"id": "message.87c88fb5e0cf94e2a785ecce2c57e7478689ffefb582d5c1a9bbc5b6c897c574",
 			"kind": "literal",
 			"source": "Chorded shortcuts that start with Ctrl+Shift+G (⌥⌘G on macOS). Better for non-English keyboard layouts",
-			"translation": "以 Ctrl+Shift+G（macOS 上为 ⌥⌘G）开头的组合快捷键。不太适用于非英语键盘布局"
+			"translation": "以 Ctrl+Shift+G（macOS 上为 ⌥⌘G）开头的组合快捷键。更适合非英语键盘布局"
 		},
 		{
 			"id": "message.87fa48b35f5f5b2124c6c3fa0239c2037979afcde87506bfc9fcb349a8f5d7a2",
@@ -12505,7 +12505,7 @@
 			"id": "message.889976d869dc859dd026e23431559688a59d0734c674677c0c4a738c0f2e87da",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images in the file blame annotations",
-			"translation": "指定是否在文件追溯注解中显示头像图像"
+			"translation": "指定是否在文件追溯注解中显示头像"
 		},
 		{
 			"id": "message.88ad4922f352990164e51ddce112abec1a948fb34696f1b05d7c4181bf54f599",
@@ -12517,7 +12517,7 @@
 			"id": "message.88bb7cd8f3546fade71b7853c1834e3e94d1f8dc8fbe481e7ff2b32e535eb498",
 			"kind": "literal",
 			"source": "Has working (uncommitted) changes",
-			"translation": "存在工作区更改（未提交）"
+			"translation": "存在工作更改（未提交）"
 		},
 		{
 			"id": "message.88c0b2f906493dfe94da80ce43b68f081523fe40c611b14b942f8996227f8901",
@@ -12532,7 +12532,7 @@
 			"id": "message.88e056130dc9e8d568e5f1dc5ebe688245e886cda33a1e43670b6e8c79c32745",
 			"kind": "rich",
 			"source": "GitLens groups many related views—Commits, Branches, Stashes, etc—here for easier view management.\n\n[Continue](command:gitlens.views.scm.grouped.welcome.dismiss)\n\nUse the tabs above to navigate, or detach the views you want to keep separated. You can regroup them anytime using the 'x' in the view header.",
-			"translation": "GitLens 会在这里将许多相关视图（提交、分支、贮藏等）分组，以便更轻松地管理视图。\n\n[继续](command:gitlens.views.scm.grouped.welcome.dismiss)\n\n使用上方标签页进行导航，或分离你想保持独立的视图。你可以随时使用视图标题中的 “x” 重新编组它们。",
+			"translation": "GitLens 会在这里将许多相关视图（提交、分支、储藏等）分组，便于管理视图。\n\n[继续](command:gitlens.views.scm.grouped.welcome.dismiss)\n\n使用上方标签页导航，或分离你想保持独立的视图。可随时用视图标题中的 “x” 重新编组。",
 			"format": "markdown",
 			"slots": []
 		},
@@ -12570,7 +12570,7 @@
 			"id": "message.893ae08848b3e61e8731e0ddfdd5379a53eba81117b61734d0b3db48e5516cc0",
 			"kind": "literal",
 			"source": "Stashes View Options",
-			"translation": "贮藏视图选项"
+			"translation": "储藏视图选项"
 		},
 		{
 			"id": "message.896fa85b914669c129c77185f97255a80e1e72a0beed536418df4f0128ef00c5",
@@ -12721,7 +12721,7 @@
 			"id": "message.8abdfa9bfe80669784f2abdfeaa99e1be61c752b78f4d20c6ee33b1e8822fb15",
 			"kind": "literal",
 			"source": "Hide Stashes",
-			"translation": "隐藏贮藏"
+			"translation": "隐藏储藏"
 		},
 		{
 			"id": "message.8abf12c8fad7c96afaf7a7956e2ff73af5c2d70cf6d856a4159159fcba929a73",
@@ -12775,7 +12775,7 @@
 			"id": "message.8b097d03dfc458236d14ff037478fcc83888a5e36a3d54be25deeb6c6b43b717",
 			"kind": "template",
 			"source": "${slot1} Message copied to the clipboard",
-			"translation": "${slot1}消息已复制到剪贴板",
+			"translation": "${slot1} 消息已复制到剪贴板",
 			"slots": [
 				"slot1"
 			]
@@ -12796,7 +12796,7 @@
 			"id": "message.8b55bb3cbd153b9b9e988ce8a595d1ff182d897ec1abd64205b3ad0ee905e38d",
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with each branch in the _Remotes_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _远程_ 视图中显示与每个分支关联的拉取请求（如果有）。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _远程_ 视图中显示与每个分支关联的拉取请求（如果有）。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.8b5999180eb0588507b319eb61e3fcc842cffc225f95b13dfa8e715fa1c8190c",
@@ -12822,7 +12822,7 @@
 			"id": "message.8b8783e28a9decbe398db531ce599c255423b28ef1ff5ebc9be84ae21dd8679d",
 			"kind": "template",
 			"source": "${slot1} Review changes, stage files, create or compose commits, and resolve conflicts. On a clean worktree the Details Panel guides your next steps—like pulling, pushing, or drafting a PR",
-			"translation": "${slot1} 审阅更改、暂存文件、创建或编排提交并解决冲突。在干净的工作树上，详情面板会引导你的下一步操作，例如 pull、push 或草拟 PR",
+			"translation": "${slot1} 审阅更改、暂存文件、创建或编排提交并解决冲突。在干净的工作树上，详情面板会引导你的下一步操作，例如拉取、推送或草拟 PR",
 			"slots": [
 				"slot1"
 			]
@@ -12949,7 +12949,7 @@
 			"id": "message.8d5f2a26193899a47bcd4031d6a47fe269a6dc3e6cb37d9e0f24905704dbce19",
 			"kind": "literal",
 			"source": "Launchpad — connect an integration to see pull requests",
-			"translation": "启动台 - 连接集成以查看拉取请求"
+			"translation": "启动台 — 连接集成以查看拉取请求"
 		},
 		{
 			"id": "message.8d71fb87df7e8b61e04b2891747ce7ebecfbd4c2b410a25f8b70d71b7f8e2fbf",
@@ -12961,7 +12961,7 @@
 			"id": "message.8d73b41b9f93303da065f39fa1c7318a7a26af7bae3fe83f9506f4ffb718e83e",
 			"kind": "literal",
 			"source": "Open All Changes with Working Tree, Individually",
-			"translation": "逐个打开与工作区比较的所有更改"
+			"translation": "逐个打开与工作树的所有更改"
 		},
 		{
 			"id": "message.8d8219acc3a172af1a0fd48b1cc4a4d1391a06f833fda918fc8b3b9cd4e9fd2c",
@@ -13131,7 +13131,7 @@
 			"id": "message.8f2f479e936a9880307b6750229532ea3fdda01aa1fd50955c0f01e55a75e6a9",
 			"kind": "literal",
 			"source": "Showing Only Working Changes",
-			"translation": "仅显示工作区更改"
+			"translation": "仅显示工作更改"
 		},
 		{
 			"id": "message.8f4d8cd8ed4a319d42ebbcf9f60270f7d12399917730159737b6679838b6a48e",
@@ -13209,7 +13209,7 @@
 			"id": "message.905f32f52ff0f60c466ede24acdb2e7c01d601e4dd87b3361239cc800c290348",
 			"kind": "literal",
 			"source": "Git Stash...",
-			"translation": "Git 贮藏..."
+			"translation": "Git 储藏..."
 		},
 		{
 			"id": "message.908a5b96cf6a4c162870da4ba541e2ff0c4ac26a32cc0773a62fe7766df7e01d",
@@ -13236,7 +13236,7 @@
 			"id": "message.90b2971f33b6510bf4623779e720bed9414288d48f0cbce1ce20b8e696133902",
 			"kind": "literal",
 			"source": "with a user-selected reference (branch, tag, etc)",
-			"translation": "与用户选择的引用（分支、标签等）的比较"
+			"translation": "与用户所选引用（分支、标签等）"
 		},
 		{
 			"id": "message.90c36f5a3d51a6c443e69bc32292212753b0b1077abcd29544b2f2e497aeba18",
@@ -13279,7 +13279,7 @@
 			"id": "message.910cd453c9de0756b1028e7804c7546cf0d86b2ce2483f005e958a9ae67a335f",
 			"kind": "literal",
 			"source": "Stash Name",
-			"translation": "贮藏名称"
+			"translation": "储藏名称"
 		},
 		{
 			"id": "message.9110ab69bbc60e4c990e10d8b17c0daf50d961aa91ce9703ffb49c392833ff12",
@@ -13313,7 +13313,7 @@
 			"id": "message.91ef0c4230b54f9d6dffc3d4ff436a8b2da4549c81d2e3c65f7d005353f6e621",
 			"kind": "template",
 			"source": "Cancel ${slot1}",
-			"translation": "取消${slot1}",
+			"translation": "取消 ${slot1}",
 			"slots": [
 				"slot1"
 			]
@@ -13427,7 +13427,7 @@
 			"id": "message.92fde2bc87ab1b49c55e074ee95a162b0b39b71a3356bcb1a67718c14e89f305",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Repositories_ view",
-			"translation": "指定是否在 _仓库_ 视图中显示头像图像而不是提交（或状态）图标"
+			"translation": "指定是否在 _仓库_ 视图中显示头像而不是提交（或状态）图标"
 		},
 		{
 			"id": "message.92fdfa95e691b594cbcafad3bfaa9f89c0fe63b99ac851b162c5c3bbdaeb8c12",
@@ -13542,7 +13542,7 @@
 			"id": "message.948df785a28a44e53407447dd56fd1558d24dacbd8be882a3efbd87c1108c967",
 			"kind": "rich",
 			"source": "[Connect an Integration...](command:gitlens.showLaunchpad?%7B%22source%22%3A%22launchpad-view%22%7D)\n\nAllows Launchpad to organize your pull requests into actionable groups and keep your team unblocked.",
-			"translation": "[连接集成...](command:gitlens.showLaunchpad?%7B%22source%22%3A%22launchpad-view%22%7D)\n\n允许启动台将你的拉取请求组织为可执行的分组，并让团队保持畅通。",
+			"translation": "[连接集成...](command:gitlens.showLaunchpad?%7B%22source%22%3A%22launchpad-view%22%7D)\n\n允许启动台将拉取请求整理为可操作的分组，避免阻塞团队。",
 			"format": "markdown",
 			"slots": []
 		},
@@ -13550,13 +13550,13 @@
 			"id": "message.94bcda375e4c1e8aaaaf256b5264f7a8c14dfc8a95b74bda30b501473f3fd8e8",
 			"kind": "literal",
 			"source": "Browse Repository from Revision in New Window",
-			"translation": "在新窗口中浏览修订中的仓库"
+			"translation": "在新窗口中从版本浏览仓库"
 		},
 		{
 			"id": "message.94c1578fb5e284b89a2e5efbdf1d3a5fa5812ccb9a432a6bf41f8565973c73f8",
 			"kind": "literal",
 			"source": "Open Line Changes with Previous Revision",
-			"translation": "打开与上一个修订比较的行更改"
+			"translation": "打开与上一版本的行更改"
 		},
 		{
 			"id": "message.94c6cbd8e67af72baa04c0a9e3f371b88b27e7cf443218e2fcea6ad122178658",
@@ -13568,7 +13568,7 @@
 			"id": "message.94e393dc66a977de50c64cc94145b3d977b7243b6a3673be14a627dd1dd47027",
 			"kind": "literal",
 			"source": "You will be able to review before committing",
-			"translation": "提交前可以先审查"
+			"translation": "提交前可先审阅"
 		},
 		{
 			"id": "message.94e78198f2a1960b3cc00a7311000068d2b4b7ec8d47bdee84617678e224fd2c",
@@ -13683,7 +13683,7 @@
 			"id": "message.95c112a92be31b9899f9a6b67a0645b21c6eb2d2c4f70628d4d1533c83fda44c",
 			"kind": "literal",
 			"source": "Drop Stashes...",
-			"translation": "丢弃贮藏..."
+			"translation": "丢弃储藏..."
 		},
 		{
 			"id": "message.95c9386b70feb73cf9c108da5a13740218761540fb840958ad80c25c9f00b891",
@@ -13775,7 +13775,7 @@
 			"id": "message.97377ede62efa1c4e390f22d99cc317b9c0562ddf49436166cbc3a7a653c5bc7",
 			"kind": "literal",
 			"source": "Working changes have changed since this plan was generated.",
-			"translation": "自生成此计划以来，工作区更改已发生变化。"
+			"translation": "自生成此计划以来，工作更改已发生变化。"
 		},
 		{
 			"id": "message.973f4d74b428cfce9c078a76f91355dc811005e31299ad07dc9c0df53dd9d368",
@@ -13787,7 +13787,7 @@
 			"id": "message.97419292ee72f26ffbddc5f50dbdbda8467afd116c217a9382d5da8052253619",
 			"kind": "literal",
 			"source": "Open Changes with Common Base",
-			"translation": "打开与共同基点比较的更改"
+			"translation": "打开与共同基点的更改"
 		},
 		{
 			"id": "message.9752536a76252e7ff804e88c551d5e95238137a468578f26e56a257eed668b7b",
@@ -13891,7 +13891,7 @@
 			"id": "message.9872a52c94c1a27becc36b1ee3897f63ece32b70a480be81704816132a625f49",
 			"kind": "template",
 			"source": "Confirm ${slot1}",
-			"translation": "确认${slot1}",
+			"translation": "确认 ${slot1}",
 			"slots": [
 				"slot1"
 			]
@@ -13900,7 +13900,7 @@
 			"id": "message.9881094055d905360ccf5e31dad89c17943944736023ca3c8f006bb849022d92",
 			"kind": "literal",
 			"source": "Stash",
-			"translation": "贮藏"
+			"translation": "储藏"
 		},
 		{
 			"id": "message.9899712b3354d51db7559bc983c7bb2b9cd0cc25b44b54db3bc3e669502069e0",
@@ -13924,7 +13924,7 @@
 			"id": "message.98e250f62226e2b63230b645898709a24f2d6067f7659f6e30af69a7ae8648c7",
 			"kind": "literal",
 			"source": "Shows only branches with currently running agents or agents idle for less than 24 hours",
-			"translation": "仅显示具有当前正在运行的代理或空闲少于 24 小时的代理的分支"
+			"translation": "仅显示有正在运行的代理，或代理空闲不足 24 小时的分支"
 		},
 		{
 			"id": "message.98f7e7543612ae240fb6b62db06d9da9a2bfffd9d4cc94d7642269bebd96f1bb",
@@ -13952,7 +13952,7 @@
 			"id": "message.99276cf0fc3a03b1c82f1dde0b6963ecb454340641aa7e6a84c907e342b8c505",
 			"kind": "literal",
 			"source": "Specifies whether to enable terminal links &mdash; autolinks in the integrated terminal to quickly jump to more details for commits, branches, tags, and more",
-			"translation": "指定是否启用终端链接，即在集成终端中启用自动链接，以便快速跳转到提交、分支、标签等的更多详情"
+			"translation": "指定是否启用终端链接，即在集成终端中启用自动链接，以快速跳转到提交、分支、标签等的更多详情"
 		},
 		{
 			"id": "message.992dd3901fee1a79d87d199834bb33f44cbeb15a4d118ba81fc6b047e7b290fe",
@@ -14138,7 +14138,7 @@
 			"id": "message.9ab2c58e5b99aab55b2756c794f9db7abd46f392b1f8e7c7faafd1f32d1dea3c",
 			"kind": "rich",
 			"source": "Adds a [Stashes view](command:gitlens.showStashesView) to visualize, explore, and manage Git stashes",
-			"translation": "添加[贮藏视图](command:gitlens.showStashesView)，用于可视化、浏览和管理 Git 贮藏",
+			"translation": "添加[储藏视图](command:gitlens.showStashesView)，用于可视化、浏览和管理 Git 储藏",
 			"format": "markdown",
 			"slots": []
 		},
@@ -14182,7 +14182,7 @@
 			"id": "message.9b2919e9832f074b5cbd2e08318b99b8b8dfc995922b0bea6c093b1a636a8dd2",
 			"kind": "template",
 			"source": "Working Changes ${slot1} ${slot2} ${slot3}",
-			"translation": "工作区更改 ${slot1} ${slot2} ${slot3}",
+			"translation": "工作更改 ${slot1} ${slot2} ${slot3}",
 			"slots": [
 				"slot1",
 				"slot2",
@@ -14272,7 +14272,7 @@
 			"id": "message.9bc2969e0047b0c5a79f54c14d7ca8a190f53275d3e7ebb4e03ac92b890f9fe8",
 			"kind": "template",
 			"source": "For more options or to add your own custom modes, open the ${slot1} and search for ${slot2}",
-			"translation": "如需更多选项，或添加你自己的自定义模式，请打开 ${slot1} 并搜索 ${slot2}",
+			"translation": "如需更多选项或添加自定义模式，打开 ${slot1} 并搜索 ${slot2}",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -14441,7 +14441,7 @@
 			"id": "message.9d968ade75a2409f9cd8d0c1c16e8e9a6b4aec9d7b59cc56756dc4c39081f727",
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with each branch in the _Branches_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _分支_ 视图中显示与每个分支关联的拉取请求（如果有）。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _分支_ 视图中显示与每个分支关联的拉取请求（如果有）。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.9d96e91ad2351898a4ae515b570b9cca33080730260b4c7217a620fc381a740a",
@@ -14471,7 +14471,7 @@
 			"id": "message.9dcb6eb24d2bde69013d4c3bdabac4031d37b7f5abc69c3469f91a6846d674bd",
 			"kind": "literal",
 			"source": "Apply a Stash...",
-			"translation": "应用贮藏..."
+			"translation": "应用储藏..."
 		},
 		{
 			"id": "message.9dd84322371953864bf846aa05c0641839d6931468efd34d4ab4d1b9162e90ac",
@@ -14507,7 +14507,7 @@
 			"id": "message.9e391f44eed7f1aef3b8f748fdf3afb831c87c5210a6d40d16769483ad109686",
 			"kind": "literal",
 			"source": "Browse Repository from Before Revision",
-			"translation": "浏览修订前的仓库"
+			"translation": "从版本之前浏览仓库"
 		},
 		{
 			"id": "message.9e50fdb10c2a8068cf548c05d4009e437087033462b0b37c21b724b2ca615c63",
@@ -14564,7 +14564,7 @@
 			"id": "message.9e8e0f034c00326cadde6a80e575a7c318af4245454c4c6130befab51a4a3b1c",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Commit Details_ view",
-			"translation": "指定是否在 _提交详情_ 视图中显示头像图像而不是提交（或状态）图标"
+			"translation": "指定是否在 _提交详情_ 视图中显示头像而不是提交（或状态）图标"
 		},
 		{
 			"id": "message.9eb20318f8fd80482c6e7c32ed5d25f55e94ee902eb95ae8d19d4d38bde5e346",
@@ -14593,7 +14593,7 @@
 			"id": "message.9ed4e2df1d42ec7f68b4affe497a2da2fb858e154ccddeebf3af13c7a4587bde",
 			"kind": "literal",
 			"source": "Apply / Pop Stash…",
-			"translation": "应用 / 弹出贮藏…"
+			"translation": "应用 / 弹出储藏…"
 		},
 		{
 			"id": "message.9ed8f4ccbd53bad14b323e5c27a9a846dd39a1dca42478a15fbf23ce4d7b0e8e",
@@ -14669,7 +14669,7 @@
 			"id": "message.9ff76024e9126d199a8204f897bdce94c68d9c1b800c175d6e516bb01c4c335e",
 			"kind": "literal",
 			"source": "Open All Changes with Working Tree",
-			"translation": "打开与工作区比较的所有更改"
+			"translation": "打开与工作树的所有更改"
 		},
 		{
 			"id": "message.a00895c471949a62a1225e55679e9afc1dd5e949e5c5645bc5066345cd509837",
@@ -14687,7 +14687,7 @@
 			"id": "message.a03a125959f2af716690a2a95371165d46eb3ea0b6b2270388fc09c91f790c9d",
 			"kind": "literal",
 			"source": "Hide Contributors Statistics",
-			"translation": "隐藏贡献者 统计信息"
+			"translation": "隐藏贡献者统计信息"
 		},
 		{
 			"id": "message.a04b572b65afc85e62e5fa5a89cc29cbaeb84ac6f16c831715faa4f5f48cf2ba",
@@ -14836,7 +14836,7 @@
 			"id": "message.a1be84d425286b433a04f8807fd3167cfe5f9b809d2f0b3ac7adee2dbb9a45ff",
 			"kind": "literal",
 			"source": "Sort by Discovery Time",
-			"translation": "按Discovery Time排序"
+			"translation": "按发现时间排序"
 		},
 		{
 			"id": "message.a1dcf7bb2056dde76077172da66d2933063426a3492c7be92801c67ccb74e14a",
@@ -14854,7 +14854,7 @@
 			"id": "message.a1e93f079c22b2a022decb184ab64ce9c9ba9004f1cd83b3cdd51380d634aad2",
 			"kind": "literal",
 			"source": "Squash Commits...",
-			"translation": "压缩提交..."
+			"translation": "挤压提交..."
 		},
 		{
 			"id": "message.a212e3ff813eeba948d143ef484a49430d23d3f53ba5357ef1b69e8c0dcf034e",
@@ -14935,7 +14935,7 @@
 			"id": "message.a2ff5e50b47f52afd7b528a6d6d03c2e41db1822caa38c5dfac647da9000b6ca",
 			"kind": "literal",
 			"source": "Jump to Working Changes",
-			"translation": "跳转到工作区更改"
+			"translation": "跳转到工作更改"
 		},
 		{
 			"id": "message.a30d070c47626216ab00578f1e5a9e3a62bb4376ddaee46f8b3eeacc20d912f9",
@@ -14979,7 +14979,7 @@
 			"id": "message.a395a1044a68feaa845fe09ca948cbf2c43d01b9f344f5b0168437a65c923316",
 			"kind": "literal",
 			"source": "Launchpad & Worktrees:",
-			"translation": "启动台和 Worktrees："
+			"translation": "启动台与工作树："
 		},
 		{
 			"id": "message.a39793cb861dcbc0fbd68137d03dae4a68867b50e6e70d28f04f7a0c0773234a",
@@ -15023,7 +15023,7 @@
 			"id": "message.a4333988537cc092b2f711279f9f6f8dbe14edf22a098193468879c5ca3f023b",
 			"kind": "template",
 			"source": "Your trial has ended — upgrade to keep ${slot1} unlocked.",
-			"translation": "你的试用已结束 — 升级以继续解锁 ${slot1}。",
+			"translation": "你的试用已结束 — 升级以保持 ${slot1} 可用。",
 			"slots": [
 				"slot1"
 			]
@@ -15050,7 +15050,7 @@
 			"id": "message.a499b2f1b4bedcf63fe785db7b43ab89c769bd290044cfc40ef0db186aa3fcf4",
 			"kind": "template",
 			"source": "${slot1} about formatting options",
-			"translation": "${slot1}以了解格式选项",
+			"translation": "${slot1} 以了解格式选项",
 			"slots": [
 				"slot1"
 			]
@@ -15065,7 +15065,7 @@
 			"id": "message.a4cb415908a3a22e0364c88ff513daf38f58e7372fa1dcc25e2ff6ce72eb8ead",
 			"kind": "literal",
 			"source": "Specifies whether to provide information about the Pull Request (if any) that introduced the commit in the hovers. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在悬停提示中提供引入该提交的拉取请求（如果有）信息。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在悬停提示中提供引入该提交的拉取请求（如果有）信息。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.a4d9e83cd170c396dd9dc7b5656d195c8368a81316303ab3d6647ee852ec4c35",
@@ -15116,7 +15116,7 @@
 			"id": "message.a55624be03d2d5a36ec8f6e18bef6ee1eb824bbf31b0d2ea036da649f6bd0c5f",
 			"kind": "rich",
 			"source": "Adds a [File History view](command:gitlens.showFileHistoryView) to visualize, navigate, and explore the revision history of the current file, a specified file or folder, or just the selected lines of the current file",
-			"translation": "添加[文件历史视图](command:gitlens.showFileHistoryView)，用于可视化、导航和浏览当前文件、指定文件或文件夹，或当前文件所选行的修订历史",
+			"translation": "添加[文件历史视图](command:gitlens.showFileHistoryView)，用于可视化、导航和浏览当前文件、指定文件或文件夹，或当前文件所选行的版本历史",
 			"format": "markdown",
 			"slots": []
 		},
@@ -15158,7 +15158,7 @@
 			"id": "message.a5b7c44958633e6ef0778cb632fbd06817ca017ef8e08036b5a3d7376db47442",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Tags_ view",
-			"translation": "指定是否在 _标签_ 视图中显示头像图像而不是提交（或状态）图标"
+			"translation": "指定是否在 _标签_ 视图中显示头像而不是提交（或状态）图标"
 		},
 		{
 			"id": "message.a5e847116eb0c274b28a04fe16e4f8f39e66d7d95887ffc681051aabf2683639",
@@ -15203,7 +15203,7 @@
 			"id": "message.a62544a9ec8fb42b01212ec11f029a1eee6f69af16cec4f4e13f0634f79718b9",
 			"kind": "literal",
 			"source": "With GitLens Pro, you can accelerate PR reviews, visualize code history in-depth, and enhance collaboration across your team. It's the perfect upgrade to streamline your VS Code workflow.",
-			"translation": "通过 GitLens Pro，你可以加速 PR 审查、更深入地可视化代码历史，并增强团队协作。它是精简 VS Code 工作流的理想升级。"
+			"translation": "通过 GitLens Pro，可以加速 PR 审查、更深入地可视化代码历史，并增强团队协作。它是精简 VS Code 工作流的理想升级。"
 		},
 		{
 			"id": "message.a627f2cf57bbec04cad11b5b070272a93783da6f0938156653b2185b367d28b4",
@@ -15215,7 +15215,7 @@
 			"id": "message.a62da4682c56b9e4d472c540656e91d118017e3bcf4b3661d36e4dc6326de04f",
 			"kind": "literal",
 			"source": "Highlight All Changes Since Before this Commit",
-			"translation": "高亮此提交之前以来的所有更改"
+			"translation": "高亮此提交之前的所有更改"
 		},
 		{
 			"id": "message.a64782086875f62f45a50d2070085cbd568ab2421e452f16aa41d105ee1fc08c",
@@ -15290,7 +15290,7 @@
 			"id": "message.a6e72f77ec3b23eb22e403f0684477eaa598b3cc69279732644638976677fdda",
 			"kind": "rich",
 			"source": "Specifies whether to compact (flatten) unnecessary file nesting in the _Stashes_ view. Only applies when `#gitlens.views.stashes.files.layout#` is set to `tree` or `auto`",
-			"translation": "指定是否在 _贮藏_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.stashes.files.layout#` 设置为 `tree` 或 `auto` 时适用",
+			"translation": "指定是否在 _储藏_ 视图中压平不必要的文件嵌套。仅当 `#gitlens.views.stashes.files.layout#` 设置为 `tree` 或 `auto` 时适用",
 			"format": "markdown",
 			"slots": []
 		},
@@ -15434,7 +15434,7 @@
 			"id": "message.a89f32407b07183e45df984647da6816fb72f8d816c65bdc98066868ceb80fed",
 			"kind": "literal",
 			"source": "Visual History timeline",
-			"translation": "Visual History 时间线"
+			"translation": "可视历史时间线"
 		},
 		{
 			"id": "message.a8a7266f213e183ef362da98ab8e44a3a567688a01d0f15aa31c2e86f4a07eba",
@@ -15489,7 +15489,7 @@
 			"id": "message.a943e2c128220b68b40b76c130db32c45b0a50e028d9ff314b19d79b9b3e58d9",
 			"kind": "literal",
 			"source": "lines",
-			"translation": "行的文件上重新计算注解"
+			"translation": "行"
 		},
 		{
 			"id": "message.a95bdc5d4665e5f3bce2c0f76c786041e232b763e1f6585af7b01619253bb591",
@@ -15501,7 +15501,7 @@
 			"id": "message.a9631ab30fdefa95ff3bdfbecfdc5062219c9e5d9f0b885a9d3d007c3c26fb60",
 			"kind": "literal",
 			"source": "Open Folder Changes with Branch or Tag...",
-			"translation": "打开与分支或标签比较的文件夹更改..."
+			"translation": "打开与分支或标签的文件夹更改..."
 		},
 		{
 			"id": "message.a96a93a5edc7f5a21a55c84a0aad66ce57fa3145d4187844b035b3d26ee69ae3",
@@ -15619,7 +15619,7 @@
 			"id": "message.aa767ee9b055e1266ef4e204c0eb31d220421c30595d32d9c4c507e1bc411d3c",
 			"kind": "literal",
 			"source": "Open in Branches View",
-			"translation": "在 Branches 视图中打开"
+			"translation": "在分支视图中打开"
 		},
 		{
 			"id": "message.aa77bc385276e562b08b08bbe23cc9da88111937561bc8f90d89a856cd9ee6e1",
@@ -15690,7 +15690,7 @@
 			"id": "message.ab4bafed6248986d6347f7db2ce803656210c0517d4109798aad3fe6bd56d060",
 			"kind": "template",
 			"source": "Connect to ${slot1} View pull requests and issues in Home, Commit Graph, Launchpad, autolinks, and more",
-			"translation": "连接到 ${slot1} 后，可在主页、Commit Graph、启动台、自动链接等位置查看拉取请求和 Issue",
+			"translation": "连接到 ${slot1} 后，可在主页、提交图、启动台、自动链接等位置查看拉取请求和 Issue",
 			"slots": [
 				"slot1"
 			]
@@ -15777,7 +15777,7 @@
 			"id": "message.ac4738d13b298ea92b6697143a2c34745d6b8d7429be4b9cac9cbd28ae82e48e",
 			"kind": "template",
 			"source": "${slot1} To get the most out of your GitLens Pro experience, complete the walkthrough and visit our Help Center for in-depth guides.",
-			"translation": "${slot1} 为了充分发挥 GitLens Pro 的价值，请完成此引导并访问帮助中心以获取更深入的使用指南。",
+			"translation": "${slot1} 完成此引导并访问帮助中心，可充分发挥 GitLens Pro 的价值。",
 			"slots": [
 				"slot1"
 			]
@@ -15786,7 +15786,7 @@
 			"id": "message.ac5ee54aeb42dde7f0b157a863cf17ce2038cf0ca9d5885b078671fa514454c7",
 			"kind": "literal",
 			"source": "Compare with Working Tree",
-			"translation": "与工作区比较"
+			"translation": "与工作树比较"
 		},
 		{
 			"id": "message.ac6d66027ea427a6f2157246a83462cd9bd3767069269d66b409106e55b65d6d",
@@ -15981,7 +15981,7 @@
 			"id": "message.aed5734895cfec58070c2414f48a8fce68f2a1b815d96e4e7e70666a3dc0d87a",
 			"kind": "literal",
 			"source": "AI will analyze your working changes and unpushed commits to create a clean, logical commit sequence.",
-			"translation": "AI 会分析你的工作区更改和未推送提交，以创建清晰、合乎逻辑的提交序列。"
+			"translation": "AI 会分析你的工作更改和未推送提交，以创建清晰、合乎逻辑的提交序列。"
 		},
 		{
 			"id": "message.aefbf0490228d8eab5d6fa021e68c6a8c88b43f86f769b26fc7b6b9df4b3fbc9",
@@ -16041,7 +16041,7 @@
 			"id": "message.af791e2ea038b3e18965e0ed91968ed3a8947e46a37f6b8836acb32d1f1f72c1",
 			"kind": "template",
 			"source": "Inspect Stash # ${slot1}",
-			"translation": "查看贮藏 #${slot1}",
+			"translation": "查看储藏 #${slot1}",
 			"slots": [
 				"slot1"
 			]
@@ -16062,7 +16062,7 @@
 			"id": "message.af920f8bf7e95bdeb8c700934cb7afd8311ce4e5ef3be828d802bf2d9db4e200",
 			"kind": "literal",
 			"source": "Specifies how working (uncommitted) changes are sorted in the _Commit Graph_'s working changes (WIP) details",
-			"translation": "指定 _提交图_ 工作树更改（WIP）详情中未提交更改的排序方式"
+			"translation": "指定 _提交图_ 工作更改（WIP）详情中未提交更改的排序方式"
 		},
 		{
 			"id": "message.afa2c4cebea2dda908368311fee130707d00ac3956d6f2e1b34ce6b5788ab53b",
@@ -16135,7 +16135,7 @@
 			"id": "message.b06399a26031529fa14399a44a4497a58b2f4f70ae4822c589507faeddf55641",
 			"kind": "literal",
 			"source": "Use the GitLens: Toggle Review Mode command to toggle Review mode",
-			"translation": "使用 GitLens：“切换审查模式”命令来切换审查模式"
+			"translation": "使用 GitLens：“切换审阅模式”命令切换审阅模式"
 		},
 		{
 			"id": "message.b092b35cba498755d2aa118d42ed65caad5d40740442505e11666d94e4c45b9f",
@@ -16165,7 +16165,7 @@
 			"id": "message.b0bd896222e2a39320cfb992e8f5666c381dd227ed50e0eaeb543a92359443f4",
 			"kind": "literal",
 			"source": "Show Stashes View",
-			"translation": "显示贮藏视图"
+			"translation": "显示储藏视图"
 		},
 		{
 			"id": "message.b0c9d22b22a6b2934c2edb456d458b313789d7446f43e52c99d0a72e607ddcda",
@@ -16207,7 +16207,7 @@
 			"id": "message.b13e477a5cdb3e6b11031db3a2218d612711b7b9b0e6a803a18591c64f7b9446",
 			"kind": "literal",
 			"source": "Stash description format",
-			"translation": "贮藏描述格式"
+			"translation": "储藏描述格式"
 		},
 		{
 			"id": "message.b18581f74b1f4fbf307fb09b89a28485fa194e3015e4650d4d6967841982b2d2",
@@ -16219,7 +16219,7 @@
 			"id": "message.b18b245afe46eb89acd6aa05171260a2a79a675bc565fb6947c0c0f43a10c6c4",
 			"kind": "literal",
 			"source": "Browse Repository from Before Revision in New Window",
-			"translation": "在新窗口中浏览修订前的仓库"
+			"translation": "在新窗口中从版本之前浏览仓库"
 		},
 		{
 			"id": "message.b1a19a1dcf400bbd15be73db019a74edca4e807d72b0d31c43a674af8778d9c1",
@@ -16270,7 +16270,7 @@
 			"id": "message.b2253fad410ededeead0d7c370d19c7457a62fd2c3ed562164ebb37158b2b204",
 			"kind": "literal",
 			"source": "Clear Working Changes Filter",
-			"translation": "清除工作区更改筛选器"
+			"translation": "清除工作更改筛选"
 		},
 		{
 			"id": "message.b237b446ccaa9ad4192d503e50ea63a07bb247a635418778828d72acd46ebd4e",
@@ -16338,7 +16338,7 @@
 			"id": "message.b31d982139dc4172b3f1d857911f659f36b0aeadbef2ed28dbb3e41f6858a709",
 			"kind": "literal",
 			"source": "Working",
-			"translation": "工作区"
+			"translation": "工作树"
 		},
 		{
 			"id": "message.b31ea18dbbd1fc55bdf8f49b674a8777c1c600f3ad9905e50ba3f795a63788b9",
@@ -16350,7 +16350,7 @@
 			"id": "message.b32e6759cd081964c9391896fd185ab689d3f1d5de7a9455c45bfd8d4a33a983",
 			"kind": "template",
 			"source": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"Fetch All\" href= ${slot1} > class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"Visualize Repo History\" href= ${slot2} > class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"Open in Commit Graph\" href= ${slot3} >",
-			"translation": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"全部抓取\" href= ${slot1} > class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"可视化仓库历史\" href= ${slot2} > class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"在提交图中打开\" href= ${slot3} >",
+			"translation": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"全部获取\" href= ${slot1} > class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"可视化仓库历史\" href= ${slot2} > class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"在提交图中打开\" href= ${slot3} >",
 			"slots": [
 				"slot1",
 				"slot2",
@@ -16416,7 +16416,7 @@
 			"id": "message.b38780362fa81308312db599350f92dc690afffa06acb37d5c6f629ad5ed3eb0",
 			"kind": "literal",
 			"source": "Add a Stash Changes command",
-			"translation": "添加“贮藏更改”命令"
+			"translation": "添加“储藏更改”命令"
 		},
 		{
 			"id": "message.b3a7564464b7b808d390b29308ff7b89b86ff79a2948e7176075dae0ac40e1fe",
@@ -16434,7 +16434,7 @@
 			"id": "message.b3ada0b2cf326d8ea1adc63306fdc726d48a8bdff094aec1853a6a158d51b472",
 			"kind": "literal",
 			"source": "Specifies whether to show stashes in the _Worktrees_ view",
-			"translation": "指定是否在 _工作树_ 视图中显示贮藏"
+			"translation": "指定是否在 _工作树_ 视图中显示储藏"
 		},
 		{
 			"id": "message.b3bb2b7b65e17cc0c3a56d9a564b870c9f631ebab58b0b361fd605b88a5a4cb0",
@@ -16468,7 +16468,7 @@
 			"id": "message.b4214c2af87fa25823856e911f3526f3f2c939d138eb0c4994c896e09cfb036f",
 			"kind": "literal",
 			"source": "Specifies whether to provide an _authors_ CodeLens, showing number of authors of the file or code block and the most prominent author (if there is more than one)",
-			"translation": "指定是否提供 _authors_ CodeLens，用于显示文件或代码块的作者数量以及最主要的作者（如果多于一位）"
+			"translation": "指定是否提供 _作者_ CodeLens，用于显示文件或代码块的作者数量及最主要作者（若多于一位）"
 		},
 		{
 			"id": "message.b465fe3dec997d2f610c6bbe88af8c913403dbb99a185f686245fe5ba9af93b7",
@@ -16546,7 +16546,7 @@
 			"id": "message.b56a12bc180a24304b1a0ec31b1f57f0bf09eb52157d06abd639b367127fbfec",
 			"kind": "literal",
 			"source": "Show Inspect view for commit links",
-			"translation": "为提交链接显示检查视图"
+			"translation": "为提交链接显示详情视图"
 		},
 		{
 			"id": "message.b574b4c46a5dacca6aa5fc3e77ce0650d620d59af0e4eb55ddbf5d34af829309",
@@ -16618,7 +16618,7 @@
 			"id": "message.b686bc0180243a21dd939dae99b8a64e058628e22f71e8670bf2559fbe3d8907",
 			"kind": "literal",
 			"source": "Specifies whether to show the experimental incoming activity for each repository in the _Repositories_ view",
-			"translation": "指定是否在 _仓库_ 视图中显示每个仓库的实验性的传入活动"
+			"translation": "指定是否在 _仓库_ 视图中显示每个仓库的实验性传入活动"
 		},
 		{
 			"id": "message.b6ac79ba033f09722632e9e6eef5a4301be0fd4715bc85af2062e1a2b6c64e23",
@@ -16764,7 +16764,7 @@
 			"id": "message.b7a2d8a512dc73e805434a823bf43dbebc672f90efa05cc96b1ff6992c81adbb",
 			"kind": "literal",
 			"source": "See My Working Changes",
-			"translation": "查看我的工作区更改"
+			"translation": "查看我的工作更改"
 		},
 		{
 			"id": "message.b7aada6c54ebdfe07cd5c03dc919b6c1764f254376026ea1f571e8320bb0ab51",
@@ -16836,7 +16836,7 @@
 			"id": "message.b856a0f8d223d9acf8c6600a99598cd2ed4f5218c404bf0b4da4623da93d8c02",
 			"kind": "literal",
 			"source": "Never automatically open the editor",
-			"translation": "绝不自动打开编辑器"
+			"translation": "从不自动打开编辑器"
 		},
 		{
 			"id": "message.b85f599dda35c0dbdf0536f06b9e0bc8af9dfbe4b25098cf61b7cbf7cf24c583",
@@ -16890,7 +16890,7 @@
 			"id": "message.b91154ab6bd4342b982ae85b236ad1a398675dfc6ff1a3b72cac1c6c3f45dc72",
 			"kind": "literal",
 			"source": "(in a worktree)",
-			"translation": "（位于工作树中）"
+			"translation": "（在工作树中）"
 		},
 		{
 			"id": "message.b92ee72462cd8ae9d65a536051ca560c4bf5791199290d18a1329911f549a2b9",
@@ -16998,7 +16998,7 @@
 			"id": "message.ba616871864665bc0ed900d4ebb980bbac9651719df8dad81f8fc2753677de5d",
 			"kind": "literal",
 			"source": "Stashes",
-			"translation": "贮藏"
+			"translation": "储藏"
 		},
 		{
 			"id": "message.ba69492daa0b1aee2217bc69098a1f8f33195f692d1beefd43039445f403ed97",
@@ -17010,7 +17010,7 @@
 			"id": "message.ba75312c6ff0d8872db4aa8747f45ab1dcd06616a6d5878bf0384c89cae0b82b",
 			"kind": "literal",
 			"source": "Working Changes",
-			"translation": "工作区更改"
+			"translation": "工作更改"
 		},
 		{
 			"id": "message.ba98efd990613d52d51300ecc338a6e5b7f0db2e9d158a2993b897012eab6aaa",
@@ -17026,7 +17026,7 @@
 			"id": "message.baad243f7e20551fc9a2bf2a9bba55666acb3a4e7f6df90ee15b98eee2e4d56a",
 			"kind": "literal",
 			"source": "Specifies whether to reveal stashes in the _Stashes_ view, otherwise they revealed in the _Repositories_ view",
-			"translation": "指定是否在 _贮藏_ 视图中显示贮藏，否则会在 _仓库_ 视图中显示它们"
+			"translation": "指定是否在 _储藏_ 视图中显示储藏，否则在 _仓库_ 视图中显示"
 		},
 		{
 			"id": "message.bac07ff9b7120cf50b7e552f0610b4803e0baa876defbdc56bcfd13767aec2ef",
@@ -17071,7 +17071,7 @@
 			"id": "message.bb0a8e3389754e55a311b765e2167b47112f716e8389f97a2f6ecedef44a2e9f",
 			"kind": "literal",
 			"source": "Specifies whether to show contributor statistics in _Contributors_ sections in the views. This can take a while to compute depending on the repository size",
-			"translation": "指定是否在视图中的 _Contributors_ 分区中显示贡献者统计信息。根据仓库大小不同，计算过程可能需要一些时间"
+			"translation": "指定是否在视图中的 _贡献者_ 分区中显示贡献者统计信息。视仓库大小，计算可能较久"
 		},
 		{
 			"id": "message.bb1d3b468a28b72c4a50d3a9f70707524170647c9fa19e2301fbf170676494ec",
@@ -17101,7 +17101,7 @@
 			"id": "message.bb549c94d53f167eb05de54616817dafe11155272bda40100b4a539aa7657ae9",
 			"kind": "literal",
 			"source": "Stash Staged Changes",
-			"translation": "贮藏已暂存更改"
+			"translation": "储藏已暂存更改"
 		},
 		{
 			"id": "message.bb5e09bac8250fa554d16886c366b9df9c6813e824fd142479415f79725c8c78",
@@ -17163,7 +17163,7 @@
 			"id": "message.bc04aa5177490caeeae6db3baae50205c129c0b32a14d5af5c8a16b5be2492e8",
 			"kind": "literal",
 			"source": "Show Current Branch History",
-			"translation": "显示当前分支 历史"
+			"translation": "显示当前分支历史"
 		},
 		{
 			"id": "message.bc0e4cb547ca5d7ecdd4e99490a5f8e92700c1e49fdc3b0f3983e38a54123478",
@@ -17270,7 +17270,7 @@
 			"id": "message.bd6a7a05b3d024e782bb99ab35cfbb0dbc31c1e62e77e45a5650a09ac376c738",
 			"kind": "template",
 			"source": "Adds a ${slot1}, hidden by default, to visualize, navigate, and explore the revision history of the selected lines of current file",
-			"translation": "添加一个默认隐藏的 ${slot1}，用于可视化、导航和浏览当前文件所选行的修订历史",
+			"translation": "添加一个默认隐藏的 ${slot1}，用于可视化、导航和浏览当前文件所选行的版本历史",
 			"slots": [
 				"slot1"
 			]
@@ -17285,7 +17285,7 @@
 			"id": "message.bdcbe0d091f878393abb4c45ded3c908b337412ca5561433b87f1f24a5888b9a",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images in hovers",
-			"translation": "指定是否在悬停中显示头像图像"
+			"translation": "指定是否在悬停中显示头像"
 		},
 		{
 			"id": "message.bdd23732468a4f97dd45a1ff41d2588bc83cb396edb8b6b2c23afdc108feedc1",
@@ -17311,7 +17311,7 @@
 			"id": "message.be0ab0a3e8623781874859ed0b5901e394ad5488eb5a4b33afad086506fc4c59",
 			"kind": "template",
 			"source": "Use the ${slot1} command to toggle Review mode",
-			"translation": "使用 ${slot1} 命令来切换审阅模式",
+			"translation": "使用 ${slot1} 命令切换审阅模式",
 			"slots": [
 				"slot1"
 			]
@@ -17383,7 +17383,7 @@
 			"id": "message.beddbc13312fb5970498b25a06b490390893893fcf328fa0073d0c05a059ac9e",
 			"kind": "literal",
 			"source": "Specifies whether to show a comparison of the current branch or the working tree with a user-selected reference (branch, tag, etc) in the _Repositories_ view",
-			"translation": "指定是否在 _仓库_ 视图中显示当前分支或工作区与用户所选引用（分支、标签等）的比较"
+			"translation": "指定是否在 _仓库_ 视图中显示当前分支或工作树与用户所选引用（分支、标签等）的比较"
 		},
 		{
 			"id": "message.bedfdbbbf19f69d67cb24632d9d5b8bb2bc5ac91a5611fba6bd1ee28ffddb639",
@@ -17482,7 +17482,7 @@
 			"id": "message.c05b20966b3f0cf9a424fb818e1e90cb0e82c540069c27c3c96f978b60441c3e",
 			"kind": "literal",
 			"source": "Specifies the string to be shown in place of the _authors_ CodeLens when there are unsaved changes",
-			"translation": "指定在存在未保存更改时，用于替代 _authors_ CodeLens 显示的字符串"
+			"translation": "指定在存在未保存更改时，用于替换 _作者_ CodeLens 显示的字符串"
 		},
 		{
 			"id": "message.c05ec69b4101f5a7648cc45c782c49377abdebd71c9866fb5dce963555b84934",
@@ -17625,7 +17625,7 @@
 			"id": "message.c1b6b02b98cf4a2eab3ab3a7d08fc764a5f182e2c8873ca331a958b69decb8d1",
 			"kind": "literal",
 			"source": "Git Push Stash...",
-			"translation": "Git 推送贮藏..."
+			"translation": "Git 推送储藏..."
 		},
 		{
 			"id": "message.c1be6abfc1a2bdbfd432a003ccaebedb0de15829e009fdb414a43297fc2ac529",
@@ -17651,7 +17651,7 @@
 			"id": "message.c1d734ada9331a722a9017ac2bea46b5825d2b998cf2e0a0bd5a4567522f30e5",
 			"kind": "literal",
 			"source": "Your Pro trial has ended. Please upgrade for full access to Worktrees and other Pro features.",
-			"translation": "你的 Pro 试用已结束。请升级以完整访问 Worktrees 和其他 Pro 功能。"
+			"translation": "你的 Pro 试用已结束。升级以完整访问工作树及其他 Pro 功能。"
 		},
 		{
 			"id": "message.c1f7094a91aa7166a15cdc1f686126957f7d6b7e41ba18d3571ac3ade5a6a22a",
@@ -17703,7 +17703,7 @@
 			"id": "message.c25773578c67b16b2ad597eb04475e3b4ade2dc85521bb725d6f326da80572c6",
 			"kind": "literal",
 			"source": "Specifies the string to be shown in place of the _recent change_ CodeLens when there are unsaved changes",
-			"translation": "指定在存在未保存更改时，用于替代 _recent change_ CodeLens 显示的字符串"
+			"translation": "指定在存在未保存更改时，用于替换 _最近更改_ CodeLens 显示的字符串"
 		},
 		{
 			"id": "message.c28133e3600bb47d4db409d2cfaed870dec07dc880c009aef4f5173732b333d9",
@@ -17721,7 +17721,7 @@
 			"id": "message.c2a0a8c94617a329c0acb37498e77c9cf502c386b88e65bec513f60883c067a4",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Contributors_ view",
-			"translation": "指定是否在 _贡献者_ 视图中显示头像图像而不是提交（或状态）图标"
+			"translation": "指定是否在 _贡献者_ 视图中显示头像而不是提交（或状态）图标"
 		},
 		{
 			"id": "message.c2a2fdf782929fbb9fb1396c7188c98bee5e9afad9258d690ba0ab7613ebf5c1",
@@ -17823,7 +17823,7 @@
 			"id": "message.c3e22466ae6b7a425bbe170090d6aea0dc1e8ca8991546c589e7f3fd04f53ae5",
 			"kind": "literal",
 			"source": "Show this many rows at first",
-			"translation": "首次显示这么多行"
+			"translation": "首次显示的行数"
 		},
 		{
 			"id": "message.c3e9c2cac9a4cdea86d72c312df56fb5b0d9052d9bc711a63917c738e706a41f",
@@ -17908,7 +17908,7 @@
 			"id": "message.c4a9814a1256a022ccdc993173a9fab56e78ab2a1ac4cb273737cd5933c55a37",
 			"kind": "literal",
 			"source": "Opens the file revision on the remote service (when available)",
-			"translation": "在远程服务上打开文件修订（如果可用）"
+			"translation": "在远程服务上打开文件版本（如果可用）"
 		},
 		{
 			"id": "message.c4c582b51b17b590dd30789cdbfed31a0cf00f03787761df0ee3940e2bb96bee",
@@ -17920,7 +17920,7 @@
 			"id": "message.c4dcce82ee1c948caf932188edfec342aea56d5e557e99e4f068afa089b92e45",
 			"kind": "literal",
 			"source": "Worktrees:",
-			"translation": "Worktrees："
+			"translation": "工作树："
 		},
 		{
 			"id": "message.c4efdbd2c6cc8c1f30a05655549e6fb1674cd6dad9ab664fef9335fda834016f",
@@ -17962,7 +17962,7 @@
 			"id": "message.c560d6d442e1f25fa2508302eb6decd1137412d03750c8bbc0c6046d72d05dc0",
 			"kind": "literal",
 			"source": "Explain Stash Changes...",
-			"translation": "解释贮藏更改..."
+			"translation": "解释储藏更改..."
 		},
 		{
 			"id": "message.c58e9b6af4ddd8afa8bbfd2764a0326b8f773b0b794bc4f06107ed0d21d0f4aa",
@@ -18035,7 +18035,7 @@
 			"id": "message.c6c417c376a5f2060caf7f03510ffefa598b639a1e71efad71d3636f34841a06",
 			"kind": "literal",
 			"source": "Stash All Changes",
-			"translation": "贮藏所有更改"
+			"translation": "储藏所有更改"
 		},
 		{
 			"id": "message.c6e5793edb7776c56e8ad4833ad67af4583728c7595fed221d6f2d0ab0a4d79b",
@@ -18174,7 +18174,7 @@
 			"id": "message.c7e01900c1d61a2ed170509a289f4dbfc71c2604f807be1d901cd47b88806aa2",
 			"kind": "literal",
 			"source": "Open All Changes with Working Tree Individually",
-			"translation": "逐个打开与工作区比较的所有更改"
+			"translation": "逐个打开与工作树的所有更改"
 		},
 		{
 			"id": "message.c7fa537a17e32532d5ca2ce3d2a84060d1906a5e3737a00981d54c725e7545f2",
@@ -18210,13 +18210,13 @@
 			"id": "message.c868e99358d962d2fb58ae91370d925c9bc9309c33e44fee109486ae5d8a99b2",
 			"kind": "literal",
 			"source": "Specifies whether to show contributor statistics in the _Contributors_ view. This can take a while to compute depending on the repository size",
-			"translation": "指定是否在_Contributors_ 视图中显示贡献者统计信息。根据仓库大小不同，计算过程可能需要一些时间"
+			"translation": "指定是否在 _贡献者_ 视图中显示贡献者统计信息。视仓库大小，计算可能较久"
 		},
 		{
 			"id": "message.c86ffe267ac6c2d15edb14b12ee3eaec0fed54bc749c53fa4633bf1980e76211",
 			"kind": "literal",
 			"source": "Use keyboard shortcuts",
-			"translation": "使用键盘快捷键"
+			"translation": "使用键盘快捷方式"
 		},
 		{
 			"id": "message.c87ca9f211125756537b88e772554d71ab0529f8acfc8365722a75800af3a38b",
@@ -18289,7 +18289,7 @@
 			"id": "message.c9610441bd6f539216690a297952ed37bea24294169345fed31b939b8bdb71b0",
 			"kind": "template",
 			"source": "Adds a ${slot1} to visualize, navigate, and explore the revision history of the current file, a specified file or folder, or just the selected lines of the current file",
-			"translation": "添加一个 ${slot1}，用于可视化、导航和浏览当前文件、指定文件或文件夹，或仅当前文件所选行的修订历史",
+			"translation": "添加一个 ${slot1}，用于可视化、导航和浏览当前文件、指定文件或文件夹，或仅当前文件所选行的版本历史",
 			"slots": [
 				"slot1"
 			]
@@ -18341,7 +18341,7 @@
 			"id": "message.ca14abb5becb4880aa3320aa6d2469e3f904ef19829669974460febf8932a506",
 			"kind": "literal",
 			"source": "Copy Remote File URL From...",
-			"translation": "复制来自...的远程文件 URL"
+			"translation": "从...复制远程文件 URL"
 		},
 		{
 			"id": "message.ca30cfd50df2c8b6e47297519f43cbbec91b26b2ed989353b55a491f1f61804e",
@@ -18604,7 +18604,7 @@
 			"id": "message.cd1b020f7d504567788b47baae1baa3e6c85913e633df96569cee061bb56d15f",
 			"kind": "literal",
 			"source": "Specifies whether to show stashes in the _Commits_ and _Branches_ sections of the _Cloud Workspaces_ view",
-			"translation": "指定是否在 _云工作区_ 视图的 _提交_ 和 _分支_ 分区中显示贮藏"
+			"translation": "指定是否在 _云工作区_ 视图的 _提交_ 和 _分支_ 分区中显示储藏"
 		},
 		{
 			"id": "message.cd27951b369def435ec8f1694e9cb04078e90bedcd8c2fe89195a6eb5ac41827",
@@ -18616,7 +18616,7 @@
 			"id": "message.cd5c9c5d3e37ed4bdf578a7d2774742364495123c6dd9a702f261e69d08c24d1",
 			"kind": "literal",
 			"source": "Open Changes with Working File",
-			"translation": "打开与工作文件比较的更改"
+			"translation": "打开与工作文件的更改"
 		},
 		{
 			"id": "message.cd72d3f6bcfc7c27f674ca457b656a3e00f29f6542a34bae7eb063213a0227f7",
@@ -18662,7 +18662,7 @@
 			"id": "message.cd8c967db7564104af4a36a4bd2feb56131946f2fc945f986200e85533c8dcf6",
 			"kind": "template",
 			"source": "${slot1} reviewers",
-			"translation": "${slot1} 需要审查者",
+			"translation": "需要审阅者",
 			"slots": [
 				"slot1"
 			]
@@ -18711,7 +18711,7 @@
 			"id": "message.cdf3cb7f3572d04b49cbc8185fbdf63165b7cae00d3ca84b41f2305195936189",
 			"kind": "rich",
 			"source": "Thanks for installing GitLens and trying out GitLens Pro.\n\nYou're now on the **GitLens Community** edition.\nTrack code changes and see who made them with features like in-editor blame annotations, hovers, CodeLens, and more—completely free.\n\nLearn more about the [difference between GitLens Community vs. Pro](command:gitlens.walkthrough.openCommunityVsPro).\n\n**Unlock more powerful tools with GitLens Pro**\n\n[Upgrade to GitLens Pro](command:gitlens.walkthrough.plus.upgrade)\n\nWith GitLens Pro, you can accelerate PR reviews, visualize code history in-depth, and enhance collaboration across your team. It's the perfect upgrade to streamline your VS Code workflow.",
-			"translation": "感谢你安装 GitLens 并试用 GitLens Pro。\n\n你现在使用的是 **GitLens Community** 版本。\n借助编辑器内追溯注解、悬停、CodeLens 等功能来跟踪代码更改并查看修改者，而且完全免费。\n\n进一步了解 [GitLens Community 与 Pro 的区别](command:gitlens.walkthrough.openCommunityVsPro)。\n\n**通过 GitLens Pro 解锁更强大的工具**\n\n[升级到 GitLens Pro](command:gitlens.walkthrough.plus.upgrade)\n\n通过 GitLens Pro，你可以加速拉取请求审查、更深入地可视化代码历史，并增强团队协作。它是精简 VS Code 工作流的理想升级。",
+			"translation": "感谢你安装 GitLens 并试用 GitLens Pro。\n\n你现在使用的是 **GitLens Community** 版本。\n借助编辑器内追溯注解、悬停、CodeLens 等功能来跟踪代码更改并查看修改者，而且完全免费。\n\n进一步了解 [GitLens Community 与 Pro 的区别](command:gitlens.walkthrough.openCommunityVsPro)。\n\n**通过 GitLens Pro 解锁更强大的工具**\n\n[升级到 GitLens Pro](command:gitlens.walkthrough.plus.upgrade)\n\nGitLens Pro 可加速拉取请求审查、更深入地可视化代码历史，并增强团队协作。它是精简 VS Code 工作流的理想升级。",
 			"format": "markdown",
 			"slots": []
 		},
@@ -18840,7 +18840,7 @@
 			"id": "message.cf74003540107640a9c916d1645c41e7118ff879157c8a56cd1230a04331e1b8",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images in quick pick menus when applicable",
-			"translation": "指定在适用时是否在快速选择菜单中显示头像图像"
+			"translation": "指定在适用时是否在快速选择菜单中显示头像"
 		},
 		{
 			"id": "message.cf78c8af010d05fa428c4be31cf107c376ba336aeef62656c1586de55ceb5ef8",
@@ -18890,7 +18890,7 @@
 			"id": "message.d014145f4266fec16d56c80f90b4cbbdbe6ac4d4dfe6ee4d68dddaf4c9788698",
 			"kind": "literal",
 			"source": "Open Changes with Previous Revision",
-			"translation": "打开与上一个修订比较的更改"
+			"translation": "打开与上一版本的更改"
 		},
 		{
 			"id": "message.d01ba37e6f1895fe5d3c4bce236275c252497255e4dfdf2a43f8af4dc1b8c5f6",
@@ -18902,7 +18902,7 @@
 			"id": "message.d01d45bf0692d564ca08e641978288abb6fa3c99f71bdffca2828f7ece887479",
 			"kind": "literal",
 			"source": "Selects the working changes (WIP) row when there are uncommitted changes, otherwise selects the HEAD row",
-			"translation": "存在未提交更改时选择工作区更改（WIP）行，否则选择 HEAD 行"
+			"translation": "存在未提交更改时选择工作更改（WIP）行，否则选择 HEAD 行"
 		},
 		{
 			"id": "message.d029c6d1dfc3e0e14b9e71c909b7f8739922cd2d1104ad53e6ee5b9cb0e52e70",
@@ -18932,7 +18932,7 @@
 			"id": "message.d0d4c23ba6fc34898f6c00665949cb4e0449e9a4f66b178fc05b8c55130a74c8",
 			"kind": "literal",
 			"source": "Rename Stash...",
-			"translation": "重命名贮藏..."
+			"translation": "重命名储藏..."
 		},
 		{
 			"id": "message.d0d945b254b940c4fbd14216d8e3a73d4a0686cbf4c4e29d7cec5c67e16fa514",
@@ -18956,13 +18956,13 @@
 			"id": "message.d152c680852056d83f309aa540e8b0a9961a6235ea1b442d321accbfd9579f0c",
 			"kind": "literal",
 			"source": "Showing lines changed per day",
-			"translation": "在迷你地图中显示每天的更改行数"
+			"translation": "显示每天的更改行数"
 		},
 		{
 			"id": "message.d166e11e215c09307d91b819d9196e1b3d1d9856f1a1e9a99e1dc307671eef9e",
 			"kind": "literal",
 			"source": "Show Stash Markers",
-			"translation": "显示贮藏标记"
+			"translation": "显示储藏标记"
 		},
 		{
 			"id": "message.d16c4962ba7bfdffb13b5669d781f83dd75407e58cea4650a7a16d52e01b9aea",
@@ -19034,7 +19034,7 @@
 			"id": "message.d2432d09b1afb858cc48434391ac44f09f7cf6aecb8b681432b68e945691e1ce",
 			"kind": "rich",
 			"source": "Adds a [Line History view](command:gitlens.showLineHistoryView), hidden by default, to visualize, navigate, and explore the revision history of the selected lines of current file",
-			"translation": "添加默认隐藏的[行历史视图](command:gitlens.showLineHistoryView)，用于可视化、导航和浏览当前文件所选行的修订历史",
+			"translation": "添加默认隐藏的[行历史视图](command:gitlens.showLineHistoryView)，用于可视化、导航和浏览当前文件所选行的版本历史",
 			"format": "markdown",
 			"slots": []
 		},
@@ -19079,7 +19079,7 @@
 			"id": "message.d29f059d00a1a0075b49370c330fe947425f36029b650395fe2679c8be9299f1",
 			"kind": "literal",
 			"source": "Show Contributors Statistics",
-			"translation": "显示贡献者 统计信息"
+			"translation": "显示贡献者统计信息"
 		},
 		{
 			"id": "message.d2a503b208d3e0487d12feb1168f8670b4cdc8c72b8b9d434a118fcae30ca901",
@@ -19121,7 +19121,7 @@
 			"id": "message.d2f7046a76baa7fa19085a8b9e652caf382dae335e48730d59a25eeb4f6891d0",
 			"kind": "literal",
 			"source": "Specifies whether to query for pull requests associated with branches and commits in the _Cloud Workspaces_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _云工作区_ 视图中查询与分支和提交关联的拉取请求。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _云工作区_ 视图中查询与分支和提交关联的拉取请求。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.d33223d31184729007a952d0fa8d021eac1e6c33965f77ee6f9c875657625bc5",
@@ -19133,7 +19133,7 @@
 			"id": "message.d334b8973769767de5494ed90e2805ba02bc29d0d863d5614d367514ad4f5be1",
 			"kind": "literal",
 			"source": "Generate Changelog (Preview)",
-			"translation": "生成更改日志（预览）"
+			"translation": "生成变更日志（预览）"
 		},
 		{
 			"id": "message.d3398e7124accae1bc792eb161e7c63e888919e0c0807d469620176fdd6561ee",
@@ -19216,7 +19216,7 @@
 			"id": "message.d453a41e86bfeb19ce306c62c7de3ea7ee3c368f26854bbdaa4ab08079553818",
 			"kind": "template",
 			"source": "${slot1} is in a detached state, i.e. checked out to a commit or tag",
-			"translation": "${slot1} 处于分离头状态，即已检出到某个提交或标签",
+			"translation": "${slot1} 处于分离头指针状态，即已检出到某个提交或标签",
 			"slots": [
 				"slot1"
 			]
@@ -19239,7 +19239,7 @@
 			"id": "message.d48c4f212895729af9146f2e281d398a62ce6d67158ab33e268b196266d19f62",
 			"kind": "literal",
 			"source": "opens line changes with the previous revision",
-			"translation": "打开与上一个版本的行更改对比"
+			"translation": "打开与上一版本的行更改"
 		},
 		{
 			"id": "message.d4a7f4ab14d21def58ab4c0db2fa38675ce60ca2ee78b27ef318bf59be109881",
@@ -19271,7 +19271,7 @@
 			"id": "message.d4eed6451e6f1e298edfa43e3e0ed2b4aa44fa798aca1fec1f97ef09b34a4071",
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with commits in the _Repositories_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _仓库_ 视图中显示与提交关联的拉取请求（如果有）。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _仓库_ 视图中显示与提交关联的拉取请求（如果有）。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.d500cc75e6d86ad0ed9bf5ae78cbc00acdc4cbde2d1d8dc785a8ed2113af238d",
@@ -19283,7 +19283,7 @@
 			"id": "message.d507ce493778de443cf2dde4a6b4755a97eef05eab8478a5465425f19fc5a6ba",
 			"kind": "literal",
 			"source": "onto",
-			"translation": "onto"
+			"translation": "基于"
 		},
 		{
 			"id": "message.d51b1a3b4d899947b7b657300f19341c49879467ea98b18e1fbc652eaae4df08",
@@ -19361,7 +19361,7 @@
 			"id": "message.d623ddad6be39de5afacd07bdee5e4bd6221b0351df12e9625cfa7740db734bb",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Remotes_ view",
-			"translation": "指定是否在 _远程_ 视图中显示头像图像而不是提交（或状态）图标"
+			"translation": "指定是否在 _远程_ 视图中显示头像而不是提交（或状态）图标"
 		},
 		{
 			"id": "message.d62b4ab38cd09e8a78e724b5e3846ca3196559d58033e80f319586012b02b3b8",
@@ -19391,7 +19391,7 @@
 			"id": "message.d68caee232552046d8cf829fd7cf9dde2bd73f83a62a0141404d63033197e4e6",
 			"kind": "literal",
 			"source": "GitKraken MCP is active in your AI chat, leveraging Git and your integrations to provide context and perform actions. You can also connect MCP to other agents on your machine.",
-			"translation": "GitKraken MCP 已在你的 AI 聊天中启用，它会利用 Git 及你的集成来提供上下文并执行操作。你还可以将 MCP 连接到你机器上的其他智能体。"
+			"translation": "GitKraken MCP 已在你的 AI 聊天中启用，会利用 Git 及你的集成提供上下文并执行操作。还可以将 MCP 连接到本机其他代理。"
 		},
 		{
 			"id": "message.d68cc5d22a08c28d7fb80bb95c4b80fd3c90fc3f962d5b75c28c6aebbdad3bfb",
@@ -19427,7 +19427,7 @@
 			"id": "message.d73a5b213273703e980eb42e98d2b63f6bdf7480631cd36b847269d79a0962f5",
 			"kind": "template",
 			"source": "Commits in ${slot1} that are missing from ${slot2}",
-			"translation": "${slot1} 中缺少于 ${slot2} 的提交",
+			"translation": "${slot1} 中有而 ${slot2} 中没有的提交",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -19458,7 +19458,7 @@
 			"id": "message.d7930729db24a10ef197efc8f3c71573e1110da02e7673f27ca1e9caaf6bf4e7",
 			"kind": "literal",
 			"source": " error",
-			"translation": " error"
+			"translation": " 错误"
 		},
 		{
 			"id": "message.d7a67d857dfaab163882217b00eafb535988833f28167d211ecd8d0227d77716",
@@ -19479,7 +19479,7 @@
 			"id": "message.d7bc25a60a313e38427787aade0dbc6a9cc27ac4daf348ea64816d4cc1f2f07e",
 			"kind": "rich",
 			"source": "As a **GitLens Pro** user, you have access to powerful tools that accelerate PR reviews, provide deeper code history visualizations, and streamline collaboration across your team.\n\n[Continue the Walkthrough](command:gitlens.walkthrough.openWalkthrough)\n\nTo get the most out of your **GitLens Pro** experience, complete the walkthrough and visit our Help Center for in-depth guides.\n\n**[Learn more in the Help Center](command:gitlens.walkthrough.openHelpCenter)**",
-			"translation": "作为 **GitLens Pro** 用户，你可以使用强大的工具来加速拉取请求审查、获得更深入的代码历史可视化，并简化团队协作。\n\n[继续引导](command:gitlens.walkthrough.openWalkthrough)\n\n为了充分发挥 **GitLens Pro** 的价值，请完成引导并访问帮助中心以获取更深入的使用指南。\n\n**[在帮助中心了解更多](command:gitlens.walkthrough.openHelpCenter)**",
+			"translation": "作为 **GitLens Pro** 用户，你可以使用强大的工具来加速拉取请求审查、获得更深入的代码历史可视化，并简化团队协作。\n\n[继续引导](command:gitlens.walkthrough.openWalkthrough)\n\n完成引导并访问帮助中心，以充分发挥 **GitLens Pro** 的价值。\n\n**[在帮助中心了解更多](command:gitlens.walkthrough.openHelpCenter)**",
 			"format": "markdown",
 			"slots": []
 		},
@@ -19547,7 +19547,7 @@
 			"id": "message.d821e9b163ebac8d628298034639cd61896f7abbc8801eb748d4aebdb7e07388",
 			"kind": "literal",
 			"source": "Specifies whether to query for pull requests associated with branches and commits in the _Repositories_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _仓库_ 视图中查询与分支和提交关联的拉取请求。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _仓库_ 视图中查询与分支和提交关联的拉取请求。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.d82dbb5cabe472ee808c68b7e4e3c28b1b1814a7d236a361c40e1671a4103e80",
@@ -19604,7 +19604,7 @@
 			"id": "message.d8d8458f33b9c5960b3eca670aa8c900e1d7d0ce282a03ebffb55c97cdcc3612",
 			"kind": "literal",
 			"source": "Specifies whether to show stashes in the _Commits_ and _Branches_ sections of the _Repositories_ view",
-			"translation": "指定是否在 _仓库_ 视图的 _提交_ 和 _分支_ 分区中显示贮藏"
+			"translation": "指定是否在 _仓库_ 视图的 _提交_ 和 _分支_ 分区中显示储藏"
 		},
 		{
 			"id": "message.d901819e64c42a6d67610f13eea249b4e81e7a9cc695791206af55b814b91619",
@@ -19624,7 +19624,7 @@
 			"id": "message.d909922be7aa651c964e5b02daf3eed5206780762786cbf7c61becda8b3e27b9",
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with commits in the _Search & Compare_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _搜索与比较_ 视图中显示与提交关联的拉取请求（如果有）。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _搜索与比较_ 视图中显示与提交关联的拉取请求（如果有）。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.d90c7a3a31866be2d3f5362b45b42ccf1ded26e7a1ea223e53703f2201dbd013",
@@ -19642,7 +19642,7 @@
 			"id": "message.d942f7936cee12d1874c05c196b3342405793c66fcf84d03535dd34482d1e114",
 			"kind": "literal",
 			"source": "Specifies how the _Stashes_ view will display files",
-			"translation": "指定 _贮藏_ 视图如何显示文件"
+			"translation": "指定 _储藏_ 视图如何显示文件"
 		},
 		{
 			"id": "message.d98244c24a9bd6892b1c12364fa8fcca5174ceba2c32139e374592999032f307",
@@ -19654,7 +19654,7 @@
 			"id": "message.d993956b2c63c6f44cd4ca3974d873c452614942adc2f7260e181576111a18ed",
 			"kind": "literal",
 			"source": "Connect More Agents",
-			"translation": "连接更多智能体"
+			"translation": "连接更多代理"
 		},
 		{
 			"id": "message.d99f04436a9b1bfd22a23d747ddefff780215826cb29aeaebd0277bb783e22b8",
@@ -19669,7 +19669,7 @@
 			"id": "message.d9bfdb5a93f68df3711c17531da3d7a5739ff697fd126208ba0c599acab8157b",
 			"kind": "literal",
 			"source": "Specifies whether to show a comparison of the current branch or the working tree with a user-selected reference (branch, tag, etc) in the _Cloud Workspaces_ view",
-			"translation": "指定是否在 _云工作区_ 视图中显示当前分支或工作区与用户所选引用（分支、标签等）的比较"
+			"translation": "指定是否在 _云工作区_ 视图中显示当前分支或工作树与用户所选引用（分支、标签等）的比较"
 		},
 		{
 			"id": "message.d9e54259fb4c16760c79041462a8f9e44bc6a338f5210bbc8b01e2ce343a7132",
@@ -19762,7 +19762,7 @@
 			"id": "message.db3ae055209d16d25ae89157b164ee7dcfbb712b0837c64fff1d9cc371042fe1",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Launchpad_ view",
-			"translation": "指定是否在 _启动台_ 视图中显示头像图像而不是提交（或状态）图标"
+			"translation": "指定是否在 _启动台_ 视图中显示头像而不是提交（或状态）图标"
 		},
 		{
 			"id": "message.db40510f878dc3b4d9af7220873410429f9725a19538cb3d2089ed55c0df791e",
@@ -19828,7 +19828,7 @@
 			"id": "message.dbb607789ad401a79b79802f79a07d55784003f6283e58c231584c252b36ad33",
 			"kind": "literal",
 			"source": "Stash Selected Changes",
-			"translation": "贮藏所选更改"
+			"translation": "储藏所选更改"
 		},
 		{
 			"id": "message.dbd21d00baea15b94c1df563841fbfc543dfcf0ac3fd418cfe824bc1f9a0be69",
@@ -19883,7 +19883,7 @@
 			"id": "message.dc3fccad2d8d6d369773e20c31b0ef59be01d626b09f0d992c3bce0b6e36bb89",
 			"kind": "literal",
 			"source": "Restore Changes (Checkout)",
-			"translation": "还原更改（Checkout）"
+			"translation": "还原更改（检出）"
 		},
 		{
 			"id": "message.dc43e87140c6cb63d29336d40f41748012dc6dd8dbdb1003d40ebe2236d40d1a",
@@ -19937,7 +19937,7 @@
 			"id": "message.dcb7705caab02c7e20e8c8c05ada75c3d3b7112adfc289a8e041b41a54f95124",
 			"kind": "literal",
 			"source": "Open Previous Changes with Working File",
-			"translation": "打开与工作文件比较的上一次更改"
+			"translation": "打开与工作文件的上次更改"
 		},
 		{
 			"id": "message.dcc2279e9edb0fa36e16f9e7bd8a36ece6e16d6bd67ae8a27cafb016aee36e6b",
@@ -19978,7 +19978,7 @@
 			"id": "message.dd484a0f4676e5bda681d46b4d3446a1063424ce7e0fbfe494a56193186a64a3",
 			"kind": "template",
 			"source": "${slot1} writes commits, PRs & changelogs for you.",
-			"translation": "${slot1} 为你编写提交、PR 和更改日志",
+			"translation": "${slot1} 为你编写提交、PR 和变更日志",
 			"slots": [
 				"slot1"
 			]
@@ -20029,7 +20029,7 @@
 			"id": "message.ddc2aefbfa28929964ba3aed83c4cecbb9f995870e4311ad7aeb0f08b898a760",
 			"kind": "literal",
 			"source": "Specifies whether to show pull requests (if any) associated with branches in the _Cloud Workspaces_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _云工作区_ 视图中显示与分支关联的拉取请求（如果有）。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _云工作区_ 视图中显示与分支关联的拉取请求（如果有）。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.ddd4529243eda7e57a9f0acff3d756c3021b30ea4b56865671d9488de237c30e",
@@ -20053,7 +20053,7 @@
 			"id": "message.de19ada07ca3fc7164e8cfef12b752be39f37464b7504bbac2952cc53b65ac3d",
 			"kind": "template",
 			"source": "${slot1} is ${slot2} ahead of ${slot3}",
-			"translation": "${slot1} 比 ${slot3} 超前 ${slot2}",
+			"translation": "${slot1} 比 ${slot3} 领先 ${slot2}",
 			"slots": [
 				"slot1",
 				"slot2",
@@ -20125,7 +20125,7 @@
 			"id": "message.deb3b4dab40eeeb9d76182673f83b702bee27fc6bacab73625fb52513c827508",
 			"kind": "literal",
 			"source": "No remotes found",
-			"translation": "未找到远程仓库"
+			"translation": "未找到远程"
 		},
 		{
 			"id": "message.deea603183e8c19fe17f7d43e747be1d7b706fbf4e0e4f546012953f812f9b7a",
@@ -20169,7 +20169,7 @@
 			"id": "message.dfb2b8d8c194e17355eb78348abca70c13e1f42934838d1a5c9dd998e64f7f92",
 			"kind": "literal",
 			"source": "Show Inspect View",
-			"translation": "显示检查视图"
+			"translation": "显示详情视图"
 		},
 		{
 			"id": "message.dfbb8ea78096056173ea94d386b57325a5713db77426758d290fb361f530edd1",
@@ -20181,7 +20181,7 @@
 			"id": "message.dfcac079ec308f51906fd0254d0b2ad102eb2c18467fae827d1db702e0d85963",
 			"kind": "literal",
 			"source": "Explain Working Changes",
-			"translation": "解释工作树更改"
+			"translation": "解释工作更改"
 		},
 		{
 			"id": "message.e041aa9a7bc7ae798b6659c77359be7904406fde82ad7bf3f20bc5535667d7d6",
@@ -20193,19 +20193,19 @@
 			"id": "message.e050117baa88501b07de87ea4038d2cc3da2c84d08c00b4011048fa5d43db57c",
 			"kind": "literal",
 			"source": "Stashes View",
-			"translation": "贮藏视图"
+			"translation": "储藏视图"
 		},
 		{
 			"id": "message.e069fb862836eabd6a175093a3222236ea5c478e732ad8658438aaffa9f9fd5d",
 			"kind": "literal",
 			"source": "Open Line Changes with Working File",
-			"translation": "打开与工作文件比较的行更改"
+			"translation": "打开与工作文件的行更改"
 		},
 		{
 			"id": "message.e06afe866dc128385b8180c87b14303e92c2eda25f2fcc9f6031e1ad618b1350",
 			"kind": "literal",
 			"source": "Inspect view",
-			"translation": "检查视图"
+			"translation": "详情视图"
 		},
 		{
 			"id": "message.e06d3634cc538d6c9ef7b9c2e4d33f945abc2a00b6fff451a22679795fa87635",
@@ -20223,7 +20223,7 @@
 			"id": "message.e07a436e69da55613035261cb54ae9c8572a4b2408bbd7b6a6efe7c4dc845c0a",
 			"kind": "literal",
 			"source": "Specifies whether to show associated pull requests on remote branches in the _Commit Graph_. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _提交图_ 中的远程分支上显示关联的拉取请求。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _提交图_ 中的远程分支上显示关联的拉取请求。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.e08963399539fd6dcdcdcb0a55a607835502f35bf770142c9398bfc7de19f34a",
@@ -20253,7 +20253,7 @@
 			"id": "message.e0c0873c59cc25c7ab73756450413493929dc14caff1dd13129a312802fa177a",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of commit (or status) icons in the _Worktrees_ view",
-			"translation": "指定是否在 _工作树_ 视图中显示头像图像而不是提交（或状态）图标"
+			"translation": "指定是否在 _工作树_ 视图中显示头像而不是提交（或状态）图标"
 		},
 		{
 			"id": "message.e0d1a5d81896e89bd93c7a7f0317f09f8357c86df5ce83386db5262bc4ebac2c",
@@ -20298,7 +20298,7 @@
 			"id": "message.e17ebc836f45167074fa66f73e3787b16d79a3d8c4b3d72ed71c863365f4c079",
 			"kind": "literal",
 			"source": "Jump to Inspect view settings",
-			"translation": "跳转到检查视图设置"
+			"translation": "跳转到详情视图设置"
 		},
 		{
 			"id": "message.e1bbf2ab8192095af60dffe5dc16c684fbd318b2edfa6e0744f5c19149383f2a",
@@ -20321,7 +20321,7 @@
 			"id": "message.e2229facdbaf1175421c985ff9323eb06ba5499e480b9fbea53fc7a51568d657",
 			"kind": "literal",
 			"source": "Compares the working tree with a user-selected reference",
-			"translation": "将工作区与用户所选引用进行比较"
+			"translation": "将工作树与用户所选引用进行比较"
 		},
 		{
 			"id": "message.e2398319353861257326d897725693a90b838c88a4f88feabe24ee4b4b33bf08",
@@ -20339,7 +20339,7 @@
 			"id": "message.e255e34215307b18a57e2798d512cc05417e6313941eee9dfefec79135081178",
 			"kind": "literal",
 			"source": "Delete Stash...",
-			"translation": "删除贮藏..."
+			"translation": "删除储藏..."
 		},
 		{
 			"id": "message.e258a355e1ed315cccc8651513806a0539c18cbb901e14146e48913bbb866cc8",
@@ -20360,7 +20360,7 @@
 			"id": "message.e27f069dce9f2483fd482379d5d8d00b059430e78c49c00cad8a007ebea0e9e4",
 			"kind": "rich",
 			"source": "[Continue](command:gitlens.plus.reactivateProTrial?%7B%22source%22%3A%22worktrees%22%7D)\n\nReactivate your Pro trial and experience Worktrees and all the new Pro features — free for another 14 days!",
-			"translation": "[继续](command:gitlens.plus.reactivateProTrial?%7B%22source%22%3A%22worktrees%22%7D)\n\n重新激活你的 Pro 试用，再免费体验 Worktrees 和所有新 Pro 功能 14 天！",
+			"translation": "[继续](command:gitlens.plus.reactivateProTrial?%7B%22source%22%3A%22worktrees%22%7D)\n\n重新激活你的 Pro 试用，再免费体验工作树和所有新 Pro 功能 14 天！",
 			"format": "markdown",
 			"slots": []
 		},
@@ -20422,7 +20422,7 @@
 			"id": "message.e2fa0ba0eb3c53d6350c2830d3165034958eae927c1152da44f750f7e3d17d3d",
 			"kind": "template",
 			"source": "${slot1} commits (press Enter to search, ↑↓ for history), e.g. @me after:1.week.ago file:*.ts",
-			"translation": "${slot1}提交（按 Enter 搜索，↑↓ 查看历史），例如 @me after:1.week.ago file:*.ts",
+			"translation": "${slot1} 提交（按 Enter 搜索，↑↓ 查看历史），例如 @me after:1.week.ago file:*.ts",
 			"slots": [
 				"slot1"
 			]
@@ -20585,13 +20585,13 @@
 			"id": "message.e49fa923e43f01f730abd90f23f83b542a8f26d0b9345f9cb8f953644506a00c",
 			"kind": "literal",
 			"source": "Show Stashes on Branches",
-			"translation": "显示分支上的贮藏"
+			"translation": "显示分支上的储藏"
 		},
 		{
 			"id": "message.e4a9bd41cf22cee1641a5d7c5003c1c84fb12c598920979588c2f9b6409ee24e",
 			"kind": "literal",
 			"source": "Specifies whether to show commits from all branches in the _Contributors_ view",
-			"translation": "指定是否在 _Contributors_ 视图中显示来自所有分支的提交"
+			"translation": "指定是否在 _贡献者_ 视图中显示来自所有分支的提交"
 		},
 		{
 			"id": "message.e4acebe7a49471cfa83aecc5d14fb3d2bb4bc4b7f139df7b1328ab32fc9a12ef",
@@ -20603,7 +20603,7 @@
 			"id": "message.e4b2fd4af70903ded6f3fce12e3c3cfce469d2a3e0d182142b7808ba5210f2b6",
 			"kind": "literal",
 			"source": "Auto-fetch",
-			"translation": "自动 fetch"
+			"translation": "自动获取"
 		},
 		{
 			"id": "message.e4d45c62ab81141c51dce86d324b8847d8e307f5984b3559e728fb9024d33bea",
@@ -20817,7 +20817,7 @@
 			"id": "message.e78fb782a7fe4d03e4f3039eaffd39239e8b0514b0fc7843bd39ad9ca674a3c1",
 			"kind": "literal",
 			"source": "Visualize the amount of changes to a repository over time, and inspect specific points in the history to locate branches, stashes, tags and pull requests.",
-			"translation": "将仓库随时间变化的更改量可视化，并检查历史中的特定时间点，以定位分支、贮藏、标签和拉取请求。"
+			"translation": "将仓库随时间变化的更改量可视化，并检查历史中的特定时间点，以定位分支、储藏、标签和拉取请求。"
 		},
 		{
 			"id": "message.e79b0cb3b2937872c042f2d4d22f3a072bbd58808021db41c208618016d3a0ea",
@@ -20857,7 +20857,7 @@
 			"id": "message.e80db04e3d7b2f0e91810f47189bd43689e092772b8bdb0f436eca9ca48c4d72",
 			"kind": "template",
 			"source": "GitLens Settings couldn’t load — ${slot1}. ${slot2} to try again.",
-			"translation": "GitLens 设置无法加载 - ${slot1}。${slot2}以重试。",
+			"translation": "GitLens 设置无法加载 — ${slot1}。${slot2} 以重试。",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -20920,7 +20920,7 @@
 			"id": "message.e8bd55e3c8429b86859684e766278b836c3e2e3d4a267af48b912c7ef4676c65",
 			"kind": "rich",
 			"source": "See who changed a line, when and why — without leaving your editor. Hover over blame annotations to:\n\n- View previous file revisions\n\n- Open related PRs\n\n- Jump to commits in the Graph\n\n- Compare with previous versions\n\n[Configure Inline Blame](command:gitlens.showSettingsPage!current-line)",
-			"translation": "无需离开编辑器，即可查看是谁在何时、为何修改了某一行。将鼠标悬停在追溯注解上即可：\n\n- 查看之前的文件修订\n\n- 打开关联的 PR\n\n- 跳转到图表中的提交\n\n- 与先前版本进行比较\n\n[配置行内追溯](command:gitlens.showSettingsPage!current-line)",
+			"translation": "无需离开编辑器，即可查看是谁在何时、为何修改了某一行。将鼠标悬停在追溯注解上即可：\n\n- 查看之前的文件版本\n\n- 打开关联的 PR\n\n- 跳转到提交图中的提交\n\n- 与先前版本进行比较\n\n[配置行内追溯](command:gitlens.showSettingsPage!current-line)",
 			"format": "markdown",
 			"slots": []
 		},
@@ -20970,7 +20970,7 @@
 			"id": "message.e961ac35e09d343dcf504ca71fe5f5107094fb33f80f05eaecd38d0078047063",
 			"kind": "literal",
 			"source": "Specifies whether to show remote branches for the default remote in the _Branches_ view",
-			"translation": "指定是否在 _Branches_ 视图中显示默认远程的远程分支"
+			"translation": "指定是否在 _分支_ 视图中显示默认远程的远程分支"
 		},
 		{
 			"id": "message.e9683e065ad47230524e93a392cdc320bc83c6a5c1264238fc5cb6ba0fcd8b29",
@@ -20982,7 +20982,7 @@
 			"id": "message.e9766a0f5c97a18d8dc94ee3598034d594db433670723cf1b7d6b7e406de84bd",
 			"kind": "template",
 			"source": "${slot1} is ${slot2} behind and ${slot3} ahead of ${slot4}",
-			"translation": "${slot1} 比 ${slot4} 落后 ${slot2}，并超前 ${slot3}",
+			"translation": "${slot1} 比 ${slot4} 落后 ${slot2}，并领先 ${slot3}",
 			"slots": [
 				"slot1",
 				"slot2",
@@ -21006,7 +21006,7 @@
 			"id": "message.e9bb7784a8e8f74c593a07199454b85eaf729413757da4cf93476c4d688d794b",
 			"kind": "literal",
 			"source": "copies the remote file revision URL to the clipboard (when available)",
-			"translation": "将远程文件修订 URL 复制到剪贴板（如果可用）"
+			"translation": "将远程文件版本 URL 复制到剪贴板（可用时）"
 		},
 		{
 			"id": "message.e9c25835932abe3c52d60924a8acbaf3af87ecbd5f8dadab347e5a92e314f689",
@@ -21142,7 +21142,7 @@
 			"id": "message.eb2db26eb3c2c160dba3869859efe4489259e11983b7087ddae7f9ccbf870052",
 			"kind": "literal",
 			"source": "Specifies which editor group editors (files, diffs, etc.) opened from the _Visual File History_ should appear in when it is in an editor tab. Has no effect when shown in a sidebar.",
-			"translation": "指定当 _Visual File History_ 位于编辑器标签页中时，从中打开的编辑器（文件、差异等）应显示在哪个编辑器组中。当它显示在侧边栏中时无效。"
+			"translation": "指定当 _可视文件历史_ 位于编辑器标签页中时，从中打开的编辑器（文件、差异等）应显示在哪个编辑器组中。当它显示在侧边栏中时无效。"
 		},
 		{
 			"id": "message.eb34020a05d7f511dce6056d3b2841cd748defb461a0e975314b5a3968e44b53",
@@ -21204,7 +21204,7 @@
 			"id": "message.ebe84af2ab626a782205f388f6b106bee5bde861b00a354e687ffb1dabb2377e",
 			"kind": "literal",
 			"source": "Stashes view",
-			"translation": "贮藏视图"
+			"translation": "储藏视图"
 		},
 		{
 			"id": "message.ebfe33ee06cbc7d362c4f803342f3b21716b7fed59864ca8fbcd6ee9ecfe7165",
@@ -21240,7 +21240,7 @@
 			"id": "message.ec61735613e7b33179f8a04a62d8c6d526bd2a72e468f17b99c4762933496a1b",
 			"kind": "literal",
 			"source": "Specifies whether to query for pull requests associated with commits in the _File History_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _文件历史_ 视图中查询与提交关联的拉取请求。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _文件历史_ 视图中查询与提交关联的拉取请求。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.ec7d42750346e2b51b369fe569af792d538e595b61e33a87852fabafdcdb03c5",
@@ -21334,7 +21334,7 @@
 			"id": "message.ed8cac4fefa2478bd17952b647aa8dd77aa761852b8c5847dd5dc6bd18698ad3",
 			"kind": "template",
 			"source": "With agents running across multiple worktrees, working changes used to mean opening another window or directory just to remember what you (or your agent) left half-finished. Not anymore. ${slot1} every worktree's working changes are visible at the same time, in the same Graph. ${slot2} when you're heads-down on one branch, scope the Graph to just the commits that matter &mdash; the bigger picture is always one click away.",
-			"translation": "当代理运行在多个工作树上时，过去要查看工作区更改，常常意味着打开另一个窗口或目录，只为想起你（或代理）留下了哪些未完成的内容。现在不用了。${slot1} 每个工作树的工作区更改都会同时显示在同一张图中。${slot2} 当你专注于某个分支时，可将图限定到重要的提交 &mdash; 更大的全局视图始终只需点击一次。",
+			"translation": "当代理运行在多个工作树上时，过去要查看工作更改，常常意味着打开另一个窗口或目录，只为想起你（或代理）留下了哪些未完成的内容。现在不用了。${slot1} 每个工作树的工作更改都会同时显示在同一张图中。${slot2} 当你专注于某个分支时，可将图限定到重要的提交 &mdash; 更大的全局视图始终只需点击一次。",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -21350,7 +21350,7 @@
 			"id": "message.edd3b6ea6ad2bc25fe79bcc1bad29d73993f693d6c2589d87b80103f0a12acc8",
 			"kind": "literal",
 			"source": "Let AI reorganize work into logical commits with clear messages and descriptions that help reviewers.",
-			"translation": "让 AI 将工作重新整理为逻辑清晰的提交，并生成清晰、有助于审查的消息和描述。"
+			"translation": "让 AI 将工作重新整理为逻辑清晰的提交，并生成有助于审查的清晰提交消息和描述。"
 		},
 		{
 			"id": "message.edd9adcaeb119dd3826b6c180b50d8127a44b84e31f3573191b8d3769c327ca3",
@@ -21788,7 +21788,7 @@
 			"id": "message.f2510afcfb7feee1fb4cb326d90c202a1f380e1720054b29afb6e36f15ae9e35",
 			"kind": "literal",
 			"source": "Apply / Pop Stash...",
-			"translation": "应用 / 弹出贮藏..."
+			"translation": "应用 / 弹出储藏..."
 		},
 		{
 			"id": "message.f2606475869b3ebad15ed10fe27cc554a71cec38d777e8ceaec8e1a66d37f55d",
@@ -21806,7 +21806,7 @@
 			"id": "message.f27f31bb407d0b5722fadac18f191fe889783598558790cb10c02c9552a595a4",
 			"kind": "template",
 			"source": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"Fetch All\" href= ${slot1} >",
-			"translation": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"全部抓取\" href= ${slot1} >",
+			"translation": "class=\"section-heading-action\" appearance=\"toolbar\" tooltip=\"全部获取\" href= ${slot1} >",
 			"slots": [
 				"slot1"
 			]
@@ -21845,13 +21845,13 @@
 			"id": "message.f2e1343391a55fd9da2fb44e75a1d39058664fb7d2e5c120c55350ed1856ade5",
 			"kind": "literal",
 			"source": "Specifies whether to ignore whitespace when comparing revisions during blame operations",
-			"translation": "指定在追溯操作中比较修订时是否忽略空白字符"
+			"translation": "指定在追溯操作中比较版本时是否忽略空白字符"
 		},
 		{
 			"id": "message.f33061c835a836b93de89d768804f28fda94c12401d6d5f18e5ca2040c26d929",
 			"kind": "template",
 			"source": "Search matched ${slot1} of ${slot2} files\nClick to show only matching files",
-			"translation": "搜索匹配了 ${slot2} 个文件中的 ${slot1} 个\\n点击仅显示匹配文件",
+			"translation": "搜索匹配了 ${slot2} 个文件中的 ${slot1} 个\n点击仅显示匹配文件",
 			"slots": [
 				"slot1",
 				"slot2"
@@ -21984,7 +21984,7 @@
 			"id": "message.f435326166ced038ae1d6ba7c0dd7a9cdff5c9143001d2bd9b0df119bc66cde8",
 			"kind": "literal",
 			"source": "Select a commit or multi-select rows in the Graph and jump straight into Compare mode in the details panel. Branch vs. branch, commit vs. commit, working changes vs. anything &mdash; just select and compare. It's the fastest way to get eyes on the exact diff you care about.",
-			"translation": "在图中选择一个提交或多选行，即可直接进入详情面板中的比较模式。分支对分支、提交对提交、工作区更改对任意对象 &mdash; 只需选择并比较。这是查看你关心的精确差异的最快方式。"
+			"translation": "在图中选择一个提交或多选行，即可直接进入详情面板中的比较模式。分支对分支、提交对提交、工作更改对任意对象 &mdash; 只需选择并比较。这是查看你关心的精确差异的最快方式。"
 		},
 		{
 			"id": "message.f437293cb1b5ff106fc5dc6635c767da70878bc1f8118a5e0d1495f3ddb02f92",
@@ -22129,7 +22129,7 @@
 			"id": "message.f620404e65001521ccd8c9565ad959db86945bd90ee3cc27c1b1c5b0034b3a66",
 			"kind": "literal",
 			"source": "Supports user-defined modes for quickly toggling between sets of settings",
-			"translation": "支持用户自定义模式，以便在多组设置之间快速切换"
+			"translation": "支持用户自定义模式，以在多组设置之间快速切换"
 		},
 		{
 			"id": "message.f634b113d094a9abf8fc97293c29e2565551eb32bc11edd4ed14d3ea73dcbfa5",
@@ -22155,7 +22155,7 @@
 			"id": "message.f6577b1476e85081faa19b1c1fb4ea171759e4e7211937fa8904f376222ee1c9",
 			"kind": "literal",
 			"source": "Browse Repository from Revision",
-			"translation": "浏览修订中的仓库"
+			"translation": "从版本浏览仓库"
 		},
 		{
 			"id": "message.f65f833a2b8bbd5f91571e05b5e16934e20bdab4cdd9a638941ae09789a82087",
@@ -22194,7 +22194,7 @@
 			"id": "message.f714e661e31c16c323acb1f88f125ff3539c6631ef5deaf475f5f0b78ee3d2b7",
 			"kind": "literal",
 			"source": "Stash Changes",
-			"translation": "贮藏更改"
+			"translation": "储藏更改"
 		},
 		{
 			"id": "message.f720d08d3df2349e0adf706a520405a5f18fe31b154e4de5d1dd02710a3798fb",
@@ -22209,7 +22209,7 @@
 			"id": "message.f7217725ad6ce2998fc2fdd31f7f074cc1dbdabeb8cb378bea52d09427a7aa55",
 			"kind": "literal",
 			"source": "Specifies whether to show avatar images instead of author initials and remote icons in the _Commit Graph_",
-			"translation": "指定是否在 _提交图_ 中显示头像图像而不是作者缩写和远程图标"
+			"translation": "指定是否在 _提交图_ 中显示头像而不是作者缩写和远程图标"
 		},
 		{
 			"id": "message.f7238c952b011fa9454d87e573eb9fb84674f399c7e18b34e53ef0221ea36284",
@@ -22254,7 +22254,7 @@
 			"id": "message.f7db22b90a487cc072b79161203de8e8538d7d93d1bd48977e086189941fda97",
 			"kind": "rich",
 			"source": "Specifies the tooltip format (in markdown) of stashes in the views. See [_Commit Tokens_](https://github.com/eamodio/vscode-gitlens/wiki/Custom-Formatting#commit-tokens) in the GitLens docs",
-			"translation": "指定视图中贮藏的工具提示格式（Markdown）。请参阅 GitLens 文档中的 [_Commit Tokens_](https://github.com/eamodio/vscode-gitlens/wiki/Custom-Formatting#commit-tokens)",
+			"translation": "指定视图中储藏的工具提示格式（Markdown）。请参阅 GitLens 文档中的 [_Commit Tokens_](https://github.com/eamodio/vscode-gitlens/wiki/Custom-Formatting#commit-tokens)",
 			"format": "markdown",
 			"slots": []
 		},
@@ -22273,7 +22273,7 @@
 			"id": "message.f7f6e90503dc68656f50455e76d231952a52680cb30c520782068d9aff3554a5",
 			"kind": "literal",
 			"source": "Open File on Remote From...",
-			"translation": "从...在远程上打开文件"
+			"translation": "在远程上打开文件（从...）"
 		},
 		{
 			"id": "message.f80e8a4a86bbf1284b9c2e6e093b9135e56c29570f970ebe872991e45629fcae",
@@ -22309,7 +22309,7 @@
 			"id": "message.f83827ee74fad248b94b8773ec1704692af1b2283f08f76bdadff7ffd4b95e53",
 			"kind": "literal",
 			"source": "Git Revert...",
-			"translation": "Git 回退..."
+			"translation": "Git 还原..."
 		},
 		{
 			"id": "message.f840289594f8d7eb28dc0ffd0b5834ce3934a79c5bea3bc292203dad64f00636",
@@ -22331,7 +22331,7 @@
 			"id": "message.f86347b6aecd10ae742cbb2eac0226c8a603312350ca6ecb98d853511fae1ffd",
 			"kind": "literal",
 			"source": "Specifies custom instructions to provide to the AI provider when generating a changelog from a set of changes",
-			"translation": "指定在生成一组更改的更改日志时提供给 AI 提供商的自定义指令"
+			"translation": "指定在根据一组更改生成变更日志时提供给 AI 提供商的自定义指令"
 		},
 		{
 			"id": "message.f86f89dd684d4c258e8bc113ca22d645ade8602ef6236f1d1c782719f34853ee",
@@ -22463,7 +22463,7 @@
 			"id": "message.f9ff4d27f9fbbb4869011e70feae1da01ef3ac436216b164113838d52a3527d7",
 			"kind": "literal",
 			"source": "GitLens Inspect",
-			"translation": "GitLens 检查"
+			"translation": "GitLens 详情"
 		},
 		{
 			"id": "message.fa1798d96fdaf2c0fd7a15e2f3e68aaeb89c5d99ae9841d5d6829ff0aa56c84c",
@@ -22481,7 +22481,7 @@
 			"id": "message.fa3ec7fcdd6a6e2fb23f63bfaec70304886ba17e28f6f4a0de6b45e40020d1de",
 			"kind": "literal",
 			"source": "Compare Working Tree to Here",
-			"translation": "将工作区与此处比较"
+			"translation": "将工作树与此处比较"
 		},
 		{
 			"id": "message.fa462a4b7f5e41a6b714b6885911a72fc65e301c95255df36bbe130d3df31ac3",
@@ -22508,7 +22508,7 @@
 			"id": "message.fa6f31e04a107b8218e80ff836e725eec9833e5a9c5119da28c4cfc710b84896",
 			"kind": "literal",
 			"source": "Specifies the maximum number of background Git processes that can run concurrently. Reduce this value if you experience system slowdowns with large repositories",
-			"translation": "指定可并发运行的后台 Git 进程最大数量。如果在大型仓库中遇到系统变慢，请降低此值"
+			"translation": "指定可并发运行的后台 Git 进程最大数量。若在大型仓库中遇到系统变慢，可降低此值"
 		},
 		{
 			"id": "message.fa82d947970d4b212514fe22490f647fdf01bc86c85c638e89bc823b55edf2b0",
@@ -22654,7 +22654,7 @@
 			"id": "message.fc0f2a088f802697f53cec260324c8d5b8ed1d22f199d6406374c116eaf974da",
 			"kind": "literal",
 			"source": "Explain Working Changes (Preview)",
-			"translation": "解释工作区更改（预览）"
+			"translation": "解释工作更改（预览）"
 		},
 		{
 			"id": "message.fc41d4a1ad24667a0afbeeb53c27ee1a14dabef397e4d6a2d6e9e8394554a186",
@@ -22727,7 +22727,7 @@
 			"id": "message.fd214b790a6b1cf050c594dc03a155025f46cd8b63dcb2b5b2474adee6a9e9b4",
 			"kind": "literal",
 			"source": "Reveals commits in the _Inspect_ view",
-			"translation": "在 _检查视图_ 中显示提交"
+			"translation": "在 _详情视图_ 中显示提交"
 		},
 		{
 			"id": "message.fd5ca01b17d49e33c7550dc0e89826da85632ad10e8306eac85df65f02aea48e",
@@ -22762,7 +22762,7 @@
 			"id": "message.fdd8db752c235175761e2812d8c4b226f3c036400ccd344d59b4a69d4b10dd8f",
 			"kind": "literal",
 			"source": "Specifies whether to query for pull requests associated with each branch and commits in the _Remotes_ view. Requires a connection to a supported remote service (e.g. GitHub)",
-			"translation": "指定是否在 _远程_ 视图中查询与每个分支和提交关联的拉取请求。需要连接到受支持的远程服务（例如 GitHub）"
+			"translation": "指定是否在 _远程_ 视图中查询与每个分支和提交关联的拉取请求。需连接受支持的远程服务（如 GitHub）"
 		},
 		{
 			"id": "message.fde9cd64809772fc58d53bcabe744aa899b04acce6ebd39428da2e64786981ac",
@@ -22930,7 +22930,7 @@
 			"id": "message.ffff0e2f36739c2b43eab52feb8f374acc9cedf655a4642004ac69bd2e86a351",
 			"kind": "literal",
 			"source": "Checked out in a worktree and has working (uncommitted) changes",
-			"translation": "已在工作树中检出且存在工作区更改（未提交）"
+			"translation": "已在工作树中检出且存在工作更改（未提交）"
 		}
 	]
 }

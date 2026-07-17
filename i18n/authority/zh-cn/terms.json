@@ -146,8 +146,8 @@
 		},
 		{
 			"source": "stash",
-			"translation": "贮藏",
-			"updatedAt": "2026-04-24T16:00:00.000Z"
+			"translation": "储藏",
+			"updatedAt": "2026-07-17T02:41:04.689Z"
 		},
 		{
 			"source": "tag",
@@ -155,5 +155,5 @@
 			"updatedAt": "2026-04-24T14:00:00.000Z"
 		}
 	],
-	"updatedAt": "2026-04-26T00:00:00.000Z"
+	"updatedAt": "2026-07-17T02:41:04.689Z"
 }
