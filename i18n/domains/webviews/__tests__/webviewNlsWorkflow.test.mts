@@ -523,7 +523,7 @@ test("runs the composer localized source workflow", () => {
 			"Unknown Model": "未知模型",
 			"Select AI Model": "选择 AI 模型",
 			"Draft commit (add a commit message)": "草稿提交（添加提交消息）",
-			"Providing additional instructions can help steer the AI composition for this session. ${slot1} ${slot2} Potential instructions include: ${slot3} ${slot4} You can also specify custom instructions that apply to all composer sessions with the following setting: ${slot5}":
+			"Providing additional instructions can help steer the AI composition for this session. ${slot1}${slot2} Potential instructions include: ${slot3} ${slot4} You can also specify custom instructions that apply to all composer sessions with the following setting: ${slot5}":
 				"提供额外指令有助于引导本次 AI 编排。${slot1}${slot2}可用指令包括：${slot3}${slot4}你也可以通过以下设置指定适用于所有提交编排器会话的自定义指令：${slot5}",
 			"conventional commits format": "Conventional Commits 格式",
 			"size of commits": "提交大小",
@@ -926,7 +926,7 @@ test("localizes display-only imperative strings in commit details", () => {
 		syncWebviewsI18n(createTestLayerOptions(rootDir));
 		const context = createWebviewsDomainContext(createTestLayerOptions(rootDir));
 		approveTranslations(context, {
-			"Copy ${slot1} [${slot2}] Copy Message": "复制 ${slot1}<br />[${slot2}] 复制消息",
+			"Copy ${slot1}${slot2}[${slot3}] Copy Message": "复制 ${slot1}${slot2}[${slot3}] 复制消息",
 			"Rich details for commits and stashes are shown as you navigate:": "导航时会显示提交和贮藏的详细信息：",
 			"Alternatively, show your work-in-progress, or search for or choose a commit":
 				"或者显示你的进行中工作，或搜索、选择某个提交",
@@ -1164,10 +1164,10 @@ test("localizes graph branch visibility options", () => {
 			"All Branches",
 			"Current Branch",
 			"Smart Branches ${slot1}",
-			"Favorited Branches",
-			"Shows only relevant branches ${slot1}",
+			"Favorited Branches ${slot1}",
+			"Shows only relevant branches ${slot1} ${slot2} ${slot3}",
 			"Includes the current branch, its upstream, and its base or target branch",
-			"Shows only branches that have been starred as favorites ${slot1}",
+			"Shows only branches that have been starred as favorites ${slot1} ${slot2} ${slot3}",
 			"Also includes the current branch",
 		]) {
 			expect(
@@ -1181,11 +1181,12 @@ test("localizes graph branch visibility options", () => {
 			"All Branches": "所有分支",
 			"Current Branch": "当前分支",
 			"Smart Branches ${slot1}": "智能分支 ${slot1}",
-			"Favorited Branches": "收藏的分支",
-			"Shows only relevant branches ${slot1}": "仅显示相关分支 ${slot1}",
+			"Favorited Branches ${slot1}": "收藏的分支 ${slot1}",
+			"Shows only relevant branches ${slot1} ${slot2} ${slot3}": "仅显示相关分支 ${slot1}${slot2}${slot3}",
 			"Includes the current branch, its upstream, and its base or target branch":
 				"包括当前分支、其上游以及其基础分支或目标分支",
-			"Shows only branches that have been starred as favorites ${slot1}": "仅显示已加星标为收藏的分支 ${slot1}",
+			"Shows only branches that have been starred as favorites ${slot1} ${slot2} ${slot3}":
+				"仅显示已加星标为收藏的分支 ${slot1}${slot2}${slot3}",
 			"Also includes the current branch": "也包括当前分支",
 		});
 		promoteWebviewsAuthority(createTestLayerOptions(rootDir));
@@ -1282,10 +1283,10 @@ test("preserves named slot subtrees", () => {
 		syncWebviewsI18n(createTestLayerOptions(rootDir));
 		const context = createWebviewsDomainContext(createTestLayerOptions(rootDir));
 		approveTranslations(context, {
-			"Switch to Another Repository... ${slot1}": "切换到另一个仓库... ${slot1}",
-			"Compose Commits...": "编排提交...",
+			"Switch to Another Repository...${slot1}${slot2}": "切换到另一个仓库...${slot1}${slot2}",
+			"Compose Commits... ${slot1}": "编排提交... ${slot1}",
 			"Compose Commits": "编排提交",
-			"${slot1} (Preview) ${slot2}": "${slot1}（预览）${slot2}",
+			"${slot1} (Preview)${slot2}${slot3}": "${slot1}（预览）${slot2}${slot3}",
 			"Automatically or interactively organize changes into meaningful commits":
 				"自动或以交互方式将更改整理为有意义的提交",
 		});
@@ -1420,8 +1421,8 @@ test("preserves graph popover menu structure", () => {
 			Commits: "提交数",
 			"Lines Changed": "更改行数",
 			Markers: "标记",
-			"Local Branches": "本地分支",
-			"Remote Branches": "远程分支",
+			"${slot1} Local Branches": "${slot1} 本地分支",
+			"${slot1} Remote Branches": "${slot1} 远程分支",
 			"Hidden Branches / Tags": "隐藏的分支 / 标签",
 			"Show All": "全部显示",
 		});

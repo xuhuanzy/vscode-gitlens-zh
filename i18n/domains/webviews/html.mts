@@ -30,15 +30,9 @@ export interface HtmlSlotDefinition {
 	readonly node: HtmlElementNode;
 }
 
-export interface HtmlPreservedNodeDefinition {
-	readonly gapIndex: number;
-	readonly node: HtmlElementNode;
-}
-
 export interface HtmlContentPattern {
 	readonly text: string;
 	readonly slots: readonly HtmlSlotDefinition[];
-	readonly preserves: readonly HtmlPreservedNodeDefinition[];
 }
 
 const skippedTags = new Set(["style", "script", "template"]);
@@ -223,7 +217,6 @@ export function collectElementContentPattern(element: HtmlElementNode): HtmlCont
 					segment.kind === "slot",
 			)
 			.map((segment) => ({ name: segment.name, node: segment.node })),
-		preserves: collectPreservedSegments(segments),
 	};
 }
 
@@ -467,10 +460,6 @@ function collectPatternSegments(
 			readonly name: string;
 			readonly node: HtmlElementNode;
 	  }
-	| {
-			readonly kind: "preserve";
-			readonly node: HtmlElementNode;
-	  }
 > {
 	const segments: Array<
 		| {
@@ -482,15 +471,11 @@ function collectPatternSegments(
 				readonly name: string;
 				readonly node: HtmlElementNode;
 		  }
-		| {
-				readonly kind: "preserve";
-				readonly node: HtmlElementNode;
-		  }
 	> = [];
 
 	for (const node of nodes) {
 		if (node.kind === "text") {
-			const text = normalizeWhitespace(node.raw);
+			const text = decodeHtmlEntities(node.raw.replace(/\s+/gu, " "));
 			if (text.length === 0) continue;
 			segments.push({ kind: "text", value: text });
 			continue;
@@ -510,19 +495,11 @@ function collectPatternSegments(
 			continue;
 		}
 
-		if (shouldRepresentElementAsSlot(node, parent)) {
+		if (shouldRepresentElementAsSlot(node, parent) || shouldPreserveAsStructuralNode(node)) {
 			state.slotIndex++;
 			segments.push({
 				kind: "slot",
 				name: `slot${state.slotIndex}`,
-				node: node,
-			});
-			continue;
-		}
-
-		if (shouldPreserveAsStructuralNode(node)) {
-			segments.push({
-				kind: "preserve",
 				node: node,
 			});
 			continue;
@@ -627,23 +604,11 @@ function normalizePatternSegments(
 				readonly kind: "slot";
 				readonly name: string;
 		  }
-		| {
-				readonly kind: "preserve";
-		  }
 	>,
 ): string {
 	const combined = segments
-		.flatMap((segment) => {
-			switch (segment.kind) {
-				case "text":
-					return segment.value;
-				case "slot":
-					return `\${${segment.name}}`;
-				case "preserve":
-					return [];
-			}
-		})
-		.join(" ");
+		.map((segment) => (segment.kind === "text" ? segment.value : `\${${segment.name}}`))
+		.join("");
 
 	return combined
 		.replace(/\s+/gu, " ")
@@ -658,44 +623,6 @@ function isDecorativeElement(element: HtmlElementNode): boolean {
 	if (ignoredPatternTags.has(element.tag)) return true;
 	if (element.tag !== "i") return false;
 	return getClassList(element).includes("icon");
-}
-
-function collectPreservedSegments(
-	segments: ReadonlyArray<
-		| {
-				readonly kind: "text";
-				readonly value: string;
-		  }
-		| {
-				readonly kind: "slot";
-				readonly name: string;
-				readonly node: HtmlElementNode;
-		  }
-		| {
-				readonly kind: "preserve";
-				readonly node: HtmlElementNode;
-		  }
-	>,
-): HtmlPreservedNodeDefinition[] {
-	const preserves: HtmlPreservedNodeDefinition[] = [];
-	let visibleCount = 0;
-
-	for (const segment of segments) {
-		switch (segment.kind) {
-			case "text":
-			case "slot":
-				visibleCount++;
-				break;
-			case "preserve":
-				preserves.push({
-					gapIndex: visibleCount,
-					node: segment.node,
-				});
-				break;
-		}
-	}
-
-	return preserves;
 }
 
 function escapeRegex(value: string): string {

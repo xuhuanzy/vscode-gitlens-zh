@@ -340,42 +340,15 @@ function renderPatternContent(
 					),
 				]),
 			);
-			const preserveHtml = pattern.preserves.map((preserve) => ({
-				gapIndex: preserve.gapIndex,
-				html: renderNodeHtml(
-					preserve.node,
-					englishHtml,
-					contentOccurrences,
-					attributeOccurrencesByElementStart,
-					cache,
-				),
-			}));
-			return renderLocalizedPattern(resolved.text, slotHtml, preserveHtml);
+			return renderLocalizedPattern(resolved.text, slotHtml);
 		}
 		case "literal":
 		case "rich":
-			return renderLocalizedPattern(
-				resolved.text,
-				new Map<string, string>(),
-				(collectElementContentPattern(element)?.preserves ?? []).map((preserve) => ({
-					gapIndex: preserve.gapIndex,
-					html: renderNodeHtml(
-						preserve.node,
-						englishHtml,
-						contentOccurrences,
-						attributeOccurrencesByElementStart,
-						cache,
-					),
-				})),
-			);
+			return renderLocalizedPattern(resolved.text, new Map<string, string>());
 	}
 }
 
-function renderLocalizedPattern(
-	text: string,
-	slotHtml: ReadonlyMap<string, string>,
-	preserveHtml: ReadonlyArray<{ readonly gapIndex: number; readonly html: string }>,
-): string {
+function renderLocalizedPattern(text: string, slotHtml: ReadonlyMap<string, string>): string {
 	const segments: string[] = [];
 	let lastIndex = 0;
 	for (const match of text.matchAll(/\$\{([^}]+)\}/gu)) {
@@ -388,30 +361,7 @@ function renderLocalizedPattern(
 	}
 	const tail = text.slice(lastIndex);
 	if (tail.length !== 0) segments.push(escapeHtmlText(tail));
-	return mergePreservedHtml(segments, preserveHtml);
-}
-
-function mergePreservedHtml(
-	segments: readonly string[],
-	preserveHtml: ReadonlyArray<{ readonly gapIndex: number; readonly html: string }>,
-): string {
-	if (segments.length === 0 && preserveHtml.length === 0) return "";
-	const byGap = new Map<number, string[]>();
-	for (const preserve of preserveHtml) {
-		const entries = byGap.get(preserve.gapIndex);
-		if (entries == null) byGap.set(preserve.gapIndex, [preserve.html]);
-		else entries.push(preserve.html);
-	}
-
-	let result = (byGap.get(0) ?? []).join("");
-	for (let index = 0; index < segments.length; index++) {
-		result += segments[index];
-		result += (byGap.get(index + 1) ?? []).join("");
-	}
-	for (const [gapIndex, html] of byGap) {
-		if (gapIndex > segments.length) result += html.join("");
-	}
-	return result;
+	return segments.join("");
 }
 
 function findOwningElement(

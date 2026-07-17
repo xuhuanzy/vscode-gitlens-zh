@@ -59,6 +59,46 @@ test("applies different translations to identical text at different sites", () =
 	expect(localized.translatedCount).toBe(2);
 });
 
+test.each([
+	[
+		"before an opening bracket",
+		"Jump to HEAD<br />[${getAltKeySymbol()}] Jump to Reference...",
+		"Jump to HEAD${slot1}[${slot2}] Jump to Reference...",
+		"跳转到 HEAD${slot1}[${slot2}] 跳转到引用...",
+		"跳转到 HEAD<br />[${getAltKeySymbol()}] 跳转到引用...",
+	],
+	[
+		"after an opening bracket",
+		"Jump to HEAD [<br />${getAltKeySymbol()}] Jump to Reference...",
+		"Jump to HEAD [${slot1}${slot2}] Jump to Reference...",
+		"跳转到 HEAD [${slot1}${slot2}] 跳转到引用...",
+		"跳转到 HEAD [<br />${getAltKeySymbol()}] 跳转到引用...",
+	],
+])("preserves a line break %s adjacent to a dynamic slot", (_position, content, pattern, translation, expected) => {
+	const source = [
+		"import { html } from 'lit';",
+		"export function renderTooltip(getAltKeySymbol) {",
+		`\treturn html\`<span>${content}</span>\`;`,
+		"}",
+		"",
+	].join("\n");
+	const plan = analyzeWebviewSource({
+		file: "src/webviews/apps/plus/graph/graph-header.ts",
+		source: source,
+		syntax: "ts",
+		bundle: "graph",
+	});
+	const site = plan.sites.find((candidate) => candidate.pattern.text === pattern);
+	if (site == null) throw new Error("Expected jump-to-reference tooltip site");
+
+	const localized = applyWebviewTranslations(
+		plan,
+		new Map([[site.id, { kind: "template", text: translation, slots: ["slot1", "slot2"] }]]),
+	);
+
+	expect(localized.contents).toContain(expected);
+});
+
 test("localizes SettingsGroup type members and category values together", () => {
 	const source = [
 		"export type SettingsGroup = 'Views' | 'General';",
