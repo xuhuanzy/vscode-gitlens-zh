@@ -185,6 +185,70 @@ test("plans display variables inside nested Lit producers", () => {
 	expect(plan.sites.map((site) => site.pattern.text)).toEqual(["Hide Details Panel", "Show Details Panel"]);
 });
 
+test("plans composed commit tooltips and file-tree checkbox verbs", () => {
+	const source = [
+		"import { html } from 'lit';",
+		"export class CommitPanel {",
+		"\trenderActionBar() {",
+		"\t\tconst label = this.amend ? 'Amend Commit on' : 'Commit to';",
+		"\t\tconst action = this.amend ? 'amend commit on' : 'commit to';",
+		"\t\tconst branch = this.branchName;",
+		"\t\tconst enabledTooltip = `${label} ${branch}`;",
+		"\t\tconst disabledTooltip =",
+		"\t\t\tthis.disabledReason === 'no-message'",
+		"\t\t\t\t? `Enter a commit message to ${action} ${branch}`",
+		"\t\t\t\t: this.disabledReason === 'no-staged'",
+		"\t\t\t\t\t? `Stage changes above to ${action} ${branch}`",
+		"\t\t\t\t\t: '';",
+		"\t\treturn html`<gl-tooltip content=${disabledTooltip} ?disabled=${!disabledTooltip}>",
+		"\t\t\t<gl-button .tooltip=${enabledTooltip}></gl-button>",
+		'\t\t\t<gl-file-tree-pane check-verb="Stage" uncheck-verb="Unstage"></gl-file-tree-pane>',
+		"\t\t</gl-tooltip>`;",
+		"\t}",
+		"\trenderCheckAll(allChecked: boolean, indeterminate: boolean) {",
+		"\t\tconst checkVerb = this.checkVerb;",
+		"\t\tconst uncheckVerb = this.uncheckVerb;",
+		"\t\tlet tooltipText: string | undefined;",
+		"\t\tif (checkVerb && uncheckVerb) {",
+		"\t\t\tif (allChecked) {",
+		"\t\t\t\ttooltipText = `${uncheckVerb} All`;",
+		"\t\t\t} else if (indeterminate) {",
+		"\t\t\t\tconst baseLabel = `${checkVerb} Remaining`;",
+		"\t\t\t\tconst altLabel = `${uncheckVerb} All`;",
+		"\t\t\t\ttooltipText = `${baseLabel} ${altLabel}`;",
+		"\t\t\t} else {",
+		"\t\t\t\ttooltipText = `${checkVerb} All`;",
+		"\t\t\t}",
+		"\t\t}",
+		"\t\treturn html`<gl-button tooltip=${tooltipText}></gl-button>`;",
+		"\t}",
+		"}",
+		"",
+	].join("\n");
+
+	const plan = analyzeWebviewSource({
+		file: "src/webviews/apps/plus/graph/commit-panel.ts",
+		source: source,
+		syntax: "ts",
+		bundle: "graph",
+	});
+
+	expect(plan.sites.map((site) => site.pattern.text)).toEqual([
+		"Amend Commit on",
+		"Commit to",
+		"amend commit on",
+		"commit to",
+		"Enter a commit message to ${slot1} ${slot2}",
+		"Stage changes above to ${slot1} ${slot2}",
+		"Stage",
+		"Unstage",
+		"${slot1} All",
+		"${slot1} Remaining",
+		"${slot1} All",
+		"${slot1} All",
+	]);
+});
+
 test("plans imperative display assignments and setAttribute calls", () => {
 	const source = [
 		"export function updateDisplay(element: HTMLElement) {",

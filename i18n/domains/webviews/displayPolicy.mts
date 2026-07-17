@@ -24,7 +24,11 @@ const translatableAttributes = new Set([
 	"primary-button",
 	"secondary-button",
 ]);
-const translatableTagAttributes = new Set(["gl-tooltip:content"]);
+const translatableTagAttributes = new Set([
+	"gl-file-tree-pane:check-verb",
+	"gl-file-tree-pane:uncheck-verb",
+	"gl-tooltip:content",
+]);
 
 export function shouldLocalizeDisplaySite(role: DisplayRole): boolean {
 	if (role.kind === "content" || role.kind === "imperative") return true;

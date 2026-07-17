@@ -3,7 +3,7 @@
 	"version": 2,
 	"kind": "messages",
 	"locale": "zh-cn",
-	"updatedAt": "2026-07-16T19:34:36.743Z",
+	"updatedAt": "2026-07-16T21:49:56.091Z",
 	"entries": [
 		{
 			"id": "message.000d1a29b2365349f8762064ef86edc1f548f435002395035bdc26f6c87754fc",
@@ -629,6 +629,12 @@
 			"kind": "literal",
 			"source": "No",
 			"translation": "无"
+		},
+		{
+			"id": "message.075bf047842f59344a66db28bc9bf4d5b5cb05876728038fbe88091d4c01d2bb",
+			"kind": "literal",
+			"source": "amend commit on",
+			"translation": "修改上次提交 ·"
 		},
 		{
 			"id": "message.075ec89fe6ef4cca29f992ac6a8783f83dbf96aa3a646b9547a911af1be7ef71",
@@ -3953,7 +3959,7 @@
 			"id": "message.29e1396935758a29cb63e7c35a748f38eaba2e6d292c86ab9f24dd1546ac76f3",
 			"kind": "literal",
 			"source": "Amend Previous Commit",
-			"translation": "修补上一个提交"
+			"translation": "修改上次提交"
 		},
 		{
 			"id": "message.29eb2b33e2ee77174739befbcb484e11d2c6688e9980ae22098be6531ea3d8bc",
@@ -4461,6 +4467,16 @@
 			"kind": "literal",
 			"source": "Filter Commits",
 			"translation": "筛选提交"
+		},
+		{
+			"id": "message.309e09be84cca37c24d4eb8b9cdb119bd0fe533ccff451b23911dcbcdef49bb4",
+			"kind": "template",
+			"source": "Stage changes above to ${slot1} ${slot2}",
+			"translation": "暂存上方更改以${slot1} ${slot2}",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
 		},
 		{
 			"id": "message.30d61cfddc484691c3f3496814acd13e851e66d3a39a725adcfa1ef371a4fb95",
@@ -11435,6 +11451,15 @@
 			"translation": "以树形显示文件"
 		},
 		{
+			"id": "message.7b725e5ed6d60026d4a5587c4c1fbdddd87e9808a69555e69d69bbff690704da",
+			"kind": "template",
+			"source": "${slot1} Remaining",
+			"translation": "${slot1} 剩余",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.7b8d86b0ab95f580241edbbffd9e14348e175ffaf45893575f49fe71b8999e22",
 			"kind": "template",
 			"source": "For advanced customizations, refer to the ${slot1} and edit your ${slot2}",
@@ -16646,6 +16671,22 @@
 			]
 		},
 		{
+			"id": "message.b6fe721169318a7c9d768a6ca82ac30a43992121bd4a4fca686a8c9c0f3728d2",
+			"kind": "literal",
+			"source": "Unstage",
+			"translation": "取消暂存"
+		},
+		{
+			"id": "message.b71bf6531209725f2ec552594112be8b99672361a0066e2bb41b0cfc52d50b71",
+			"kind": "template",
+			"source": "Enter a commit message to ${slot1} ${slot2}",
+			"translation": "输入提交消息以${slot1} ${slot2}",
+			"slots": [
+				"slot1",
+				"slot2"
+			]
+		},
+		{
 			"id": "message.b7249a8dde1c8958cd93d6a7443f1ef8daea45f9c036a05edcdceb586fe8d466",
 			"kind": "literal",
 			"source": "GitLens: Toggle Line Blame Annotations",
@@ -17212,6 +17253,12 @@
 			"kind": "literal",
 			"source": "Multi-WIP visibility:",
 			"translation": "多 WIP 可见性："
+		},
+		{
+			"id": "message.bd3f5b583a4fc76ae03fc0b5ddda162e0829ec463cef8f68d021996de626dd2e",
+			"kind": "literal",
+			"source": "commit to",
+			"translation": "提交到"
 		},
 		{
 			"id": "message.bd6998ddd3c237bd653ef2b66705f4b45f4826ddc4ed7cb03eb5aa7bfeab2610",
@@ -18198,6 +18245,15 @@
 			"slots": []
 		},
 		{
+			"id": "message.c8f48bd0a6dac6c6dcee9837999fee8b516a0f5029815d4d466d0436e233523c",
+			"kind": "template",
+			"source": "${slot1} All",
+			"translation": "全部${slot1}",
+			"slots": [
+				"slot1"
+			]
+		},
+		{
 			"id": "message.c90a08dc5986fcaf9b12fd8bc8f1537a9b5baa484bc12185e734a094b3e0a1c6",
 			"kind": "literal",
 			"source": "Current work item",
@@ -18216,6 +18272,12 @@
 			"kind": "literal",
 			"source": "Visualize Repo History",
 			"translation": "可视化仓库历史"
+		},
+		{
+			"id": "message.c94ff2a9484da25cca16d5229ef844419f9f93dba27f527175cb890b80aec4d0",
+			"kind": "literal",
+			"source": "Amend Commit on",
+			"translation": "修改上次提交 ·"
 		},
 		{
 			"id": "message.c9501bbc7668ec57d68b2e51dd294d9260ea1cd9af7628abec2dbe5165e4fdc9",
@@ -21635,6 +21697,12 @@
 			"translation": "指定是否始终在视图顶部显示当前分支"
 		},
 		{
+			"id": "message.f176bd088dbd9324647957bdd5b177e16d9adc09e792e6ad581f6019184d150a",
+			"kind": "literal",
+			"source": "Commit to",
+			"translation": "提交到"
+		},
+		{
 			"id": "message.f18384297d9fce2c1e5197dfa6679dee27849ef6c3c1a9b4c4a0f834840b1d03",
 			"kind": "literal",
 			"source": "Working Directory",
@@ -22549,6 +22617,12 @@
 			"kind": "literal",
 			"source": "Discard",
 			"translation": "放弃"
+		},
+		{
+			"id": "message.fbc5330ad862e1beef9128ce0a1711d7f691c8aa702576d0132959d6c5951249",
+			"kind": "literal",
+			"source": "Resolve",
+			"translation": "解决"
 		},
 		{
 			"id": "message.fbca006e5e4e8982b5df912f2950c3f3f0573554aaf754dfd6406ad0102a4c0e",

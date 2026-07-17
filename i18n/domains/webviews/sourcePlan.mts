@@ -236,7 +236,8 @@ function planImperativeDisplay(node: ts.StringLiteralLike, sourceFile: ts.Source
 	const directDisplayValue =
 		(ts.isPropertyAssignment(node.parent) && node.parent.initializer === node) ||
 		(ts.isPropertyDeclaration(node.parent) && node.parent.initializer === node);
-	if (!directDisplayValue && !hasImperativeDisplayContextAncestor(node)) return undefined;
+	const hasDisplayContext = hasImperativeDisplayContextAncestor(node);
+	if (!directDisplayValue && !hasDisplayContext) return undefined;
 	if (
 		target == null ||
 		!isTranslatableLiteralText(node.text) ||
@@ -436,6 +437,7 @@ function getImperativeDisplayTargetFromName(
 	name: string | undefined,
 ): Extract<DisplayRole, { readonly kind: "imperative" }>["target"] | undefined {
 	if (name == null) return undefined;
+	if (/^action$/iu.test(name)) return "label";
 	if (/placeholder/iu.test(name)) return "placeholder";
 	if (/tooltip/iu.test(name)) return "tooltip";
 	if (/title/iu.test(name)) return "title";
@@ -838,6 +840,13 @@ function variableDeclarationFlowsToDisplay(node: ts.VariableDeclaration): boolea
 	const visit = (current: ts.Node): void => {
 		if (current.getEnd() <= node.end) return;
 		if (ts.isIdentifier(current) && current.text === variableName && isVariableUsageIdentifier(current)) {
+			if (
+				ts.isPrefixUnaryExpression(current.parent) &&
+				current.parent.operator === ts.SyntaxKind.ExclamationToken &&
+				current.parent.operand === current
+			) {
+				return;
+			}
 			usageContexts.push(identifierFlowsToDisplay(current));
 		}
 		ts.forEachChild(current, visit);
@@ -891,14 +900,20 @@ function identifierFlowsToDisplay(node: ts.Identifier): boolean {
 			const slotIndex = template.templateSpans.indexOf(parent);
 			const context = slotIndex === -1 ? undefined : getSyntheticHtmlTemplateSlotContext(template, slotIndex);
 			if (context == null) return false;
-			return context.kind === "text"
-				? true
-				: shouldLocalizeDisplaySite({
-						kind: "attribute",
-						name: context.attribute!,
-						tag: context.tag,
-						binding: context.binding!,
-					});
+			if (context.kind === "text") return true;
+			const role: DisplayRole = {
+				kind: "attribute",
+				name: context.attribute!,
+				tag: context.tag,
+				binding: context.binding!,
+			};
+			return (
+				shouldLocalizeDisplaySite(role) ||
+				(context.binding === "property" && shouldLocalizeDisplaySite({ ...role, binding: "attribute" }))
+			);
+		}
+		if (ts.isVariableDeclaration(parent) && parent.initializer === current) {
+			return variableDeclarationFlowsToDisplay(parent);
 		}
 		if (ts.isReturnStatement(parent) && parent.expression === current) {
 			return returnStatementFlowsToNamedDisplayProducer(parent);
@@ -956,9 +971,11 @@ function returnStatementFlowsToNamedDisplayProducer(node: ts.ReturnStatement): b
 
 function isDisplayAssignmentTarget(node: ts.Node): boolean {
 	if (ts.isIdentifier(node))
-		return /^(?:label|message|title|tooltip|placeholder|ariaLabel|validityMessage)$/iu.test(node.text);
+		return /^(?:label|message|title|tooltip|tooltipText|placeholder|ariaLabel|validityMessage)$/iu.test(node.text);
 	if (ts.isPropertyAccessExpression(node)) {
-		return /^(?:label|message|title|tooltip|placeholder|ariaLabel|validityMessage)$/iu.test(node.name.text);
+		return /^(?:label|message|title|tooltip|tooltipText|placeholder|ariaLabel|validityMessage)$/iu.test(
+			node.name.text,
+		);
 	}
 	return false;
 }
@@ -975,7 +992,9 @@ function looksLikeDisplayText(text: string, node: ts.StringLiteralLike | ts.Temp
 	if (/[<>=]/u.test(text) && /\b(?:class|role|aria-|tabindex|href|slot|style|content)\b/u.test(text)) {
 		return false;
 	}
-	if (/^(?:[.#]?[a-z][\w-]*)(?:\s+[.#]?[a-z][\w-]*)+$/u.test(trimmed)) return false;
+	if (/^(?:[.#]?[a-z][\w-]*)(?:\s+[.#]?[a-z][\w-]*)+$/u.test(trimmed)) {
+		return /\b(?:above|below|for|from|into|on|to|with)\b/u.test(trimmed);
+	}
 	if (isFileCountUnitConditionalBranch(node)) return true;
 	if (/^[a-z0-9_.:/-]+$/u.test(trimmed)) return false;
 	if (/^[A-Z][A-Z0-9._-]*$/u.test(trimmed)) return false;

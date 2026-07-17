@@ -1,46 +1,78 @@
-# i18n/authority Agent Guide
+# i18n/authority
 
-本目录承载 `authority` 真源与其审核辅助文件。`zh-cn/messages.json` 是权威翻译源；审核进度必须通过旁路 state 文件维护，不能直接向 authority entry 注入审核字段。
+本目录是已批准译文的持久真源. Agent 在此直接审阅与改写 `zh-cn/` 下的权威数据, 不为审核进度维护旁路状态.
 
-## 核心规则
+## 目录职责
 
-1. 允许读取 `zh-cn/messages.json`、`zh-cn/messages.review-state.json`、本目录 schema 与脚本来理解当前审核进度。
-2. 禁止修改 `zh-cn/messages.json` 的 schema 结构以增加 `reviewed`、`status`、`needsReview` 等审核字段。
-3. 审核状态只允许写入 `zh-cn/messages.review-state.json`，且必须通过 `messagesReview.mts` 脚本维护，避免手工改坏指纹或排序。
-4. `messages.review-state.json` 中的记录基于消息内容指纹；如果 `messages.json` 中同一 `id` 的内容发生变化，旧审核记录会自动失效，必须重新审核。
-5. 本目录下所有新增辅助脚本都应服务于 authority 真源，禁止把本目录当作临时翻译 workset 使用。
+| 路径                   | 作用                                                                   |
+| ---------------------- | ---------------------------------------------------------------------- |
+| `zh-cn/messages.json`  | 通用权威译文. 同一 `id` 可被多处 occurrence 复用.                      |
+| `zh-cn/terms.json`     | 短术语 / 固定短语的全局替换. 仅适合语义稳定、不依赖整句语境的条目.     |
+| `zh-cn/overrides.json` | 按 occurrence / output 的窄作用域覆盖. 通用译法无法兼顾多处用法时使用. |
 
-## 翻译质量硬约束
+解析优先级见 `i18n/core/authority.mts`: **output override > occurrence override > messages > terms**.
 
-1. `zh-cn/messages.json` 中的普通 authority entry 禁止使用空字符串译文。空译文会被生成链路视为有效翻译并删除原文片段；如果某个片段暂时不能安全翻译，应保持待处理状态或从抽取/建模层处理，不能写入 `""`。
-2. `template` 与 `rich` entry 的译文默认应保留 `slots` 中声明的 `${slotN}` 占位符，且不得改写占位符名称、大小写或语法。但这不是绝对语义规则：如果某个槽位只承载英文语法胶水、重复含义、英文复数形态，或在中文表达中确实应被省略，可以省略。
-3. 省略槽位前必须确认该槽位不是用户数据、远程数据、仓库/分支/文件/提交信息、命令参数、配置键、token、Markdown/HTML 结构或其它运行时语义数据。若同一个 authority message 覆盖多个 occurrence，或槽位语义不完全确定，应优先使用 `zh-cn/overrides.json` 的窄作用域 override，或回到抽取/生成建模层处理，而不是把省略写进通用 `messages.json`。
-4. 单独的英文语法词或短语，例如 `is`、`are`、`was`、`were`、`has`、`have`、`need`、`needs`、`require`、`requires`、`more`、`other`，不得作为通用 authority 翻译沉淀到 `messages.json` 或 `terms.json`。这类词在中文里通常依赖整句语义，应由完整模板、pluralization 建模、抽取规则或窄作用域 override 处理。
-5. 只有槽位加标点、Markdown 包装或弱连接词的结构模板不得进入通用 authority，例如 `${slot1}, ${slot2}, ${slot3}`、`**${slot1}** (${slot2})`、`${slot1} of ${slot2} ${slot3}`。这类模板没有稳定的可翻译 UI 语义，容易把任意动态数据重排；应从抽取层排除，或在具体 occurrence 上建模。
-6. `pluralize(...)`、`infix`、英文复数后缀等会产生英语形态的动态表达时，不得通过空译文或简单片段替换来“修掉”英文；应保守保留、标记待建模，或使用明确的 occurrence override，避免生成 `2 天days`、`7 days` 混入中文句子的结果。
-7. Markdown、命令 URI、配置键、代码片段、token、HTML 属性结构等语法承载内容不得随意改写。链接 URL 和命令 id 必须保持不变；链接标题是否翻译应服从对应域的生成/校验规则。
-8. `Working Tree`、`working tree` 在 Git 语境中统一译为“工作树”；`workspace` 才译为“工作区”。不得把 Git working tree 和 VS Code workspace 混用。
-9. 修改 authority 真源后，至少运行结构化质量检查或相关测试，确认 `messages.json` 中不存在空译文、关键术语回退；若译文省略了槽位，必须人工确认并在本次审查/修复说明中记录省略理由。
+## 受众与翻译倾向
 
-## Codex 审核流程
+受众是 **熟悉 Git / VS Code 的程序员**. 译文优先:
 
-1. 先运行 `node ./i18n/authority/messagesReview.mts next` 获取下一批待审核内容；默认返回最多 `1000` 条。
-2. 如需继续后续批次，使用 `--offset <nextOffset>`；如需更小批次，可传 `--limit <n>`。
-3. Codex 审核时只检查翻译质量，不修改 state 文件中的指纹、时间戳或 schema。
-4. 某批次确认审核通过后，使用 `node ./i18n/authority/messagesReview.mts approve --ids <id1,id2,...>` 写入审核状态；批量很多时改用 `--ids-file <file>`。
-5. 如果需要撤销某些条目的审核状态，使用 `node ./i18n/authority/messagesReview.mts unapprove --ids <id1,id2,...>`；同样支持 `--ids-file <file>`。
-6. 如果 `messages.json` 合并上游后发生变更，可用 `node ./i18n/authority/messagesReview.mts unapprove --all-stale` 清除所有已失效的旧审核记录。
-7. 查看总体审核进度时，使用 `node ./i18n/authority/messagesReview.mts stats`。
+1. **精确**: 术语与 Git 语义对齐, 不把不同概念揉成一词.
+2. **高效**: 短、可扫读; 去掉礼貌套话与文言虚词; 按钮/tooltip 尤甚.
+3. **可拼装**: template 译文必须在代入 `${slotN}` 后通顺; 槽位顺序由英文源码固定时, 用中文可接受的词序与分隔, 不强行英式介词直译.
+4. **与库一致**: 新译文先对齐 `messages.json` 已有同类说法, 不为单句另造词.
 
-## 输出约定
+### 倾向细则
 
-- `next` 输出 JSON，其中 `items` 为本批待审核消息，`pagination.nextOffset` 可直接用于下一批。
-- `counts.reviewedCurrent` 表示当前内容仍然有效的审核记录数量。
-- `counts.staleReviewed` 表示因 `messages.json` 内容变化而失效、需要重新审核的记录数量。
-- `counts.unreviewed` 表示当前尚未通过审核的消息总数。
+- **去掉无效礼貌与虚词**: 英文祈使句不要硬加 "请"; 目的结构优先用 "以" 等短连接, 避免 "以便 / 为了能够" 等说明文腔.
+- **UI 短标签优先动词短语**: `Stage` → `暂存`, `Unstage` → `取消暂存`, `Commit to` → `提交到`, 与既有 `Push to` → `推送到` 平行.
+- **分支 / 引用名挂在句末时**: 源码常为 `${verbPhrase} ${branch}`. 中文用自然前缀 + 分隔承接, 例如 `提交到 main`, `修改上次提交 · main`. 避免文绉绉的 "于", 也避免语义错位的 "到" (amend 不是 commit destination).
+- **禁用态 / 空状态文案**: 说明 "缺什么、做什么", 不写成客服口吻. 例: `输入提交消息以…`, `暂存上方更改以…`.
+- **Remaining / All 等量词模板**: 与库内同类条目统一; 如 `${slot1} remaining` 已是 `${slot1} 剩余`, 则 `Remaining` 不要写成 `剩余项`.
+- **Git 固定术语** (与全库保持一致, 下列为常见锚点):
+    - `stage` / `unstage` → 暂存 / 取消暂存
+    - `commit` (名词/动词按语境) → 提交
+    - `commit message` → 提交消息
+    - `Working Tree` / `working tree` → **工作树**
+    - `workspace` → **工作区** (VS Code; 不得与 working tree 混用)
+    - `amend` → 修改 (如 `修改上次提交`)
+- **产品名、命令 id、配置键、URL、代码 token**: 不译或按域规则保留; 链接 URL 与 command id 必须原样.
+- **中英混排**: 专有功能名若库内已保留英文 (如部分 Pro 能力名) 则跟随; 不要同一概念中英两套乱跳.
 
-## 禁止事项
+### 反模式
 
-- 不要手工编辑 `messages.review-state.json` 以伪造审核完成。
-- 不要为了审核流程去改动 `i18n/core/model.mts` 或 authority schema，除非任务明确要求扩展通用模型。
-- 不要把“已看过”当作“已审核通过”；只有写入 state 的条目才算完成。
+- 空字符串译文 (`""`): 生成链路会当有效翻译并删掉原文片段.
+- 把英文语法碎片沉淀为通用 authority: `is` / `are` / `has` / `need` / `more` / `other` 等依赖整句, 应整句建模、抽取规则或 override.
+- 无稳定 UI 语义的纯结构模板进入 `messages.json`: 如 `${slot1}, ${slot2}, ${slot3}`, `**${slot1}** (${slot2})`, `${slot1} of ${slot2} ${slot3}`.
+- 用空译或碎片替换 "修掉" `pluralize` / 英文复数形态, 得到 `2 天days` 一类结果.
+- 在通用 `messages.json` 里为某一处 occurrence 强行省略运行时数据槽 (用户数据、分支名、路径、SHA、配置键等). 多 occurrence 语义不一致时, 用 `overrides.json` 或回到抽取/建模层.
+
+## 槽位与结构硬约束
+
+1. `template` / `rich` 默认保留 `slots` 中每个 `${slotN}`, 且不改写占位符名、大小写与语法.
+2. 仅当槽位是英文语法胶水、重复含义、英文形态后缀, 且在中文中确实应省略时, 才可省略; 省略须确认不是运行时语义数据, 并在本次改动说明中写明理由.
+3. 同一 authority 覆盖多处且槽位语义不一时: **优先 `overrides.json`**, 不要污染通用条目.
+4. Markdown / HTML 结构、命令 URI、配置键、代码片段不得随意改写.
+
+## 何时改哪份文件
+
+- **多处可共用的稳定说法** → `messages.json`
+- **极短、全局同义、不依赖句式** → `terms.json` (慎用; 语法词不要进 terms)
+- **仅某 occurrence/output 需要不同译法或不同槽位取舍** → `overrides.json`, 并写清 `note`
+
+修改 authority 后, 若任务涉及生成或质量门禁, 运行相关结构化检查 / 域测试; 至少确认: 无空译文、关键术语未回退、省略槽位有理由.
+
+## 工作边界
+
+- 允许直接编辑 `zh-cn/messages.json`、`terms.json`、`overrides.json`.
+- 禁止向 authority entry 注入 `reviewed` / `status` / `needsReview` 等审核字段.
+- 禁止把本目录当临时 workset 或批量审核流水线入口.
+- 上游源码只读 `.upstream/`; 生成物在 `.work/`, 二者都不是翻译真源.
+- 无必要不改 `i18n/core/` 的 schema 与解析逻辑; 改模型须任务明确要求.
+
+## 改译文时的最小检查
+
+1. 看 `source` 与 `kind` (literal / template / rich), 搜库内同 source 或近义条目.
+2. 对 template: 脑内代入典型槽位 (分支名、动词、数量) 读一遍完整中文.
+3. 对按钮/tooltip/disabled 文案: 是否短、是否可扫读、是否像程序员工具而不是客服文案.
+4. 术语是否与 Git / 本库锚点一致 (`工作树` vs `工作区` 等).
+5. 需要窄覆盖时写 `overrides.json`, 而不是把特例写进通用 messages.

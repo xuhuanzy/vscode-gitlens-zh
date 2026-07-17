@@ -1269,6 +1269,27 @@
 			}
 		},
 		{
+			"id": "webviews:commitDetails:24fc8348516944dfee02d80c55057d14ee598cd7ea93c94ed698c8f6e24eeb4e",
+			"scope": "webviews.commitDetails.runtime",
+			"authorityId": "message.c8f48bd0a6dac6c6dcee9837999fee8b516a0f5029815d4d466d0436e233523c",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} All",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/gl-file-tree-pane.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.24fc8348516944dfee02d80c55057d14ee598cd7ea93c94ed698c8f6e24eeb4e"
+			}
+		},
+		{
 			"id": "webviews:commitDetails:25c317316ad6516c5c0d615bf52f3a4add2358bc66c5d971f57a7f9e615b7a7a",
 			"scope": "webviews.commitDetails.runtime",
 			"authorityId": "message.e79b0cb3b2937872c042f2d4d22f3a072bbd58808021db41c208618016d3a0ea",
@@ -2630,6 +2651,24 @@
 			}
 		},
 		{
+			"id": "webviews:commitDetails:4a3d07c40e359bc8619784d65d44833892b55001b5f1efead6d503d6c067d418",
+			"scope": "webviews.commitDetails.runtime",
+			"authorityId": "message.24ab6be77227a1a898188357398a30ba072be861849d2274300857aa3b400cc9",
+			"pattern": {
+				"kind": "literal",
+				"text": "Share as Cloud Patch"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/commitDetails/components/gl-details-wip-panel.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.4a3d07c40e359bc8619784d65d44833892b55001b5f1efead6d503d6c067d418"
+			}
+		},
+		{
 			"id": "webviews:commitDetails:4ad37b9ac05aa44aa2a8c567e062fe4070018b6a624e56b40f69470e8d535787",
 			"scope": "webviews.commitDetails.runtime",
 			"authorityId": "message.a5e847116eb0c274b28a04fe16e4f8f39e66d7d95887ffc681051aabf2683639",
@@ -3181,6 +3220,27 @@
 			}
 		},
 		{
+			"id": "webviews:commitDetails:5e9cd3d8b72eb058ce23327307ca1e5d3757e09e7b1b4fae16e5a60de16f5e19",
+			"scope": "webviews.commitDetails.runtime",
+			"authorityId": "message.c8f48bd0a6dac6c6dcee9837999fee8b516a0f5029815d4d466d0436e233523c",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} All",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/gl-file-tree-pane.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.5e9cd3d8b72eb058ce23327307ca1e5d3757e09e7b1b4fae16e5a60de16f5e19"
+			}
+		},
+		{
 			"id": "webviews:commitDetails:5ea2560a3bca8448a4ea10266683f17a2c59be951ed8793711525a8322147f0c",
 			"scope": "webviews.commitDetails.runtime",
 			"authorityId": "message.b1bba191eef1e22ab1f0cc3505e61f4ccb42cb1ed09b6f6e74a08e48e49ad358",
@@ -3570,6 +3630,27 @@
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
 				"key": "commitDetails.6c227488a29bb3ea8919bc592148366b2c87abe0b5be249233a43a2ec9d182a7"
+			}
+		},
+		{
+			"id": "webviews:commitDetails:6c4dbd99e5dc37e42c2aaadd78fd7a29b63fb7aa665c8fde07d85a1e6f3fa29e",
+			"scope": "webviews.commitDetails.runtime",
+			"authorityId": "message.c8f48bd0a6dac6c6dcee9837999fee8b516a0f5029815d4d466d0436e233523c",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} All",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/gl-file-tree-pane.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.6c4dbd99e5dc37e42c2aaadd78fd7a29b63fb7aa665c8fde07d85a1e6f3fa29e"
 			}
 		},
 		{
@@ -5018,6 +5099,25 @@
 			}
 		},
 		{
+			"id": "webviews:commitDetails:999c943236bc1617c303b92931a1baf3cdcd8475ced47b913f35e3b7c5d7bb6a",
+			"scope": "webviews.commitDetails.runtime",
+			"authorityId": "message.47d514fa492c4c8893fbe980e971369d08638b02e94cdc8e8d1320d9b3a34fd6",
+			"pattern": {
+				"kind": "literal",
+				"text": "Stage"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/gl-wip-tree-pane.ts",
+				"attribute": "check-verb"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.999c943236bc1617c303b92931a1baf3cdcd8475ced47b913f35e3b7c5d7bb6a"
+			}
+		},
+		{
 			"id": "webviews:commitDetails:99a302a91f3430c68c56f83dbfc9d337afa6be758ebc6a2e36314ad4123f323e",
 			"scope": "webviews.commitDetails.runtime",
 			"authorityId": "message.ba5fbbe7f098a0ccc93cccd61980790e26e88c192f6abfc49d886d6dadc34547",
@@ -5448,6 +5548,25 @@
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
 				"key": "commitDetails.a29503b3206451821647afc9e64ff2f8d58dc3a51e84b4ef2ea96bd15e9da467"
+			}
+		},
+		{
+			"id": "webviews:commitDetails:a2bc6b2347451530fbf9355a929027fa3fc0e79f9f847132fe3e4e788db3aeef",
+			"scope": "webviews.commitDetails.runtime",
+			"authorityId": "message.b6fe721169318a7c9d768a6ca82ac30a43992121bd4a4fca686a8c9c0f3728d2",
+			"pattern": {
+				"kind": "literal",
+				"text": "Unstage"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/gl-wip-tree-pane.ts",
+				"attribute": "uncheck-verb"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.a2bc6b2347451530fbf9355a929027fa3fc0e79f9f847132fe3e4e788db3aeef"
 			}
 		},
 		{
@@ -6313,6 +6432,27 @@
 				"kind": "runtime-key",
 				"bundle": "commitDetails",
 				"key": "commitDetails.c070a122aba9cbca0823026b8944c7886d3ae8ce90bdc1e525b21a38b566de8b"
+			}
+		},
+		{
+			"id": "webviews:commitDetails:c0f6efbf219da8b5da420921a5656731d5b5e0aaf99bcc40ff941569ac1bb7e0",
+			"scope": "webviews.commitDetails.runtime",
+			"authorityId": "message.7b725e5ed6d60026d4a5587c4c1fbdddd87e9808a69555e69d69bbff690704da",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} Remaining",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/gl-file-tree-pane.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "commitDetails",
+				"key": "commitDetails.c0f6efbf219da8b5da420921a5656731d5b5e0aaf99bcc40ff941569ac1bb7e0"
 			}
 		},
 		{
@@ -10759,6 +10899,25 @@
 			}
 		},
 		{
+			"id": "webviews:graph:0ce5cbec6f66e0a1eff771346359af939fd58bda098ecb563a0d13719fa82fda",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.f2718f87b10bc3e8ed207e3e6d3c3350571c5f68852fda0d7feb7f0a7a8e64cc",
+			"pattern": {
+				"kind": "literal",
+				"text": "Exclude"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/components/gl-details-compose-mode-panel.ts",
+				"attribute": "uncheck-verb"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.0ce5cbec6f66e0a1eff771346359af939fd58bda098ecb563a0d13719fa82fda"
+			}
+		},
+		{
 			"id": "webviews:graph:0d095ee04fd13e76f84c6dc908e2f78e48d578c1608d1a4de4256d156a605aa7",
 			"scope": "webviews.graph.runtime",
 			"authorityId": "message.ed9fb8ddf3715adc392f8d4d860c9bea7f8f2a1b4872534ee56daa9ccd19b96c",
@@ -12328,6 +12487,24 @@
 			}
 		},
 		{
+			"id": "webviews:graph:28098afdb7bd3b2a02eb62e7d19ce7bcc2e6aa188feca45c8079f321f22c6acc",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.4dbb20e2ca9c4bdcbba9e630fd5d901b5c356f5f33b1c3db891ee8fda25d088f",
+			"pattern": {
+				"kind": "literal",
+				"text": "Base"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/components/gl-details-compare-mode-panel.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.28098afdb7bd3b2a02eb62e7d19ce7bcc2e6aa188feca45c8079f321f22c6acc"
+			}
+		},
+		{
 			"id": "webviews:graph:28eedff64b7757ddad9228843bb347c59f06a26a9910a8ade636f8f7418d6ca4",
 			"scope": "webviews.graph.runtime",
 			"authorityId": "message.97ad9e35c6ca4dd8a5913a3405d58b644e04ea1f9e2f1eca08aacc657e3b961d",
@@ -12548,6 +12725,28 @@
 				"kind": "runtime-key",
 				"bundle": "graph",
 				"key": "graph.2d87dc6db8f465ace3ad8732aa7848b6cb5951b49a8fe4c5b173398f8c79f033"
+			}
+		},
+		{
+			"id": "webviews:graph:2e1ca76039834b20eda76c6d901698afe15498124db0b30e35ad845b72d3c3b4",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.b71bf6531209725f2ec552594112be8b99672361a0066e2bb41b0cfc52d50b71",
+			"pattern": {
+				"kind": "template",
+				"text": "Enter a commit message to ${slot1} ${slot2}",
+				"slots": [
+					"slot1",
+					"slot2"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/components/gl-commit-box.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.2e1ca76039834b20eda76c6d901698afe15498124db0b30e35ad845b72d3c3b4"
 			}
 		},
 		{
@@ -12967,6 +13166,27 @@
 			}
 		},
 		{
+			"id": "webviews:graph:36c31e409837ed70c48b92a475bcedae0c48b2073eac4366986b6f28095a4db8",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.734c47ac425fbe57510784fe352418a6894cfddfbf2b6a96f0295efbf02ed75d",
+			"pattern": {
+				"kind": "template",
+				"text": "Show Details Panel on ${slot1}",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/graph-header.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.36c31e409837ed70c48b92a475bcedae0c48b2073eac4366986b6f28095a4db8"
+			}
+		},
+		{
 			"id": "webviews:graph:3779c16155d06f12eeff893a315d7cacd40e8fb8892e580db00f5b36f52eaa6b",
 			"scope": "webviews.graph.runtime",
 			"authorityId": "message.21d066b3e82699fd7114b329912bac3dfe01279d1ae10c1944f9cda429803b92",
@@ -13094,6 +13314,25 @@
 			}
 		},
 		{
+			"id": "webviews:graph:38e7b4451403572e86ac509231a5253da030e7c786b7f6f84a1a8539c5caaebe",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.f2718f87b10bc3e8ed207e3e6d3c3350571c5f68852fda0d7feb7f0a7a8e64cc",
+			"pattern": {
+				"kind": "literal",
+				"text": "Exclude"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/components/gl-details-review-mode-panel.ts",
+				"attribute": "uncheck-verb"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.38e7b4451403572e86ac509231a5253da030e7c786b7f6f84a1a8539c5caaebe"
+			}
+		},
+		{
 			"id": "webviews:graph:390afb9739eb37767b73d8e03fa8054e4eb56ec44980050e86527fd42b7ab8d3",
 			"scope": "webviews.graph.runtime",
 			"authorityId": "message.6f1e021b1cd6a9a59d6baca52df49047934874f369b2fe86ad6ac0aac4f7eac3",
@@ -13149,6 +13388,24 @@
 				"kind": "runtime-key",
 				"bundle": "graph",
 				"key": "graph.3974dcc9896cfef38007e9288bc7d13f717ce62d92f53cc747dce4f77991496f"
+			}
+		},
+		{
+			"id": "webviews:graph:39eb6b88aeba245a9100b3a66a7a291936f1d9ea58c9657b9099ba038105c38b",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.5e9ae58122d895c5d424c6876cd9c576e7290c0e47635881a44afb4b4bc11acd",
+			"pattern": {
+				"kind": "literal",
+				"text": "Compose"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/components/runningOperationStatus.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.39eb6b88aeba245a9100b3a66a7a291936f1d9ea58c9657b9099ba038105c38b"
 			}
 		},
 		{
@@ -13728,6 +13985,25 @@
 				"kind": "runtime-key",
 				"bundle": "graph",
 				"key": "graph.40ee633cda75c088818f2c6b873f8ef25aae89a720ed13b52b9b1199ea1c1a9d"
+			}
+		},
+		{
+			"id": "webviews:graph:410b5e3a24dfc78ed1810796a99b451bb5417e5d1ab1c0bde79eb977bd142769",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.f2403a692565dcd34ee9095899b1a195b14b15ffd6f5398e66657755476dcae4",
+			"pattern": {
+				"kind": "literal",
+				"text": "Include"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/components/gl-details-compose-mode-panel.ts",
+				"attribute": "check-verb"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.410b5e3a24dfc78ed1810796a99b451bb5417e5d1ab1c0bde79eb977bd142769"
 			}
 		},
 		{
@@ -15098,6 +15374,24 @@
 			}
 		},
 		{
+			"id": "webviews:graph:58db88063dab89a6c1fb6198a663b6a5080ab96dd71be0aafa6de085f22818de",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.fbc5330ad862e1beef9128ce0a1711d7f691c8aa702576d0132959d6c5951249",
+			"pattern": {
+				"kind": "literal",
+				"text": "Resolve"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/components/runningOperationStatus.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.58db88063dab89a6c1fb6198a663b6a5080ab96dd71be0aafa6de085f22818de"
+			}
+		},
+		{
 			"id": "webviews:graph:594c4c712c9b03fc5b9de14b2ad147946e846143df8425a5a8465fd26e0f1f2a",
 			"scope": "webviews.graph.runtime",
 			"authorityId": "message.ea846f41ff393a39482d12c144ad68db3273fb420d0283d60d64579d7960e4a4",
@@ -15371,6 +15665,25 @@
 				"kind": "runtime-key",
 				"bundle": "graph",
 				"key": "graph.5f0e1ef42239b50b063ecae5273807f030126dd4bc80bea8bc351afeb53f8517"
+			}
+		},
+		{
+			"id": "webviews:graph:5fac15ec4bb5a13fe5af2582e3fa6266f294150b849fa87563564d48f081fde6",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.0b03556114b10a6c66819b95f35653135331bb70192d8cfc060d2c3ad72019f2",
+			"pattern": {
+				"kind": "literal",
+				"text": "Skip"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/components/gl-details-resolve-mode-panel.ts",
+				"attribute": "uncheck-verb"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.5fac15ec4bb5a13fe5af2582e3fa6266f294150b849fa87563564d48f081fde6"
 			}
 		},
 		{
@@ -16268,6 +16581,25 @@
 			}
 		},
 		{
+			"id": "webviews:graph:6e08d51916e5b6b5bf241f92d27f777341041daa6fd08b1010e5faa1f8f7f7c2",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.f2403a692565dcd34ee9095899b1a195b14b15ffd6f5398e66657755476dcae4",
+			"pattern": {
+				"kind": "literal",
+				"text": "Include"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/components/gl-details-review-mode-panel.ts",
+				"attribute": "check-verb"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.6e08d51916e5b6b5bf241f92d27f777341041daa6fd08b1010e5faa1f8f7f7c2"
+			}
+		},
+		{
 			"id": "webviews:graph:6e3d40e9b5f6a838a637a6520a4708d5f7b1a57253082755516710a1a46d71b1",
 			"scope": "webviews.graph.runtime",
 			"authorityId": "message.83c45808921503c89038475b1e6965408e37cd3a9309d8e914e3eede07a67d1e",
@@ -16883,6 +17215,24 @@
 			}
 		},
 		{
+			"id": "webviews:graph:7b319040491f460e2fcac00783d1113170e5a369f43f70c167abca628b9960cf",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.f176bd088dbd9324647957bdd5b177e16d9adc09e792e6ad581f6019184d150a",
+			"pattern": {
+				"kind": "literal",
+				"text": "Commit to"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/components/gl-commit-box.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.7b319040491f460e2fcac00783d1113170e5a369f43f70c167abca628b9960cf"
+			}
+		},
+		{
 			"id": "webviews:graph:7b6545cce0881702af7cf7b934ec686e6358ab6647d8ac49e41f4ffb4dc2d486",
 			"scope": "webviews.graph.runtime",
 			"authorityId": "message.a1b9edaf6bd6ac0e52319b329d53bfd5c4630ebeb5eae286cd2b25ccce655bd8",
@@ -17066,6 +17416,24 @@
 				"kind": "runtime-key",
 				"bundle": "graph",
 				"key": "graph.7e9dd5d86dae918dd92b7c3db9fec8b0fa612229be55c5a078f8d7d8da5cf1a2"
+			}
+		},
+		{
+			"id": "webviews:graph:7eb95358b6c11876124ddc44d16a62faa958463d981e333c1993c619bb51864f",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.e4f03c9716f8b0586d0aa6df488caca9bcdcae91f0628141e05fe9988904ed8e",
+			"pattern": {
+				"kind": "literal",
+				"text": "Hide Details Panel"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/graph-header.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.7eb95358b6c11876124ddc44d16a62faa958463d981e333c1993c619bb51864f"
 			}
 		},
 		{
@@ -18809,6 +19177,24 @@
 			}
 		},
 		{
+			"id": "webviews:graph:a9e79a951db7560dbec5b05c4444d32281caf29f0e4ba76629dd4c43e6b5d0a2",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.dae0b058db4a615120b1f6e36b5726431750ecee91369de3537aee71885c0220",
+			"pattern": {
+				"kind": "literal",
+				"text": "Review"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/components/runningOperationStatus.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.a9e79a951db7560dbec5b05c4444d32281caf29f0e4ba76629dd4c43e6b5d0a2"
+			}
+		},
+		{
 			"id": "webviews:graph:aa0d169c4d249c634a304b8f69760355035a93efd65f79eb88f314843a386e53",
 			"scope": "webviews.graph.runtime",
 			"authorityId": "message.1a11d054a779678adbbc59dbec3279e41f4ff1019cdf50970dc553b2fee96bb3",
@@ -19710,6 +20096,24 @@
 			}
 		},
 		{
+			"id": "webviews:graph:b908774b70896d090b9bc27039b4e3904223d5c353ba8de86e9ee61493e7a8e7",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.075bf047842f59344a66db28bc9bf4d5b5cb05876728038fbe88091d4c01d2bb",
+			"pattern": {
+				"kind": "literal",
+				"text": "amend commit on"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/components/gl-commit-box.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.b908774b70896d090b9bc27039b4e3904223d5c353ba8de86e9ee61493e7a8e7"
+			}
+		},
+		{
 			"id": "webviews:graph:b91301c7cf42c27b8b0eba81805ac631dbfe0df8e7e82432d76f725ae9887a30",
 			"scope": "webviews.graph.runtime",
 			"authorityId": "message.e4604704b5a2612f7c89d0e1607f70e7ab7233d0798551fb18b03650bafb6464",
@@ -20086,6 +20490,25 @@
 				"kind": "runtime-key",
 				"bundle": "graph",
 				"key": "graph.bf11c80e929e1b13b850c452bccce87553cd1e465d6225003ecc8810ae4ee81f"
+			}
+		},
+		{
+			"id": "webviews:graph:bf39d0575b733b3c2d274b60a21790cc50a33b9ff977bdf1f850845b4a88f9e6",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.fbc5330ad862e1beef9128ce0a1711d7f691c8aa702576d0132959d6c5951249",
+			"pattern": {
+				"kind": "literal",
+				"text": "Resolve"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/components/gl-details-resolve-mode-panel.ts",
+				"attribute": "check-verb"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.bf39d0575b733b3c2d274b60a21790cc50a33b9ff977bdf1f850845b4a88f9e6"
 			}
 		},
 		{
@@ -20885,6 +21308,24 @@
 			}
 		},
 		{
+			"id": "webviews:graph:d1ac42ae03ea248631940fd530f60702f004313d36149bfe53f7791abe8494b3",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.bd3f5b583a4fc76ae03fc0b5ddda162e0829ec463cef8f68d021996de626dd2e",
+			"pattern": {
+				"kind": "literal",
+				"text": "commit to"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/components/gl-commit-box.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.d1ac42ae03ea248631940fd530f60702f004313d36149bfe53f7791abe8494b3"
+			}
+		},
+		{
 			"id": "webviews:graph:d268aab97164749233c4a53b64c7998dfb1a7164c4569389e70bcc6b39dac907",
 			"scope": "webviews.graph.runtime",
 			"authorityId": "message.3a827e43006951baea1a6404519f4fa9d0d29f437945fff7874f1e20ef7d37f5",
@@ -21427,6 +21868,24 @@
 			}
 		},
 		{
+			"id": "webviews:graph:de40f7f6acedbe67c547bdad9c6b5b5727001f658bb6134f1e5555cc86b474c6",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.c94ff2a9484da25cca16d5229ef844419f9f93dba27f527175cb890b80aec4d0",
+			"pattern": {
+				"kind": "literal",
+				"text": "Amend Commit on"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/components/gl-commit-box.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.de40f7f6acedbe67c547bdad9c6b5b5727001f658bb6134f1e5555cc86b474c6"
+			}
+		},
+		{
 			"id": "webviews:graph:de723b6066e0383e3c06365540120ea92ec1983e355be287d8a89c2735744fcc",
 			"scope": "webviews.graph.runtime",
 			"authorityId": "message.4569d1fac3a2fc3de5e09a6fa31a74620993a84d554796a9c2751949fe50b7d5",
@@ -21691,6 +22150,28 @@
 				"kind": "runtime-key",
 				"bundle": "graph",
 				"key": "graph.e1301e143f2891435d7cd22b663e5e59d229aaa694620a3f2b29515f547584ff"
+			}
+		},
+		{
+			"id": "webviews:graph:e1b239dae13f47b3946a93ccf59aa91c30ac585dd1a7bba007b2caece0007531",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.309e09be84cca37c24d4eb8b9cdb119bd0fe533ccff451b23911dcbcdef49bb4",
+			"pattern": {
+				"kind": "template",
+				"text": "Stage changes above to ${slot1} ${slot2}",
+				"slots": [
+					"slot1",
+					"slot2"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/components/gl-commit-box.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.e1b239dae13f47b3946a93ccf59aa91c30ac585dd1a7bba007b2caece0007531"
 			}
 		},
 		{
@@ -22256,6 +22737,24 @@
 				"kind": "runtime-key",
 				"bundle": "graph",
 				"key": "graph.ecd4baae2c7747cfc2c4f207773ed65841b483d34818942639c4f3095282cfe7"
+			}
+		},
+		{
+			"id": "webviews:graph:ed2a2e38befdd3d48271ecc5c43aeacdf87b84c6c48f487b017c3c1bfcc745f6",
+			"scope": "webviews.graph.runtime",
+			"authorityId": "message.1f816022cb1fa90656f57ef42a3f4dcd6e1d8bbea3d2ebca93cd7e3205e280b3",
+			"pattern": {
+				"kind": "literal",
+				"text": "Show Details Panel"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/plus/graph/graph-header.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "graph",
+				"key": "graph.ed2a2e38befdd3d48271ecc5c43aeacdf87b84c6c48f487b017c3c1bfcc745f6"
 			}
 		},
 		{
@@ -23693,6 +24192,27 @@
 			}
 		},
 		{
+			"id": "webviews:home:109a5863e97aac3b71b9c259fc281710f2e0c173b948f51d2339ca43502e842e",
+			"scope": "webviews.home.runtime",
+			"authorityId": "message.c8f48bd0a6dac6c6dcee9837999fee8b516a0f5029815d4d466d0436e233523c",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} All",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/gl-file-tree-pane.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.109a5863e97aac3b71b9c259fc281710f2e0c173b948f51d2339ca43502e842e"
+			}
+		},
+		{
 			"id": "webviews:home:1207aa3827cdbca6837c6284610a3dda9b3e8e0dad427803514c97bc3cc7b918",
 			"scope": "webviews.home.runtime",
 			"authorityId": "message.31c2238f2cae0cd96402b32a5835390d7ecbe0c09d302e549c92312652e6c70b",
@@ -24826,6 +25346,27 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.2759fa0e1536f54f9ed8bc19bbab9674b77a2b053eda03221cc66ae74e001be8"
+			}
+		},
+		{
+			"id": "webviews:home:28af65df0fbad3f4604b8fc70acba67ed9ce644655572603e48c9a89897882ee",
+			"scope": "webviews.home.runtime",
+			"authorityId": "message.7b725e5ed6d60026d4a5587c4c1fbdddd87e9808a69555e69d69bbff690704da",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} Remaining",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/gl-file-tree-pane.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.28af65df0fbad3f4604b8fc70acba67ed9ce644655572603e48c9a89897882ee"
 			}
 		},
 		{
@@ -26996,6 +27537,27 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.5789ac734016bff2de3a89ce2e4cacffa8557603c01cca73d1d0cba555c9bb14"
+			}
+		},
+		{
+			"id": "webviews:home:57fc28ebb798a18e7b20408d6a8614df1ac78b3b5ee7b3a8ea465beecd083262",
+			"scope": "webviews.home.runtime",
+			"authorityId": "message.c8f48bd0a6dac6c6dcee9837999fee8b516a0f5029815d4d466d0436e233523c",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} All",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/gl-file-tree-pane.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.57fc28ebb798a18e7b20408d6a8614df1ac78b3b5ee7b3a8ea465beecd083262"
 			}
 		},
 		{
@@ -29507,6 +30069,27 @@
 			}
 		},
 		{
+			"id": "webviews:home:94a871aeac84d88e1e85e35b15224ab3148ce3375b26f54a32774e86ac2e3e68",
+			"scope": "webviews.home.runtime",
+			"authorityId": "message.c8f48bd0a6dac6c6dcee9837999fee8b516a0f5029815d4d466d0436e233523c",
+			"pattern": {
+				"kind": "template",
+				"text": "${slot1} All",
+				"slots": [
+					"slot1"
+				]
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/gl-file-tree-pane.ts"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.94a871aeac84d88e1e85e35b15224ab3148ce3375b26f54a32774e86ac2e3e68"
+			}
+		},
+		{
 			"id": "webviews:home:94b4d60f22a2bb0d29b6fc2e0152914c7883164b339ad8f54a21fffe72e2edd0",
 			"scope": "webviews.home.runtime",
 			"authorityId": "message.52f2f9c644f754de4fb883059526d91bbbd991dba176f53b5c20845cc6a975f4",
@@ -31145,6 +31728,25 @@
 			}
 		},
 		{
+			"id": "webviews:home:b93b3510884cf21826a907cbe7aaa3222bcbaa5efe7c92f665142f04a1b7d51f",
+			"scope": "webviews.home.runtime",
+			"authorityId": "message.b6fe721169318a7c9d768a6ca82ac30a43992121bd4a4fca686a8c9c0f3728d2",
+			"pattern": {
+				"kind": "literal",
+				"text": "Unstage"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/gl-wip-tree-pane.ts",
+				"attribute": "uncheck-verb"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.b93b3510884cf21826a907cbe7aaa3222bcbaa5efe7c92f665142f04a1b7d51f"
+			}
+		},
+		{
 			"id": "webviews:home:b9e85a537d89c2c1e9cdb276d4ba4d4807879dfece3d0182255220f65031e06b",
 			"scope": "webviews.home.runtime",
 			"authorityId": "message.faabb8137909b654a9629b6cd3566d7e3023319c23542908e0e1c154043329bd",
@@ -31578,6 +32180,25 @@
 				"kind": "runtime-key",
 				"bundle": "home",
 				"key": "home.c528e2ea334a49e81edcca8bcaa38248d9d63c6f1c329e3a97190faf7849d6aa"
+			}
+		},
+		{
+			"id": "webviews:home:c58c49ffe87e1d3f055df858f07f0f34fedb0a70845e0bf619e0f91bb23d6b99",
+			"scope": "webviews.home.runtime",
+			"authorityId": "message.47d514fa492c4c8893fbe980e971369d08638b02e94cdc8e8d1320d9b3a34fd6",
+			"pattern": {
+				"kind": "literal",
+				"text": "Stage"
+			},
+			"reference": {
+				"kind": "source",
+				"file": "src/webviews/apps/shared/components/tree/gl-wip-tree-pane.ts",
+				"attribute": "check-verb"
+			},
+			"output": {
+				"kind": "runtime-key",
+				"bundle": "home",
+				"key": "home.c58c49ffe87e1d3f055df858f07f0f34fedb0a70845e0bf619e0f91bb23d6b99"
 			}
 		},
 		{
