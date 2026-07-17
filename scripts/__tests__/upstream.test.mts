@@ -6,7 +6,13 @@ import { pathToFileURL } from "node:url";
 import { afterAll, expect, test } from "vitest";
 
 import { loadLayerConfig } from "../config.mts";
-import { getUpstreamStatus, markFullBuildComplete, prepareUpstream, runUpstreamScript } from "../upstream.mts";
+import {
+	applyConfiguredPatches,
+	getUpstreamStatus,
+	markFullBuildComplete,
+	prepareUpstream,
+	runUpstreamScript,
+} from "../upstream.mts";
 
 const fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), "upstream-tests-"));
 
@@ -118,6 +124,29 @@ test(
 	},
 );
 
+test("configured patches can be enabled or disabled", { tags: "upstream" }, () => {
+	const controlRoot = path.join(fixtureRoot, "configured-patches");
+	const repository = createBareTaggedRepository(path.join(fixtureRoot, "patch-remote"));
+	writeLayerConfig(controlRoot, repository.url, repository.commit, "18.2.0", true);
+	let config = loadLayerConfig(controlRoot);
+	prepareUpstream(config);
+	fs.mkdirSync(path.join(controlRoot, "patches"), { recursive: true });
+	fs.writeFileSync(
+		path.join(controlRoot, "patches", "readme.patch"),
+		"diff --git a/README.md b/README.md\n--- a/README.md\n+++ b/README.md\n@@ -1 +1 @@\n-fixture upstream\n+patched upstream\n",
+		"utf8",
+	);
+
+	expect(applyConfiguredPatches(config)).toEqual(["readme.patch"]);
+	expect(fs.readFileSync(path.join(config.upstreamRoot, "README.md"), "utf8").trim()).toBe("patched upstream");
+
+	writeLayerConfig(controlRoot, repository.url, repository.commit, "18.2.0", false);
+	config = loadLayerConfig(controlRoot);
+	prepareUpstream(config);
+	expect(applyConfiguredPatches(config)).toEqual([]);
+	expect(fs.readFileSync(path.join(config.upstreamRoot, "README.md"), "utf8").trim()).toBe("fixture upstream");
+});
+
 interface RepositoryFixture {
 	readonly url: string;
 	readonly commit: string;
@@ -153,11 +182,18 @@ function addTaggedCommit(repository: RepositoryFixture, tag: string): string {
 	return runGit(repository.source, ["rev-parse", "HEAD"]).trim();
 }
 
-function writeLayerConfig(controlRoot: string, repository: string, commit: string, tag = "18.2.0"): void {
+function writeLayerConfig(
+	controlRoot: string,
+	repository: string,
+	commit: string,
+	tag = "18.2.0",
+	applyPatches = false,
+): void {
 	fs.mkdirSync(controlRoot, { recursive: true });
 	fs.writeFileSync(
 		path.join(controlRoot, "gitlens-zh.config.json"),
 		JSON.stringify({
+			applyPatches,
 			upstream: { repository, tag, commit },
 		}),
 		"utf8",

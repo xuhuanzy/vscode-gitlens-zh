@@ -11,6 +11,7 @@ import {
 	syncI18n,
 } from "./overlay.mts";
 import {
+	applyConfiguredPatches,
 	getUpstreamStatus,
 	markFullBuildComplete,
 	prepareUpstream,
@@ -89,6 +90,7 @@ export async function execute(args: readonly string[], root = controlRoot): Prom
 					const manifest = applyLocalizedManifest(config);
 					return {
 						upstream: config.upstream.commit,
+						patches: prepared.patches,
 						overlay: prepared.overlay,
 						manifest: manifest,
 						mode: "overlay",
@@ -108,6 +110,7 @@ export async function execute(args: readonly string[], root = controlRoot): Prom
 			const manifest = applyLocalizedManifest(config);
 			return {
 				upstream: config.upstream.commit,
+				patches: prepared.patches,
 				overlay: prepared.overlay,
 				manifest: manifest,
 				mode: requiresFullBuild ? "full" : "quick",
@@ -128,8 +131,9 @@ export async function execute(args: readonly string[], root = controlRoot): Prom
 
 function prepareLocalizedUpstream(config: ReturnType<typeof loadLayerConfig>) {
 	const status = prepareUpstream(config);
+	const patches = applyConfiguredPatches(config);
 	const overlay = generateAndApplySourceOverlay(config);
-	return { status: status, overlay: summarizeOverlay(overlay) };
+	return { status: status, patches: patches, overlay: summarizeOverlay(overlay) };
 }
 
 function packageExtension(config: ReturnType<typeof loadLayerConfig>, passthrough: readonly string[]): unknown {
@@ -150,6 +154,7 @@ function packageExtension(config: ReturnType<typeof loadLayerConfig>, passthroug
 	);
 	return {
 		upstream: config.upstream.commit,
+		patches: prepared.patches,
 		overlay: prepared.overlay,
 		manifest: manifest,
 		artifact: artifact,
@@ -167,6 +172,7 @@ function summarizeOverlay(overlay: ReturnType<typeof generateAndApplySourceOverl
 function exitCode(code: string): number {
 	if (code.startsWith("CONFIG_")) return 2;
 	if (code.startsWith("UPSTREAM_")) return 3;
+	if (code.startsWith("PATCH_")) return 4;
 	if (code.startsWith("I18N_")) return 5;
 	if (code.startsWith("DEPENDENCY_")) return 6;
 	if (code === "BUILD_FAILED") return 7;

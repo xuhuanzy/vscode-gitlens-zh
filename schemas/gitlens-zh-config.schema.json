@@ -2,9 +2,10 @@
 	"$schema": "https://json-schema.org/draft/2020-12/schema",
 	"type": "object",
 	"additionalProperties": false,
-	"required": ["upstream"],
+	"required": ["applyPatches", "upstream"],
 	"properties": {
 		"$schema": { "type": "string" },
+		"applyPatches": { "type": "boolean" },
 		"upstream": {
 			"type": "object",
 			"additionalProperties": false,

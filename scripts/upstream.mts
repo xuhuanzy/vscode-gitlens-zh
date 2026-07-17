@@ -70,6 +70,23 @@ export function markFullBuildComplete(config: ResolvedLayerConfig): void {
 	writeManagedMetadata(config, false);
 }
 
+/** 按文件名顺序将控制仓库中的 patch 应用到已重置的上游工作树. */
+export function applyConfiguredPatches(config: ResolvedLayerConfig): readonly string[] {
+	if (!config.applyPatches) return [];
+
+	const patchesRoot = path.join(config.controlRoot, "patches");
+	if (!fs.existsSync(patchesRoot)) return [];
+	const patches = fs
+		.globSync("*.patch", { cwd: patchesRoot, withFileTypes: true })
+		.filter((entry) => entry.isFile())
+		.map((entry) => entry.name)
+		.sort((left, right) => left.localeCompare(right));
+	for (const patch of patches) {
+		runGit(config.upstreamRoot, ["apply", path.join(patchesRoot, patch)], "PATCH_APPLY_FAILED");
+	}
+	return patches;
+}
+
 /** 确保受管上游树指向锁定版本, 优先复用本地 tag, 缺失时再拉取或重建. */
 export function prepareUpstream(
 	config: ResolvedLayerConfig,

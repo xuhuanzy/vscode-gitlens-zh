@@ -8,6 +8,7 @@ export interface UpstreamConfig {
 }
 
 export interface LayerConfig {
+	readonly applyPatches: boolean;
 	readonly upstream: UpstreamConfig;
 }
 
@@ -38,6 +39,9 @@ export function loadLayerConfig(controlRoot: string): ResolvedLayerConfig {
 	const resolvedControlRoot = path.resolve(controlRoot);
 	const configFile = path.join(resolvedControlRoot, "gitlens-zh.config.json");
 	const config = readJson<LayerConfig>(configFile);
+	if (typeof config.applyPatches !== "boolean") {
+		throw new PipelineError("CONFIG_INVALID", "applyPatches must be a boolean");
+	}
 	if (!/^[0-9a-f]{40}$/u.test(config.upstream.commit)) {
 		throw new PipelineError("CONFIG_INVALID", "upstream.commit must be a full lowercase Git SHA");
 	}

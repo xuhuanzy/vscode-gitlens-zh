@@ -24,7 +24,8 @@
 │  ├─ worksets/            # 待翻译工作集
 │  ├─ schemas/             # i18n 数据结构约束
 │  └─ reports/             # 可再生报告，默认不提交
-└─ gitlens-zh.config.json  # 上游版本配置
+├─ patches/                # 可选的上游源码 patch
+└─ gitlens-zh.config.json  # 配置
 ```
 
 `.upstream/` 只由项目编排器管理。不要在其中保存需要长期维护的修改；翻译应写入 i18n 真源。

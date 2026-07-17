@@ -1,5 +1,6 @@
 {
 	"$schema": "./schemas/gitlens-zh-config.schema.json",
+	"applyPatches": true,
 	"upstream": {
 		"repository": "https://github.com/gitkraken/vscode-gitlens.git",
 		"tag": "v18.3.0",

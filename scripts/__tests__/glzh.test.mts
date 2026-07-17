@@ -5,6 +5,7 @@ import path from "node:path";
 import { afterAll, beforeEach, expect, test, vi } from "vitest";
 
 const upstream = vi.hoisted(() => ({
+	applyPatches: vi.fn<(config: unknown) => readonly string[]>(),
 	getStatus: vi.fn<(config: unknown) => unknown>(),
 	markFullBuildComplete: vi.fn<(config: unknown) => void>(),
 	prepare: vi.fn<(config: unknown, options?: { readonly requireFullBuild?: boolean }) => unknown>(),
@@ -20,6 +21,7 @@ const overlay = vi.hoisted(() => ({
 }));
 
 vi.mock("../upstream.mts", () => ({
+	applyConfiguredPatches: upstream.applyPatches,
 	getUpstreamStatus: upstream.getStatus,
 	markFullBuildComplete: upstream.markFullBuildComplete,
 	prepareUpstream: upstream.prepare,
@@ -43,6 +45,7 @@ beforeEach(() => {
 	vi.clearAllMocks();
 	upstream.getStatus.mockReturnValue({ exists: true, managed: true });
 	upstream.prepare.mockReturnValue({ exists: true, managed: true, requiresFullBuild: true });
+	upstream.applyPatches.mockReturnValue(["pro.patch"]);
 	overlay.generate.mockReturnValue({ files: ["src/localized.ts"], translated: 3, unresolved: 1 });
 	overlay.applyManifest.mockReturnValue({ englishKeys: 5, localizedKeys: 4, unresolvedKeys: 1 });
 });
@@ -73,8 +76,9 @@ test("build performs a full build when the managed build state requires it", asy
 	writeControlFixture(root, "v18.3.0", "2d76f8e4364be4c1877bd37d201561126e8c01fb");
 	const i18nBefore = readI18nSnapshot(root);
 
-	await expect(execute(["build"], root)).resolves.toMatchObject({ mode: "full" });
+	await expect(execute(["build"], root)).resolves.toMatchObject({ mode: "full", patches: ["pro.patch"] });
 	expect(upstream.prepare).toHaveBeenCalledOnce();
+	expect(upstream.applyPatches).toHaveBeenCalledOnce();
 	expect(overlay.generate).toHaveBeenCalledOnce();
 	expect(upstream.runScript).toHaveBeenCalledWith(expect.any(Object), "build");
 	expect(upstream.markFullBuildComplete).toHaveBeenCalledOnce();
@@ -180,6 +184,7 @@ function writeControlFixture(root: string, tag: string, commit: string): void {
 	fs.writeFileSync(
 		path.join(root, "gitlens-zh.config.json"),
 		JSON.stringify({
+			applyPatches: true,
 			upstream: {
 				repository: "https://example.invalid/gitlens.git",
 				tag: tag,
