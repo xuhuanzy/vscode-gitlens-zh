@@ -1,6 +1,15 @@
 {
 	"$schema": "./node_modules/oxfmt/configuration_schema.json",
 	"ignorePatterns": ["i18n/catalog/**", "i18n/authority/zh-cn/messages.json", ".agents/**"],
+	"overrides": [
+		{
+			"files": ["**/*.yaml", "**/*.yml"],
+			"options": {
+				"tabWidth": 2,
+				"useTabs": false
+			}
+		}
+	],
 	"printWidth": 120,
 	"tabWidth": 4,
 	"useTabs": true
